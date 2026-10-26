@@ -1,0 +1,160 @@
+{
+  "ders": "Müzik",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MÜZİK DİLİ",
+      "a": [
+        {
+          "k": "MÜZ.7.1.1",
+          "m": "İstiklâl Marşı’nı gürlük basamaklarına dikkat ederek söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "İstiklâl Marşı’nın müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.1.2",
+          "m": "Farklı türdeki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.1.3",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.1.4",
+          "m": "Ortak repertuvardaki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.1.5",
+          "m": "Müzik eserlerine bedensel hareketlerle eşlik edebilme",
+          "s": [
+            "Ritmik yapıya/eserin anlamına uygun hareketler belirler.",
+            "Ritmik yapıya/eserin anlamına uygun hareketler sergiler."
+          ]
+        },
+        {
+          "k": "MÜZ.7.1.6",
+          "m": "Müzik yazısını çözümleyebilme",
+          "s": [
+            "Müzik yazısının parçalarını belirler.",
+            "Müzik yazısının parçaları arasındaki ilişkileri belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK KÜLTÜRÜ",
+      "a": [
+        {
+          "k": "MÜZ.7.2.1",
+          "m": "Klasik Batı Müziği dönemlerini karşılaştırabilme",
+          "s": [
+            "Klasik Batı Müziği dönemlerinin özelliklerini ifade eder.",
+            "Klasik Batı Müziği dönemlerine ilişkin benzerlikleri ifade eder.",
+            "Klasik Batı Müziği dönemlerine ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.2",
+          "m": "Klasik Batı Müziği topluluklarını karşılaştırabilme",
+          "s": [
+            "Klasik Batı Müziği topluluklarının özelliklerini ifade eder.",
+            "Klasik Batı Müziği topluluklarına ilişkin benzerlikleri ifade eder.",
+            "Klasik Batı Müziği topluluklarına ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.3",
+          "m": "Farklı türdeki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.4",
+          "m": "İnsan seslerini sınıflandırabilme",
+          "s": [
+            "İnsan seslerine ilişkin değişkenleri belirler.",
+            "İnsan seslerini ayrıştırır.",
+            "İnsan seslerini tasnif eder.",
+            "İnsan seslerini etiketler."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.5",
+          "m": "İnsan ses topluluklarını karşılaştırabilme",
+          "s": [
+            "İnsan ses topluluklarının özelliklerini ifade eder.",
+            "İnsan ses topluluklarına ilişkin benzerlikleri ifade eder.",
+            "İnsan ses topluluklarına ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.6",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.7",
+          "m": "Ülkemizdeki mesleki müzik eğitimi kurumlarını karşılaştırabilme",
+          "s": [
+            "Ülkemizdeki mesleki müzik eğitimi kurumlarının özelliklerini ifade eder.",
+            "Ülkemizdeki mesleki müzik eğitimi kurumlarına ilişkin benzerlikleri ifade eder.",
+            "Ülkemizdeki mesleki müzik eğitimi kurumlarına ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.8",
+          "m": "Atatürk’ün müzik eğitimine verdiği önemi özetleyebilme",
+          "s": [
+            "Atatürk’ün müzik eğitimine verdiği önemi çözümler.",
+            "Atatürk’ün müzik eğitimine verdiği önemi sınıflandırır.",
+            "Atatürk’ün müzik eğitimine verdiği önemi yorumlar (Kendi cümleleriyle aktarır.)."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.9",
+          "m": "Ortak repertuvardaki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.7.2.10",
+          "m": "Müzik eserlerine bedensel hareketlerle eşlik edebilme",
+          "s": [
+            "Ritmik yapıya/eserin anlamına uygun hareketler belirler.",
+            "Ritmik yapıya/eserin anlamına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    }
+  ]
+}

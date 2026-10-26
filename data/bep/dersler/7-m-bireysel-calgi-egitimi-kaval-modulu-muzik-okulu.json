@@ -1,0 +1,118 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVALDA DÖRDÜNCÜ KADEME SES ALANINDA ANA SESLER",
+      "a": [
+        {
+          "k": "KVL.7.1.1",
+          "m": "Si, do ve re seslerini çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA NÜANS UYGULAMALARI-1",
+      "a": [
+        {
+          "k": "KVL.7.2.1",
+          "m": "Farklı nota sürelerinde yazılmış etütleri non legato çalabilme",
+          "s": [
+            "Non legato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak non legato çalar."
+          ]
+        },
+        {
+          "k": "KVL.7.2.2",
+          "m": "Farklı nota sürelerinde yazılmış etütleri legato çalabilme",
+          "s": [
+            "Legato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak legato çalar."
+          ]
+        },
+        {
+          "k": "KVL.7.2.3",
+          "m": "Farklı nota sürelerinde yazılmış etütleri staccato çalabilme",
+          "s": [
+            "Staccato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak staccato çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA NÜANS UYGULAMALARI 2",
+      "a": [
+        {
+          "k": "KVL.7.3.1",
+          "m": "Farklı nota sürelerinde yazılmış etütlerde el-kol ile vibrato tekniğini uygulayarak çalabilme",
+          "s": [
+            "El-kol ile vibrato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak el-kol ile vibrato tekniğini uygulayarak, çalar."
+          ]
+        },
+        {
+          "k": "KVL.7.3.2",
+          "m": "Etütlerde parmak ile vibrato tekniğini çalabilme",
+          "s": [
+            "Parmak ile vibrato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak parmak ile vibrato tekniğini uygulayarak çalar."
+          ]
+        },
+        {
+          "k": "KVL.7.3.3",
+          "m": "Farklı nota sürelerinde yazılmış etütlerde nefes ile vibrato tekniğini uygulayarak çalabilme",
+          "s": [
+            "Nefes ile vibrato tekniğini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Etütleri yapısına uygun olarak nefes ile vibrato tekniğini uygulayarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA MAKAMLAR VE UYGULAMALARI-4.",
+      "a": [
+        {
+          "k": "KVL.7.4.1",
+          "m": "Hüseyni makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Hüseyni makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak hüseyni makamında Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.7.4.2",
+          "m": "Hicaz makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Hicaz makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak hicaz makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

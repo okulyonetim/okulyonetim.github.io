@@ -1,0 +1,159 @@
+{
+  "ders": "Bilim Uygulamaları",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÜNLÜK HAYATTA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.2.1.1",
+          "m": "Günlük hayatta ışığın yansımasının kullanıldığı alanlara yönelik bilgi",
+          "s": [
+            "Günlük hayatta ışığın yansımasının kullanıldığı alanlara yönelik bilgi."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.1.2",
+          "m": "Elektrikli ev aletlerinde elektrik tasarrufu için geliştirilen teknolojik",
+          "s": [
+            "Elektrikli ev aletlerinde elektrik tasarrufu için geliştirilen teknolojik."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.1.3",
+          "m": "Günlük hayatta tesadüfi keşfedilen buluşların bilime katkısına yönelik bilgi",
+          "s": [
+            "Günlük hayatta tesadüfi keşfedilen buluşların bilime katkısına yönelik bilgi."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: SAĞLIK VE SPORDA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.2.2.1",
+          "m": "Bağımlılıkla mücadele konusunda bilimin rolüne ilişkin bilimsel çıkarım",
+          "s": [
+            "Bağımlılıkla mücadele konusunda bilimin rolüne ilişkin bilimsel çıkarım."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.2.2",
+          "m": "Uygun aydınlatma kullanımının sağlık üzerindeki etkisi hakkında bilgi",
+          "s": [
+            "Uygun aydınlatma kullanımının sağlık üzerindeki etkisi hakkında bilgi."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.2.3",
+          "m": "Teknolojik gelişmelerin spor alanına etkisini tartışabilme",
+          "s": [
+            "Teknolojik gelişmelerin spor alanına etkisine yönelik mantıksal temellendirme yapar.",
+            "Teknolojik gelişmelerin spor alanına etkisine yönelik mantıksal çelişkileri tespit eder.",
+            "Teknolojik gelişmelerin spor alanına etkisine yönelik fikirleri çürütür ya da kabul eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: SANATTA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.2.3.1",
+          "m": "Teknolojik gelişmelerin sanat dalları üzerindeki etkisini tartışabilme",
+          "s": [
+            "Teknolojik gelişmelerin sanat dalları üzerindeki etkisine yönelik mantıksal temellendirme yapar.",
+            "Teknolojik gelişmelerin sanat dalları üzerindeki etkisine yönelik mantıksal çelişkileri tespit eder.",
+            "Teknolojik gelişmelerin sanat dalları üzerindeki etkisine yönelik fikirleri çürütür ya da kabul eder."
+          ]
+        },
+        {
+          "k": "MBU.BU.2.3.2",
+          "m": "Tarihî bir mimari eserin günümüze kadar ulaşabilmesinde bilimin etkisine",
+          "s": [
+            "Tarihî bir mimari eserin günümüze kadar ulaşabilmesinde bilimin etkisine."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.3.3",
+          "m": "Tiyatro, opera vb. sahne sanatları hazırlanırken faydalanılan teknolojilerle",
+          "s": [
+            "Tiyatro, opera vb. sahne sanatları hazırlanırken faydalanılan teknolojilerle."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.3.4",
+          "m": "Sanatta atık malzeme kullanımının çevreye etkisine ilişkin bilimsel çıkarım",
+          "s": [
+            "Sanatta atık malzeme kullanımının çevreye etkisine ilişkin bilimsel çıkarım."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: DOĞADA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.2.4.1",
+          "m": "Doğal sistemlerdeki süreçler sayesinde atığın oluşmadığına yönelik bilimsel çıkarım yapabilme",
+          "s": [
+            "Doğal sistemlerdeki süreçlerin niteliklerini tanımlar.",
+            "Doğal sistemlerdeki süreçler sayesinde atığın oluşmadığına yönelik veri toplar ve topladığı verileri kaydeder.",
+            "Doğal sistemlerdeki süreçler sayesinde atığın oluşmadığını yorumlayarak değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.BU.2.4.2",
+          "m": "Günlük yaşamdaki uygulamalarında organik atıkları azaltmaya yönelik deneyimlerini yansıtabilme",
+          "s": [
+            "Günlük yaşamdaki uygulamalarında oluşan organik atıklara ilişkin deneyimlerini gözden geçirir.",
+            "Günlük yaşamdaki uygulamalarında organik atıkları azaltmaya ilişkin deneyimlerine dayalı çıkarım yapar.",
+            "Günlük yaşamdaki uygulamalarında organik atıkları azaltmaya ilişkin ulaşılan çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.BU.2.4.3",
+          "m": "Uzayda sürdürülebilirlik ve çevre korumaya ilişkin bilgi toplayabilme",
+          "s": [
+            "Uzayda sürdürülebilirlik ve çevre korumayla ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Uzayda sürdürülebilirlik ve çevre koruma ile ilgili bilgiler bulur.",
+            "Uzayda sürdürülebilirlik ve çevre korumayla ilgili bulduğu bilgileri doğrular.",
+            "Uzayda sürdürülebilirlik ve çevre korumayla ilgili bulduğu bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. TEMA: MESLEKLERDE BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.2.5.1",
+          "m": "Uzay araştırmaları alanında çalışan kişilerin aldığı eğitimlere ilişkin bilgi",
+          "s": [
+            "Uzay araştırmaları alanında çalışan kişilerin aldığı eğitimlere ilişkin bilgi."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.2.5.2",
+          "m": "Bilimsel gelişmeler ışığında gelecekteki mesleklerin neler olabileceğini",
+          "s": [
+            "Bilimsel gelişmeler ışığında gelecekteki mesleklerin neler olabileceğini."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

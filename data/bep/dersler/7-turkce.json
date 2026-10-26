@@ -1,0 +1,1349 @@
+{
+  "ders": "Türkçe",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAYAT BOYU GELİŞİM",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.2",
+          "m": "Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.4",
+          "m": "Dinlediğinde/izlediğinde geçen anlamını bilmediği söz varlığı unsurlarının anlamını tahmin edebilme",
+          "s": [
+            "Dinlediğinin/izlediğinin bağlamından söz varlığı unsurlarının anlamıyla ilgili ipuçlarını belirleyip ön bilgileriyle ilişkilendirir.",
+            "Söz varlığı unsurlarının anlamına ilişkin mantıklı tahminde bulunur.",
+            "Tahminin doğruluğunu kaynaklardan (sözlük, başvuru kitapları vb.), ebeveyn veya öğretmenden yardım alarak kontrol edip yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.D.7.5",
+          "m": "Dinlediğinin/izlediğinin yüzey anlamını belirleyebilme",
+          "s": [
+            "Dinlediği/izlediği ve varsa ona eşlik eden görsellerden hareketle bağlama/konuya dair ipuçlarını bulup ön bilgileriyle bağlantı kurar.",
+            "Dinlediğinde/izlediğinde doğrudan verilen bilgileri (tanımı verilen kavram, düşünce, yönerge, iletilmek istenen mesaj, açıkça ifade edilen ana fikir vb.) belirler.",
+            "Uygun durumlarda, iletilen mesajın gerektirdiği tepkiyi verir."
+          ]
+        },
+        {
+          "k": "T.D.7.16",
+          "m": "Metnin bölümlerini belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metnin türüne uygun olarak giriş, gelişme, sonuç veya serim, düğüm, çözüm bölümlerini belirler.",
+            "Metnin bölümlerinin birbirleriyle bağlantısını belirler."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir. \"T.O.7.1. Okumada materyal seçimini yönetebilme",
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.2",
+          "m": "Okumada strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Faaliyetin amacını, ilgi ve ihtiyaçlarını, materyalin özelliklerini, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda okurken kullanacağı strateji ve yöntemleri seçer ve seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.3",
+          "m": "Okuyacağı metnin içeriğine yönelik tahminde bulunabilme",
+          "s": [
+            "Okuyacağı metnin başlık, görsel ve/veya belirli bir bölümünden hareketle içerikle ilgili ipuçlarını belirleyip ön bilgileriyle ilişkilendirir.",
+            "Metnin içeriği veya sonraki bölümleriyle ilgili mantıklı tahminde bulunur.",
+            "Tahmininin doğruluğunu kontrol edip yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.O.7.4",
+          "m": "Metinde geçen anlamını bilmediği söz varlığı unsurlarının anlamını tahmin edebilme",
+          "s": [
+            "Metnin bağlamından söz varlığı unsurlarının anlamıyla ilgili ipuçlarını belirleyip ön bilgileriyle ilişkilendirir.",
+            "Söz varlığı unsurlarının anlamına ilişkin mantıklı tahminde bulunur.",
+            "Tahminin doğruluğunu kaynaklardan (sözlük, başvuru kitapları), ebeveyn veya öğretmenden yardım alarak kontrol edip yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.O.7.5",
+          "m": "Metnin yüzey anlamını belirleyebilme",
+          "s": [
+            "Metin ve varsa ona eşlik eden görsellerden hareketle bağlama/konuya dair ipuçlarını bulup ön bilgileriyle bağlantı kurar.",
+            "Metinde doğrudan verilen bilgileri (tanımı verilen kavram, düşünce, yönerge, iletilmek istenen mesaj, açıkça ifade edilen ana fikir vb.) belirler.",
+            "Gerektiğinde iletilen mesajın gerektirdiği tepkiyi verir."
+          ]
+        },
+        {
+          "k": "T.O.7.21",
+          "m": "Metinden hareketle söz varlığını geliştirmeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metnin anahtar söz varlığı unsurlarını belirler.",
+            "Belirlenen söz varlığı unsurlarının anlam ilişkilerini inceler."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir. \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.2",
+          "m": "Konuşma yöntem ve tekniklerine yönelik seçimlerini yönetebilme",
+          "s": [
+            "Konuşma şekli (sözlü üretim veya sözlü etkileşim), amacı, süresi, ilgi ve ihtiyaçları doğrultusunda kullanacağı yöntem ve teknikleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.K.7.3",
+          "m": "Konuşmasında amaç ve içeriğe yönelik seçimlerini yönetebilme",
+          "s": [
+            "Konuşma amacını belirler.",
+            "Konuşma konusunu belirler.",
+            "Konuşma türünü belirler."
+          ]
+        },
+        {
+          "k": "T.K.7.4",
+          "m": "Konuşmasında ön bilgilerinden yararlanabilme",
+          "s": [
+            "Konuyla ilgili ön bilgilerini (gözlem, anı, deneyim, güncel olay, haber vb.) belirler.",
+            "Ön bilgilerini konuşma içeriğiyle ilişkilendirir.",
+            "Belirlediği ön bilgileri konuşmasına aktarır."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur.\" \"T.Y.7.1. Yazma sürecini yönetebilme",
+            "Amaç, bağlam ve olanaklarını analiz ederek yazma konusunu, hedef kitlesini, dijital de dâhil yazma aracı ve ortamını belirler.",
+            "Yazılı etkileşiminde yazışmayı başlatma, sürdürme ve sonlandırmayla ilgili uygun selam ve hitap ifadelerini kullanır.",
+            "Yazılı üretim ve yazılı etkileşiminde içerik ve süreçle ilgili gerekli seçim ve düzenlemeleri yapar."
+          ]
+        },
+        {
+          "k": "T.Y.7.2",
+          "m": "Yazma strateji, yöntem ve tekniklerine yönelik seçimlerini yönetebilme",
+          "s": [
+            "Yazma şekli (etkileşimli veya etkileşimsiz), amacı, bağlamı ve olanakları doğrultusunda kullanacağı stratejileri seçer.",
+            "Yazma şekli (etkileşimli veya etkileşimsiz), amacı, bağlamı ve olanakları doğrultusunda kullanacağı yöntem ve teknikleri seçer."
+          ]
+        },
+        {
+          "k": "T.Y.7.3",
+          "m": "Yazısında içerik ve yapıya yönelik seçimlerini yönetebilme",
+          "s": [
+            "Yazma amacına uygun paragraf türünü seçer.",
+            "Yazma amacına uygun metin yapısını seçer."
+          ]
+        },
+        {
+          "k": "T.Y.7.18",
+          "m": "Yazısını zenginleştirecek biçimde söz varlığını kullanabilme",
+          "s": [
+            "Kullanacağı söz varlığı unsurlarını aralarındaki anlam ilişkilerini dikkate alarak belirler.",
+            "Aynı anlamı farklı söz varlığı unsurlarıyla (eş ve yakın anlamlı kelime, zıt anlamlı ve eş sesli kelime, çağrıştırdığı kelime; atasözü, deyim, kalıp söz, terim, ikileme, pekiştirme) ifade eder.",
+            "Söz varlığı unsurlarını bağlama uygun kullanır.",
+            "Gerektiğinde yazısında söz varlığı unsurlarının görsel karşılığını kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİR HİLAL UĞRUNA",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.2",
+          "m": "Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir. \"T.O.7.1. Okumada materyal seçimini yönetebilme",
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.2",
+          "m": "Okumada strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Faaliyetin amacını, ilgi ve ihtiyaçlarını, materyalin özelliklerini, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda okurken kullanacağı strateji ve yöntemleri seçer ve seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir. \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur.\" \"T.Y.7.1. Yazma sürecini yönetebilme",
+            "Amaç, bağlam ve olanaklarını analiz ederek yazma konusunu, hedef kitlesini, dijital de dâhil yazma aracı ve ortamını belirler.",
+            "Yazılı etkileşiminde yazışmayı başlatma, sürdürme ve sonlandırmayla ilgili uygun selam ve hitap ifadelerini kullanır.",
+            "Yazılı üretim ve yazılı etkileşiminde içerik ve süreçle ilgili gerekli seçim ve düzenlemeleri yapar."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur. \" \"T.D.7.2. Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.3",
+          "m": "Dinleyeceğinin/izleyeceğinin içeriğine yönelik tahminde bulunabilme",
+          "s": [
+            "Dinleyeceğinin/izleyeceğinin başlık, görsel ve/veya belirli bir bölümünden hareketle içerikle ilgili ipuçlarını belirleyip ön bilgileriyle ilişkilendirir.",
+            "İçerik veya sonraki bölümlerle ilgili mantıklı tahminde bulunur.",
+            "Tahmininin doğruluğunu kontrol edip yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.D.7.14",
+          "m": "Bilgilendirici metinlerde metin yapılarından hareketle önemli bilgileri belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metin yapısından hareketle önemli bilgileri belirler.",
+            "Belirlenen bilgilerin birbirleriyle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.D.7.17",
+          "m": "Bilgilendirici metinde düşünceyi geliştirme yollarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Dinlediğinde/izlediğinde başvurulan düşünceyi geliştirme yollarını belirler.",
+            "Belirlediği düşünceyi geliştirme yollarının birbirleriyle ve dinledikleriyle/izledikleriyle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.D.7.18",
+          "m": "Dinlediğindeki/izlediğindeki söz sanatlarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Dinlediğindeki/izlediğindeki söz sanatlarını belirler.",
+            "Dinlediğinin/izlediğinin anlatımıyla söz sanatlarının ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.D.7.20",
+          "m": "Dinlediğinden/izlediğinden hareketle söz varlığını geliştirmeye yönelik çözümleme yapabilme",
+          "s": [
+            "Dinlediğinin/izlediğinin anahtar söz varlığı unsurlarını belirler.",
+            "Belirlenen söz varlığı unsurlarının anlam ilişkilerini inceler."
+          ]
+        },
+        {
+          "k": "T.D.7.24",
+          "m": "Medya içeriğini değerlendirebilme",
+          "s": [
+            "Medya içeriğiyle ilgili bir norm belirler.",
+            "Belirlediği norma göre medya içeriğinde inceleme yapar.",
+            "İnceleme sonuçlarını belirlediği normla karşılaştırır.",
+            "Karşılaştırma sonucundan hareketle bir yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.O.7.6",
+          "m": "Görselle iletilen anlamı belirleyebilme",
+          "s": [
+            "Görseldeki unsurlardan hareketle anlama ilişkin ipuçlarını bulup ön bilgileriyle bağlantı kurar.",
+            "Görselde doğrudan ve/veya örtük olarak iletilen mesajı belirler.",
+            "Gerektiğinde, görselle iletilen mesaja uygun tepkiyi verir."
+          ]
+        },
+        {
+          "k": "T.O.7.7",
+          "m": "Metnin derin anlamını belirlemeye yönelik basit çıkarımlar yapabilme",
+          "s": [
+            "Metnin sınırlı bir bölümünden ve görselden kanıt toplayıp ön bilgileriyle ilişkilendirir.",
+            "İlişkilendirmeden hareketle çıkarım yapar.",
+            "Bir yargıya vararak gerektiğinde tepki verir."
+          ]
+        },
+        {
+          "k": "T.O.7.8",
+          "m": "Metnin derin anlamını belirlemeye yönelik üst düzey çıkarımlar yapabilme",
+          "s": [
+            "Metnin bütününden ve görsellerden kanıt toplayıp ön bilgileriyle ilişkilendirir.",
+            "İlişkilendirmeden hareketle çıkarım yapar.",
+            "Bir yargıya vararak gerektiğinde tepki verir."
+          ]
+        },
+        {
+          "k": "T.O.7.14",
+          "m": "Bilgilendirici metinlerde metin yapılarından hareketle önemli bilgileri belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metin yapısından hareketle önemli bilgileri belirler.",
+            "Belirlenen bilgilerin birbiriyle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.O.7.15",
+          "m": "Bilgilendirici metinde anahtar kelimeleri belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metnin içeriğini yansıtan anahtar kelimeleri belirler.",
+            "Anahtar kelimelerin metinle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.O.7.20",
+          "m": "Metinde kullanılan ikna etme tekniklerini belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Yazarın başvurduğu ikna etme tekniklerini belirler.",
+            "Belirlediği ikna etme tekniklerinin birbirleriyle ve metinle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.K.7.5",
+          "m": "Konuşmasında uygun tepki verebilme",
+          "s": [
+            "İletinin hedef kitlesi, içerik ve yapısını (konusunu, ana fikrini, amacını, yapı ve dil özelliklerini vb.) çözümler.",
+            "Çözümlediği verileri kullanarak vereceği dönütü (nasıl cevap verileceği, hangi bilgi ve gerekçelerin kullanılacağı vb.) belirler.",
+            "Yorum ve değerlendirmelerini yansıtan tepki verir."
+          ]
+        },
+        {
+          "k": "T.K.7.7",
+          "m": "Yaratıcı konuşma yapabilme",
+          "s": [
+            "Konuşmasında tema, karakter ve olay örgülerini farklı açılardan ele alır.",
+            "Deneyim ve gözlemlerini hayal gücüyle birleştirerek konuşmasını zenginleştirir.",
+            "Farklı anlatı yapılarını kullanır.",
+            "Özgün çözüm, karakter ve diyaloglar üretir."
+          ]
+        },
+        {
+          "k": "T.K.7.8",
+          "m": "Hazırlıksız konuşma yapabilme",
+          "s": [
+            "Hazırlıksız konuşma öncesinde çıkış noktası ve ön yaşantılarından hareketle kısa süreli zihinsel planlama yapar.",
+            "Doğaçlama yoluyla bağlama uygun konuşma yapar.",
+            "Konuşmasını konu odağı çerçevesinde sonlandırır."
+          ]
+        },
+        {
+          "k": "T.K.7.9",
+          "m": "Konuşmasında sesini uygun şekilde kullanabilme",
+          "s": [
+            "Nefesini doğru ayarlar.",
+            "Kelimeleri doğru telaffuz eder.",
+            "Sesin şiddetini ayarlar.",
+            "Doğru vurgu ve tonlamayla konuşur."
+          ]
+        },
+        {
+          "k": "T.K.7.13",
+          "m": "Konuşmasında sınıflandırma yapabilme",
+          "s": [
+            "Sınıflandırma yapacağı unsurları ve ölçütleri belirler.",
+            "Unsurları, belirlediği ölçütlere göre ayırır.",
+            "Ayrılan unsurları ayırt edici özelliklerden hareketle tasnif eder.",
+            "Tasniflerini (gerekli durumlarda grafik, tablo, görsel vb. ile destekleyerek) konuşmasında kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.22",
+          "m": "Konuşmasını zenginleştirecek biçimde söz varlığını kullanabilme",
+          "s": [
+            "Kullanacağı söz varlığı unsurlarını aralarındaki anlam ilişkilerini dikkate alarak belirler.",
+            "Aynı anlamı farklı söz varlığı unsurlarıyla (eş ve yakın anlamlı kelime, zıt anlamlı ve eş sesli kelime, çağrıştırdığı kelime; atasözü, deyim, kalıp söz, terim, ikileme, pekiştirme) ifade eder.",
+            "Söz varlığı unsurlarını bağlama uygun kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.4",
+          "m": "Yazılı üretim ve yazılı etkileşiminde ön bilgilerinden yararlanabilme",
+          "s": [
+            "Konuyla ilgili ön bilgilerini (gözlem, anı, deneyim, güncel olay, haber vb.) belirler.",
+            "Ön bilgilerini yazma konusuyla ilişkilendirir.",
+            "Belirlediği ön bilgileri yazısına aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.7.5",
+          "m": "Yazılı etkileşiminde uygun tepki verebilme",
+          "s": [
+            "İletinin hedef kitlesi, içerik ve yapısını (konusunu, ana fikrini, amacını, yapı ve dil özelliklerini vb.) çözümler.",
+            "Çözümlediği verileri kullanarak vereceği dönütü (nasıl cevap verileceği, hangi bilgi ve gerekçeler kullanılacağı vb.) belirler.",
+            "Kişisel yorum ve değerlendirmelerini yansıtan tepki verir."
+          ]
+        },
+        {
+          "k": "T.Y.7.10",
+          "m": "Yazısında sınıflandırma yapabilme",
+          "s": [
+            "Sınıflandırma yapacağı unsur ve ölçütleri belirler.",
+            "Unsurları, belirlediği ölçütlere göre ayırır.",
+            "Ayrılan unsurları ayırt edici özelliklerden hareketle tasnif eder.",
+            "Tasniflerini (gerekli durumlarda grafik, tablo, görsel vb. ile destekleyerek) yazısında kullanır."
+          ]
+        },
+        {
+          "k": "T.D.7.2",
+          "m": "Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir.\" \"T.O.7.2. Okumada strateji ve yöntem seçimlerini yönetebilme",
+            "Faaliyetin amacını, ilgi ve ihtiyaçlarını, materyalin özelliklerini, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda okurken kullanacağı strateji ve yöntemleri seçer ve seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir. \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur. \"T.Y.7.3. Yazısında içerik ve yapıya yönelik seçimlerini yönetebilme",
+            "Yazma amacına uygun paragraf türünü seçer.",
+            "Yazma amacına uygun metin yapısını seçer."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İLETİŞİM VE SOSYAL İLİŞKİLER",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.7",
+          "m": "Dinlediğinin/izlediğinin derin anlamını belirlemeye yönelik basit çıkarımlar yapabilme",
+          "s": [
+            "Dinlediğinin/izlediğinin sınırlı bir bölümünden kanıt toplayıp ön bilgileriyle ilişkilendirir.",
+            "İlişkilendirmeden hareketle çıkarım yapar.",
+            "Bir yargıya vararak gerektiğinde tepki verir."
+          ]
+        },
+        {
+          "k": "T.D.7.8",
+          "m": "Dinlediğinin/izlediğinin derin anlamını belirlemeye yönelik üst düzey çıkarımlar yapabilme",
+          "s": [
+            "Dinlediğinin/izlediğinin bütününden kanıt toplayıp ön bilgileriyle ilişkilendirir.",
+            "İlişkilendirmeden hareketle çıkarım yapar.",
+            "Bir yargıya vararak gerektiğinde tepki verir."
+          ]
+        },
+        {
+          "k": "T.D.7.19",
+          "m": "Dinlediğinde/izlediğinde kullanılan ikna etme tekniklerini belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Dinlediğinde/izlediğinde başvurulan ikna etme tekniklerini belirler.",
+            "Belirlediği ikna etme tekniklerinin birbirleriyle ve metinle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.D.7.23",
+          "m": "Dinlediğini/izlediğini değerlendirebilme",
+          "s": [
+            "Dinlediği/izlediği ile ilgili bir norm belirler.",
+            "Dinlediğinde/izlediğinde belirlediği norma ilişkin inceleme yapar.",
+            "İnceleme sonuçlarını belirlediği normla karşılaştırır.",
+            "Karşılaştırma sonucundan hareketle bir yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.D.7.25",
+          "m": "Dinlediğini/izlediğini eleştirebilme",
+          "s": [
+            "Dinlediğini/izlediğini belirlenen bir özellik açısından sorgular.",
+            "Sorgulanan özellikle ilgili akıl yürüterek olumlu/olumsuz yargıya ulaşır.",
+            "Olumsuz yargıya yönelik gerekçeli alternatif üretir."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir.\" \"T.O.7.1. Okumada materyal seçimini yönetebilme",
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.16",
+          "m": "Metnin bölümlerini belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metnin türüne uygun olarak giriş, gelişme, sonuç veya serim, düğüm, çözüm bölümlerini belirler.",
+            "Metnin bölümlerinin birbirleriyle bağlantısını belirler."
+          ]
+        },
+        {
+          "k": "T.O.7.17",
+          "m": "Şiirin biçim özelliklerini belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Okuduğu şiirin biçim özelliklerini belirler.",
+            "Şiirin biçim özelliklerinin birbirleriyle ve metinle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.O.7.18",
+          "m": "Bilgilendirici metinde düşünceyi geliştirme yollarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Yazarın başvurduğu düşünceyi geliştirme yollarını belirler.",
+            "Belirlediği düşünceyi geliştirme yollarının birbirleriyle ve metinle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.O.7.19",
+          "m": "Metindeki söz sanatlarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Okuduklarındaki söz sanatlarını belirler.",
+            "Söz sanatlarının metnin anlatımıyla ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.O.7.23",
+          "m": "Okuduğunu özetleyebilme",
+          "s": [
+            "Metinde sunulan bilgileri çözümler.",
+            "Çözümlemeden hareketle önemli ve önemsiz bilgileri sınıflandırır.",
+            "Metindeki önemli bilgileri kronolojik akışa/düşünce akışına uygun olarak kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir. \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.15",
+          "m": "Sözlü olarak özetleyebilme",
+          "s": [
+            "Metinde/söylemde sunulan bilgileri çözümler.",
+            "Çözümlemeden hareketle önemli ve önemsiz bilgileri sınıflandırır.",
+            "Önemli bilgileri kronolojik akışa/düşünce akışına uygun olarak sıralar.",
+            "Sıraladıklarını kendi cümleleriyle konuşmasında kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.17",
+          "m": "Sözlü olarak tartışmaya katılabilme",
+          "s": [
+            "Tartışmalarda önermelerine yönelik mantıklı temellendirme yapar.",
+            "Karşısındakinin konuşmasını inceleyerek varsa tutarsız ve geçersiz görüş ve bilgiyi tespit eder.",
+            "Doğru görüş ve bilgiyi kabul eder veya tutarsız ve geçersiz görüş ve bilgiyi çürütür."
+          ]
+        },
+        {
+          "k": "T.K.7.21",
+          "m": "Konuşmasında düşünceyi geliştirme yollarını kullanabilme",
+          "s": [
+            "Kullanacağı düşünceyi geliştirme yollarını belirler.",
+            "Düşünceyi geliştirme yollarını birbirleriyle ve söylemle uyumlu şekilde kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.25",
+          "m": "Konuşmasında beden dilini ve mekânı etkili kullanabilme",
+          "s": [
+            "Konuşma yapacağı mekânın özelliklerini göz önünde bulundurur.",
+            "Dinleyicilerle/izleyicilerle göz teması kurar.",
+            "Baş, el, kol ve bacaklarının duruşunu söyleme göre konumlandırır.",
+            "Söylem içeriğine uygun olarak yaygın yüz ifadelerini (şaşırma, kızgınlık, mutluluk vb.) kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur. \"T.Y.7.1. Yazma sürecini yönetebilme",
+            "Amaç, bağlam ve olanaklarını analiz ederek yazma konusunu, hedef kitlesini, dijital de dâhil yazma aracı ve ortamını belirler.",
+            "Yazılı etkileşiminde yazışmayı başlatma, sürdürme ve sonlandırmayla ilgili uygun selam ve hitap ifadelerini kullanır.",
+            "Yazılı üretim ve yazılı etkileşiminde içerik ve süreçle ilgili gerekli seçim ve düzenlemeleri yapar."
+          ]
+        },
+        {
+          "k": "T.Y.7.9",
+          "m": "Yazısında karşılaştırma yapabilme",
+          "s": [
+            "Karşılaştıracağı unsurların (nesne, kişi, olay, bilgi vb.) özelliklerini belirler.",
+            "Belirlenen özelliklere göre benzerlikleri listeler.",
+            "Belirlenen özelliklere göre farklılıkları listeler.",
+            "Benzerlik ve farklılıklardan hareketle ulaştığı yargıyı yazısında kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.17",
+          "m": "Yazısında düşünceyi geliştirme yollarını kullanabilme",
+          "s": [
+            "Kullanacağı düşünceyi geliştirme yollarını belirler.",
+            "Düşünceyi geliştirme yollarını birbirleriyle ve metinle uyumlu şekilde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANATI",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.2",
+          "m": "Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.6",
+          "m": "Görselle iletilen anlamı belirleyebilme",
+          "s": [
+            "Görseldeki unsurlardan hareketle anlama ilişkin ipuçlarını bulup ön bilgileriyle bağlantı kurar.",
+            "Görselde doğrudan ve/veya örtük olarak iletilen mesajı belirler.",
+            "Gerektiğinde görselle iletilen mesaja uygun tepkiyi verir."
+          ]
+        },
+        {
+          "k": "T.D.7.11",
+          "m": "Dinlediğindeki/izlediğindeki unsurları sınıflandırabilme",
+          "s": [
+            "Sınıflandırma ölçütlerini belirler.",
+            "Dinlediğindeki/izlediğindeki unsurları belirlediği ölçütlere göre ayrıştırır.",
+            "Ayrıştırılan unsurları ayırt edici özelliklerden hareketle tasnif eder.",
+            "Tasniflerini ölçütlerden hareketle adlandırır/etiketler."
+          ]
+        },
+        {
+          "k": "T.D.7.12",
+          "m": "Dinlediğini/izlediğini yorumlayabilme",
+          "s": [
+            "Dinlediğindeki/izlediğindeki olay, konu, durum vb.ni inceler.",
+            "Dinlediğindeki/izlediğindeki olay, konu, durum vb.ni yazarın, dinleyicinin/izleyicinin veya bunların dışında bir başkasının bakış açısını dikkate alıp genişleterek veya daraltarak dönüştürür.",
+            "Dinlediğindeki/izlediğindeki olay, konu, durumu vb.ni seçilen bakış açısıyla kendine özgü bir biçimde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir. \"T.O.7.1. Okumada materyal seçimini yönetebilme",
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.2",
+          "m": "Okumada strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Faaliyetin amacını, ilgi ve ihtiyaçlarını, materyalin özelliklerini, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda okurken kullanacağı strateji ve yöntemleri seçer ve seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.9",
+          "m": "Metin içi karşılaştırma yapabilme",
+          "s": [
+            "Metnin farklı bölümlerindeki karşılaştırılabilir unsurlara (duygu, düşünce, görüş, kahraman, dil kullanımı vb.) ilişkin özellikleri belirler.",
+            "Belirlenen özelliklerden hareketle benzerlikleri listeler.",
+            "Belirlenen özelliklerden hareketle farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "T.O.7.10",
+          "m": "Metinler arası karşılaştırma yapabilme",
+          "s": [
+            "Metinlerdeki karşılaştırılabilir unsurlara ilişkin özellikleri belirler.",
+            "Belirlenen özelliklerden hareketle benzerlikleri listeler.",
+            "Belirlenen özelliklerden hareketle farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "T.O.7.11",
+          "m": "Metindeki unsurları sınıflandırabilme",
+          "s": [
+            "Sınıflandırma ölçütlerini belirler.",
+            "Metindeki unsurları belirlediği ölçütlere göre ayrıştırır.",
+            "Ayrıştırılan unsurları ayırt edici özelliklerden hareketle tasnif eder.",
+            "Tasniflerini ölçütlerden hareketle adlandırır/etiketler."
+          ]
+        },
+        {
+          "k": "T.O.7.22",
+          "m": "Çoklu ortam ögelerine yönelik çözümleme yapabilme",
+          "s": [
+            "Çoklu ortam ögelerinin işlevlerini (eş anlam oluşturma, anlamı destekleme veya tek başına anlam oluşturma) belirler.",
+            "Ögeler arasındaki bağlantıları belirler."
+          ]
+        },
+        {
+          "k": "T.O.7.26",
+          "m": "Metni eleştirebilme",
+          "s": [
+            "Okuduğunu belirlenen bir özellik açısından sorgular.",
+            "Sorgulanan özellikle ilgili akıl yürüterek olumlu/olumsuz yargıya ulaşır.",
+            "Olumsuz yargıya yönelik gerekçeli alternatif üretir."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir.\" \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.11",
+          "m": "Konuşmasında tahminlerinden yararlanabilme",
+          "s": [
+            "Mevcut olay, konu, durum vb. ile gözlem ve ön bilgilerini ilişkilendirir.",
+            "Mevcut olay, konu, durum vb.ne ilişkin tahminde bulunur.",
+            "Mevcut olay, konu, durum vb.ne ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "T.K.7.12",
+          "m": "Konuşmasında karşılaştırma yapabilme",
+          "s": [
+            "Karşılaştıracağı unsurların (nesne, kişi, olay, bilgi vb.) özelliklerini belirler.",
+            "Belirlenen özelliklere göre benzerlikleri listeler.",
+            "Belirlenen özelliklere göre farklılıkları listeler.",
+            "Benzerlik ve farklılıklardan hareketle ulaştığı yargıyı konuşmasında kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.20",
+          "m": "Hazırlıklı konuşmasını yapılandırabilme",
+          "s": [
+            "Konuşma sürecini planlar.",
+            "Plana uygun hazırlıklar yapar.",
+            "Konuşma içeriğine yönelik metin veya taslak hazırlar.",
+            "Dinleyici/izleyici kitlesinden gelebilecek sorulara yönelik tahminde bulunur.",
+            "Konuşmasına yönelik değerlendirme kriteri belirler."
+          ]
+        },
+        {
+          "k": "T.K.7.23",
+          "m": "Konuşmasında açık ve örtük ifadeleri kullanabilme",
+          "s": [
+            "İletileri açık ve anlaşılır şekilde ifade eder.",
+            "Örtük iletilerini destekleyecek unsurları (söz sanatları, mecaz, deyim, atasözü ve diğer söz varlığı unsurları) kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur.\" \"T.Y.7.3. Yazısında içerik ve yapıya yönelik seçimlerini yönetebilme",
+            "Yazma amacına uygun paragraf türünü seçer.",
+            "Yazma amacına uygun metin yapısını seçer."
+          ]
+        },
+        {
+          "k": "T.Y.7.6",
+          "m": "Yazısında çoklu ortam ögeleriyle içerik oluşturabilme",
+          "s": [
+            "Amacına uygun olarak kullanacağı çoklu ortam ögelerini (fotoğraf, resim, tablo, grafik, harita, ses kaydı, müzik, video vb.) belirler.",
+            "Belirlediği çoklu ortam ögelerinin işlevlerine (eş anlam oluşturma, anlamı destekleme veya tek başına anlam oluşturma) karar verir.",
+            "Belirlediği çoklu ortam ögelerini, birbirleriyle etkileşimlerini dikkate alarak yazısında kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.7",
+          "m": "Yaratıcı yazı yazabilme",
+          "s": [
+            "Yazısında tema, karakter ve olay örgülerini farklı açılardan ele alır.",
+            "Deneyim ve gözlemlerini hayal gücüyle birleştirerek yazısını zenginleştirir.",
+            "Farklı metin yapılarını kullanır.",
+            "Özgün çözüm, karakter ve diyaloglar üretir."
+          ]
+        },
+        {
+          "k": "T.Y.7.8",
+          "m": "Yazılı üretim ve yazılı etkileşiminde tahminlerinden yararlanabilme",
+          "s": [
+            "Mevcut olay, konu, durum vb. ile gözlem ve ön bilgilerini ilişkilendirir.",
+            "Mevcut olay, konu, durum vb.ne ilişkin tahminde bulunur.",
+            "Yazısında mevcut olay, konu, durum vb.ne ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "T.Y.7.12",
+          "m": "Yazılı olarak özetleyebilme",
+          "s": [
+            "Metinde/söylemde sunulan bilgileri çözümler.",
+            "Çözümlemeden hareketle önemli ve önemsiz bilgileri sınıflandırır.",
+            "Önemli bilgileri kronolojik akışa/düşünce akışına uygun olarak sıralar.",
+            "Sıraladıklarını kendi cümleleriyle yazıya aktarır."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OKUMA KÜLTÜRÜ",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.2",
+          "m": "Dinlemede/izlemede strateji ve yöntem seçimlerini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları; materyalin özellikleri ve etkinliğin süresi doğrultusunda kullanacağı strateji ve yöntemleri seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.D.7.9",
+          "m": "Dinlediğini/izlediğini kendi içinde karşılaştırabilme",
+          "s": [
+            "İçeriğin farklı bölümlerindeki karşılaştırılabilir unsurlara (duygu, düşünce, görüş, kahraman, dil kullanımı vb.) ilişkin özellikleri belirler.",
+            "Belirlenen özelliklerden hareketle benzerlikleri listeler.",
+            "Belirlenen özelliklerden hareketle farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "T.D.7.15",
+          "m": "Bilgilendirici metinde anahtar kelimeleri belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Metnin içeriğini yansıtan anahtar kelimeleri belirler.",
+            "Anahtar kelimelerin dinlediğiyle/izlediğiyle ilişkisini ortaya koyar."
+          ]
+        },
+        {
+          "k": "T.D.7.22",
+          "m": "Dinlediğini/izlediğini özetleyebilme",
+          "s": [
+            "Dinlediğinde/izlediğinde sunulan bilgileri çözümler.",
+            "Çözümlemeden hareketle önemli ve önemsiz bilgileri sınıflandırır.",
+            "Dinlediğindeki/izlediğindeki önemli bilgileri kronolojik akışa/düşünce akışına uygun olarak kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir.\" \""
+          ]
+        },
+        {
+          "k": "T.O.7.1",
+          "m": "Okumada materyal seçimini yönetebilme",
+          "s": [
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar. T.O.7.2.Okumada strateji ve yöntem seçimlerini yönetebilme",
+            "Faaliyetin amacını, ilgi ve ihtiyaçlarını, materyalin özelliklerini, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda okurken kullanacağı strateji ve yöntemleri seçer ve seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.12",
+          "m": "Metni yorumlayabilme",
+          "s": [
+            "Metindeki olay, konu, durum vb.ni inceler.",
+            "Metindeki olay, konu, durum vb.ni yazarın, okurun veya bunların dışında bir başkasının bakış açısını dikkate alıp genişleterek veya daraltarak dönüştürür.",
+            "Metindeki olay, konu, durum vb.ni seçilen bakış açısıyla kendine özgü bir biçimde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "T.O.7.24",
+          "m": "Okuduğunu değerlendirebilme",
+          "s": [
+            "Metnin içeriğiyle ilgili bir norm belirler.",
+            "Okuduklarında belirlediği norma ilişkin inceleme yapar.",
+            "İnceleme sonuçlarını belirdiği normla karşılaştırır.",
+            "Karşılaştırma sonucundan hareketle bir yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.O.7.27",
+          "m": "Metindeki probleme çözüm üretebilme",
+          "s": [
+            "Metinde yer alan olay ya da durumu problem biçiminde tanımlar.",
+            "Olay ya da durumun problemli yönünü özetler.",
+            "Ön bilgilerini kullanarak problemin olası çözümlerine yönelik alternatif tahminler oluşturur.",
+            "Alternatif çözümler arasından akıl yürüterek en uygun çözümü belirler.",
+            "Ürettiği çözüme ilişkin yansıtma ve değerlendirme yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir.\" \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.14",
+          "m": "Yorumunu sözlü olarak ifade edebilme",
+          "s": [
+            "Yorumlayacağı olay, konu, durum vb.ni inceler.",
+            "Yorum yapacağı olay, konu, durum vb.ni bağlamdan kopmadan kendi öznel-nesnel bakış açısı, hedef kitlenin bakış açısı veya ikisi dışında belirli bir bakış açısına göre genişleterek veya daraltarak dönüştürür.",
+            "Yorumlayacağı olay, konu, durum vb.ni belirlediği bakış açısına göre konuşmasında yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "T.K.7.16",
+          "m": "Değerlendirmesini sözlü olarak ifade edebilme",
+          "s": [
+            "Mevcut olay, konu, durum vb.ne ilişkin bir norm belirler.",
+            "Belirlediği norma göre olay, konu, durum vb.ni inceler.",
+            "İnceleme sonuçlarını belirlediği normla karşılaştırır.",
+            "Karşılaştırma sonucunda ulaştığı yargıyı konuşmasında kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.18",
+          "m": "Eleştirisini sözlü olarak ifade edebilme",
+          "s": [
+            "Eleştireceği olay, konu, problem, durum vb.ni sorgular.",
+            "Sorgulanan olay, konu, problem, durum vb.ne ilişkin akıl yürüterek olumlu/olumsuz yargıya ulaşır.",
+            "Akıl yürütme ile ulaştığı yargıyı konuşmasına yansıtır."
+          ]
+        },
+        {
+          "k": "T.K.7.19",
+          "m": "Problem çözümüne yönelik konuşma yapabilme",
+          "s": [
+            "Problemi tanımlar.",
+            "Problemi özetler.",
+            "Gözlem, mevcut bilgi, veri ve ön bilgiye dayalı alternatif çözümler üretir.",
+            "Alternatif çözümler arasından en uygun olanı akıl yürüterek belirler.",
+            "Çözümü ve çözüm sonrası değerlendirmelerini sözlü olarak ifade eder."
+          ]
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur.\" \"T.Y.7.3. Yazısında içerik ve yapıya yönelik seçimlerini yönetebilme",
+            "Yazma amacına uygun paragraf türünü seçer.",
+            "Yazma amacına uygun metin yapısını seçer."
+          ]
+        },
+        {
+          "k": "T.Y.7.11",
+          "m": "Yorumunu yazılı olarak ifade edebilme",
+          "s": [
+            "Yorumlayacağı olay, konu, durum vb.ni inceler.",
+            "Yorumlayacağı olay, konu, durum vb.ni bağlamdan kopmadan kendi öznel-nesnel bakış açısı, hedef kitlenin bakış açısı veya ikisi dışında belirli bir bakış açısına göre genişleterek veya daraltarak dönüştürür.",
+            "Yorumlayacağı olay, konu, durum vb.ni belirlediği bakış açısına göre yazısında yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "T.Y.7.13",
+          "m": "Değerlendirmesini yazılı olarak ifade edebilme",
+          "s": [
+            "Mevcut olay, konu, durum vb.ne ilişkin bir norm belirler.",
+            "Belirlediği norma göre olay, konu, durum vb.ni inceler.",
+            "İnceleme sonuçlarını belirlediği normla karşılaştırır.",
+            "Karşılaştırma sonucunda ulaştığı yargıyı yazısında kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.14",
+          "m": "Yazılı üretiminde ve yazılı etkileşiminde tartışabilme",
+          "s": [
+            "Yazısında yer verdiği önermelerine yönelik mantıklı temellendirme yapar.",
+            "Karşısındakinin yazısını inceleyerek varsa tutarsız ve geçersiz görüş ve bilgiyi tespit eder.",
+            "Doğru görüş ve bilgiyi kabul eder veya tutarsız ve geçersiz görüş ve bilgiyi çürütür."
+          ]
+        },
+        {
+          "k": "T.Y.7.15",
+          "m": "Eleştirisini yazılı olarak ifade edebilme",
+          "s": [
+            "Eleştireceği olay, konu, problem, durum vb.ni sorgular.",
+            "Sorgulanan olay, konu, problem, durum vb.ne ilişkin akıl yürüterek olumlu/olumsuz yargıya ulaşır.",
+            "Akıl yürütme ile ulaştığı yargıyı yazısına yansıtır."
+          ]
+        },
+        {
+          "k": "T.Y.7.16",
+          "m": "Problem çözümüne yönelik yazabilme",
+          "s": [
+            "Problemi tanımlar.",
+            "Problemi özetler.",
+            "Gözlem, mevcut bilgi, veri ve ön bilgiye dayalı alternatif çözümler üretir.",
+            "Alternatif çözümler arasından en uygun olanı akıl yürüterek belirler.",
+            "Çözümü ve çözüm sonrası değerlendirmelerini yazılı olarak ifade eder."
+          ]
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HAK VE SORUMLULUKLAR",
+      "a": [
+        {
+          "k": "T.D.7.1",
+          "m": "Dinlemede/izlemede materyal seçimini yönetebilme",
+          "s": [
+            "Dinleme/izleme şekli (etkileşimli veya etkileşimsiz), amacı, ilgi ve ihtiyaçları, bilgiye erişim olanakları; etkinliğin süresi doğrultusunda dinleme/izleme materyalini ve diğer kaynakları (sözlük, genel ağ, çalışma kâğıdı, grafik organize edici vb.) seçer.",
+            "Seçimleri üzerinde zamana veya üst bilişsel izlemeye bağlı düzenlemeler yapar.",
+            "Etkileşimli dinleme/izleme sırasında karşısındakiyle ilişkiyi sürdürür."
+          ]
+        },
+        {
+          "k": "T.D.7.10",
+          "m": "Dinledikleri/izledikleri arasında karşılaştırma yapabilme",
+          "s": [
+            "Dinlediklerindeki/izlediklerindeki karşılaştırılabilir unsurlara ilişkin özellikleri belirler.",
+            "Belirlenen özelliklerden hareketle benzerlikleri listeler.",
+            "Belirlenen özelliklerden hareketle farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "T.D.7.13",
+          "m": "Öyküleyici metinlerdeki hikâye unsurlarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Şahıs/varlık kadrosunu, mekânı, zamanı ve olay örgüsünü belirler.",
+            "Hikâye unsurlarının birbirleriyle bağlantısını belirler.",
+            "Hikâye unsurları arasındaki etkileşimleri (zamanın kahramanla, mekânın olayla vb.) belirler."
+          ]
+        },
+        {
+          "k": "T.D.7.21",
+          "m": "Çoklu ortam ögelerine yönelik çözümleme yapabilme",
+          "s": [
+            "Çoklu ortam ögelerinin işlevlerini (eş anlam oluşturma, anlamı destekleme veya tek başına anlam oluşturma) belirler.",
+            "Ögeler arasındaki bağlantıları belirler."
+          ]
+        },
+        {
+          "k": "T.D.7.27",
+          "m": "Dinleme/izleme sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Dinleme/izleme sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak dinleyici/izleyici kimliğinin gelişimine yön verir.\" \"T.O.7.1. Okumada materyal seçimini yönetebilme",
+            "Amacı, ilgi ve ihtiyaçları, materyalin özellikleri, süre ve bilgiye erişim olanaklarını analiz ederek görüş oluşturur.",
+            "Analiz sonuçları doğrultusunda metin ve diğer yardımcı materyalleri (sözlük, ek kaynak vb.) seçer.",
+            "Seçimleri üzerinde zamana bağlı değişime/üst bilişsel izlemeye dayalı düzenlemeler yapar."
+          ]
+        },
+        {
+          "k": "T.O.7.13",
+          "m": "Öyküleyici metinlerdeki hikâye unsurlarını belirlemeye yönelik çözümleme yapabilme",
+          "s": [
+            "Şahıs/varlık kadrosunu, mekânı, zamanı ve olay örgüsünü belirler.",
+            "Hikâye unsurlarının birbirleriyle bağlantısını belirler.",
+            "Hikâye unsurları arasındaki etkileşimleri (zamanın kahramanla, mekânın olayla vb.) belirler."
+          ]
+        },
+        {
+          "k": "T.O.7.25",
+          "m": "Basılı ve dijital medya metinlerini değerlendirebilme",
+          "s": [
+            "Medya metninin içeriğiyle ilgili bir norm belirler.",
+            "Belirlediği norma göre medya metninin içeriğinde inceleme yapar.",
+            "İnceleme sonuçlarını belirlediği normla karşılaştırır.",
+            "Karşılaştırma sonucunu ortaya koyup bir yargıya ulaşır."
+          ]
+        },
+        {
+          "k": "T.O.7.28",
+          "m": "Okuma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Okuma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak okur kimliğinin gelişimine yön verir.\" \"T.K.7.1. Konuşma sürecini yönetebilme",
+            "Konuşmayı başlatma, sürdürme, sonlandırmayla ilgili selam, hitap ve sonlandırma ifadelerini kullanır.",
+            "Uygun zamanda söz alır/verir.",
+            "Olay, konu, durum, problem vb. ile ilgili anlaşılmayan noktaları açıklığa kavuşturmak için herhangi bir yönlendirmenin etkisinde kalmadan soru sorar.",
+            "Kendisine yöneltilen soruları cevaplar."
+          ]
+        },
+        {
+          "k": "T.K.7.6",
+          "m": "Konuşmasında çoklu ortam ögeleriyle içerik oluşturabilme",
+          "s": [
+            "Amacına uygun olarak kullanacağı çoklu ortam ögelerini (fotoğraf, resim, tablo, grafik, harita, sanal gezi uygulamaları, ses kaydı, müzik, video, dijital pano, çevrim içi toplantı araçları vb.) belirler.",
+            "Belirlediği çoklu ortam ögelerinin işlevlerine (eş anlam oluşturma, anlamı destekleme veya tek başına anlam oluşturma) karar verir.",
+            "Belirlediği çoklu ortam ögelerini, birbirleriyle etkileşimlerini dikkate alarak konuşma içeriğinde kullanır."
+          ]
+        },
+        {
+          "k": "T.K.7.10",
+          "m": "Sözlü sunum yapabilme",
+          "s": [
+            "Plan yapar.",
+            "Plana uygun hazırlıklarını yapar.",
+            "Prova yapar.",
+            "Hedef kitleye uygun; ses, beden dili ve görsellerle desteklenen bir sunum yapar.",
+            "Dinleyicilerin/izleyicilerin sorularını cevaplar.",
+            "Sunumunu amaç, içerik ve dil-anlatım açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "T.K.7.24",
+          "m": "Uygun geçiş ve bağlantı ifadelerini kullanabilme",
+          "s": [
+            "Uygun geçiş ve bağlantı ifadelerini kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.K.7.26",
+          "m": "Konuşma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Konuşma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak konuşan kimliğinin gelişimine yön verir.",
+            "Konuşmalarından oluşan ürün ve seçki dosyası (ses kaydı, konuşma metni, sunum videosu, çoklu medya ögeleri vb.) oluşturur.\" \"T.Y.7.1. Yazma sürecini yönetebilme",
+            "Amaç, bağlam ve olanaklarını analiz ederek yazma konusunu, hedef kitlesini, dijital de dâhil yazma aracı ve ortamını belirler.",
+            "Yazılı etkileşiminde yazışmayı başlatma, sürdürme ve sonlandırmayla ilgili uygun selam ve hitap ifadelerini kullanır.",
+            "Yazılı üretim ve yazılı etkileşiminde içerik ve süreçle ilgili gerekli seçim ve düzenlemeleri yapar."
+          ]
+        },
+        {
+          "k": "T.Y.7.19",
+          "m": "Yazısında açık ve örtük ifade etmeye yönelik yapıları kullanabilme",
+          "s": [
+            "İletileri açık ve anlaşılır şekilde ifade eder.",
+            "Örtük iletilerini destekleyecek unsurları (söz sanatları, mecaz, deyim, atasözü ve diğer söz varlığı unsurları) kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.20",
+          "m": "Uygun geçiş ve bağlantı ifadelerini kullanabilme",
+          "s": [
+            "Uygun geçiş ve bağlantı ifadelerini kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "T.Y.7.21",
+          "m": "Yazım kuralları ve noktalama işaretlerini uygulayabilme",
+          "s": [
+            "Yazım kurallarını uygular.",
+            "Noktalama işaretlerini uygun biçimde kullanır."
+          ]
+        },
+        {
+          "k": "T.Y.7.22",
+          "m": "Yazma sürecine yönelik öz yansıtma yapabilme/kendini uyarlayabilme",
+          "s": [
+            "Yazma sürecindeki güçlü ve gelişmeye açık yönlerini gerekçelendirerek kendisini değerlendirir.",
+            "Deneyimlediği süreçteki gelişmeye açık yönlerini destekleyecek tedbirler alıp güçlü yönlerini sonraki çalışmalara aktararak yazar kimliğinin gelişimine yön verir.",
+            "Yazılarından oluşan ürün ve seçki dosyası (sözlük, günlük, anı, gezi, şiir, alıntılar seçkisi, atasözü ve deyim vb.) oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

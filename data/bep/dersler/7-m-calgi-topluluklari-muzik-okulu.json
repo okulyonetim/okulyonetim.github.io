@@ -1,0 +1,77 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TOPLU İCRA (BEŞLİ GRUP)",
+      "a": [
+        {
+          "k": "ÇT.7.1.1",
+          "m": "Beşli grup eserleri dinleyebilme",
+          "s": [
+            "Dinlediği beşli eserlerin müziksel bileşenlerini fark eder.",
+            "Dinlediği beşli eserlerin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği beşli eserin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "ÇT.7.1.2",
+          "m": "Beşli şarkıları toplu çalabilme",
+          "s": [
+            "Beşli çalınacak eserleri çözümler.",
+            "Beşli şarkılar çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Beşli şarkılar çalarken çalgıya özgü teknikleri kullanır.",
+            "Beşli şarkılar çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RAST MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.7.2.1",
+          "m": "Rast makamı dizisindeki eserleri çalabilme",
+          "s": [
+            "Rast makamı dizisindeki çalınacak eserleri çözümler.",
+            "Rast makamı dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Rast makamı dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Rast makamı dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "UŞŞAK MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.7.3.1",
+          "m": "Uşşak makam dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Uşşak makam dizisindeki çalınacak eserleri çözümler.",
+            "Uşşak makam dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Uşşak makam dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Uşşak makam dizisindeki toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HÜSEYNİ MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "ÇT.7.4.1",
+          "m": "Hüseyni makam dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Hüseyni makam dizisindeki eserleri çözümler.",
+            "Hüseyni makam dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Hüseyni makam dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Hüseyni makam dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

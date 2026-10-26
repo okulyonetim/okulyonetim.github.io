@@ -1,0 +1,285 @@
+{
+  "ders": "Bilgi Teknolojileri ve Yazılım",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "SBT.7.1.1.1",
+          "m": "Bilişim teknolojilerinin zaman içindeki değişimlerini tartışır.",
+          "s": [
+            "Bilişim teknolojilerinin zaman içindeki değişimlerini tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.1.1.2",
+          "m": "Bilişim teknolojilerini kullanarak yapılabilecek yenilikleri fark eder.",
+          "s": [
+            "Bilişim teknolojilerini kullanarak yapılabilecek yenilikleri fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.1.1.3",
+          "m": "Bilgisayar bilimleri tarafından geliştirilen disiplinler arası kariyerleri açıklar.",
+          "s": [
+            "Bilgisayar bilimleri tarafından geliştirilen disiplinler arası kariyerleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.1.1",
+          "m": "Bilgi ve teknoloji kullanımında etik olan ve olmayan davranışları tartışır.",
+          "s": [
+            "Bilgi ve teknoloji kullanımında etik olan ve olmayan davranışları tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.1.2",
+          "m": "Fikri mülkiyet haklarının önemini değerlendirir.",
+          "s": [
+            "Fikri mülkiyet haklarının önemini değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.2.1",
+          "m": "Gizlilik ve güvenlik problemlerinin neden olduğu bireysel ve toplumsal etkileri tartışır.",
+          "s": [
+            "Gizlilik ve güvenlik problemlerinin neden olduğu bireysel ve toplumsal etkileri tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.2.2",
+          "m": "Bilgi güvenliği ve gizliliğine karşı tehditleri açıklar.",
+          "s": [
+            "Bilgi güvenliği ve gizliliğine karşı tehditleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.2.3",
+          "m": "Çeşitli ortamların güvenlik düzeyini değerlendirir.",
+          "s": [
+            "Çeşitli ortamların güvenlik düzeyini değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.2.2.4",
+          "m": "Güvenlik için tehdit oluşturabilecek yapılara karşı alınabilecek önlemleri açıklar.",
+          "s": [
+            "Güvenlik için tehdit oluşturabilecek yapılara karşı alınabilecek önlemleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.1.1",
+          "m": "Bir problemi alt problemlere ayırır.",
+          "s": [
+            "Bir problemi alt problemlere ayırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.1.2",
+          "m": "Bir problemi çözmek üzere farklı algoritmalar tasarlar.",
+          "s": [
+            "Bir problemi çözmek üzere farklı algoritmalar tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.1.3",
+          "m": "Tasarlanan algoritmanın akış şemasını oluşturur.",
+          "s": [
+            "Tasarlanan algoritmanın akış şemasını oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.1.4",
+          "m": "Tasarlanan algoritmayı test eder ve hataları ayıklar.",
+          "s": [
+            "Tasarlanan algoritmayı test eder ve hataları ayıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.1.5",
+          "m": "Algoritma tasarımı ile programlama dili arasındaki ilişkiyi ortaya koyar.",
+          "s": [
+            "Algoritma tasarımı ile programlama dili arasındaki ilişkiyi ortaya koyar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.1",
+          "m": "Programlama aracının arayüzünü ve özelliklerini tanır.",
+          "s": [
+            "Programlama aracının arayüzünü ve özelliklerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.2",
+          "m": "Belirli bir problemi çözmek üzere geliştirdiği algoritmayı hatasız bir programa dönüştürür.",
+          "s": [
+            "Belirli bir problemi çözmek üzere geliştirdiği algoritmayı hatasız bir programa dönüştürür."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.3",
+          "m": "Verilen bir probleme uygun söz dizimi oluşturur.",
+          "s": [
+            "Verilen bir probleme uygun söz dizimi oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.4",
+          "m": "Verilen bir söz dizimini test eder ve hataları ayıklar.",
+          "s": [
+            "Verilen bir söz dizimini test eder ve hataları ayıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.5",
+          "m": "Problemin çözümüne yönelik değişkenleri kullanır.",
+          "s": [
+            "Problemin çözümüne yönelik değişkenleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.6",
+          "m": "Problemin çözümüne yönelik koşullu ifadeleri kullanır.",
+          "s": [
+            "Problemin çözümüne yönelik koşullu ifadeleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.7",
+          "m": "Problemin çözümüne yönelik döngüleri kullanır.",
+          "s": [
+            "Problemin çözümüne yönelik döngüleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.8",
+          "m": "Problemin çözümüne yönelik fonksiyonları kullanır.",
+          "s": [
+            "Problemin çözümüne yönelik fonksiyonları kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.3.2.9",
+          "m": "Belirli bir problemin çözümüne yönelik özgün ürün geliştirir.",
+          "s": [
+            "Belirli bir problemin çözümüne yönelik özgün ürün geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.1",
+          "m": "Belirli bir amaç için grafik ve animasyonları kullanarak sunu oluşturur.",
+          "s": [
+            "Belirli bir amaç için grafik ve animasyonları kullanarak sunu oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.2",
+          "m": "Belirli bir amaç için zihin haritası tasarlar.",
+          "s": [
+            "Belirli bir amaç için zihin haritası tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.3",
+          "m": "Sayısal verilerden oluşan grafik ve bilgi grafiği geliştirir.",
+          "s": [
+            "Sayısal verilerden oluşan grafik ve bilgi grafiği geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.5",
+          "m": "Sayfa tasarım programları kullanarak bir ürün oluşturur.",
+          "s": [
+            "Sayfa tasarım programları kullanarak bir ürün oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.6",
+          "m": "Engelli bireyler için yazılı ve görsel materyaller oluşturur.",
+          "s": [
+            "Engelli bireyler için yazılı ve görsel materyaller oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.4",
+          "m": "Poster oluşturma programı kullanarak bir poster tasarlar.",
+          "s": [
+            "Poster oluşturma programı kullanarak bir poster tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.1.7",
+          "m": "İş birliğine dayalı proje üretir.",
+          "s": [
+            "İş birliğine dayalı proje üretir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.2.1",
+          "m": "Animasyon ile ilgili temel kavramları açıklar.",
+          "s": [
+            "Animasyon ile ilgili temel kavramları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.2.2",
+          "m": "Öykü yaprakları (storyboard) yardımıyla animasyonun senaryosunu oluşturur.",
+          "s": [
+            "Öykü yaprakları (storyboard) yardımıyla animasyonun senaryosunu oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.2.3",
+          "m": "Kullanılan animasyon programının arayüzünü ve özelliklerini tanır.",
+          "s": [
+            "Kullanılan animasyon programının arayüzünü ve özelliklerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SBT.7.4.2.4",
+          "m": "Belirli bir amaç için animasyon oluşturur.",
+          "s": [
+            "Belirli bir amaç için animasyon oluşturur."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

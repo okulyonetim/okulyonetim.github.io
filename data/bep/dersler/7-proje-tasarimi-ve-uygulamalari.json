@@ -1,0 +1,427 @@
+{
+  "ders": "Proje Tasarımı ve Uygulamaları",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "PTU.1. ÜNİTE: BİLİM, ARAŞTIRMA VE PROJE",
+      "a": [
+        {
+          "k": "PTU.1.1",
+          "m": "Bilgi türlerini açıklar.",
+          "s": [
+            "Bilgi türlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.2",
+          "m": "Bilgi ve bilimsel bilgiyi ayırt eder.",
+          "s": [
+            "Bilgi ve bilimsel bilgiyi ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.3",
+          "m": "Bilimsel bilgiye sahip araştırmaların özelliklerini sıralar.",
+          "s": [
+            "Bilimsel bilgiye sahip araştırmaların özelliklerini sıralar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.4",
+          "m": "Araştırmanın önemini açıklar.",
+          "s": [
+            "Araştırmanın önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.5",
+          "m": "Projenin tanımını yapar.",
+          "s": [
+            "Projenin tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.6",
+          "m": "Projenin özelliklerini açıklar.",
+          "s": [
+            "Projenin özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.7",
+          "m": "Proje hazırlamanın gerekçelerini açıklar.",
+          "s": [
+            "Proje hazırlamanın gerekçelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.1.8",
+          "m": "Bilim, araştırma ve proje arasındaki ilişkiyi ayırt eder.",
+          "s": [
+            "Bilim, araştırma ve proje arasındaki ilişkiyi ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.2. ÜNİTE: PROJE YAŞAM DÖNGÜSÜ",
+      "a": [
+        {
+          "k": "PTU.2.1",
+          "m": "Proje yaşam döngüsünü açıklar.",
+          "s": [
+            "Proje yaşam döngüsünü açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.2.2",
+          "m": "Proje çalışmaları ile proje destek programlarına başvuru sürecinde yapılması gerekenleri açıklar.",
+          "s": [
+            "Proje çalışmaları ile proje destek programlarına başvuru sürecinde yapılması gerekenleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.2.3",
+          "m": "Proje sürecinde girişimci bireyin özelliklerinin önemini açıklar.",
+          "s": [
+            "Proje sürecinde girişimci bireyin özelliklerinin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.2.4",
+          "m": "Girişimcilik üzerine yapılmış projelerin önemini açıklar.",
+          "s": [
+            "Girişimcilik üzerine yapılmış projelerin önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.3. ÜNİTE: PROBLEM DURUMUNUN/PROJE FİKRİNİN BELİRLENMESİ",
+      "a": [
+        {
+          "k": "PTU.3.1",
+          "m": "Gerçek hayat temelli problem durumlarını/proje fikirlerini belirler.",
+          "s": [
+            "Gerçek hayat temelli problem durumlarını/proje fikirlerini belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.2",
+          "m": "Belirlediği problem durumlarını/proje fikirlerini tartışır.",
+          "s": [
+            "Belirlediği problem durumlarını/proje fikirlerini tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.3",
+          "m": "Problem durumları/proje fikirleri arasından uygun olanı seçer.",
+          "s": [
+            "Problem durumları/proje fikirleri arasından uygun olanı seçer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.4",
+          "m": "Problem durumunun/proje fikrinin çözümüne yönelik fikirler üretir.",
+          "s": [
+            "Problem durumunun/proje fikrinin çözümüne yönelik fikirler üretir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.5",
+          "m": "Problem durumuna/proje fikrine uygun hipotez kurar.",
+          "s": [
+            "Problem durumuna/proje fikrine uygun hipotez kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.6",
+          "m": "Problem durumunun/proje fikrinin değerliliğini kanıtlarıyla sunar.",
+          "s": [
+            "Problem durumunun/proje fikrinin değerliliğini kanıtlarıyla sunar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.3.7",
+          "m": "Problem durumu/proje fikri kapsamında bağımlı ve bağımsız değişkenleri açıklar.",
+          "s": [
+            "Problem durumu/proje fikri kapsamında bağımlı ve bağımsız değişkenleri açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.4. ÜNİTE: PROJENİN PLANLANMASI",
+      "a": [
+        {
+          "k": "PTU.4.1",
+          "m": "Bir proje konusu belirler.",
+          "s": [
+            "Bir proje konusu belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.2",
+          "m": "Projenin hedef kitlesine karar verir.",
+          "s": [
+            "Projenin hedef kitlesine karar verir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.3",
+          "m": "Proje ekibinde yer alması gereken kişilerin özelliklerini tanımlar.",
+          "s": [
+            "Proje ekibinde yer alması gereken kişilerin özelliklerini tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.4",
+          "m": "Ekip üyeleri arasında iş bölümünün önemini ifade eder.",
+          "s": [
+            "Ekip üyeleri arasında iş bölümünün önemini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.5",
+          "m": "Projenin görev planlama çizelgesini hazırlar.",
+          "s": [
+            "Projenin görev planlama çizelgesini hazırlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.6",
+          "m": "Projenin süresini planlar.",
+          "s": [
+            "Projenin süresini planlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.7",
+          "m": "Proje için uygun kaynaklara ulaşır.",
+          "s": [
+            "Proje için uygun kaynaklara ulaşır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.8",
+          "m": "Proje planlama teknikleriyle oluşturulan proje planını inceler.",
+          "s": [
+            "Proje planlama teknikleriyle oluşturulan proje planını inceler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.9",
+          "m": "Veri toplamak için kullanılabilecek yöntem ve teknikleri açıklar.",
+          "s": [
+            "Veri toplamak için kullanılabilecek yöntem ve teknikleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.10",
+          "m": "Araştırma projesinin raporlaştırılmasında yararlandığı kaynakların kayıtlarını tutar.",
+          "s": [
+            "Araştırma projesinin raporlaştırılmasında yararlandığı kaynakların kayıtlarını tutar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.11",
+          "m": "Proje paydaş analizini yapar.",
+          "s": [
+            "Proje paydaş analizini yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.12",
+          "m": "Proje risk analizi tablosu hazırlar.",
+          "s": [
+            "Proje risk analizi tablosu hazırlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.13",
+          "m": "Proje planlama teknikleriyle proje planını oluşturur.",
+          "s": [
+            "Proje planlama teknikleriyle proje planını oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.14",
+          "m": "Araştırma projesinin raporlaştırılmasında yararlandığı kaynakların kayıtlarını tutar.",
+          "s": [
+            "Araştırma projesinin raporlaştırılmasında yararlandığı kaynakların kayıtlarını tutar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.15",
+          "m": "Bilimsel araştırma etiği ile ilgili temel kavramları açıklar.",
+          "s": [
+            "Bilimsel araştırma etiği ile ilgili temel kavramları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.16",
+          "m": "Araştırma projelerinde etik ilkelerin ihlali sonucunda karşılaşılacak durumları açıklar.",
+          "s": [
+            "Araştırma projelerinde etik ilkelerin ihlali sonucunda karşılaşılacak durumları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.4.17",
+          "m": "Projeyi kurallarına uygun şekilde kapatma yollarını tanımlar.",
+          "s": [
+            "Projeyi kurallarına uygun şekilde kapatma yollarını tanımlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.5. ÜNİTE: PROJENİN UYGULANMASI",
+      "a": [
+        {
+          "k": "PTU.5.1",
+          "m": "Veri toplama araçları ile veri toplar.",
+          "s": [
+            "Veri toplama araçları ile veri toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.5.2",
+          "m": "Verilerin analizinde kullanılan istatistiksel yöntemleri açıklar.",
+          "s": [
+            "Verilerin analizinde kullanılan istatistiksel yöntemleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.5.3",
+          "m": "Verilerin görselleştirme araçlarıyla düzenlenebileceğini açıklar.",
+          "s": [
+            "Verilerin görselleştirme araçlarıyla düzenlenebileceğini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.5.4",
+          "m": "Proje bulgularını yorumlar.",
+          "s": [
+            "Proje bulgularını yorumlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.5.5",
+          "m": "Projenin amacına ulaşıp ulaşmadığını açıklar.",
+          "s": [
+            "Projenin amacına ulaşıp ulaşmadığını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.6. ÜNİTE: PROJENİN RAPORLAŞTIRILMASI, SUNUMU VE DEĞERLENDİRİLMESİ",
+      "a": [
+        {
+          "k": "PTU.6.1",
+          "m": "Proje raporunda yazılması gereken başlıkları belirler.",
+          "s": [
+            "Proje raporunda yazılması gereken başlıkları belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.6.2",
+          "m": "Projede elde ettiği verileri rapor başlıklarına uygun şekilde yazar.",
+          "s": [
+            "Projede elde ettiği verileri rapor başlıklarına uygun şekilde yazar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.6.3",
+          "m": "Projeyi sunuma hazır hâle getirir.",
+          "s": [
+            "Projeyi sunuma hazır hâle getirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.6.5",
+          "m": "Proje sürecine yönelik değerlendirme yapar.",
+          "s": [
+            "Proje sürecine yönelik değerlendirme yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.6.4",
+          "m": "Projeyi etkili sunum teknikleriyle sunar.",
+          "s": [
+            "Projeyi etkili sunum teknikleriyle sunar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "PTU.7. ÜNİTE PROJENİN YAYGINLAŞTIRILMASI/SERGİLENMESİ",
+      "a": [
+        {
+          "k": "PTU.7.1",
+          "m": "Fikrî haklar tescil durumlarına yönelik başvuru formunu doldurur.",
+          "s": [
+            "Fikrî haklar tescil durumlarına yönelik başvuru formunu doldurur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PTU.7.2",
+          "m": "Sunuma hazır hâle getirdiği projeyi sergiler.",
+          "s": [
+            "Sunuma hazır hâle getirdiği projeyi sergiler."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

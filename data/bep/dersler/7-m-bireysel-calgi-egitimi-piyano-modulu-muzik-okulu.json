@@ -1,0 +1,98 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "REPERTUVAR ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "PYN.7.1.1",
+          "m": "Klasik dönem özelliklerine uygun eseri çalabilme",
+          "s": [
+            "Klasik dönem özelliklerine uygun eseri çözümler.",
+            "Klasik dönem özelliklerine uygun eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Klasik dönem özelliklerine uygun eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Klasik dönem özelliklerine uygun eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.7.1.2",
+          "m": "Barok dönem özelliklerine uygun eseri çalabilme",
+          "s": [
+            "Barok dönem özelliklerine uygun eseri çözümler.",
+            "Barok dönem özelliklerine uygun eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Barok dönem özelliklerine uygun eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Barok dönem özelliklerine uygun eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.7.1.3",
+          "m": "Piyanoda romantik dönem özelliklerine uygun eseri çalabilme",
+          "s": [
+            "Piyanoda romantik dönem özelliklerine uygun eseri çözümler.",
+            "Piyanoda romantik dönem özelliklerine uygun eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Piyanoda romantik dönem özelliklerine uygun eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Piyanoda romantik dönem özelliklerine uygun eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.7.1.4",
+          "m": "Piyanoda İstiklal Marşı‘nı çalabilme",
+          "s": [
+            "Piyanoda İstiklal Marşı notalarını çözümler.",
+            "Piyanoda İstiklal Marşı‘nı çalmada duruş ve tutuş pozisyonu alır.",
+            "Piyanoda İstiklal Marşı‘nın çalgıya özgü tekniklerini kullanır.",
+            "Piyanoda İstiklal Marşı‘nın müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA AKOR VE ARPEJ",
+      "a": [
+        {
+          "k": "PYN.7.2.1",
+          "m": "Akor ve arpej tekniğini eser veya etüt içinde çalabilme",
+          "s": [
+            "Akor ve arpej tekniğinin yer aldığı eser veya etüdü çözümler.",
+            "Akor ve arpej tekniğini çalmada duruş ve tutuş pozisyonu alır.",
+            "Akor ve arpej tekniğini çalmada çalgıya özgü teknikleri kullanır.",
+            "Akor ve arpej tekniğinin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TONALİTE 3",
+      "a": [
+        {
+          "k": "PYN.7.3.1",
+          "m": "Si bemol majör ve sol minör tonalitesinde eser veya etüdü çalabilme",
+          "s": [
+            "Si bemol majör ve sol minör eser veya etüdü çözümler.",
+            "Si bemol majör ve sol minör eser veya etüt çalmada duruş ve tutuş pozisyonu alır.",
+            "Si bemol majör ve sol minör eser veya etüt çalmada çalgıya özgü teknikleri kullanır.",
+            "Si bemol majör ve sol minör eser veya etüdün müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA NİHAVENT MAKAMI",
+      "a": [
+        {
+          "k": "PYN.7.4.1",
+          "m": "Nihavent makamına yönelik eseri çalabilme",
+          "s": [
+            "Nihavent makamına yönelik eseri çözümler.",
+            "Nihavent makamına yönelik eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Nihavent makamına yönelik eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Nihavent makamına yönelik eserin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

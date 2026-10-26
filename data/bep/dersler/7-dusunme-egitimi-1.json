@@ -1,0 +1,106 @@
+{
+  "ders": "Düşünme Eğitimi 1",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1.ÜNİTE: DÜŞÜNME VE DÜŞÜNME SÜRECİ",
+      "a": [
+        {
+          "k": "DE.1.1.1",
+          "m": "Düşünme süreci ve diğer zihinsel etkinlikler hakkında bilgi toplayabilme",
+          "s": [
+            "Düşünme süreci ve diğer zihinsel etkinlikler hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Düşünme süreci ve diğer zihinsel etkinlikler hakkında bilgiler bulur.",
+            "Düşünme süreci ve diğer zihinsel etkinlikler hakkında ulaştığı bilgileri doğrular.",
+            "Düşünme süreci ve diğer zihinsel etkinlikler hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "DE.1.1.2",
+          "m": "Farklı düşünme edimlerini sorgulayabilme",
+          "s": [
+            "Farklı düşünme edimlerini tanımlar.",
+            "Farklı düşünme edimleri hakkında sorular sorar.",
+            "Farklı düşünme edimleri hakkında bilgi toplar.",
+            "Farklı düşünme edimleri hakkında topladığı bilgiler üzerinden değerlendirme yapar.",
+            "Farklı düşünme edimleri hakkında topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: ÖNERMELER VE AKIL YÜRÜTME",
+      "a": [
+        {
+          "k": "DE.1.2.1",
+          "m": "Önermeler hakkında bilgi toplayabilme",
+          "s": [
+            "Önermeler hakkında bilgiye ulaşmak için hangi araçları kullanacağını belirler.",
+            "Önermeler hakkında bilgiler bulur.",
+            "Önermeler hakkında ulaştığı bilgileri doğrular.",
+            "Önermeler hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "DE.1.2.2",
+          "m": "Akıl yürütmenin yapısını çözümleyebilme",
+          "s": [
+            "Akıl yürütmenin bileşenlerini belirler.",
+            "Akıl yürütmenin bileşenleri arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "DE.1.2.3",
+          "m": "Akıl yürütmeleri türlerine göre sınıflayabilme",
+          "s": [
+            "Bir akıl yürütmede bulunması gereken ölçütleri belirler.",
+            "Akıl yürütme türlerini benzerliklerine göre ayrıştırır.",
+            "Akıl yürütmeleri tümevarım, tümdengelim, analoji ve geri çıkarım başlıkları altında tasnif eder.",
+            "Akıl yürütme örneklerini gerekçelendirerek türlerine göre etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: VERİ, MALUMAT VE BİLGİ",
+      "a": [
+        {
+          "k": "DE.1.3.1",
+          "m": "Veri-malumat-bilgi ayrımlarını yorumlayabilme",
+          "s": [
+            "Veri-malumat-bilgi ayrımını inceler.",
+            "Veri ve malumatları bağlamdan kopmadan bilgiye dönüştürür.",
+            "Veri-malumat- bilgi ayrımını doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "DE.1.3.2",
+          "m": "Veri ve malumatların doğruluğunu tartışabilme",
+          "s": [
+            "Veri ve malumatların doğruluğuna dair mantıksal temellendirme yapar.",
+            "Veri ve malumatların doğruluğunu, mantıksal çelişkilerini ve/veya tutarsızlıklarını tespit eder.",
+            "Veri ve malumatların doğruluğunu çürütür veya kabul eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: DÜŞÜN, TASARLA VE UYGULA",
+      "a": [
+        {
+          "k": "DE.1.4.1",
+          "m": "Günlük hayatta karşılaşılan problemleri çözebilme",
+          "s": [
+            "Günlük hayatta karşılaşılan sorunlara yönelik bir problemi yapılandırır.",
+            "Günlük hayatta karşılaşılan sorunlara yönelik bir problemi özetler.",
+            "Günlük hayatta karşılaşılan bir problemin çözümüne yönelik gözleme ve veriye dayalı tahminde bulunur.",
+            "Günlük hayatta karşılaşılan bir problemin çözümüne yönelik önermeler üzerinden akıl yürütür.",
+            "Günlük hayatta karşılaşılan bir problemin çözümüne yönelik değerlendirmede bulunur."
+          ]
+        }
+      ]
+    }
+  ]
+}

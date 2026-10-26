@@ -1,0 +1,149 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN SESİ",
+      "a": [
+        {
+          "k": "BSE.7.1.1",
+          "m": "İnsan sesini oluşturan organları sınıflandırabilme",
+          "s": [
+            "Sesi oluşturan organları belirler.",
+            "Sesi oluşturan organları özelliklerine göre ayırır.",
+            "Sesi oluşturan organları tasnif eder.",
+            "Sesi oluşturan organları isimlendirir."
+          ]
+        },
+        {
+          "k": "BSE.7.1.2",
+          "m": "İnsan ses türlerini ayırt edebilme",
+          "s": [
+            "İnsan ses türlerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "REZONANS",
+      "a": [
+        {
+          "k": "BSE.7.2.1",
+          "m": "Rezonans bölgelerinin isimlerini sayabilme",
+          "s": [
+            "Rezonans bölgelerinin isimlerini sayar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.7.2.2",
+          "m": "Rezonans bölgelerini bedeninde işaret edebilme",
+          "s": [
+            "Rezonans bölgelerini bedeninde işaret eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.7.3.1",
+          "m": "Ses eğitiminin tanımını yapabilme",
+          "s": [
+            "Ses eğitiminin tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.7.3.2",
+          "m": "Ses eğitiminin amacını açıklayabilme",
+          "s": [
+            "Ses eğitiminin amacını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.7.3.3",
+          "m": "Ses eğitiminin önemini açıklayabilme",
+          "s": [
+            "Ses eğitiminin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.7.3.4",
+          "m": "Düzeyine uygun eserler seslendirebilme",
+          "s": [
+            "Düzeyine uygun eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Düzeyine uygun eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Düzeyine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.7.3.5",
+          "m": "Yurdumuza ait müzik türlerinden eserler seslendirebilme",
+          "s": [
+            "Yurdumuza ait müzik türlerinden eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yurdumuza ait müzik türlerinden eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yurdumuza ait müzik türlerinden eserler seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.7.4.1",
+          "m": "”İstiklal Marşı”nı çok sesli notasyonda kendi ses sınırına uygun seslendirebilme",
+          "s": [
+            "”İstiklal Marşı” nı seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "”İstiklal Marşı” nı seslendirirken uygun söyleme tekniklerini kullanır.",
+            "”İstiklal Marşı” nı seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.7.4.2",
+          "m": "Millî ve manevi değerlerle ilgili eserleri seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.7.4.3",
+          "m": "Atatürk’ün sevdiği türküleri seslendirebilme",
+          "s": [
+            "Atatürk’ün sevdiği türküleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk’ün sevdiği türküleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk’ün sevdiği türküleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.7.4.4",
+          "m": "Belirli gün ve haftaların anlamına uygun eserler seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.7.4.5",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

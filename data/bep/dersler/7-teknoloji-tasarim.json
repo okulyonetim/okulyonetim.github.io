@@ -1,0 +1,340 @@
+{
+  "ders": "Teknoloji Tasarım",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEKNOLOJİ VE TASARIM ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "TT.7.1.1",
+          "m": "Teknoloji ve tasarım ile ilişkili kavramları sorgulayabilme",
+          "s": [
+            "Buluş, icat, keşif, bilim, teknik, tasarım, teknoloji, endüstri, STEAM, endüstri 4.0, 5.0, yapay zekâ, mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım kavramlarını tanımlar.",
+            "Buluş, icat, keşif, bilim, teknik, tasarım, teknoloji, endüstri, STEAM, endüstri 4.0, 5.0, yapay zekâ, mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım kavramları hakkında sorular sorar.",
+            "Buluş, icat, keşif, bilim, teknik, tasarım, teknoloji, endüstri, STEAM, endüstri 4.0, 5.0, yapay zekâ, mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım kavramları hakkında bilgi toplar.",
+            "Buluş, icat, keşif, bilim, teknik, tasarım, teknoloji, endüstri, STEAM, endüstri 4.0, 5.0, yapay zekâ, mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım kavramları hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Buluş, icat, keşif, bilim, teknik, tasarım, teknoloji, endüstri, STEAM, endüstri 4.0, 5.0, yapay zekâ, mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım kavramları hakkında topladığı bilgilerden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "TT.7.1.2",
+          "m": "Teknoloji ve tasarım arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım ürünleri üzerinde teknoloji ve tasarıma ilişkin parçaları belirler.",
+            "Mimari-çevre tasarımı, grafik tasarım ve endüstriyel tasarım ürünleri üzerinde teknoloji ve tasarıma ilişkin parçalar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "TT.7.1.3",
+          "m": "Teknoloji ve tasarım ürünlerini karşılaştırabilme",
+          "s": [
+            "Teknoloji ve tasarım ürünlerinin günlük yaşam üzerindeki etkilerini belirler.",
+            "Teknoloji ve tasarım ürünlerinin benzerliklerini listeler.",
+            "Teknoloji ve tasarım ürünlerinin farklılıkarını listeler."
+          ]
+        },
+        {
+          "k": "TT.7.1.4",
+          "m": "Çevresindeki teknoloji ve tasarım gelişmelerini değerlendirebilme",
+          "s": [
+            "Çevrelerindeki günlük tüketim malzemeleri, ulaşım, lojistik, iş stratejisi, yazılım geliştirme veya mimari gibi alanlarda karşılaşılan problemleri değerlendirmek için ölçütler belirler.",
+            "Belirlenen ölçütlere dayanarak seçilen problem/ürün üzerine ölçme yapar.",
+            "Ölçme sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMEL TASARIM",
+      "a": [
+        {
+          "k": "TT.7.2.1",
+          "m": "Bir ürün veya eser üzerinde sanat-tasarım eleman ve ilkelerini algılayabilme",
+          "s": [
+            "Bir ürün veya eser üzerinde sanat-tasarım eleman ve ilkelerini gözlemler.",
+            "Bir ürün veya eser üzerinde sanat-tasarım eleman ve ilkelerini karşılaştırır."
+          ]
+        },
+        {
+          "k": "TT.7.2.2",
+          "m": "Çevresindeki bir ürünü veya eseri yeniden yorumlayabilme",
+          "s": [
+            "Bir ürünün veya eserin içeriğini inceler.",
+            "Bir ürünü veya eseri bağlamdan kopmadan dönüştürür.",
+            "Bir ürünü veya eseri anlamı değiştirmeyecek şekilde kendi ifadeleriyle yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "TT.7.2.3",
+          "m": "Sanat-tasarım eleman ve ilkelerini kullanarak analoji yapabilme",
+          "s": [
+            "Sanat-tasarım eleman ve ilkeleri kullanılarak analoji yapacağı konuyu belirler.",
+            "Sanat-tasarım eleman ve ilkeleri kullanılarak doğrudan benzerliği olan veya bir birini andıran iki unsuru ilişkilendirir.",
+            "İlişkilendirilen unsurları sözel, görsel, soyut ve nesnel olarak yansıtır."
+          ]
+        },
+        {
+          "k": "TT.7.2.4",
+          "m": "Sanat-tasarım eleman ve ilkelerini kullanarak özgün bir tasarım oluşturabilme",
+          "s": [
+            "Sanat-tasarım eleman ve ilkeleri kullanılarak taslak oluşturur.",
+            "Sanat-tasarım eleman ve ilkeleri kullanılarak tasarımı ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TASARIM ODAKLI SÜREÇ",
+      "a": [
+        {
+          "k": "TT.7.3.1",
+          "m": "Tasarım problemlerini çözümleyebilme ve geliştirebilme kriterlerini sınıflandırabilme",
+          "s": [
+            "Tasarım problemlerine ilişkin değişkenleri ve ölçütleri belirler.",
+            "Tasarım problemlerini oluşturan unsurları ayrıştırır veya böler.",
+            "Tasarım sürecindeki unsurları tasnif eder.",
+            "Tasarım sürecindeki unsurları etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. BİLGİSAYAR DESTEKLİ TASARIM",
+      "a": [
+        {
+          "k": "TT.7.4.1",
+          "m": "Tasarım problemini çözmek için ürün oluşturabilme",
+          "s": [
+            "Tasarım problemini çözmek için taslak oluşturur.",
+            "Tasarım programları ile tasarımı ürüne dönüştürür."
+          ]
+        },
+        {
+          "k": "TT.7.4.2",
+          "m": "Yapılan tasarımı paylaşmak için çoklu ortam sunusu hazırlayabilme",
+          "s": [
+            "Bilgisayar destekli tasarım konusunda öğrendiklerini, ürettiklerini çoklu ortam sunum özelliklerine göre sunum planlar.",
+            "Kullanacağı materyalleri (ses, video, fotoğraf vb.) çoklu ortam sunum özelliklerine göre sunumda tasarlar.",
+            "Bilgisayar destekli tasarım konusunda öğrendiklerini, ürettiklerini çoklu ortam sunum özelliklerine göre sunumda uygular.",
+            "Çoklu ortam sunusunu sunum planlaması, sunum tasarımı ve uygulama bağlamında değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. MİMARİ TASARIM",
+      "a": [
+        {
+          "k": "TT7.5.1",
+          "m": "Mekânsal analoji yapabilme",
+          "s": [
+            "Birden fazla mekânı gözlemler.",
+            "Birden fazla mekânın niteliklerini tespit eder.",
+            "Birden fazla mekânın benzerliklerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "TT.7.5.2",
+          "m": "İşlevsel özelliklerin mimari tasarımda yapısal farklılıklara yol açtığını algılayabilme",
+          "s": [
+            "Mimari tasarımda işlevsel özelliklerden oluşan yapısal farklılıkları gözlemler.",
+            "Mimari yapıları işlevsel farklılıklarına göre karşılaştırır."
+          ]
+        },
+        {
+          "k": "TT7.5.3",
+          "m": "Yaşamak istediği konutun farklı coğrafî alan ve şartlara uygun olarak tasarımını oluşturabilme",
+          "s": [
+            "Farklı coğrafi alan ve iklim şartlarına göre kişisel ihtiyaçlara uygun yaşamak istediği konutun taslağını oluşturur.",
+            "Tasarımını çizim veya maket yoluyla ürüne dönüştürür."
+          ]
+        },
+        {
+          "k": "TT7.5.4",
+          "m": "Mimari tasarımı için çoklu ortam sunumu yapabilme",
+          "s": [
+            "Mimari tasarımı için çoklu ortam sunum özelliklerine göre sunumu planlar.",
+            "Mimari tasarımı için çoklu ortam sunum özelliklerine göre sunumu tasarlar.",
+            "Mimari tasarımı için çoklu ortam sunum özelliklerine göre sunumu uygular.",
+            "Mimari tasarımı için çoklu ortam sunum özelliklerine göre sunumu değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "6. DOĞADAN TASARIMA",
+      "a": [
+        {
+          "k": "TT.7.6.1",
+          "m": "Canlılar ve doğal yapıların yapısal, biçimsel ve görsel özelliklerini sanatsal gözlemleyebilme",
+          "s": [
+            "Canlılar ve doğal yapıların yapısal, biçimsel ve görsel bileşenlerini fark eder.",
+            "Canlılar ve doğal yapıların yapısal, biçimsel ve görsel bileşenlerini ifade eder."
+          ]
+        },
+        {
+          "k": "TT.7.6.2",
+          "m": "Gündelik hayatında var olan bir problemi çözebilmek için doğa ve canlıları tasarımla ilişkilendirebilme",
+          "s": [
+            "Gündelik hayatında var olan bir problemi çözebilmek için canlıları ve doğayı gözlemler.",
+            "Gözlemlerinden elde ettiği bilgileri analiz eder.",
+            "Gözlemlerinden elde ettiği bilgilerle tasarım fikri geliştirir."
+          ]
+        },
+        {
+          "k": "TT.7.6.3",
+          "m": "Gündelik hayatında var olan bir problemin çözümünde biyotaklit yaklaşımını kullanarak ürün oluşturabilme",
+          "s": [
+            "Günlük hayatta karşılaştığı bir sorunun çözümü için doğadan esinlenerek taslak oluşturur.",
+            "Tasarımını çizim veya maket yoluyla ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "7. ENERJİNİN DÖNÜŞÜMÜ VE TASARIM",
+      "a": [
+        {
+          "k": "TT.7.7.1",
+          "m": "Enerji kavramı, enerji kaynakları, türleri ve dönüşümleri hakkında bilgi toplayabilme",
+          "s": [
+            "Enerji kavramı, enerji kaynakları, türleri ve dönüşümleri hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Enerji kavramı, enerji kaynakları, türleri ve dönüşümleri hakkında bilgileri bulur.",
+            "Enerji kavramı, enerji kaynakları, türleri ve dönüşümleri hakkında bulduğu bilgileri doğrular.",
+            "Enerji kavramı, enerji kaynakları, türleri ve dönüşümleri hakkında bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "TT.7.7.2",
+          "m": "Enerjinin dönüşümünün ve korunumunun doğa ve insan hayatına etkisi üzerine tümevarımsal akıl yürütebilme",
+          "s": [
+            "Enerji dönüşümlerinin ve korunumunun, doğanın ve makinelerin işleyişindeki örüntüsünü bulur.",
+            "Doğanın ve makinelerin işleyişindeki enerji dönüşümü ve korunumunun rolü hakkında genelleme yapar."
+          ]
+        },
+        {
+          "k": "TT.7.7.3",
+          "m": "Yenilenebilir ve yenilenemez enerji kaynaklarını sınıflandırabilme",
+          "s": [
+            "Yenilenebilir ve yenilenemez enerji kaynaklarının ölçütlerini belirler.",
+            "Yenilenebilir ve yenilenemez enerji kaynaklarını birbirinden ayırır.",
+            "Yenilenebilir ve yenilenemez enerji kaynaklarının kendi içinde tasnif eder.",
+            "Yenilenebilir ve yenilenemez enerji kaynaklarını alanlarına göre etiketler."
+          ]
+        },
+        {
+          "k": "TT.7.7.4",
+          "m": "Yenilenemez enerji kaynakları kullanımının dünyaya etkisini gözleme dayalı tahmin edebilme",
+          "s": [
+            "Yenilenemez enerji kaynaklarının kullanımı ile küresel ısınma arasındaki ilişkiyi kurar.",
+            "Küresel ısınmanın dünyaya olan etkileri hakkında çıkarım yapar.",
+            "Küresel ısınmanın yaşam üzerinde oluşturacağı değişim hakkında yargıda bulunur."
+          ]
+        },
+        {
+          "k": "TT.7.7.5",
+          "m": "Yenilenebilir enerji kaynakları kullanılarak enerji elde edilebilen bir ürün taslağı oluşturabilme",
+          "s": [
+            "Tasarımında kullanmak istediği yenilenebilir enerji kaynağını belirler.",
+            "Mevcut yenilenebilir enerji ürün ve sistemlerini inceler.",
+            "Yenilenebilir enerji kaynağından faydalanarak tasarlayacağı ürüne dair fikirler geliştirir.",
+            "Yenilenebilir enerji kaynağından faydalanarak tasarlayacağı ürünün eskiz çizimlerini yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "8. BÜTÜNLEŞİK ÖĞRENME: STEAM",
+      "a": [
+        {
+          "k": "TT.7.8.1",
+          "m": "STEAM’i oluşturan disiplinler ile alt bileşenlerinin ne olduğunu sorgulayabilme",
+          "s": [
+            "STEAM’i oluşturan disiplinler ile alt bileşenlerini tanımlar.",
+            "STEAM’i oluşturan disiplinler ile alt bileşenleri hakkında sorular sorar.",
+            "STEAM’i oluşturan disiplinler ile alt bileşenleri hakkında bilgi toplar.",
+            "STEAM’i oluşturan disiplinler ile alt bileşenleri hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "STEAM’i oluşturan disiplinler ile alt bileşenleri hakkında toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "TT.7.8.2",
+          "m": "STEAM disiplinlerinin arasındaki ilişkiyi gözlemleyebilme",
+          "s": [
+            "STEAM disiplinlerinin arasındaki ilişkiyi gözlemleyebileceği ölçüt belirler.",
+            "STEAM disiplinlerinin arasındaki ilişkiye yönelik uygun veri toplama aracı ile veri toplar.",
+            "STEAM disiplinlerinin arasındaki ilişkiye yönelik topladığı verileri sınıflandırarak kaydeder."
+          ]
+        },
+        {
+          "k": "TT.7.8.3",
+          "m": "Proje türlerini karşılaştırabilme",
+          "s": [
+            "Proje türlerine ilişkin birden fazla kavram veya duruma ilişkin özellikleri belirler.",
+            "Proje türlerine ilişkin birden fazla kavram veya duruma ilişkin benzerlikleri listeler.",
+            "Proje türlerine ilişkin birden fazla kavram veya duruma ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "TT.7.8.4",
+          "m": "STEAM yaklaşımına göre problem çözebilme",
+          "s": [
+            "STEAM yaklaşımına göre belirlediği problemi yapılandırır.",
+            "STEAM yaklaşımına göre belirlediği problemi özetler.",
+            "STEAM yaklaşımına göre belirlediği problemin çözümüne yönelik gözleme, mevcut bilgiye ve veriye dayalı tahminde bulunur.",
+            "STEAM yaklaşımına göre belirlediği problemin çözümüne yönelik önermeler üzerinden akıl yürütür.",
+            "STEAM yaklaşımına göre belirlediği problemin çözümüne ilişkin yansıtma ve değerlendirmede bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "9. YAPAY ZEKÂ VE AKILLI ÜRÜNLER",
+      "a": [
+        {
+          "k": "TT.7.9.1",
+          "m": "Yapay zekâ kavramını, algoritmalarını, avantaj ve dezavantajlarını sorgulayabilme",
+          "s": [
+            "Yapay zekâ kavramını tanımlar.",
+            "Yapay zekâ türleri, avantajları, dezavantajları ve günlük yaşamda kullanımı ile ilgili sorular sorar.",
+            "Yapay zekâ kavramı, türleri, avantajları ve dezavantajları hakkında bilgi toplar.",
+            "Toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Yapay zekâ kavramı, türleri, avantajları ve dezavantajları üzerine çıkarım yapar."
+          ]
+        },
+        {
+          "k": "TT.7.9.2",
+          "m": "Yapay zekâ modeli eğitmek için bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ modelini eğitmek için uygun aracı belirler.",
+            "Modelin eğitimi için en az iki farklı türde görsel veri bulur.",
+            "Eğittiği modelin test sonuçlarıyla tahmin yeteneğini doğrular.",
+            "Modelin seçilen görsel türlerini ayırt etme sonuçlarını kaydeder."
+          ]
+        },
+        {
+          "k": "TT.7.9.3",
+          "m": "Yapay zekâ modelleri ile bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ modellerini kullanmak için gerekli ön hazırlıkları ve uygun istem mühendisliği araçlarını belirler.",
+            "Yapay zekâ modellerinin uygulama alanları ve istem türleri hakkında bilgiler bulur.",
+            "İstem türlerinin çıktılara etkisini doğrular.",
+            "Araştırma sonuçlarını tablo veya diyagramlarla kaydeder."
+          ]
+        },
+        {
+          "k": "TT.7.9.4",
+          "m": "Yapay zekâ araçlarını sentezleyebilme",
+          "s": [
+            "Yapay zekâ araçları ve istem mühendisliği parçalarını belirler.",
+            "Yapay zekâ araçları ve istem mühendisliği parçaları arasında ilişki kurar.",
+            "Yapay zekâ araçları ve istem mühendisliğinde elde ettiği verileri birleştirerek özgün bir bütün oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

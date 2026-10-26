@@ -1,0 +1,378 @@
+{
+  "ders": "Matematik",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "SAYILAR VE NİCELİKLER (1)",
+      "a": [
+        {
+          "k": "MAT.7.1.1",
+          "m": "Gerçek yaşam ya da matematiksel durumlarda doğal sayı, tam sayı ve rasyonel sayıları yorumlayabilme",
+          "s": [
+            "Tam sayıları inceler.",
+            "Tam sayıları rasyonel sayılara genişletir ve mutlak değerle sayı doğrusunda açıklar.",
+            "Sayı doğrusu üzerinde her rasyonel sayının bir noktaya karşılık geldiğini açıklar."
+          ]
+        },
+        {
+          "k": "MAT.7.1.2",
+          "m": "Gerçek yaşam durumlarında rasyonel sayıların ondalık gösterimlerini yansıtabilme",
+          "s": [
+            "Bölme işlemini kullanarak her rasyonel sayının bir ondalık gösterimi olduğunu inceler.",
+            "Rasyonel sayıların ondalık gösterimlerinden bazılarının devirli olduğuna dair çıkarım yapar.",
+            "Her rasyonel sayının devirli ya da devirsiz ondalık açılımları olduğunu değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.7.1.3",
+          "m": "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini yorumlayabilme",
+          "s": [
+            "Paydası 1 olan rasyonel sayılardan (tam sayılardan) başlayarak rasyonel sayıları sayı doğrusunda inceler.",
+            "Rasyonel sayıların karşılaştırma ve sıralama ilişkilerini sembolik olarak ifade eder.",
+            "Rasyonel sayıların karşılaştırma ve sıralama ilişkisini sayı doğrusu üzerinde kendi ifadeleriyle açıklar."
+          ]
+        },
+        {
+          "k": "MAT.7.1.4",
+          "m": "Rasyonel sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme",
+          "s": [
+            "Rasyonel sayılarla toplama, çıkarma, çarpma ve bölme işlemlerini içeren problemlerde sayı ve işlem bileşenlerini belirler.",
+            "Rasyonel sayılarla toplama, çıkarma, çarpma ve bölme işlemlerini içeren problemlerde istenenler ve seçilen işlemler arasındaki ilişkileri belirler.",
+            "Rasyonel sayılarla toplama, çıkarma, çarpma ve bölme işlemlerini içeren problemlerde problem bağlamını uygun temsillere (şekil, sayı doğrusu gibi) dönüştürür.",
+            "Kullanılan temsil üzerinden problemi kendi ifadeleri ile açıklar.",
+            "Problemlerin çözümü için stratejiler oluşturur.",
+            "Stratejileri işe koşarak problemi çözer.",
+            "Problemin çözümünü kontrol eder.",
+            "Problemlerin olası farklı çözüm stratejilerini inceler.",
+            "Çözüme ulaştıran stratejilere uygun genellemeler yapar.",
+            "Genellemelerin geçerliliğini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GEOMETRİK NİCELİKLER (1)",
+      "a": [
+        {
+          "k": "MAT.7.4.1",
+          "m": "Eş küplerle oluşturulan yapılar ile görünümleri arasındaki ilişkiyi çözümleyebilme\" \"SINAV HAFTASI 26 Ekim- 6 Kasım 2026",
+          "s": [
+            "Eş küplerle oluşturulan yapıların farklı yönlerden görünümlerini çizer ve görünümleri verilen yapıları eş küplerle oluşturur.",
+            "Oluşturduğu yapı ile görünümleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.7.4.2",
+          "m": "Dikdörtgenler prizmasının yüzey alanını yorumlayabilme",
+          "s": [
+            "Dikdörtgenler prizmasının farklı yüzey açınımlarını inceler.",
+            "Dikdörtgenler prizmasının yüzey açınımı ile yüzey alanı arasındaki ilişkileri ifade eder.",
+            "Dikdörtgenler prizmalarının yüzey açınımlarından yararlanarak yüzey alanlarını hesaplar."
+          ]
+        },
+        {
+          "k": "MAT.7.4.3",
+          "m": "Dikdörtgenler prizmasının hacmini eş nesneler aracılığıyla yorumlayabilme",
+          "s": [
+            "Dikdörtgenler prizmalarının hacimlerini karşılaştırarak inceler.",
+            "Eş nesneler ile doldurulmuş dikdörtgenler prizmasını oluşturur.",
+            "Dikdörtgenler prizmasını oluşturan eş nesnelerin sayısını prizmanın hacmi olarak ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.7.4.4",
+          "m": "Dikdörtgenler prizmasının hacim bağıntısını değerlendirebilme",
+          "s": [
+            "Dikdörtgenler prizmasının hacmini belirlemede ölçüt olarak birim küpleri belirler.",
+            "Dikdörtgenler prizmasının hacmini belirlemek için prizmaların içine yerleştirilen birim küpleri sayar.",
+            "Toplam birim küp sayısı ile dikdörtgenler prizmasının ayrıt uzunluklarını karşılaştırır.",
+            "Birim küpleri farklı stratejilerle sayarak dikdörtgenler prizmasının hacmini taban alanı ile yüksekliğin çarpımı olarak ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.7.4.5",
+          "m": "Hacim ölçme birimleri arasındaki ilişkileri değerlendirebilme",
+          "s": [
+            "Bir cismin hacmini ölçmede metreküpü ve litreyi ölçüt olarak belirler.",
+            "Metreküp ve litreyi kullanarak ölçme yapar.",
+            "Hacim ölçme sonuçlarını desimetreküp, santimetreküp ve milimetreküp; sıvı ölçme sonuçlarını desilitre, santilitre ve mililitre ile ilişkilendirerek karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MAT.7.4.6",
+          "m": "Günlük hayat durumlarında dikdörtgenler prizmaları ile modellenen cisimlerin yüzey alanı ve hacmine yönelik problem çözebilme",
+          "s": [
+            "Dikdörtgenler prizmaları ile modellenen cisimlerin yüzey alanı ve hacmine yönelik problemde ilgili matematiksel bileşenleri (şekil, cisim, uzunluk, alan, yükseklik gibi) belirler.",
+            "Matematiksel bileşenler arasındaki ilişkileri belirler.",
+            "Problem bağlamındaki temsilleri farklı temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunarak işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlediği stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İSTATİSTİKSEL ARAŞTIRMA SÜRECİ",
+      "a": [
+        {
+          "k": "MAT.7.6.1",
+          "m": "Kategorik veya nicel (sürekli) veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "s": [
+            "Kategorik veya nicel (sürekli) veriye dayanan istatistiksel araştırma gerektiren durumları fark eder.",
+            "Kategorik veya nicel (sürekli) veriye dayanan betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur.",
+            "Kategorik veya nicel (sürekli) veriye ulaşmak için plan yapar.",
+            "Araştırma sorusuna uygun hazırlanan anket sorularını kullanarak veri toplar veya hazır veriye ulaşır.",
+            "Veri görselleştirme (çizgi grafiği, nokta grafiği gibi) ve özetleme (aritmetik ortalama, ortanca, tepe değer, açıklık ve ortalama mutlak sapma) araçlarını seçme gerekçelerini belirtir.",
+            "Toplanan veriyi uygun araçlarla analiz eder.",
+            "Araştırmada ulaştığı sonuçlara yönelik gerekçeler sunar.",
+            "Araştırma sonuçlarının araştırma sorusuna ne düzeyde cevap verdiğini değerlendirerek araştırma sürecine uygun olmayan adımları yeniden planlar."
+          ]
+        },
+        {
+          "k": "MAT.7.6.2",
+          "m": "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "s": [
+            "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumlara yönelik istatistiksel temellendirme yapar.",
+            "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumlara yönelik hataları ya da yanlılıkları tespit eder.",
+            "Başkaları tarafından oluşturulan kategorik veya nicel (sürekli) veriye dayalı istatistiksel sonuç veya yorumları çürütür ya da kabul eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DÖNÜŞÜM",
+      "a": [
+        {
+          "k": "MAT.7.3.1",
+          "m": "Şekillerin yansıma dönüşümü altındaki görüntülerinin oluşturulmasına dair çıkarım yapabilme",
+          "s": [
+            "Şekillerin yansıma dönüşümleri altındaki görüntülerini oluşturmaya dair varsayımlarda bulunur.",
+            "Şekillerin yansıma dönüşümü altındaki görüntülerini oluşturur.",
+            "Varsayımlarını doğrulamaya yönelik karşılaştırmalar yapar.",
+            "Bir şekil ile yansıma dönüşümü altındaki görüntüsü arasındaki ilişkilere dair önermeler sunar.",
+            "Önermenin verilen iki eş şeklin bir doğruya göre simetrik olup olmadığını belirlemeye ve simetrik bir şeklin simetri doğrusunu oluşturmaya yönelik katkısını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.7.3.2",
+          "m": "Yansıma dönüşümündeki deneyimlerini orta dikme ve açıortay inşasına yansıtabilme",
+          "s": [
+            "Yansıma dönüşümünde simetri doğrusunun özelliklerini gözden geçirir.",
+            "Simetri doğrusunun özelliklerinden hareketle bir doğru parçasına ait orta dikmenin ve bir açıya ait açıortayın inşasına dair çıkarım yapar.",
+            "Çıkarımını farklı örnekler üzerinden değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GEOMETRİK ŞEKİLLER",
+      "a": [
+        {
+          "k": "MAT.7.5.1",
+          "m": "Matematiksel araç ve teknolojiden yararlanarak üçgende kenarortayı, açıortayı ve yüksekliği çözümleyebilme",
+          "s": [
+            "Üçgende kenarortayı, açıortayı ve yüksekliği belirler.",
+            "Üçgende kenarortay, açıortay ve yükseklik arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.7.5.2",
+          "m": "Orta dikme inşasına yönelik deneyimlerini üçgende kenarortay inşasına yansıtabilme",
+          "s": [
+            "Orta dikme inşasına yönelik deneyimlerini gözden geçirir.",
+            "Üçgende kenarortay inşasına yönelik çıkarım yapar.",
+            "Çıkarımını farklı örnekler üzerinden değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (2)",
+      "a": [
+        {
+          "k": "MAT.7.1.5",
+          "m": "Gerçek yaşam durumları üzerinden oran ilişkileri hakkında muhakeme yapabilme",
+          "s": [
+            "Gerçek yaşam durumları üzerinden iki niceliğin karşılaştırılmasında toplamsal (mutlak) ve çarpımsal (bağıl) ilişkileri ayırt eder.",
+            "Gerçek yaşam durumları üzerinden oranın iki niceliğin çarpımsal ilişkiler kurularak karşılaştırılması olduğunu belirler.",
+            "Çözümlediği gerçek yaşam durumlarının içerdiği oranı birimli ve birimsiz oran olarak ifade eder.",
+            "Birimli ve birimsiz oranı kendi ifadeleriyle açıklar.",
+            "Yorumladığı gerçek yaşam durumundaki ilişkilere dayalı olarak denk orana ve birim orana ilişkin varsayımlarda bulunur.",
+            "Varsayımındaki örneklere ait ilişkileri inceleyerek denk oran ve birim orana ilişkin genellemeleri belirler.",
+            "Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını çeşitli temsiller (oran tabloları, çubuk diyagramı, çift sayı doğrusu, grafik, somut materyaller) ile sınar.",
+            "Varsayımı ile ilgili ulaştığı sonuca yönelik doğrulayabileceği matematiksel bir önermeyi sunar.",
+            "Sunduğu önermenin katkısına yönelik gerekçeler sunar."
+          ]
+        },
+        {
+          "k": "MAT.7.1.6",
+          "m": "Gerçek yaşam durumları üzerinden orantılı durumları yorumlayabilme",
+          "s": [
+            "Gerçek yaşam durumlarında iki durumun orantılı olup olmadığını inceler.",
+            "Orantılı olan iki durumun ilişkisini temsiller ile ifade eder.",
+            "Orantı kavramını kendi ifadeleriyle yeniden açıklar."
+          ]
+        },
+        {
+          "k": "MAT.7.1.7",
+          "m": "Gerçek yaşam durumları üzerinden doğru orantılı durumlara ilişkin problemleri çözebilme",
+          "s": [
+            "Doğru orantılı durumlara ilişkin problemlerde nicelikleri belirler.",
+            "Doğru orantılı durumlar arasındaki ilişkileri belirler.",
+            "Bu ilişkileri tablo ve grafik temsillerine dönüştürür.",
+            "Dönüştürdüğü temsillerin problem bağlamındaki anlamını ifade eder.",
+            "Elde ettiği ve yorumladığı farklı temsillere dayalı olarak problemin çözümü için stratejiler oluşturur.",
+            "Belirlediği stratejileri kullanır.",
+            "Elde ettiği çözümü farklı stratejileri kullanarak doğrular.",
+            "Problemin olası farklı çözüm stratejilerini inceler.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VERİDEN OLASILIĞA",
+      "a": [
+        {
+          "k": "MAT.7.7.1",
+          "m": "Bir olayın ve tümleyeninin olasılığına ilişkin tümevarımsal akıl yürütebilme",
+          "s": [
+            "Bir olayın olasılığını hesaplamaya ilişkin olası tüm çıktıları gözlemler.",
+            "Bir olayın ve tümleyeninin olasılığını hesaplamak için matematiksel ilişkiyi bulur.",
+            "Bir olayın ve tümleyeninin olasılığının ilişkisine yönelik genelleme yapar."
+          ]
+        },
+        {
+          "k": "MAT.7.7.2",
+          "m": "Aynı deneye ait olayların eşit olasılıklı olma durumlarını değerlendirebilme",
+          "s": [
+            "Eşit olasılıklı olan ve eşit olasılıklı olmayan olaylara ilişkin ölçüt belirler.",
+            "Olayların eşit olasılıklı olma veya olmama olasılığına ilişkin hesaplama yapar.",
+            "Hesaplama sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MAT.7.7.3",
+          "m": "Olayları ayrık olma ve ayrık olmama durumlarına göre sınıflandırabilme",
+          "s": [
+            "Olayların ayrık olma ve ayrık olmama durumlarını olaylara ait çıktıların ortak olup olmamasını ölçüt alarak belirler.",
+            "Olayları ayrık olma ve ayrık olmama durumuna göre ayrıştırır.",
+            "Ayrık olan ve ayrık olmayan olayları tasnif eder.",
+            "Olayları ayrık olma veya olmama durumuna göre etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞLEMLERLE CEBİRSEL DÜŞÜNME VE DEĞİŞİMLER",
+      "a": [
+        {
+          "k": "MAT.7.2.1",
+          "m": "Gerçek yaşam durumları ya da matematiksel durumlar üzerinden cebirsel ifadelerle toplama, çıkarma ve bir rasyonel sayıyla çarpma işlemlerini yorumlayabilme \"SINAV HAFTASI 29 Mart - 9 Nisan 2027",
+          "s": [
+            "Gerçek yaşam durumlarına ya da matematiksel durumlara karşılık gelen cebirsel ifadelerle işlemleri inceler.",
+            "Toplama ve çarpma işlemlerinin özelliklerini, cebirsel ifadelerde işlem yaparken kullanır.",
+            "Bu işlemler ve sonuçları arasındaki denkliği açıklar."
+          ]
+        },
+        {
+          "k": "MAT.7.2.2",
+          "m": "Birinci dereceden bir bilinmeyenli denklem ve birinci dereceden bir bilinmeyenli eşitsizlik içeren gerçek yaşam problemlerini çözebilme",
+          "s": [
+            "Verilen gerçek yaşam problemlerindeki nicelikleri belirler.",
+            "Nicelikler arasındaki eşitlik ve eşitsizlik ilişkilerini belirler.",
+            "Belirlenen nicelikleri cebirsel olarak ifade eder.",
+            "Belirlenen nicelikleri ve ilişkileri denklem veya eşitsizlik olarak ifade eder.",
+            "Denklem ve eşitsizliklerin çözümünde bir strateji oluşturur.",
+            "Belirlediği stratejiyi çözüm için uygular.",
+            "Çözümün doğruluğunu uygun örnek ve temsiller ile kontrol ederek çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için olası farklı çözüm stratejilerini inceler.",
+            "Çözüme ulaştıran stratejilerin uyarlanabileceği uygun genelleme ve sınıflamalar yapar.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.7.2.3",
+          "m": "Sayılar ve özelliklerini içeren ispatlara ilişkin matematiksel muhakeme yapabilme",
+          "s": [
+            "Sayılar ve özellikleriyle ilgili ilişkilere yönelik örneklere ve örüntülere dayalı varsayımlarda bulunur.",
+            "Varsayımına yönelik sayı örüntülerini listeler.",
+            "Elde ettiği örüntülerin, varsayımını karşılayıp karşılamadığını sınar.",
+            "Ulaştığı sonuca yönelik doğrulayabileceği matematiksel bir önermeyi sözel veya cebirsel olarak ifade eder.",
+            "Sunduğu önermenin katkısına yönelik gerekçeler sunar.",
+            "Sayılar ve özelliklerine ilişkin durumlarda cebirsel ispat yöntemlerini seçerek işe koşar.",
+            "Önermeyi gözden geçirerek yeni durumlara uyarlar."
+          ]
+        },
+        {
+          "k": "MAT.7.2.4",
+          "m": "Temel aritmetik ve cebirsel ifadelerle işlem içeren durumlardaki süreci algoritma ifade yöntemlerini kullanarak yapılandırabilme",
+          "s": [
+            "Aritmetik ve cebirsel ifadelerle işlem içeren durumlardaki adımları ve ilişkileri açıklar.",
+            "Algoritma ifade yöntemlerini kullanarak incelediği adımlar ve ilişkilerden uyumlu bir bütün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GEOMETRİK NİCELİKLER (2)",
+      "a": [
+        {
+          "k": "MAT.7.4.7",
+          "m": "Dikdörtgenin, paralelkenarın alanına ve çemberin uzunluğuna ilişkin deneyimlerini dairenin alan bağıntısına yansıtabilme",
+          "s": [
+            "Dikdörtgenin, paralelkenarın alanı ve çemberin uzunluğuna yönelik deneyimlerini gözden geçirir.",
+            "Dikdörtgenin alan bağıntısı ve çemberin uzunluğundan yola çıkarak dairenin alan bağıntısına yönelik çıkarım yapar.",
+            "Çıkarımını farklı örnekler üzerinden değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.7.4.8",
+          "m": "Çemberde merkez açı ve gördüğü yay uzunluğu arasındaki ilişkiden yola çıkarak daire ve daire diliminin alanları arasındaki ilişkiye yönelik analojik akıl yürütebilme",
+          "s": [
+            "Çemberde merkez açı ve gördüğü yay uzunluğu ile daire ve daire diliminin alanı arasındaki ilişkileri gözlemler.",
+            "Çemberde merkez açı ve gördüğü yay uzunluğu ile daire ve daire diliminin alanı arasındaki ilişkiyi tespit eder.",
+            "Çemberde merkez açı ve gördüğü yay uzunluğuyla daire ve daire diliminin alanı arasında kurulan ilişkiden hareketle daire diliminin alanına dair çıkarım yapar."
+          ]
+        },
+        {
+          "k": "MAT.7.4.9",
+          "m": "Eşkenar dörtgen ve yamuğun alan bağıntılarına dair çıkarım yapabilme\" \"SINAV HAFTASI 1 Haziran - 11 Haziran 2027",
+          "s": [
+            "Dikdörtgen, paralelkenar ve üçgenin alan bağıntısına dair ön bilgisiyle eşkenar dörtgenin ve yamuğun alan hesabına yönelik varsayımda bulunur.",
+            "Eşkenar dörtgeni ve yamuğu parçalayarak veya tamamlayarak oluşturduğu geometrik şekillerin alanlarını belirler.",
+            "Oluşturulan geometrik şekillerin alanlarını varsayımlarıyla karşılaştırır.",
+            "Eşkenar dörtgenin ve yamuğun alan bağıntılarına dair önermeler sunar.",
+            "Çeşitli geometrik şekillerin alanlarının hesaplanmasında eşkenar dörtgenin ve yamuğun alan bağıntılarının katkılarını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.7.4.10",
+          "m": "Günlük hayat durumlarında daire, daire dilimi, eşkenar dörtgen ve yamuğun alanına ilişkin problem çözebilme",
+          "s": [
+            "Günlük hayat durumlarında daire, daire dilimi, eşkenar dörtgen ve yamuğun alanlarına ilişkin problemde ilgili matematiksel bileşenleri (şekil, uzunluk, alan, açı, köşegen, yarıçap, yükseklik gibi) belirler.",
+            "Matematiksel bileşenler arasındaki ilişkileri belirler.",
+            "Problem bağlamındaki temsilleri farklı temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

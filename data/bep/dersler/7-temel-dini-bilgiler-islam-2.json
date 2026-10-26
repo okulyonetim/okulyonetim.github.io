@@ -1,0 +1,180 @@
+{
+  "ders": "Temel Dini Bilgiler (İslam-2)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "İSLAM VE AHLAK",
+      "a": [
+        {
+          "k": "",
+          "m": "Allah’a (c.c.) karşı ahlaki sorumluluklarını yerine getirmeye özen gösterir.",
+          "s": [
+            "Allah’a (c.c.) karşı ahlaki sorumluluklarını yerine getirmeye özen gösterir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Peygamberimize karşı ahlaki sorumluluklarını yerine getirmede istekli olur.",
+          "s": [
+            "Peygamberimize karşı ahlaki sorumluluklarını yerine getirmede istekli olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Kur’an-ı Kerim’e karşı ahlaki sorumluluklarını davranışlarına yansıtır.",
+          "s": [
+            "Kur’an-ı Kerim’e karşı ahlaki sorumluluklarını davranışlarına yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Topluma karşı ahlaki sorumluluklarını yerine getirmeye duyarlı olur.",
+          "s": [
+            "Topluma karşı ahlaki sorumluluklarını yerine getirmeye duyarlı olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Esmâ-i Hüsnâ’dan el- Azîz, er-Rahman, es-Selam isimlerini tanır.",
+          "s": [
+            "Esmâ-i Hüsnâ’dan el- Azîz, er-Rahman, es-Selam isimlerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İSLAM VE TEMİZLİK",
+      "a": [
+        {
+          "k": "",
+          "m": "İslam’ın temizliğe verdiği önemi ayet ve hadislerle açıklar.",
+          "s": [
+            "İslam’ın temizliğe verdiği önemi ayet ve hadislerle açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Temizlik çeşitlerini sıralar.",
+          "s": [
+            "Temizlik çeşitlerini sıralar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Gusül, abdest, teyemmüm ile ilgili hükümleri açıklar.",
+          "s": [
+            "Gusül, abdest, teyemmüm ile ilgili hükümleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Esmâ-i Hüsnâ’dan el-Kerim, el-Kuddûs, et-Tevvâb isimlerini tanır.",
+          "s": [
+            "Esmâ-i Hüsnâ’dan el-Kerim, el-Kuddûs, et-Tevvâb isimlerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İSLAM'IN DİREĞİ NAMAZ",
+      "a": [
+        {
+          "k": "",
+          "m": "Namazla ilgili hükümleri açıklar.",
+          "s": [
+            "Namazla ilgili hükümleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Sehiv ve tilavet secdesiyle ilgili hükümleri söyler.",
+          "s": [
+            "Sehiv ve tilavet secdesiyle ilgili hükümleri söyler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Namazda okunan dua ve tesbihleri doğru olarak telaffuz eder.",
+          "s": [
+            "Namazda okunan dua ve tesbihleri doğru olarak telaffuz eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Mescitlerin özellik ve fonksiyonlarını yorumlar.",
+          "s": [
+            "Mescitlerin özellik ve fonksiyonlarını yorumlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Esmâ-i Hüsnâ’dan er-Rab, el-Mucîb, el-Ğafûr, el-Câmi’ isimlerini tanır.",
+          "s": [
+            "Esmâ-i Hüsnâ’dan er-Rab, el-Mucîb, el-Ğafûr, el-Câmi’ isimlerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İSLAM VE GÜNLÜK HAYAT",
+      "a": [
+        {
+          "k": "",
+          "m": "Edep ve hayânın İslam ahlakındaki yerini örneklerle açıklar.",
+          "s": [
+            "Edep ve hayânın İslam ahlakındaki yerini örneklerle açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Dostluk ve arkadaşlığın önemiyle ilgili tarihî ve güncel olaylardan örnekler verir.",
+          "s": [
+            "Dostluk ve arkadaşlığın önemiyle ilgili tarihî ve güncel olaylardan örnekler verir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Allah’ın nimetlerine şükretmenin önemli bir ahlaki görev olduğunun farkına varır.",
+          "s": [
+            "Allah’ın nimetlerine şükretmenin önemli bir ahlaki görev olduğunun farkına varır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Kul hakkına riayet etmeye istekli olur.",
+          "s": [
+            "Kul hakkına riayet etmeye istekli olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "Esmâ-i Hüsnâ’dan el-Afüv, eş-Şekûr, er-Raûf isimlerini tanır.",
+          "s": [
+            "Esmâ-i Hüsnâ’dan el-Afüv, eş-Şekûr, er-Raûf isimlerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "ders": "Matematik Uygulamaları",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÜNLÜK HAYATTA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.2.1.1",
+          "m": "Günlük hayatta rasyonel sayıların kullanım alanlarını yorumlayabilme",
+          "s": [
+            "Günlük hayatta rasyonel sayıların kullanım alanlarını inceler.",
+            "İncelediği durumlardaki rasyonel sayıları sembolik olarak ifade eder.",
+            "Rasyonel sayılar ile günlük hayat durumları arasındaki ilişkiyi açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.1.2",
+          "m": "Günlük hayatta rasyonel sayılarla dört işlem gerektiren problemleri çözebilme",
+          "s": [
+            "Problemin içerdiği sayı ve işlem bileşenlerini belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.1.3",
+          "m": "İklim değişikliğinin etkilerini matematiksel verilere dayalı tahmin edebilme",
+          "s": [
+            "İklim değişikliğinin etkilerine ilişkin veriler toplar.",
+            "Elde edilen veriler üzerinden hesaplamalar yapar.",
+            "Veri analizleri sonucunda iklim değişikliği ile ilgili geleceğe yönelik yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: SAĞLIK VE SPORDA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.2.2.1",
+          "m": "Sıvı ölçme birimlerinin sağlık ve spor alanlarındaki kullanım alanlarıyla ilgili bilgi toplayabilme",
+          "s": [
+            "Sağlık ve spor alanlarında kullanılan sıvı ölçme birimleriyle ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.2.2",
+          "m": "Sağlıklı yaşam ile ilgili bilgilerini matematiksel veriler ve temsillerden yararlanarak günlük alışkanlıklarına yansıtabilme",
+          "s": [
+            "Sağlıklı yaşama ilişkin deneyimlerini gözden geçirir.",
+            "Sağlıklı yaşama ilişkin deneyimlerine dayalı çıkarım yapar.",
+            "Ulaşılan çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.2.3",
+          "m": "Sağlık ve spor ile ilgili günlük hayattan yüzde problemlerine yönelik problemleri çözebilme",
+          "s": [
+            "Sağlık ve sporla ilgili yüzde problemlerindeki sayı ve işlem bileşenlerini belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: SANATTA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.2.3.1",
+          "m": "Düzgün çokgenleri kullanarak özgün bir süsleme sentezleyebilme",
+          "s": [
+            "Süslemede kullanılacak düzgün çokgenleri belirler.",
+            "Süslemeyi oluşturmak için düzgün çokgenler arasındaki ilişkileri kurar.",
+            "Düzgün çokgenleri kullanarak özgün bir süsleme oluşturur."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.3.2",
+          "m": "Çokgen ve çember kullanılarak oluşturulan düzlemsel şekillerin alanlarını bulmayı gerektiren problemleri çözebilme",
+          "s": [
+            "Çokgen ve çember kullanılarak oluşturulan düzlemsel şekillerin alanlarını bulmayı gerektiren problemlerdeki verilen ve istenenleri belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: DOĞADA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.2.4.1",
+          "m": "Doğadaki örüntüleri gözlemleyebilme",
+          "s": [
+            "Doğadaki örnekleri incelerken, örüntü özelliğini ölçüt olarak belirler.",
+            "Doğada örüntü oluşturan örneklere ilişkin veri toplar.",
+            "Toplanan verileri sınıflandırarak kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.4.2",
+          "m": "Düzlemde iki paralel doğru ve bir kesenle oluşan açı modellerini doğadaki örnekler üzerinden yorumlayabilme",
+          "s": [
+            "İki paralel doğru ve bir kesenle oluşan açı modellerini inceler.",
+            "İncelediği örneklerden yola çıkarak açı modelleri oluşturur.",
+            "Oluşturduğu modellerdeki açıların özelliklerini belirleyerek açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.4.3",
+          "m": "Doğadaki düzgün ve düzgün olmayan şekil örneklerini inceleyerek özelliklerini karşılaştırabilme",
+          "s": [
+            "Doğadaki düzgün ve düzgün olmayan şekil örneklerini inceleyerek özelliklerini belirler.",
+            "Belirlenen özelliklere ilişkin benzerlikleri listeler.",
+            "Belirlenen özelliklere ilişkin farklılıkları listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. TEMA: MESLEKLER VE MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.2.5.1",
+          "m": "Oran ve orantının meslek gruplarındaki kullanımlarını yorumlayabilme",
+          "s": [
+            "Oran ve orantının meslek gruplarındaki kullanımlarını inceler.",
+            "Meslek gruplarında karşılaşılan oran ve orantı durumlarını matematiksel ifadelere dönüştürür.",
+            "Oran ve orantının meslek gruplarındaki kullanımlarını açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.5.2",
+          "m": "Geometrik şekil ve cisimlerin meslek gruplarındaki kullanım alanları ile ilgili bilgi toplayabilme",
+          "s": [
+            "Geometrik şekil ve cisimlerin meslek gruplarındaki kullanım alanları ile ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.5.3",
+          "m": "Veri toplama, analiz etme ve sonuç çıkarma ile uğraşan meslek grupları ile ilgili bilgi toplayabilme",
+          "s": [
+            "Veri toplama, analiz etme ve sonuç çıkarma ile uğraşan meslek grupları ile ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.2.5.4",
+          "m": "Matematiğin kullanıldığı gelecekteki meslek gruplarını tartışabilme",
+          "s": [
+            "Gelecekte matematiğin kullanıldığı mesleklere yönelik mantıksal temellendirme yapar.",
+            "Mantıksal çelişkileri veya tutarsızlıkları tespit eder.",
+            "Ulaşılan görüşleri çürütür veya kabul eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

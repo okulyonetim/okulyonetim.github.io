@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "VİBRATO, BAĞLI, BAĞSIZ, KISA-KESİK ÇALMA UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.7.1.1",
+          "m": "Farklı nota sürelerinde yazılmış etütleri bağsız çalabilme",
+          "s": [
+            "Farklı nota sürelerinde yazılmış etütleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak etütleri bağsız çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Seslendireceği seslerin yapısına uygun olarak etütleri bağsız çalar."
+          ]
+        },
+        {
+          "k": "UD.7.1.2",
+          "m": "Farklı nota sürelerinde yazılmış, etütleri bağlı çalabilme",
+          "s": [
+            "Farklı nota sürelerinde yazılmış etütleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak etütleri bağlı çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Seslendireceği seslerin yapısına uygun olarak etütleri bağlı çalar."
+          ]
+        },
+        {
+          "k": "UD.7.1.3",
+          "m": "Farklı nota sürelerinde yazılmış, etütleri kısa-kesik çalabilme",
+          "s": [
+            "Farklı nota sürelerinde yazılmış etütleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak etütleri kısa-kesik çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Seslendireceği seslerin yapısına uygun olarak etütleri kısa-kesik çalar."
+          ]
+        },
+        {
+          "k": "UD.7.1.4",
+          "m": "Farklı nota sürelerinde yazılmış etütlerde parmak ile vibrato tekniğini uygulayarak çalabilme",
+          "s": [
+            "Farklı nota sürelerinde yazılmış etütleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak etütleri vibrato tekniğini kullanarak çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Seslendireceği seslerin yapısına uygun olarak etütleri vibrato tekniğini kullanarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NİKRİZ DİZİSİNDE ETÜT VE ESER UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.7.2.1",
+          "m": "Nikriz makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Nikriz makamında yazılmış etüt ve egzersizleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak nikriz makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak nikriz makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ DİZİSİNDE ETÜT VE ESER UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.7.3.1",
+          "m": "Hicaz makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Hicaz makamında etüt ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak hicaz makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak hicaz makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

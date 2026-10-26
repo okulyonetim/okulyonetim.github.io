@@ -1,0 +1,301 @@
+{
+  "ders": "Yaşayan Dil ve Lehçeler (Arnavutça)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ARKADAŞLARIM",
+      "a": [
+        {
+          "k": "ARN.7.1.D",
+          "m": "ʻʻArkadaşlarım” temasındaki sosyal etkileşim durumlarında bireyleri tanıtma, fiziksel görünüş ve kişilik özelliklerine ilişkin temel ifadeleri dinleyebilme / izleyebilme ve anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izle me-anlamlandırmaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.1.O",
+          "m": "ʻʻArkadaşlarım” temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temelbilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.1.K",
+          "m": "ʻʻArkadaşlarım” temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.1.Y",
+          "m": "ʻʻArkadaşlarım” temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.1.DBS",
+          "m": "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme ve kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır.",
+          "s": [
+            "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçer ve kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.1.SÖS",
+          "m": "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme ve kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçer ve kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.1.SES",
+          "m": "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçebilme ve kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻArkadaşlarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçer ve kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SORUMLULUKLARIM",
+      "a": [
+        {
+          "k": "ARN.7.2.D",
+          "m": "ʻʻSorumluluklarım” temasındaki sosyal etkileşim durumlarında evdeki kurallar, aile içi sorumluluklar, görgü ve davranış kurallarına ilişkin temel ifadeleri dinleyebilme / izleyebilme ve anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izleme-anlamlandırmaya hazırlık yapar.",
+            "Temaya ilişkin temelbilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.2.O",
+          "m": "ʻʻSorumluluklarım” temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temelbilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.2.K",
+          "m": "ʻʻSorumluluklarım” temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.2.Y",
+          "m": "ʻʻSorumluluklarım” temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.2.DBS",
+          "m": "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme ve kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçer ve kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.2.SÖS",
+          "m": "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme ve kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçer ve kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.2.SES",
+          "m": "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçebilme ve kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSorumluluklarım” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçer ve kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SEYAHAT",
+      "a": [
+        {
+          "k": "ARN.7.3.D",
+          "m": "ʻʻSeyahat” temasındaki sosyal etkileşim durumlarında seyahat hazırlıkları, turistik yerler ve mekânlar ile ulaşım araçlarına ilişkin temel ifadeleri dinleyebilme / izleyebilme ve anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izleme-anlamlandırmaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır.",
+            "Bireysel ve etkileşimli bir şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.3.O",
+          "m": "ʻʻSeyahat” temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.3.K",
+          "m": "ʻʻSeyahat” temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılan dırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.3.Y",
+          "m": "ʻʻSeyahat” temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.3.DBS",
+          "m": "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme ve kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçer ve kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.3.SÖS",
+          "m": "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme ve kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçer ve kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.3.SES",
+          "m": "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçebilme ve kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻSeyahat” temasında sosyal etkileşim durumlarında temel ifadelere uygun otomatik, otantik ve doğal sesletimi seçer ve kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "HAFTA SONUM",
+      "a": [
+        {
+          "k": "ARN.7.4.D",
+          "m": "ʻʻHafta Sonum” temasındaki sosyal etkileşim durumlarında aile ve arkadaşlarla gerçekleştirilen etkinlikler ile hafta sonu planlarına ilişkin temel ifadeleri dinleyebilme / izleyebilme ve anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izle me-anlamlandırmaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.4.O",
+          "m": "ʻʻHafta Sonum” temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temelbilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.4.K",
+          "m": "ʻʻHafta Sonum” temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.4.Y",
+          "m": "ʻʻHafta Sonum” temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını ince leyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kulla narak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ARN.7.4.DBS",
+          "m": "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme ve kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır.",
+          "s": [
+            "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçer ve kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.4.SÖS",
+          "m": "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme ve kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçer ve kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARN.7.4.SES",
+          "m": "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme ve kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "ʻʻHafta Sonum” temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçer ve kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

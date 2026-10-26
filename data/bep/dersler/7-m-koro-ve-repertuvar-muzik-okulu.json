@@ -1,0 +1,137 @@
+{
+  "ders": "Koro ve Repertuvar (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KOROYU TANIYALIM",
+      "a": [
+        {
+          "k": "KOREP.7.1.1",
+          "m": "Koro kavramının tarihçesi ile ilgili bilgi toplayabilme",
+          "s": [
+            "Koro kavramının tarihçesi ile ilgili bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Koro kavramının tarihçesi ile ilgili bilgileri bulur.",
+            "Koro kavramının tarihçesi ile ilgili bilgileri doğrular.",
+            "Koro kavramının tarihçesi ile ilgili bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KORO OLUŞTURALIM",
+      "a": [
+        {
+          "k": "KOREP.7.2.1",
+          "m": "Koro eserlerindeki müzikal ifadeyi güçlendirecek müzik terimlerini fark edebilme",
+          "s": [
+            "Koro eserlerindeki müzikal ifadeyi güçlendirecek müzik terimlerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.7.2.2",
+          "m": "Koroyla seslendirdiği eserlerin yaşanmış öyküleri hakkında bilgi toplayabilme",
+          "s": [
+            "Eserlerin yaşanmış öyküleri hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak eserlerin yaşanmış öyküleri hakkında bilgiler bulur.",
+            "Eserlerin yaşanmış öyküleri hakkında ulaşılan bilgileri doğrular.",
+            "Eserlerin yaşanmış öyküleri hakkında ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KORODA SÖYLEYELİM",
+      "a": [
+        {
+          "k": "KOREP.7.3.1",
+          "m": "İstiklal Marşı’nı koroyla çok sesli olarak söyleyebilme",
+          "s": [
+            "İstiklal Marşı’nı koroyla çok sesli olarak söylemeye hazırlanır.",
+            "İstiklal Marşı’nı koroyla çok sesli olarak söylerken uygun teknikleri kullanır.",
+            "İstiklal Marşı’nı koroyla çok sesli olarak söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.2",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri söylemeye hazırlanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken uygun teknikleri kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.3",
+          "m": "Okul şarkıları repertuvarında bulunan eserleri söyleyebilme",
+          "s": [
+            "Okul şarkıları repertuvarında bulunan eserleri söylemeye hazırlanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken uygun teknikleri kullanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.4",
+          "m": "Orta Anadolu yöresine ait türküleri söyleyebilme",
+          "s": [
+            "Orta Anadolu yöresine ait eserleri söylemeye hazırlanır.",
+            "Orta Anadolu yöresine ait eserleri söylerken uygun teknikleri kullanır.",
+            "Orta Anadolu yöresine ait eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.5",
+          "m": "Ege yöresine ait türküleri söyleyebilme",
+          "s": [
+            "Ege yöresine ait eserleri söylemeye hazırlanır.",
+            "Ege yöresine ait eserleri söylerken uygun teknikleri kullanır.",
+            "Ege yöresine ait eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.6",
+          "m": "Ülkemizdeki âşıklara ait türküleri söyleyebilme",
+          "s": [
+            "Ülkemizdeki âşıklara ait türküleri söylemeye hazırlanır.",
+            "Ülkemizdeki âşıklara ait ürküleri söylerken uygun teknikleri kullanır.",
+            "Ülkemizdeki âşıklara ait türküleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.7.3.7",
+          "m": "Türk sanat müziği türünde eserleri söyleyebilme",
+          "s": [
+            "Türk sanat müziği türünde eserleri söylemeye hazırlanır.",
+            "Türk sanat müziği türünde eserleri söylerken uygun teknikleri kullanır.",
+            "Türk sanat müziği türünde eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KONSER ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "KOREP.7.4.1",
+          "m": "Türk Müziği etkinliklerine katılmanın önemini yansıtabilme",
+          "s": [
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerini gözden geçirir.",
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerinden hareketle çıkarım yapar.",
+            "Ulaştığı çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "KOREP.7.4.2",
+          "m": "Koro eserlerini sınıf korosu konserinde söyleyebilme",
+          "s": [
+            "Koro eserlerini sınıf korosu konserinde söylemeye hazırlanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

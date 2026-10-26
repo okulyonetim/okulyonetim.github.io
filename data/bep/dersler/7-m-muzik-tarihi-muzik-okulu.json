@@ -1,0 +1,184 @@
+{
+  "ders": "Müzik Tarihi (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNİN GENEL YAPISI",
+      "a": [
+        {
+          "k": "MT.7.1.1",
+          "m": "Türk sanat müziğinin yapısal özellikleri hakkında bilgi toplayabilme",
+          "s": [
+            "Türk sanat müziğinin yapısal özellikleri hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk sanat müziğinin yapısal özellikleri hakkında bilgileri bulur.",
+            "Türk sanat müziğinin yapısal özellikleri hakkında ulaştığı bilgileri doğrular.",
+            "Türk sanat müziğinin yapısal özellikleri hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.7.1.2",
+          "m": "Türk sanat müziği türlerini sınıflandırabilme",
+          "s": [
+            "Türk sanat müziği türlerini sınıflandırmak için ölçütleri belirler.",
+            "Türk sanat müziği türlerini belirlediği ölçütlere göre ayırır.",
+            "Türk sanat müziği türlerini gruplandırır.",
+            "Türk sanat müziği türlerini etiketler."
+          ]
+        },
+        {
+          "k": "MT.7.1.3",
+          "m": "Türk sanat müziğinde kullanılan çalgıları sınıflandırabilme",
+          "s": [
+            "Türk sanat müziğinde kullanılan çalgıların ses üretme biçimlerini belirler.",
+            "Türk sanat müziğinde kullanılan çalgıları ses üretme biçimlerine göre ayırır.",
+            "Türk sanat müziğinde kullanılan çalgıları ses üretme biçimlerine göre gruplandırır.",
+            "Türk sanat müziği çalgı gruplarını etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE HAZIRLIK VE OLUŞUM DÖNEMİ",
+      "a": [
+        {
+          "k": "MT.7.2.1",
+          "m": "İslamiyetin etkisiyle Türk sanat müziğinde meydana gelen değişimi dönemin koşulları içinde değerlendirebilme",
+          "s": [
+            "İslamiyetin etkisiyle Türk sanat müziğinde meydana gelen değişime ilişkin dönemin koşullarını analiz eder.",
+            "İslamiyetin etkisiyle Türk sanat müziğinde meydana gelen değişimi fark eder.",
+            "İslamiyetin etkisiyle Türk sanat müziğinde meydana gelen değişimi günümüz koşullarıyla karşılaştırır.",
+            "İslamiyetin etkisiyle Türk sanat müziğinde meydana gelen değişimi dönemin koşulları içerisinde açıklar."
+          ]
+        },
+        {
+          "k": "MT.7.2.2",
+          "m": "Hazırlık ve Oluşum Dönemi’nde müzikle tedavi konusundaki çalışmalar hakkında bilgi toplayabilme",
+          "s": [
+            "Hazırlık ve Oluşum Dönemi’nde müzikle tedavi konusundaki çalışmalar hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Hazırlık ve Oluşum Dönemi’nde müzikle tedavi konusundaki çalışmalar hakkındaki bilgileri bulur.",
+            "Hazırlık ve Oluşum Dönemi’nde müzikle tedavi konusundaki çalışmalar hakkında ulaşılan bilgileri doğrular.",
+            "Hazırlık ve Oluşum Dönemi’nde müzikle tedavi konusundaki çalışmalar hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.7.2.3",
+          "m": "Türk sanat müziği kuramcılarının yaptıkları çalışmalarla Türk sanat müziğine katkılarını yorumlayabilme",
+          "s": [
+            "Türk sanat müziği kuramcılarının yaptıkları çalışmaları inceleyerek bu çalışmaların Türk sanat müziğine katkılarını belirler.",
+            "Türk sanat müziği kuramcılarının yaptıkları çalışmalarla Türk sanat müziğine katkılarını açıklar.",
+            "Türk sanat müziği kuramcılarının yaptıkları çalışmalarla Türk sanat müziğine katkılarını yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "MT.7.2.4",
+          "m": "Türk sanat müziğinde ebced notası hakkında bilgi toplayabilme",
+          "s": [
+            "Türk sanat müziğinde ebced notası hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk sanat müziğinde ebced notası hakkındaki bilgileri bulur.",
+            "Türk sanat müziğinde ebced notası hakkında ulaşılan bilgileri doğrular.",
+            "Türk sanat müziğinde ebced notası hakkında ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE KLASİK ÖNCESİ DÖNEM",
+      "a": [
+        {
+          "k": "MT.7.3.1",
+          "m": "Türk sanat müziğinin Klasik Öncesi Dönem’deki gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Türk sanat müziğinin Klasik Öncesi Dönem’deki gelişimi hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk sanat müziğinin Klasik Öncesi Dönem’deki gelişimi hakkında bilgileri bulur.",
+            "Türk sanat müziğinin Klasik Öncesi Dönem’deki gelişimi hakkında ulaşılan bilgiler doğrular.",
+            "Türk sanat müziğinin Klasik Öncesi Dönem’deki gelişimi hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.7.3.2",
+          "m": "Abdülkâdir Merâgî’nin Türk sanat müziğine katkılarını çözümleyebilme",
+          "s": [
+            "Abdülkâdir Merâgî’nin çalışmalarını belirler.",
+            "Abdülkâdir Merâgî’nin çalışmalarıyla Türk sanat müziğine katkılarını belirler."
+          ]
+        },
+        {
+          "k": "MT.7.3.3",
+          "m": "Klasik Öncesi Dönem’deki Türk sanat müziği bestecilerinin isimlerini kronolojik olarak sıralayabilme",
+          "s": [
+            "Klasik Öncesi Dönem bestecilerinin isimlerini kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "MT.7.3.4",
+          "m": "Hazırlık ve Oluşum Dönemi eserlerini Klasik Öncesi Dönem eserleri ile karşılaştırabilme",
+          "s": [
+            "Dinlediği Hazırlık ve Oluşum Dönemi ile Klasik Dönem’e ait eserlerin özelliklerini belirler.",
+            "Dinlediği eserlerdeki benzerlikleri listeler.",
+            "Dinlediği eserlerdeki farklılıkları listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE KLASİK DÖNEM",
+      "a": [
+        {
+          "k": "MT.7.4.1",
+          "m": "Türk sanat müziğinin Klasik Dönem’deki gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Türk sanat müziğinin Klasik Dönem’deki gelişimi hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk sanat müziğinin Klasik Dönem’deki gelişimi hakkındaki bilgileri bulur.",
+            "Türk sanat müziğinin Klasik Dönem’deki gelişimi hakkında ulaşılan bilgileri doğrular.",
+            "Türk sanat müziğinin Klasik Dönem’deki gelişimi hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.7.4.2",
+          "m": "Buhurizade Mustafa Itri’nin Türk sanat müziğinin Klasik Dönem’ine katkılarını çözümleyebilme",
+          "s": [
+            "Buhurizade Mustafa Itri’nin eserlerini belirler.",
+            "Buhurizade Mustafa Itri’nin eserleriyle Türk sanat müziğinin Klasik Dönem’ine katkılarını belirler."
+          ]
+        },
+        {
+          "k": "MT.7.4.3",
+          "m": "Klasik Dönem’de geliştirilen nota sistemlerini karşılaştırabilme",
+          "s": [
+            "Klasik Dönem’de geliştirilen nota sistemlerinin özelliklerini belirler.",
+            "Klasik Dönem’de geliştirilen nota sistemlerinin benzerliklerini listeler.",
+            "Klasik Dönem’de geliştirilen nota sistemlerinin farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "MT.7.4.4",
+          "m": "III. Selim’in Türk sanat müziğindeki yeniliklerini dönemin koşullarıyla birlikte değerlendirebilme",
+          "s": [
+            "III. Selim’in Türk sanat müziğindeki yeniliklerini kanıtlara dayalı analiz eder.",
+            "III. Selim’in yaşadığı dönemin koşullarını fark eder.",
+            "III. Selim dönemindeki yenilikleri günümüz Türk sanat müziği ile karşılaştırır.",
+            "III. Selim’in çalışmalarını ait olduğu dönemin koşulları içerisinde açıklar."
+          ]
+        },
+        {
+          "k": "MT.7.4.5",
+          "m": "Klasik Dönem’deki Türk sanat müziği bestecilerinin isimlerini kronolojik olarak sıralayabilme",
+          "s": [
+            "Klasik Dönem bestecilerinin isimlerini kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "MT.7.4.6",
+          "m": "Dinlediği Klasik Öncesi Dönem eserleri ile Klasik Dönem eserlerini karşılaştırabilme",
+          "s": [
+            "Dinlediği Klasik Öncesi Dönem ile Klasik Dönem’e ait eserlerin özelliklerini belirler.",
+            "Dinlediği eserlerdeki benzerlikleri listeler.",
+            "Dinlediği eserlerdeki farklılıkları listeler."
+          ]
+        }
+      ]
+    }
+  ]
+}

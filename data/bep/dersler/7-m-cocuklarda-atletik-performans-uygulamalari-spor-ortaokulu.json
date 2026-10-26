@@ -1,0 +1,84 @@
+{
+  "ders": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KUVVET KAVRAMLARI",
+      "a": [
+        {
+          "k": "ÇAPU.7.1.1",
+          "m": "Kuvvet ile ilgili bilgileri sorgulayabilme",
+          "s": [
+            "Kuvvet konusunu tanımlar.",
+            "Kuvvet hakkında sorular sorar.",
+            "Kuvvet hakkında bilgi toplar.",
+            "Kuvvet ile ilgili toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Kuvvet ile ilgili toplanan bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "ÇAPU.7.1.2",
+          "m": "Hareket aralığı (mobilizasyon) ve sabitleme (stabilizasyon) hareketlerini karşılaştırabilme",
+          "s": [
+            "Hareket aralığı (mobilizasyon) ve sabitleme (stabilizasyon) hareketlerinin özelliklerini belirler.",
+            "Hareket aralığı (mobilizasyon) ve sabitleme (stabilizasyon) hareketlerinin benzerliklerini listeler.",
+            "Hareket aralığı (mobilizasyon) ve sabitleme (stabilizasyon) hareketlerinin farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "ÇAPU.7.1.3",
+          "m": "Kuvvet testleri sonuçlarına dayanarak performans seviyesini değerlendirebilme",
+          "s": [
+            "Kuvvet düzeyine ilişkin ölçütleri belirler.",
+            "Kuvvet düzeyine ilişkin ölçme yapar.",
+            "Test sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KUVVET UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.7.2.1",
+          "m": "Sabitleme(stabilizasyon) egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Sabitleme hareketi bileşenlerini açıklar.",
+            "Sabitleme hareketi bileşeninin egzersizlerini uygular.",
+            "Sabitleme hareketleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        },
+        {
+          "k": "ÇAPU.7.2.2",
+          "m": "Hareket aralığı (mobilizasyon) egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Hareket aralığı bileşenlerini açıklar.",
+            "Hareket aralığı bileşenininin egzersizlerini uygular.",
+            "Hareket aralığı hareketleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        },
+        {
+          "k": "ÇAPU.7.2.3",
+          "m": "Temel kuvvet egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Temel kuvvet bileşenlerini açıklar.",
+            "Temel kuvvet bileşeni egzersizlerini uygular.",
+            "Temel kuvvet egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        },
+        {
+          "k": "ÇAPU.7.2.4",
+          "m": "Patlayıcı kuvvet egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Patlayıcı kuvvet bileşenlerini açıklar.",
+            "Patlayıcı kuvvet bileşeni egzersizlerini uygular.",
+            "Patlayıcı kuvvet egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "ders": "Seçmeli Medya Okuryazarlığı",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1.ÖĞRENME ALANI: BİREY, TOPLUM VE MEDYA",
+      "a": [
+        {
+          "k": "SMOY.1.1",
+          "m": "Medyanın, kendi hayatındaki yerini kavrar.",
+          "s": [
+            "Medyanın, kendi hayatındaki yerini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.1.2",
+          "m": "Medya okuryazarlığını kavramını ve bu kavramın kendisi için önemini bilir.",
+          "s": [
+            "Medya okuryazarlığını kavramını ve bu kavramın kendisi için önemini bilir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.1.3",
+          "m": "Medya alanındaki meslekleri tanıtır.",
+          "s": [
+            "Medya alanındaki meslekleri tanıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.1.4",
+          "m": "Medya ile ilişkilerinde yaşadıkları sorunların çözümüne yönelik özgün, yaratıcı ve yansıtıcı proje fikirleri geliştirir.",
+          "s": [
+            "Medya ile ilişkilerinde yaşadıkları sorunların çözümüne yönelik özgün, yaratıcı ve yansıtıcı proje fikirleri geliştirir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. ÖĞRENME ALANI: KATILIM ORTAMI OLARAK MEDYA",
+      "a": [
+        {
+          "k": "SMOY.2.1",
+          "m": "Medyaya erişirken, medyayı takip ederken ve medya içeriği üretirken bireysel/toplumsal sorumlulukları yerine getirir.",
+          "s": [
+            "Medyaya erişirken, medyayı takip ederken ve medya içeriği üretirken bireysel/toplumsal sorumlulukları yerine getirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.2.2",
+          "m": "Medyaya erişirken, medyayı takip ederken ve medya içerikleri üretirken haklarını kullanır.",
+          "s": [
+            "Medyaya erişirken, medyayı takip ederken ve medya içerikleri üretirken haklarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.2.3",
+          "m": "Beğendiği veya sorunlu gördüğü medya içeriklerine ilişkin duyarlı davranır.",
+          "s": [
+            "Beğendiği veya sorunlu gördüğü medya içeriklerine ilişkin duyarlı davranır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.2.4",
+          "m": "Medyanın bireye sunduğu imkânları kullanır.",
+          "s": [
+            "Medyanın bireye sunduğu imkânları kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. ÖĞRENME ALANI: BİLGİ KAYNAĞI OLARAK MEDYA",
+      "a": [
+        {
+          "k": "SMOY.3.1",
+          "m": "Günümüzde bilgiye yönelik erişim, takip, yararlanma, değerlendirme, üretme, paylaşma gibi imkânları keşfeder.",
+          "s": [
+            "Günümüzde bilgiye yönelik erişim, takip, yararlanma, değerlendirme, üretme, paylaşma gibi imkânları keşfeder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.3.2",
+          "m": "Doğru ve güvenilir bilgiye ulaşmanın önündeki engelleri fark eder.",
+          "s": [
+            "Doğru ve güvenilir bilgiye ulaşmanın önündeki engelleri fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.3.3",
+          "m": "Doğru ve güvenilir bilgilere ulaşmak için uygun stratejilerden yararlanır.",
+          "s": [
+            "Doğru ve güvenilir bilgilere ulaşmak için uygun stratejilerden yararlanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.3.4",
+          "m": "Amaç ve hedef kitlesine uygun farklı türde medya iletileri oluşturur.",
+          "s": [
+            "Amaç ve hedef kitlesine uygun farklı türde medya iletileri oluşturur."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. ÖĞRENME ALANI: EĞLENCE KAYNAĞI OLARAK MEDYA",
+      "a": [
+        {
+          "k": "SMOY.4.1",
+          "m": "Eğlence amacı ile seçilen medya iletilerinin içerik ve biçim özelliklerini çözümler.",
+          "s": [
+            "Eğlence amacı ile seçilen medya iletilerinin içerik ve biçim özelliklerini çözümler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.4.2",
+          "m": "Farklı izleyici kitlelerine yönelik eğlence medyası üretir.",
+          "s": [
+            "Farklı izleyici kitlelerine yönelik eğlence medyası üretir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.4.3",
+          "m": "Kültür endüstrisi olarak medyanın yerini ve işlevlerini tartışır.",
+          "s": [
+            "Kültür endüstrisi olarak medyanın yerini ve işlevlerini tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.4.4",
+          "m": "Küreselleşme sürecinde medyanın kültürel mücadelenin aracı olduğunu bilerek millî kültürünü öne çıkaracak içerik ve ortamları tasarlar.",
+          "s": [
+            "Küreselleşme sürecinde medyanın kültürel mücadelenin aracı olduğunu bilerek millî kültürünü öne çıkaracak içerik ve ortamları tasarlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "5. ÖĞRENME ALANI: İKNA ARACI OLARAK MEDYA",
+      "a": [
+        {
+          "k": "SMOY.5.1",
+          "m": "Medya iletilerinde dilin, yazıların, seslerin ve görsellerin ikna etme amacıyla nasıl kullanıldığını kavrar.",
+          "s": [
+            "Medya iletilerinde dilin, yazıların, seslerin ve görsellerin ikna etme amacıyla nasıl kullanıldığını kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.5.2",
+          "m": "İkna etme tekniklerini göz önüne alarak reklamları çözümler.",
+          "s": [
+            "İkna etme tekniklerini göz önüne alarak reklamları çözümler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.5.3",
+          "m": "Medyada karakterlerin (kahramanların) kullanımını değerlendirir.",
+          "s": [
+            "Medyada karakterlerin (kahramanların) kullanımını değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SMOY.5.4",
+          "m": "İkna tekniklerini kullanarak medya iletileri üretir.",
+          "s": [
+            "İkna tekniklerini kullanarak medya iletileri üretir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

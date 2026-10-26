@@ -1,0 +1,92 @@
+{
+  "ders": "Görgü Kuralları ve Nezaket 2",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÖRGÜ KURALLARI VE NEZAKETİN İNSANİ İLİŞKİLERDEKİ ROLÜ",
+      "a": [
+        {
+          "k": "GKN.2.1.1",
+          "m": "Görgü kuralları ve nezaketin insani ilişkilerdeki rolünü tartışabilme",
+          "s": [
+            "Görgü kuralları ve nezaketin insani ilişkilerdeki rolünü tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.2.1.2",
+          "m": "Haklarını savunurken görgü kuralları ve nezakete uygun davranışlar sergilemenin günlük hayata etkileriyle ilgili yansıtma yapabilme",
+          "s": [
+            "Haklarını savunurken görgü kuralları ve nezakete uygun davranışlar sergilemenin günlük hayata etkileriyle ilgili yansıtma yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: DOĞAYA SAYGI YAŞAMA NEZAKET",
+      "a": [
+        {
+          "k": "GKN.2.2.1",
+          "m": "İnsanın doğayla etkileşimi sırasında görgü kuralları ve nezakete uygun davranmasının sonuçlarını özetleyebilme",
+          "s": [
+            "İnsanın doğayla etkileşimi sırasında görgü kuralları ve nezakete uygun davranmasının sonuçlarını özetler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.2.2.2",
+          "m": "Çevre bilincinin oluşmasında görgü kuralları ve nezaketin rolünü yorumlayabilme",
+          "s": [
+            "Çevre bilincinin oluşmasında görgü kuralları ve nezaketin rolünü yorumlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3.TEMA: DİJİTAL DÜNYADA GÖRGÜ KURALLARI VE NEZAKET",
+      "a": [
+        {
+          "k": "GKN.2.3.1",
+          "m": "Dijital ortamlarda kişisel bilgilerin gizliliği ile ilgili bilgi toplayabilme",
+          "s": [
+            "Dijital ortamlarda kişisel bilgilerin gizliliği ile ilgili bilgi toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.2.3.2",
+          "m": "Dijital iletişimde etik ve nazik davranmanın günlük hayata etkilerini yorumlayabilme",
+          "s": [
+            "Dijital iletişimde etik ve nazik davranmanın günlük hayata etkilerini yorumlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: KÜLTÜRDEN KÜLTÜRE GÖRGÜ KURALLARI VE NEZAKET",
+      "a": [
+        {
+          "k": "GKN.2.4.1",
+          "m": "Farklı kültürlere ait görgü kuralları ve nezakete ilişkin bilgi toplayabilme",
+          "s": [
+            "Farklı kültürlere ait görgü kuralları ve nezakete ilişkin bilgi toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.2.4.2",
+          "m": "Farklı kültürlerde görgü kuralları ve nezakete uygun davranmanın hayata etkisini tartışabilme",
+          "s": [
+            "Farklı kültürlerde görgü kuralları ve nezakete uygun davranmanın hayata etkisini tartışır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SÜSLEME ÇEŞİTLERİ",
+      "a": [
+        {
+          "k": "KMN.7.1.1",
+          "m": "Süsleme çeşitlerini eser ve etütlerle çalabilme",
+          "s": [
+            "Temel süsleme çeşitlerini kullanırken eserleri çözümler.",
+            "Temel süsleme çeşitlerini çalarken, uygun duruş ve tutuş pozisyonu sergiler.",
+            "Süsleme çeşitlerini kemana özgü tekniklerle kullanır.",
+            "Temel süsleme çeşitlerini eserlerde ve etütlerde uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PORTATO TEKNİĞİ",
+      "a": [
+        {
+          "k": "KMN.7.2.1",
+          "m": "Portato tekniğini etüt ve eserlerde çalabilme",
+          "s": [
+            "Portato tekniğinde çalınacak eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak portato tekniği kullanarak eser ve etütler çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak portato tekniğinde etüt ve eserler çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NÜANSLAR VE SES DEĞİŞTİRİCİ İŞARETLER-2",
+      "a": [
+        {
+          "k": "KMN.7.3.1",
+          "m": "Nüanslar ve ses değiştirici işaretlerin ritmik bileşenleri ayırt edilerek akıcı ve bütünsel şekilde okuyabilme",
+          "s": [
+            "Değiştirici işaretler ve nüanslar kullanılarak ritmik ve ezgisel bileşenleri tanır.",
+            "Ritmik ve ezgisel bileşenleri ayırt eder.",
+            "Ritmik ve ezgisel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.7.3.2",
+          "m": "Nüansları ve ses değiştirici işaretleri kullanarak eser ve etüt çalabilme",
+          "s": [
+            "Çalınacak eserleri çözümler.",
+            "Ses değiştirici işaretleri ve nüansları çalarken ritmik ve ezgisel bileşenleri tanır.",
+            "Çalarken kemana özgü teknikleri kullanır.",
+            "Çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PIYANO EŞLİKLİ PARÇA ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.6.4.1",
+          "m": "Piyano ve keman eşlikli etüt ve eserleri çalabilme",
+          "s": [
+            "Seviyesine uygun eşlikli etüt ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak eşlikli etüt ve eserleri çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak keman ve piyano eşlikli etüt ve eserleri çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

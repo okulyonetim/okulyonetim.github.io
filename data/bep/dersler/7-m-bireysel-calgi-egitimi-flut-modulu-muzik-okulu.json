@@ -1,0 +1,106 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "FLÜTTE İKİNCİ OKTAV LA, Sİ, DO VE Sİ BEMOL/LA DİYEZ SESLERİ",
+      "a": [
+        {
+          "k": "FLT.7.1.1",
+          "m": "Flütte “2. oktav la, si, do“ seslerini çalabilme",
+          "s": [
+            "2. oktav la, si, do seslerini çözümler.",
+            "2. oktav la, si, do seslerini çalabilmek için duruş, tutuş pozisyonu alır.",
+            "2. oktav la, si, do seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan egzersizleri çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.7.1.2",
+          "m": "Flütte “2. oktav si bemol/la diyez“ sesini çalabilme",
+          "s": [
+            "2. oktav si bemol/la diyez sesinden oluşan egzersizleri çözümler.",
+            "2. oktav si bemol/la diyez sesini çalabilmek için duruş, tutuş pozisyonu alır.",
+            "2. oktav si bemol/la diyez sesini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Öğrendiği seslerden oluşan etüt, egzersiz ve eserleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "12/8’LİK ÖLÇÜ",
+      "a": [
+        {
+          "k": "FLT.7.2.1",
+          "m": "12/8’lik ölçüleri çalabilme",
+          "s": [
+            "12/8’lik ölçülerde etüt, egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak 12/8’lik ölçülerde etüt, egzersiz ve eser çalar.",
+            "12/8’lik ölçülerde etüt, egzersiz ve eser çalarken flüte özgü teknikleri kullanır.",
+            "12/8’lik ölçülerde etüt, egzersiz ve eser çalarken müziksel bileşenleri kullanır"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE KALIN DO VE DO DİYEZ",
+      "a": [
+        {
+          "k": "FLT.7.3.1",
+          "m": "Flütte “kalın do ve do diyez“ seslerini çalabilme",
+          "s": [
+            "Kalın do ve do diyez seslerini çözümler.",
+            "Kalın do ve do diyez seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Kalın do ve do diyez seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Egzersizleri ve etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAMSAL DİZİLER-3 (HİCAZ-NİKRİZ)",
+      "a": [
+        {
+          "k": "FLT.7.5.1",
+          "m": "Hicaz makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Hicaz makamının motiflerini tanır.",
+            "Hicaz makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Hicaz makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.7.5.2",
+          "m": "Hicaz makamında eserler çalabilme",
+          "s": [
+            "Hicaz makamındaki eserleri çözümler.",
+            "Hicaz makamında eserler çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Hicaz makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Hicaz makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.7.5.3",
+          "m": "Nikriz makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Nikriz makamının motiflerini tanır.",
+            "Nikriz makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Nikriz makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.7.5.4",
+          "m": "Nikriz makamında eserler çalabilme",
+          "s": [
+            "Nikriz makamındaki eserleri çözümler.",
+            "Nikriz makamında eserler çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Nikriz makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Nikriz makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

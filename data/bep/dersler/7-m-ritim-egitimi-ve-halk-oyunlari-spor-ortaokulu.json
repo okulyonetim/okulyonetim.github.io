@@ -1,0 +1,55 @@
+{
+  "ders": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MÜZİK, SPOR VE HAREKET",
+      "a": [
+        {
+          "k": "RİHO.7.1.1",
+          "m": "Müzik eşliğinde sportif becerilere özgü ritmik hareket edebilme",
+          "s": [
+            "Sportif becerilere özgü çalışmalarda ritim ve müziği algılar.",
+            "Ritim ve müzik eşliğinde sportif becerilere özgü çalışmalarda ritme uygun hareket eder.",
+            "Ritim ve müzik eşliğinde sportif becerilere özgü çalışmalarda performans sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KARMA ÖLÇÜLÜ RİTİM EĞİTİMİ VE HALK OYUNLARIMIZ",
+      "a": [
+        {
+          "k": "RİHO.7.2.1",
+          "m": "Seçilen halk oyunlarına ilişkin bilgi toplayabilme",
+          "s": [
+            "Seçilen halk oyunlarına ilişkin bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak seçilen halk oyunlarının hikâyesi ile oyuna özgü kıyafet ve kullanılan malzemeler hakkındaki bilgileri bulur.",
+            "Seçilen halk oyunlarının hikâyesi ile oyuna özgü kıyafet ve kullanılan malzemeler hakkında ulaştığı bilgileri doğrular.",
+            "Seçilen halk oyunlarının hikâyesi ile oyuna özgü kıyafet ve kullanılan malzemeler hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "RİHO.7.2.2",
+          "m": "Karma ölçülü ritim kalıplarıyla ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla karma ölçülü ritim kalıplarını algılar.",
+            "Karma ölçülü ritim kalıplarına özgü seçilen halk oyunları çalışmalarında ritme uygun hareket eder.",
+            "Karma ölçülü ritim kalıplarına özgü seçilen halk oyunlarının adımlamalarını sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.7.2.3",
+          "m": "Karma ölçülü ritim kalıplarıyla seçilen halk oyunlarında koreografiye uygun eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

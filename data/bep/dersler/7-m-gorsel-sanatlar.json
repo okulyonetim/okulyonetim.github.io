@@ -1,0 +1,127 @@
+{
+  "ders": "Görsel Sanatlar",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAYAT VE SANAT",
+      "a": [
+        {
+          "k": "GS.7.1.1",
+          "m": "Toplum ve çevre bağlamında renk, doku ve biçim ilişkilerini kurarak biyofilik yapabilme",
+          "s": [
+            "Renk, doku ve biçim ilişkilerini temel alarak toplumsal mekânlara uygun biyofilik tasarlar.",
+            "Renk, doku ve biçim ilişkilerini temel alarak toplumsal mekânlara uygun biyofilik oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATIN GÖRSEL DİLİ",
+      "a": [
+        {
+          "k": "GS.7.2.1",
+          "m": "Tasarım ürünleri ve logolardaki göstergelerin mesajlarını okuyabilme",
+          "s": [
+            "Tasarım ürünleri ve logolardaki görsel göstergelerin renk, biçim ve yazı tipine dayalı estetik mesajlarını algılar.",
+            "Tasarım ürünleri ve logolardaki göstergelerin kültürel ve işlevsel mesajlarını anlamlandırır."
+          ]
+        },
+        {
+          "k": "GS.7.2.2",
+          "m": "Stilizasyon ve deformasyon tekniklerini kullanarak seçilen temaya uygun logo veya amblem yapabilme",
+          "s": [
+            "Stilizasyon ve deformasyon tekniklerini kullanarak seçilen temanın görsel mesajını ifade eden logo veya amblem tasarlar.",
+            "Stilize veya deforme edilmiş biçimlerden hareketle logo veya amblem oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATÇILAR VE ESERLERİ",
+      "a": [
+        {
+          "k": "GS.7.3.1",
+          "m": "Çağdaş Türk resim sanatındaki izlenimci eserleri inceleyebilme",
+          "s": [
+            "İzlenimci eseri sanatsal açıdan betimler.",
+            "İzlenimci eseri sanatsal açıdan çözümler.",
+            "İzlenimci eseri sanatsal açıdan yorumlar.",
+            "İzlenimci eser hakkında sanatsal yargıda bulunur."
+          ]
+        },
+        {
+          "k": "GS.7.3.2",
+          "m": "Doğa izlenimleri yansıtan resim yapabilme",
+          "s": [
+            "Işık ve renk etkilerini kullanarak doğa izlenimlerini yansıtan kompozisyon tasarlar.",
+            "Işık ve renk etkilerini kullanarak doğa izlenimlerini yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇİZİM VE GÖRSEL İFADE",
+      "a": [
+        {
+          "k": "GS.7.4.1",
+          "m": "Perspektif kurallarına uygun iç mekân çizimi yapabilme",
+          "s": [
+            "İç mekândaki nesnelerin boyut ve yerleşimlerini, perspektif kurallarına uygun şekilde tasarlar.",
+            "Derinlik etkisini vurgulayan iç mekân çizimi oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RENK VE ESTETİK",
+      "a": [
+        {
+          "k": "GS.7.5.1",
+          "m": "Mekân ile natürmortu birleştiren renkli resim yapabilme",
+          "s": [
+            "Mekân ile natürmortu asimetrik düzenle bütünleştiren kompozisyon tasarlar.",
+            "Renk geçişleri ve tonlama tekniklerini kullanarak mekân ile natürmortu asimetrik düzenle bütünleştiren kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MİLLÎ DEĞERLER VE SANAT",
+      "a": [
+        {
+          "k": "GS.7.6.1",
+          "m": "Dünya çocuklarına yönelik barış ve dostluk mesajlarını yansıtan sanatsal üretim yapabilme",
+          "s": [
+            "Barış ve dostluk mesajlarını yansıtan sanatsal ürün tasarlar.",
+            "Barış ve dostluk mesajlarını yansıtan sanatsal ürün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZE VE KÜLTÜR",
+      "a": [
+        {
+          "k": "GS.7.7.1",
+          "m": "Türk müzeciliğine ilişkin bilgi toplayabilme",
+          "s": [
+            "Türk müzeciliğine ilişkin bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk müzeciliği hakkındaki bilgileri bulur.",
+            "Türk müzeciliğiyle ilgili ulaştığı bilgileri doğrular.",
+            "Türk müzeciliğiyle ilgili ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.7.7.2",
+          "m": "Dijital araçları kullanarak sanal müze yapabilme",
+          "s": [
+            "Belirlediği temaya uygun koleksiyon eserlerini içeren sanal müze tasarlar.",
+            "Dijital araçlarla sanal müze oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

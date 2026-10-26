@@ -1,0 +1,93 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "YAY TEKNİKLERİ-2",
+      "a": [
+        {
+          "k": "VLS.7.1.1",
+          "m": "Staccato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Staccato tekniğinin kullanıldığı etüdü çözümler.",
+            "Staccato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Staccato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Staccato tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.7.1.2",
+          "m": "Pizzicato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Pizzicato tekniğinin kullanıldığı etüdü çözümler.",
+            "Pizzicato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Pizzicato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Pizzicato tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.7.1.3",
+          "m": "Karma yay tekniklerini kullanarak eser çalabilme",
+          "s": [
+            "Karma yay tekniklerinin kullanıldığı eseri çözümler.",
+            "Karma yay tekniklerine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Karma yay tekniklerini çalgıya özgü tekniklerle kullanır.",
+            "Karma yay tekniklerini kullanarak eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DİZİ VE ETÜT UYGULAMALARI-3",
+      "a": [
+        {
+          "k": "VLS.7.2.1",
+          "m": "Segâh makamında etüt çalabilme",
+          "s": [
+            "Segâh makamı dizisinin kullanıldığı etüdü çözümler.",
+            "Segâh makamını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Segâh makamını çalarken viyolonsele özgü teknikleri kullanır.",
+            "Segâh makamını çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.7.2.2",
+          "m": "Hüseyni makamında etüt çalabilme",
+          "s": [
+            "Hüseyni makamı dizisinin kullanıldığı etüdü çözümler.",
+            "Hüseyni makamını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Hüseyni makamını çalarken viyolonsele özgü teknikleri kullanır.",
+            "Hüseyni makamını çalarken müziksel bileşenleri uygular"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜÇÜK USULLERLE ESER UYGULAMALARI-2",
+      "a": [
+        {
+          "k": "VLS.7.3.1",
+          "m": "Türk aksağı usulünde Türk müziği eserlerini çalabilme",
+          "s": [
+            "Türk aksağı usulünün kullanıldığı eseri çözümler.",
+            "Türk aksağı usulünde eser çalarken duruş ve tutuş pozisyonunu alır.",
+            "Türk aksağı usulünde eser çalarken çalgıya özgü teknikleri kullanır.",
+            "Türk aksağı usulünde eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.7.3.2",
+          "m": "Yürük semai usulünde Türk müziği eserlerini çalabilme",
+          "s": [
+            "Yürük semai usulünün kullanıldığı eseri çözümler.",
+            "Yürük semai usulünde eser çalarken duruş ve tutuş pozisyonunu alır.",
+            "Yürük semai usulünde eser çalarken çalgıya özgü teknikleri kullanır.",
+            "Yürük semai usulünde eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

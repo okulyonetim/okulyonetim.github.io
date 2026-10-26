@@ -1,0 +1,93 @@
+{
+  "ders": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAKIM SPORLARI (FUTBOL)",
+      "a": [
+        {
+          "k": "KSE.2.1",
+          "m": "Takım sporlarında seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklayabilme",
+          "s": [
+            "Takım sporlarında seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.2.2",
+          "m": "Takım sporlarında seçilen spor branşının oyun kurallarını ifade edebilme",
+          "s": [
+            "Takım sporlarında seçilen spor branşının oyun kurallarını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.2.3",
+          "m": "Takım sporlarında seçilen spor branşına ilişkin hareket becerileri sergileyebilme",
+          "s": [
+            "Seçilen spor branşına ilişkin hareket becerilerini algılar.",
+            "Seçilen spor branşına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Seçilen spor branşına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "KSE.2.4",
+          "m": "Takım sporlarında grupla hareket edebilme",
+          "s": [
+            "Takım sporlarında grupla hareket ederken rollerini tanımlar.",
+            "Takım sporlarında grupla hareket ederken rollerini yerine getirir. c ) Takım sporlarında grupla uyumlu hareket eder."
+          ]
+        },
+        {
+          "k": "KSE.2.5",
+          "m": "Grup liderliği sergileme",
+          "s": [
+            "Takım sporlarında grup liderliği özelliklerini tanır.",
+            "Takım sporlarında grup liderliği özelliklerini gösterir."
+          ]
+        },
+        {
+          "k": "KSE.2.6",
+          "m": "Takım sporlarında seçilen branşlara ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "Seçilen branşlara ilişkin taktiksel problemi belirler.",
+            "Seçilen branşlara ilişkin taktiksel problemin çözümüne yönelik öneri sunar.",
+            "Seçilen branşlara ilişkin belirlenen taktik ve stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SU SPORLARI",
+      "a": [
+        {
+          "k": "KSE.4.1",
+          "m": "Su sporlarının geçmişten günümüze tarihsel gelişimi ve genel özelliklerini açıklayabilme",
+          "s": [
+            "Su sporlarının geçmişten günümüze tarihsel gelişimi ve genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.4.2",
+          "m": "Seçilen su sporlarına ait güvenli ortam oluşturabilme",
+          "s": [
+            "Seçilen su sporlarına ait riskleri belirler.",
+            "Seçilen su sporlarına ait önleyici tedbirleri alır."
+          ]
+        },
+        {
+          "k": "KSE.4.3",
+          "m": "Seçilen su sporlarına özgü hareket becerilerini sergileyebilme",
+          "s": [
+            "Seçilen su sporlarına özgü hareket becerilerini algılar.",
+            "Seçilen su sporlarına özgü hareket becerilerinin basamaklarını gösterir.",
+            "Seçilen su sporlarına özgü hareket becerilerini farklı ortamlarda uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

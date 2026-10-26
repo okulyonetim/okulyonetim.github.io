@@ -1,0 +1,144 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİ USULLERİNİ ÖĞRENİYORUM-4",
+      "a": [
+        {
+          "k": "MİOY.7.1.1.9",
+          "m": "zamanlı aksak, 10 zamanlı aksak semai usulleri yazabilme",
+          "s": [
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini tanır.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini ayırt eder.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.1.2.9",
+          "m": "zamanlı aksak, 10 zamanlı aksak semai usulleri okuyabilme",
+          "s": [
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini anır.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini ayırt eder.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.1.3.9",
+          "m": "zamanlı aksak, 10 zamanlı aksak semai usulleri işitebilme",
+          "s": [
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini tanır.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini ayırt eder.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerini ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.7.1.4.9",
+          "m": "zamanlı aksak, 10 zamanlı aksak semai usullerine uygun hareket sergileyebilme",
+          "s": [
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerinin yapısına uygun hareketler belirler.",
+            "9 zamanlı aksak, 10 zamanlı aksak semai usullerinin yapısına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDİ SES DİZİSİ",
+      "a": [
+        {
+          "k": "MİOY.7.2.1",
+          "m": "Türk müziğinde kürdi ses dizisini yazabilme",
+          "s": [
+            "Kürdi ses dizisi tanır.",
+            "Kürdi ses dizisi ayırt eder.",
+            "Kürdi ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.2.2",
+          "m": "Türk müziğinde kürdi ses dizisini okuyabilme",
+          "s": [
+            "Kürdi ses dizisi bileşenlerini tanır.",
+            "Kürdi ses dizisi bileşenlerini işitsel olarak ayırt eder.",
+            "Kürdi ses dizisi bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.2.3",
+          "m": "Türk müziğinde kürdi ses dizisini işitebilme",
+          "s": [
+            "Kürdi ses dizisi bileşenlerini tanır.",
+            "Kürdi ses dizisi bileşenlerini işitsel olarak ayırt eder.",
+            "Kürdi ses dizisi bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ SES DİZİSİ",
+      "a": [
+        {
+          "k": "MİOY.7.3.1",
+          "m": "Türk müziğinde hicaz ses dizisini yazabilme",
+          "s": [
+            "Hicaz ses dizisini tanır.",
+            "Hicaz ses dizisini ayırt eder.",
+            "Hicaz ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.3.2",
+          "m": "Türk müziğinde hicaz ses dizisini okuyabilme",
+          "s": [
+            "Hicaz ses dizisinin bileşenlerini tanır.",
+            "Hicaz ses dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Hicaz ses dizisinin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.3.3",
+          "m": "Türk müziğinde hicaz ses dizisini işitebilme",
+          "s": [
+            "Hicaz ses dizisinin bileşenlerini tanır.",
+            "Hicaz ses dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Hicaz ses dizisinin bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Sİ BEMOL MAJÖR VE SOL MİNÖR",
+      "a": [
+        {
+          "k": "MİOY.7.4.1",
+          "m": "Si bemol majör ve sol minör dizileri yazabilme",
+          "s": [
+            "Si bemol majör ve sol minör dizileri kavramını tanır.",
+            "Si bemol majör ve sol minör dizileri ayırt eder.",
+            "Si bemol majör ve sol minör dizileri uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.4.2",
+          "m": "Si bemol majör ve sol minör dizileri okuyabilme",
+          "s": [
+            "Si bemol majör ve sol minör dizi bileşenlerini tanır.",
+            "Si bemol majör ve sol minör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Si bemol majör ve sol minör dizi bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.7.4.3",
+          "m": "Si bemol majör ve sol minör dizileri işitebilme",
+          "s": [
+            "Si bemol majör ve sol minör dizi bileşenlerini tanır.",
+            "Si bemol majör ve sol minör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Si bemol majör ve sol minör dizi bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

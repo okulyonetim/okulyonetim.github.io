@@ -1,0 +1,98 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ARŞE TEKNİKLERİ",
+      "a": [
+        {
+          "k": "VİY.7.1.1",
+          "m": "Detaşe tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Detaşe tekniğini kullanacağı etüdü çözümler.",
+            "Detaşe tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Detaşe tekniğini çalgıya özgü teknikle kullanır.",
+            "Detaşe tekniği ile etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VİY.7.1.2",
+          "m": "Legato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Legato tekniğini kullanacağı etüdü çözümler.",
+            "Legato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Legato tekniğini çalgıya özgü teknikle kullanır.",
+            "Legato tekniği ile etüt çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAM DİZİLERİ İLE ETÜTLER-1",
+      "a": [
+        {
+          "k": "VİY.7.2.1",
+          "m": "Makam dizilerinde etüt çalışmaları yapabilme",
+          "s": [
+            "Çargâh, buselik, kürdi makamı dizilerine uygun etütleri çözümler.",
+            "Makam dizilerine uygun etütleri çalarken doğru duruş ve tutuş pozisyonlarını alır.",
+            "Makam dizilerine uygun etütleri çalarken viyolaya özgü teknikleri kullanır.",
+            "Makam dizilerine uygun etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İLERİ DÜZEY YAY TEKNİKLERİ",
+      "a": [
+        {
+          "k": "VİY.7.3.1",
+          "m": "Staccato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Staccato tekniğinin kullanıldığı etüdü çözümler.",
+            "Staccato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Staccato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Staccato tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VİY.7.3.2",
+          "m": "Pizzicato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Pizzicato tekniğinin kullanıldığı etüdü çözümler.",
+            "Pizzicato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Pizzicato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Pizzicato tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VİY.7.3.3",
+          "m": "Karma yay tekniklerini kullanarak eser çalabilme",
+          "s": [
+            "Karma yay tekniklerinin kullanıldığı eseri çözümler.",
+            "Karma yay tekniklerine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Karma yay tekniklerini çalgıya özgü tekniklerle kullanır.",
+            "Karma yay tekniklerini kullanarak eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ESER İCRA",
+      "a": [
+        {
+          "k": "VİY.7.4.1",
+          "m": "Çargâh, buselik, kürdi ve hicaz makam dizilerine uygun eserleri icra edebilme",
+          "s": [
+            "Verilen eserleri çözümler.",
+            "Eserleri çalarken doğru duruş ve tutuş pozisyonlarını alır.",
+            "Eserleri çalarken viyolaya özgü teknikleri uygular.",
+            "Eserleri müziksel bileşenlere uygun şekilde icra eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

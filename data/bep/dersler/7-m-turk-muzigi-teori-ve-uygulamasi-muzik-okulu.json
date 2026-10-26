@@ -1,0 +1,77 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TRANSPOZE",
+      "a": [
+        {
+          "k": "TMT.7.1.1",
+          "m": "Dörtlü ve Beşlileri Transpoze yazabilme",
+          "s": [
+            "Transpoze etme kavramını tanır.",
+            "Transpoze edilmiş dörtlü ve beşlileri ana perdeler üzerine transpoze etme kavramını yazılı olarak ayırt eder.",
+            "Dörtlü ve beşlileri ana perdeler üzerine transpoze edip yazarak ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.7.1.2",
+          "m": "Transpoze okuyabilme",
+          "s": [
+            "Ana perdeler üzerine transpoze edilen dörtlüleri ve beşlileri tanır.",
+            "Ana perdeler üzerine transpoze edilen beşlileri ayırt eder.",
+            "Ana perdeler üzerine transpoze edilen beşlileri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇEŞNİ",
+      "a": [
+        {
+          "k": "TMT.7.2.1",
+          "m": "Çeşnileri işitebilme",
+          "s": [
+            "Çeşniyi oluşturan sesleri tanır.",
+            "Ezgilerde kullanılan çeşnileri işitsel ve görsel olarak ayırt eder.",
+            "Nota üzerinde çeşnileri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE DİZİ OLUŞTURMAYA YARAYAN DİĞER DÖRTLÜ VE BEŞLİLER",
+      "a": [
+        {
+          "k": "TMT.7.3.1",
+          "m": "Türk müziğinde kullanılan diğer dörtlü ve beşlileri işitebilme",
+          "s": [
+            "Diğer dörtlü ve beşlilerin bileşenlerini tanır.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini işitsel olarak ayırt eder.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.7.3.2",
+          "m": "Türk müziğinde kullanılan diğer dörtlü ve beşlileri okuyabilme",
+          "s": [
+            "Diğer dörtlü ve beşlilerin bileşenlerini tanır.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini ayırt eder.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "TMT.7.3.3",
+          "m": "Türk müziğinde kullanılan diğer dörtlü ve beşlileri yazabilme",
+          "s": [
+            "Diğer dörtlü ve beşlilerin bileşenlerini tanır.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini ayırt eder.",
+            "Diğer dörtlü ve beşlilerin bileşenlerini açıklar."
+          ]
+        }
+      ]
+    }
+  ]
+}

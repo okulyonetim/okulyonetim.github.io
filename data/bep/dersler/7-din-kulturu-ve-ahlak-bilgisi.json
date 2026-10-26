@@ -1,0 +1,186 @@
+{
+  "ders": "Din Kültürü ve Ahlak Bilgisi",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. MELEK VE AHİRET İNANCI",
+      "a": [
+        {
+          "k": "DKAB.7.1.1",
+          "m": "Melekleri sınıflandırabilme",
+          "s": [
+            "Görülen ve görülemeyen varlıkları öğretmen rehberliğinde araştırır.",
+            "Temel İslam kaynaklarından hareketle meleklerin yaratılan diğer varlıklardan farklı özelliklerini ayrıştırır.",
+            "Melekleri ve onların görevlerini listeler."
+          ]
+        },
+        {
+          "k": "DKAB.7.1.2",
+          "m": "Ahiret hayatının aşamalarını çözümleyebilme",
+          "s": [
+            "Ahiret hayatının aşamalarına ilişkin unsurları inceler.",
+            "Ahiret hayatının aşamalarına ilişkin unsurlar arasındaki ilişkileri açıklar."
+          ]
+        },
+        {
+          "k": "DKAB.7.1.3",
+          "m": "Melek ve ahiret inancının insana kazandırdıkları konusunda analitik düşünebilme",
+          "s": [
+            "Melek ve ahiret inancının insan davranışına etkisini inceler.",
+            "Melek ve ahiret inancının insan davranışına etkisiyle ilgili sonuç çıkarır.",
+            "Melek ve ahiret inancının insan davranışına etkisiyle ilgili ulaştığı çıkarımları davranışlarına yansıtır."
+          ]
+        },
+        {
+          "k": "DKAB.7.1.4",
+          "m": "Nâs suresini ve bu surenin anlamını okuyarak yorumlayabilme",
+          "s": [
+            "Nâs suresini ve bu surenin anlamını okur.",
+            "Nâs suresinin anlamını kendi hayatı için anlamlı bir hâle getirir.",
+            "Nâs suresinin anlamını değiştirmeyecek şekilde özetler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. HAC, UMRE VE KURBAN",
+      "a": [
+        {
+          "k": "DKAB.7.2.1",
+          "m": "Hac ve umre ibadetlerini çözümleyebilme",
+          "s": [
+            "Temel İslam kaynaklarından hareketle hac ve umre ibadetleriyle ilgili unsurları inceler.",
+            "Hac ve umre ibadetleriyle ilgili unsurlar arasındaki ilişkileri bulur."
+          ]
+        },
+        {
+          "k": "DKAB.7.2.2",
+          "m": "Kurban ibadetini yapılandırabilme",
+          "s": [
+            "Kurban ibadetiyle Hz. İsmail kıssası arasında nedensel ilişki ortaya koyar.",
+            "Kurban ibadeti hakkında temel İslam kaynaklarından elde ettiği bilgilerden hareketle uyumlu bir bakış açısı geliştirir."
+          ]
+        },
+        {
+          "k": "DKAB.7.2.3",
+          "m": "Hac ve kurban ibadetinin kültürümüze yansımalarını müşahede edebilme",
+          "s": [
+            "Hac ve kurban ibadetlerinin kültürümüze yansımasına ilişkin ön gözlem veya tecrübelerini ilişkilendirir.",
+            "Hac ve kurban ibadetlerinin kültürümüze yansımasına ilişkin çıkarımlar yapar.",
+            "Hac ve kurban ibadetlerinin kültürümüze yansımasına ilişkin sonuç çıkarır."
+          ]
+        },
+        {
+          "k": "DKAB.7.2.4",
+          "m": "Kâfirun suresini ve bu surenin anlamını okuyarak yorumlayabilme",
+          "s": [
+            "Kâfirun suresini ve bu surenin anlamını okur.",
+            "Kâfirun suresinin anlamını kendi hayatı için anlamlı bir hâle getirir.",
+            "Kâfirun suresinin anlamını değiştirmeyecek şekilde özetler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. İSLAM DÜŞÜNCESİNDE YORUMLAR",
+      "a": [
+        {
+          "k": "DKAB.7.3.1",
+          "m": "Din anlayışındaki yorum farklılıklarının sebeplerini anlayabilme",
+          "s": [
+            "Din ve din anlayışı kavramlarını tanımlar.",
+            "Din ve din anlayışı arasındaki farklara dair sorular sorar.",
+            "Dinin farklı yorumlanma sebeplerine dair bilgi toplar.",
+            "Dinin farklı yorumlanma sebeplerine dair topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Dinin farklı yorumlanma sebeplerine ilişkin topladığı bilgilerden yola çıkarak dinin neden farklı yorumlandığına dair çıkarım yapar."
+          ]
+        },
+        {
+          "k": "DKAB.7.3.2",
+          "m": "İslam düşüncesindeki yorum biçimlerini sınıflandırabilme",
+          "s": [
+            "İslam düşüncesindeki yorum biçimlerini araştırır.",
+            "İslam düşüncesindeki yorum biçimlerini itikadi, fıkhi ve tasavvufi yorumlar olarak ayrıştırır.",
+            "İslam düşüncesindeki yorum biçimlerini itikadi, fıkhi ve tasavvufi yorumlar şeklinde tasnif eder.",
+            "İslam düşüncesindeki yorum biçimlerini itikadi, fıkhi ve tasavvufi yorumlar şeklinde listeler."
+          ]
+        },
+        {
+          "k": "DKAB.7.3.3",
+          "m": "Kültürümüzdeki tasavvufi yorumları çözümleyebilme",
+          "s": [
+            "Kültürümüzdeki tasavvufi yorumları inceler.",
+            "Kültürümüzdeki tasavvufi yorumlar arasındaki ilişkileri bulur."
+          ]
+        },
+        {
+          "k": "DKAB.7.3.4",
+          "m": "Alevilik Bektaşilik ile ilgili temel kavramlar ve cem erkânları hakkında bilgi toplayabilme",
+          "s": [
+            "Alevilik Bektaşilik ile ilgili temel kavramlar ve cem erkânları konusunu araştırır.",
+            "Alevilik Bektaşilik ile ilgili temel kavramlar ve cem erkânları hakkında bilgileri bulur.",
+            "Alevilik Bektaşilik ile ilgili temel kavramlar ve cem erkânları hakkında ulaştığı bilgileri kontrol eder.",
+            "Alevilik Bektaşilik ile ilgili temel kavram ve erkânlar hakkında ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. PEYGAMBER OLARAK HZ. MUHAMMED",
+      "a": [
+        {
+          "k": "DKAB.7.4.1",
+          "m": "Hz. Muhammed’in (sav) Mekke’de yaşadıklarını yorumlayabilme",
+          "s": [
+            "Hz. Muhammed’in (sav) Mekke’de yaşadıklarını inceler.",
+            "Hz. Muhammed’in (sav) Mekke’de yaşadıklarını kendi ifadeleriyle, doğru ve bilgiyi değiştirmeyecek şekilde özetler."
+          ]
+        },
+        {
+          "k": "DKAB.7.4.2",
+          "m": "Hicret konusunu tarihsel bağlamda değerlendirebilme",
+          "s": [
+            "Hz. Muhammed’in (sav) Hicret’te yaşadıklarını temel kaynaklardan hareketle fark eder.",
+            "Hicret’in yaşandığı dönemi koşulları içerisinde açıklar.",
+            "Hicret’in yaşandığı dönemi analiz eder.",
+            "Hicret’in yaşandığı dönemi günümüz koşullarıyla karşılaştırır."
+          ]
+        },
+        {
+          "k": "DKAB.7.4.3",
+          "m": "Hz. Muhammed’in (sav) Medine Dönemi konusunu yapılandırabilme",
+          "s": [
+            "Hz. Muhammed’in (sav) Medine’de yaşadıklarını inceleyerek çıkarımda bulunur.",
+            "Hz. Muhammed’in (sav) Medine hayatı hakkında yaptığı çıkarımları ifade eder."
+          ]
+        },
+        {
+          "k": "DKAB.7.4.4",
+          "m": "Nasr suresini ve bu surenin anlamını okuyarak yorumlayabilme",
+          "s": [
+            "Nasr suresini ve bu surenin anlamını okur.",
+            "Nasr suresinin anlamını kendi hayatı için anlamlı bir hâle getirir.",
+            "Nasr suresinin anlamını değiştirmeyecek şekilde özetler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. YAŞAYAN DÜNYA DİNLERİ",
+      "a": [
+        {
+          "k": "DKAB.7.5.1",
+          "m": "Yahudilik, Hristiyanlık, Hinduizm ve Budizm dinleri hakkında bilgi toplayabilme",
+          "s": [
+            "Yahudilik, Hristiyanlık, Hinduizm ve Budizm dinlerini araştırır.",
+            "Yahudilik, Hristiyanlık, Hinduizm ve Budizm dinleri hakkında bilgiler bulur.",
+            "Yahudilik, Hristiyanlık, Hinduizm ve Budizm dinleri hakkında edindiği bilgileri doğrular.",
+            "Yahudilik, Hristiyanlık, Hinduizm ve Budizm dinleri hakkında edindiği bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

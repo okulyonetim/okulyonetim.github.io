@@ -1,0 +1,159 @@
+{
+  "ders": "Temel Dini Bilgiler (İslam-1)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. DİNİMİZ İSLAM",
+      "a": [
+        {
+          "k": "TDB.1.1.1",
+          "m": "Kur’an ve sünnetin hayatındaki yerini özetleyebilme",
+          "s": [
+            "Kur’an ve sünnetin hayatındaki yerini sınıflandırır.",
+            "Kur’an ve sünnetin hayatındaki yerini kendi ifadeleriyle yorumlar. \""
+          ]
+        },
+        {
+          "k": "TDB.1.1.2",
+          "m": "Niçin inandığıyla ilgili Kur’an-ı Kerim meallerine başvurabilme",
+          "s": [
+            "Ayetlerde geçen konuları belirler.",
+            "Ayetleri içeriklerine göre sınıflandırır.",
+            "Ayet mealleri doğrultusunda “Niçin inanıyorum?” sorusuyla ilgili çıkarım yapar.",
+            "Ayetlerle ilgili yaptığı çıkarımlara konulara uygun yer verir. \""
+          ]
+        },
+        {
+          "k": "TDB.1.1.3",
+          "m": "Mümin kimliği hakkında müşahede edebilme",
+          "s": [
+            "Belirlediği meseleler hakkında soru sorar.",
+            "Mümin kimliği hakkında merak ettiği meseleleri inceler.",
+            "İnceleme sonuçları hakkında çıkarım yapar.\""
+          ]
+        },
+        {
+          "k": "TDB.1.1.4",
+          "m": "Allah’ın (cc) güzel isimlerini ayırt edebilme",
+          "s": [
+            "Metinlerde geçen Allah’ın (cc) güzel isimlerinin İslam’daki yeri ve önemini araştırır.",
+            "Allah’ın (cc) güzel isimlerini ilişkili olduğu alana göre etiketler.\""
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. HAYATIMIZ İBADET",
+      "a": [
+        {
+          "k": "TDB.1.2.1",
+          "m": "İbadetle ilgili öğrendiklerini kendi hayatına yansıtabilme",
+          "s": [
+            "İbadetle ilgili öğrendiklerini gözden geçirir.",
+            "İbadetle ilgili öğrendiklerine dayalı çıkarım yapar.",
+            "İbadetle ilgili öğrendikleri hakkında ulaştığı çıkarımları değerlendirir.\""
+          ]
+        },
+        {
+          "k": "TDB.1.2.2",
+          "m": "İbadetin temel ilkeleri konusunda analitik düşünebilme",
+          "s": [
+            "İbadetin temel ilkeleri arasında kurduğu ilişkiyle ilgili akıl yürütür.",
+            "Akıl yürütme ile ulaştığı çıkarımları tartışır.",
+            "İbadetin temel ilkelerine uymanın gerekliliğini gerekçeleriyle belirler.\""
+          ]
+        },
+        {
+          "k": "TDB.1.2.3",
+          "m": "İbadetlerin hükümlerini mukayese yapabilme",
+          "s": [
+            "Belirlenen özelliklere ilişkin benzerlikleri ortaya koyar.",
+            "Belirlenen özelliklere ilişkin farklılıkları ortaya koyar.",
+            "Belirlenen özellikler arasında ilişki kurar.",
+            "Ortaya konan benzerlik ve farklılıklara dayalı olarak ibadetlerin hükümleri hakkında çıkarım yapar. \""
+          ]
+        },
+        {
+          "k": "TDB.1.2.4",
+          "m": "Allah’ın (cc) güzel isimlerini ayırt edebilme",
+          "s": [
+            "Metinlerde geçen Allah’ın (cc) güzel isimlerinin İslam’daki yeri ve önemini araştırır.",
+            "Allah’ın (cc) güzel isimlerini ilişkili olduğu alana göre etiketler.\""
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. İSLAM ÖLÇÜLÜ OLMAMIZI İSTER",
+      "a": [
+        {
+          "k": "TDB.1.3.2",
+          "m": "Kardeşlikte ölçümüzü idrak edebilme",
+          "s": [
+            "Kardeşlikte ölçü konusuyla ilgili tefekkür sürecine dayalı çıkarım yapar.",
+            "Kardeşlikte ölçü konusuyla ilgili ulaşılan çıkarımları değerlendirir.\""
+          ]
+        },
+        {
+          "k": "TDB.1.3.3",
+          "m": "Tasarrufta ölçümüzle ilgili Kur’an-ı Kerim meallerine başvurabilme",
+          "s": [
+            "Tasarrufta ölçüyle ilgili ayetlerde geçen kavramları belirler.",
+            "Tasarrufta ölçüyle ilgili ayetleri içeriklerine göre sınıflandırır.",
+            "Tasarrufta ölçüyle ilgili ayet mealleri doğrultusunda konuyla ilgili çıkarım yapar.",
+            "Tasarrufta ölçüyle ilgili yaptığı çıkarımlara günlük hayatında yer verir.\""
+          ]
+        },
+        {
+          "k": "TDB.1.3.4",
+          "m": "Allah’ın (cc) güzel isimlerini ayırt edebilme",
+          "s": [
+            "Metinlerde geçen Allah’ın (cc) güzel isimlerinin İslam’daki yeri ve önemini araştırır.",
+            "Allah’ın (cc) güzel isimlerini ilişkili olduğu alana göre etiketler.\""
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. İSLAM'LA DEĞERLENEN HAYATIMIZ",
+      "a": [
+        {
+          "k": "TDB.1.4.1",
+          "m": "Müslüman’ın iradesine sahip çıkmasını ve onu bilinçli biçimde kullanmasını müşahede edebilme",
+          "s": [
+            "Belirlediği konular hakkında soru sorar.",
+            "Müslüman’ın iradesine sahip çıkması ve onu bilinçli biçimde kullanmasıyla ilgili merak ettiği konuları inceler.",
+            "İnceleme sonuçları hakkında çıkarım yapar.\""
+          ]
+        },
+        {
+          "k": "TDB.1.4.2",
+          "m": "Müslüman’ın ilimle yücelmesini idrak edebilme",
+          "s": [
+            "Müslüman’ın ilimle yücelmesi hakkındaki tefekkür sürecine dayalı çıkarım yapar.",
+            "Ulaşılan çıkarımları değerlendirir.\""
+          ]
+        },
+        {
+          "k": "TDB.1.4.3",
+          "m": "Müslüman’ın hayâ ile güzelleşmesini anlayabilme",
+          "s": [
+            "Hayâ kavramını tanımlar.",
+            "Hayânın Müslüman’a kattığı değerleri sebepleriyle açıklar.",
+            "Hayâ kavramının özelliklerini belirler.\""
+          ]
+        },
+        {
+          "k": "TDB.1.4.4",
+          "m": "Allah’ın (cc) güzel isimlerini ayırt edebilme",
+          "s": [
+            "Metinlerde geçen Allah’ın (cc) güzel isimlerinin İslam’daki yeri ve önemini araştırır.",
+            "Allah’ın (cc) güzel isimlerini ilişkili olduğu alana göre etiketler.\""
+          ]
+        }
+      ]
+    }
+  ]
+}

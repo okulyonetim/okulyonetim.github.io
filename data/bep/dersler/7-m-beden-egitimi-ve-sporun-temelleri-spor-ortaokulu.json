@@ -1,0 +1,65 @@
+{
+  "ders": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÖZEL GEREKSİNİMLİ BİREYLERDE SPOR",
+      "a": [
+        {
+          "k": "BEST.7.1.1",
+          "m": "Özel gereksinimli bireylerin spora katılımını ve spor faaliyetlerini özetleyebilme",
+          "s": [
+            "Farklı özel gereksinim gruplarındaki bireylerin spora katılımı hakkında çözümleme yapar.",
+            "Özel gereksinimli bireylerin katıldığı spor branşlarının geçmişten günümüze gelişimi hakkında sınıflandırma yapar.",
+            "Sporun bireylerin özelliklerinden bağımsız olarak toplumu bir araya getirme gücünü yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPOR SAKATLANMALARINDA İLK YARDIM BİLGİSİ",
+      "a": [
+        {
+          "k": "BEST.7.2.1",
+          "m": "Spor sakatlanmalarına ilişkin bilgileri özetleyebilme",
+          "s": [
+            "Spor sakatlanmalarının nedenleri ile ilgili çözümleme yapar.",
+            "Spor sakatlanmalarına ilişkin sınıflandırma yapar.",
+            "Sakatlanmalardan korunmanın yollarını yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPORCU BESLENMESİ",
+      "a": [
+        {
+          "k": "BEST.7.3.1",
+          "m": "Egzersiz ve beslenme arasındaki ilişkiyi yansıtabilme",
+          "s": [
+            "Egzersiz ve beslenme deneyimlerini gözden geçirir.",
+            "Egzersiz ve beslenme deneyimine dayalı çıkarım yapar.",
+            "Egzersiz ve beslenme ilişkisi hakkında ulaşılan çıkarımları değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPOR TEKNOLOJİSİ",
+      "a": [
+        {
+          "k": "BEST.7.4.1",
+          "m": "Spor teknolojisini genelleyebilme",
+          "s": [
+            "Spor teknolojisi ile ilgili bilgi toplar.",
+            "Spor teknolojisinde kullanılan materyallerin ortak özelliklerini belirler.",
+            "Spor teknolojisinde kullanılan materyallerin ortak olmayan özelliklerini belirler.",
+            "Spor teknolojisinde kullanılan materyaller üzerinden önermede bulunur."
+          ]
+        }
+      ]
+    }
+  ]
+}

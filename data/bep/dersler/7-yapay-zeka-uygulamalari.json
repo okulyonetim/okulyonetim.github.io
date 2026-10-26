@@ -1,0 +1,342 @@
+{
+  "ders": "Yapay Zeka Uygulamaları",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "YZU.1.1. ÜNİTE: YAPAY ZEKÂYA GİRİŞ",
+      "a": [
+        {
+          "k": "YZU.1.1.1.1",
+          "m": "Yapay zekânın tanımını yapar.",
+          "s": [
+            "Yapay zekânın tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.1.1.2",
+          "m": "Yapay zekâ ve zekânın benzerliklerini fark eder.",
+          "s": [
+            "Yapay zekâ ve zekânın benzerliklerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.1.1.3",
+          "m": "Yapay zekâ ve zekânın ayrımını yapar.",
+          "s": [
+            "Yapay zekâ ve zekânın ayrımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.1.1.4",
+          "m": "Yapay zekânın sınırlılıklarını fark eder.",
+          "s": [
+            "Yapay zekânın sınırlılıklarını fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.1.2.1",
+          "m": "Yapay zekânın tarihsel gelişimini açıklar.",
+          "s": [
+            "Yapay zekânın tarihsel gelişimini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YZU.1.2. ÜNİTE: YAPAY ZEKÂNIN KULLANIM ALANLARI VE ALT BOYUTLARI",
+      "a": [
+        {
+          "k": "YZU.1.2.1.1",
+          "m": "Yapay zekânın kullanım alanlarını ifade eder.",
+          "s": [
+            "Yapay zekânın kullanım alanlarını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.2.1.2",
+          "m": "Yapay zekâ uygulamalarının nasıl çalıştığını örnekler üzerinden açıklar.",
+          "s": [
+            "Yapay zekâ uygulamalarının nasıl çalıştığını örnekler üzerinden açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.2.1.3",
+          "m": "Farklı yapay zekâ uygulamalarının sonuçlarını örnekler üzerinden açıklar.",
+          "s": [
+            "Farklı yapay zekâ uygulamalarının sonuçlarını örnekler üzerinden açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.2.1.4",
+          "m": "Üretken yapay zekâ uygulamalarını etkili bir biçimde kullanma yöntemlerini fark eder.",
+          "s": [
+            "Üretken yapay zekâ uygulamalarını etkili bir biçimde kullanma yöntemlerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.2.2.1",
+          "m": "Yapay zekânın alt boyutlarını açıklar.",
+          "s": [
+            "Yapay zekânın alt boyutlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.2.2.2",
+          "m": "Yapay zekânın alt boyutları ile kullanım alanlarını ilişkilendirir.",
+          "s": [
+            "Yapay zekânın alt boyutları ile kullanım alanlarını ilişkilendirir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YZU.1.3. ÜNİTE: YAPAY ZEKÂ VE ETİK",
+      "a": [
+        {
+          "k": "YZU.1.3.1.1",
+          "m": "Yapay zekâ uygulamalarında büyük veri kavramının önemini fark eder.",
+          "s": [
+            "Yapay zekâ uygulamalarında büyük veri kavramının önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.1.2",
+          "m": "Yapay zekâ uygulamalarında veri madenciliği kavramının önemini fark eder.",
+          "s": [
+            "Yapay zekâ uygulamalarında veri madenciliği kavramının önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.2.1",
+          "m": "Yapay zekâ ve etik kavramları arasında bağlantı kurar.",
+          "s": [
+            "Yapay zekâ ve etik kavramları arasında bağlantı kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.2.2",
+          "m": "Yapay zekâ uygulamalarındaki büyük veri kaynaklı etik ihlallerini örnekler",
+          "s": [
+            "Yapay zekâ uygulamalarındaki büyük veri kaynaklı etik ihlallerini örnekler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.2.3",
+          "m": "Yapay zekâ uygulamalarındaki veri madenciliği kaynaklı etik ihlallerini örnekler üzerinden açıklar.",
+          "s": [
+            "Yapay zekâ uygulamalarındaki veri madenciliği kaynaklı etik ihlallerini örnekler üzerinden açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.3.1",
+          "m": "Yapay zekâ uygulamalarında kişisel verilerin ihlaline örnekler verir.",
+          "s": [
+            "Yapay zekâ uygulamalarında kişisel verilerin ihlaline örnekler verir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.3.3.2",
+          "m": "Yapay zekâ uygulamalarında karşılaşılan ihlallere karşı bilişim güvenliği ilkelerini uygular.",
+          "s": [
+            "Yapay zekâ uygulamalarında karşılaşılan ihlallere karşı bilişim güvenliği ilkelerini uygular."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YZU.1.4. ÜNİTE: YAPAY ZEKÂNIN ÖNEMİ",
+      "a": [
+        {
+          "k": "YZU.1.4.1.1",
+          "m": "Yapay zekânın önemini kavrar.",
+          "s": [
+            "Yapay zekânın önemini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.4.2.1",
+          "m": "Yapay zekânın geleceği ile ilgili çıkarımlar yapar.",
+          "s": [
+            "Yapay zekânın geleceği ile ilgili çıkarımlar yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YZU.1.5. ÜNİTE: BLOK TABANLI GELİŞTİRME ORTAMLARI",
+      "a": [
+        {
+          "k": "YZU.1.5.1.1",
+          "m": "Çevrim içi blok tabanlı ortamlara erişim sağlar.",
+          "s": [
+            "Çevrim içi blok tabanlı ortamlara erişim sağlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.5.1.2",
+          "m": "Çevrim dışı blok tabanlı geliştirme ortamının kurulumunu yapar.",
+          "s": [
+            "Çevrim dışı blok tabanlı geliştirme ortamının kurulumunu yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.5.1.3",
+          "m": "Blok tabanlı geliştirme ortamının arayüzünü tanır.",
+          "s": [
+            "Blok tabanlı geliştirme ortamının arayüzünü tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.5.1.4",
+          "m": "Blok tabanlı geliştirme ortamına ait algılayıcıları ayırt eder.",
+          "s": [
+            "Blok tabanlı geliştirme ortamına ait algılayıcıları ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.5.1.5",
+          "m": "Blok tabanlı geliştirme ortamının kütüphanelerini tanır.",
+          "s": [
+            "Blok tabanlı geliştirme ortamının kütüphanelerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.5.1.6",
+          "m": "Blok tabanlı geliştirme ortamını gerçek zamanlı olarak test etme yöntemlerini fark eder.",
+          "s": [
+            "Blok tabanlı geliştirme ortamını gerçek zamanlı olarak test etme yöntemlerini fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YZU.1.6. ÜNİTE: BLOK TABANLI ÖRNEK PROJE GELİŞTİRME",
+      "a": [
+        {
+          "k": "YZU.1.6.1.1",
+          "m": "Yapay zekâ uygulamalarında görüntü işlemenin temel mantığını kavrar.",
+          "s": [
+            "Yapay zekâ uygulamalarında görüntü işlemenin temel mantığını kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.1.2",
+          "m": "Blok tabanlı ortamda görüntü işleme projesi tasarlar.",
+          "s": [
+            "Blok tabanlı ortamda görüntü işleme projesi tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.1.3",
+          "m": "Blok tabanlı ortamda görüntü işleme projesi oluşturur.",
+          "s": [
+            "Blok tabanlı ortamda görüntü işleme projesi oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.1.4",
+          "m": "Blok tabanlı ortamda görüntü işleme projesini gerçek zamanlı olarak test eder.",
+          "s": [
+            "Blok tabanlı ortamda görüntü işleme projesini gerçek zamanlı olarak test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.1.5",
+          "m": "Blok tabanlı ortamda uygulamanın olası hatalarını ayıklar.",
+          "s": [
+            "Blok tabanlı ortamda uygulamanın olası hatalarını ayıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.1.6",
+          "m": "Blok tabanlı ortamda görüntü işleme projesini kaydeder.",
+          "s": [
+            "Blok tabanlı ortamda görüntü işleme projesini kaydeder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.1",
+          "m": "Yapay zekâ uygulamalarında ses işlemenin temel mantığını kavrar.",
+          "s": [
+            "Yapay zekâ uygulamalarında ses işlemenin temel mantığını kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.2",
+          "m": "Blok tabanlı ortamda ses işleme projesi tasarlar.",
+          "s": [
+            "Blok tabanlı ortamda ses işleme projesi tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.3",
+          "m": "Blok tabanlı ortamda ses işleme projesi oluşturur.",
+          "s": [
+            "Blok tabanlı ortamda ses işleme projesi oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.5",
+          "m": "Blok tabanlı ortamda uygulamanın olası hatalarını ayıklar.",
+          "s": [
+            "Blok tabanlı ortamda uygulamanın olası hatalarını ayıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.6",
+          "m": "Blok tabanlı ortamda ses işleme projesini kaydeder.",
+          "s": [
+            "Blok tabanlı ortamda ses işleme projesini kaydeder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "YZU.1.6.2.4",
+          "m": "Blok tabanlı ortamda ses işleme projesini gerçek zamanlı olarak test eder.",
+          "s": [
+            "Blok tabanlı ortamda ses işleme projesini gerçek zamanlı olarak test eder."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

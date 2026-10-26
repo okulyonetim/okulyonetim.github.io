@@ -1,0 +1,302 @@
+{
+  "ders": "Seçmeli İlet. ve Sunum Bec.",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: İLETİŞİME BAŞLARKEN",
+      "a": [
+        {
+          "k": "İSB.1.1",
+          "m": "iletişimin birey ve toplum için önemini kavrar.",
+          "s": [
+            "iletişimin birey ve toplum için önemini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.1.2",
+          "m": "iletişim süreci ve iletişimin temel öğelerini kavrar.",
+          "s": [
+            "iletişim süreci ve iletişimin temel öğelerini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.1.3",
+          "m": "iletişim kurarken dilin önemini kavrar",
+          "s": [
+            "iletişim kurarken dilin önemini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.1.4",
+          "m": "iletişim kurarken sözsüz iletişim unsurlarının önemini kavrar.",
+          "s": [
+            "iletişim kurarken sözsüz iletişim unsurlarının önemini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.1.5",
+          "m": "iletişim araçlarını tanır.",
+          "s": [
+            "iletişim araçlarını tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: ETKİLİ İLETİŞİM",
+      "a": [
+        {
+          "k": "İSB.2.1",
+          "m": "Etkili iletişim türlerini kavrar.",
+          "s": [
+            "Etkili iletişim türlerini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.2.2",
+          "m": "Etkili iletişimin temellerini kavrar.",
+          "s": [
+            "Etkili iletişimin temellerini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.2.3",
+          "m": "Etkili iletişim tekniklerini kavrar.",
+          "s": [
+            "Etkili iletişim tekniklerini kavrar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: İLETİŞİM YÖNETİMİ",
+      "a": [
+        {
+          "k": "İSB.3.1",
+          "m": "iletişim hak ve sorumluluklarını dikkate alır.",
+          "s": [
+            "iletişim hak ve sorumluluklarını dikkate alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.3.2",
+          "m": "Kültürel farklılıkları dikkate alarak iletişim kurar.",
+          "s": [
+            "Kültürel farklılıkları dikkate alarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.3.3",
+          "m": "Görgü kurallarını dikkate alarak iletişim kurar.",
+          "s": [
+            "Görgü kurallarını dikkate alarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.3.4",
+          "m": "Etkin dinler.",
+          "s": [
+            "Etkin dinler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.3.5",
+          "m": "iletişim engel ve çatışmalarını kavrar.",
+          "s": [
+            "iletişim engel ve çatışmalarını kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.3.6",
+          "m": "Sorunlarını iletişim becerilerini kullanarak çözer.",
+          "s": [
+            "Sorunlarını iletişim becerilerini kullanarak çözer."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: SUNUM ÖNCESİ",
+      "a": [
+        {
+          "k": "İSB.4.1",
+          "m": "Sunum ve sunum türlerini tanır.",
+          "s": [
+            "Sunum ve sunum türlerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.2",
+          "m": "Bireysel veya iş birliğine dayalı sunumlarda sorumluluk alır.",
+          "s": [
+            "Bireysel veya iş birliğine dayalı sunumlarda sorumluluk alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.3",
+          "m": "Sunum için zaman planlaması yapar.",
+          "s": [
+            "Sunum için zaman planlaması yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.4",
+          "m": "Sunum için gerekli bilgileri toplar.",
+          "s": [
+            "Sunum için gerekli bilgileri toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.5",
+          "m": "Sunum için gerekli materyalleri hazırlar.",
+          "s": [
+            "Sunum için gerekli materyalleri hazırlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.6",
+          "m": "Sunum için gerekli programları kullanır.",
+          "s": [
+            "Sunum için gerekli programları kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.7",
+          "m": "Verilerden hareketle tablo veya grafik oluşturur.",
+          "s": [
+            "Verilerden hareketle tablo veya grafik oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.8",
+          "m": "Sunumla ilgili tanıtım yapar.",
+          "s": [
+            "Sunumla ilgili tanıtım yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.9",
+          "m": "Sunumun yapılacağı ortamı düzenler.",
+          "s": [
+            "Sunumun yapılacağı ortamı düzenler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.4.10",
+          "m": "Sunum için kendini psikolojik ve fiziksel olarak hazırlar.",
+          "s": [
+            "Sunum için kendini psikolojik ve fiziksel olarak hazırlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "5. ÜNİTE: SUNUM ESNASI",
+      "a": [
+        {
+          "k": "İSB.5.1",
+          "m": "izleyicileri sunum hakkında bilgilendirir.",
+          "s": [
+            "izleyicileri sunum hakkında bilgilendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.5.2",
+          "m": "Sesini ortama göre ayarlar.",
+          "s": [
+            "Sesini ortama göre ayarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.5.3",
+          "m": "Ortamı etkili kullanır.",
+          "s": [
+            "Ortamı etkili kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.5.4",
+          "m": "Sözlü ve sözsüz etkili iletişim tekniklerini uygular.",
+          "s": [
+            "Sözlü ve sözsüz etkili iletişim tekniklerini uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.5.5",
+          "m": "Dinleyici/izleyicilerden geri bildirim alır.",
+          "s": [
+            "Dinleyici/izleyicilerden geri bildirim alır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "6. ÜNİTE: SUNUM SONRASI",
+      "a": [
+        {
+          "k": "İSB.6.1",
+          "m": "Sunumu içerik yönünden değerlendirir.",
+          "s": [
+            "Sunumu içerik yönünden değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.6.3",
+          "m": "Sunumu sözsüz iletişim unsurları (ses, beden dili ve görselleri etkili kullanma) yönünden değerlendirir.",
+          "s": [
+            "Sunumu sözsüz iletişim unsurları (ses, beden dili ve görselleri etkili kullanma) yönünden değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.6.4",
+          "m": "Sunumu iletişim araçlarıyla paylaşır.",
+          "s": [
+            "Sunumu iletişim araçlarıyla paylaşır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "İSB.6.2",
+          "m": "Sunumu dil ve anlatım yönünden değerlendirir.",
+          "s": [
+            "Sunumu dil ve anlatım yönünden değerlendirir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

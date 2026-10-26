@@ -1,0 +1,122 @@
+{
+  "ders": "Geleneksel Sanatlar 2",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: HÜSNÜHAT SANATI",
+      "a": [
+        {
+          "k": "GS.2.1.1",
+          "m": "Hüsnühat sanatının tarihsel süreci ile ilgili bilgi toplayabilme",
+          "s": [
+            "Hüsnühat sanatı hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak hüsnühat sanatı ile ilgili ihtiyaç duyduğu bilgilere ulaşır.",
+            "Hüsnühat sanatı ile ilgili bilgileri doğrular.",
+            "Hüsnühat sanatı ile ilgili bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.2.1.2",
+          "m": "Hüsnühat sanatındaki meşk uygulamalarıyla sanatsal ürün oluşturabilme",
+          "s": [
+            "Harfleri ve harf birleşmelerini yazabilmek için gerekli araçları ifade eder.",
+            "Harfleri ve harf birleşmelerini sanatsal ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: TEZHİP SANATI",
+      "a": [
+        {
+          "k": "GS.2.2.1",
+          "m": "Tezhip sanatı örneklerindeki motif ve desenlerin görsel bileşenlerini sanatsal gözlemleyebilme",
+          "s": [
+            "Tezhip sanatı örneklerindeki motif ve desenlerin görsel bileşenlerini fark eder.",
+            "Tezhip sanatı örneklerindeki motif ve desenlerin görsel bileşenlerini ifade eder."
+          ]
+        },
+        {
+          "k": "GS.2.2.2",
+          "m": "Tezhip sanatında motif ve desen çizim çalışmaları ile sanatsal ürün oluşturabilme",
+          "s": [
+            "Tezhip sanatı motif ve desen çizimine uygun görsel anlatım araçlarını ifade eder.",
+            "Tezhip sanatı motif ve desenlerini eskize dönüştürür."
+          ]
+        },
+        {
+          "k": "GS.2.2.3",
+          "m": "Klasik tezhip tekniklerini uygulayarak sanatsal ürün oluşturabilme",
+          "s": [
+            "Klasik tezhip tekniklerine uygun görsel anlatım araçlarını ifade eder.",
+            "Klasik tezhip tekniklerini kâğıt üzerine uygulayarak sanatsal ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: MİNYATÜR SANATI",
+      "a": [
+        {
+          "k": "GS.2.3.1",
+          "m": "Minyatür sanatı hakkında bilgi toplayabilme",
+          "s": [
+            "Minyatür sanatı hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak minyatür sanatı hakkındaki bilgileri bulur.",
+            "Minyatür sanatı hakkında ulaştığı bilgileri doğrular.",
+            "Minyatür sanatı hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.2.3.2",
+          "m": "Minyatür sanatında ürün tasarlayabilme",
+          "s": [
+            "Minyatür sanatına ait örnek görselleri inceler.",
+            "Minyatür sanatına ait örnek görseller bağlamında oluşturduğu imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.2.3.3",
+          "m": "Minyatür sanatı uygulamalarıyla ürün oluşturabilme",
+          "s": [
+            "Minyatürün konusuna uygun görsel anlatım aracını ifade eder.",
+            "Konuyu minyatür sanatı ürününe dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: AHŞAP SANATI",
+      "a": [
+        {
+          "k": "GS.2.4.1",
+          "m": "Türk ahşap sanatının tarihsel gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Türk ahşap sanatının tarihsel gelişimiyle ilgili gerekli bilgileri edinmek için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak Türk ahşap sanatının tarihsel gelişimiyle ilgili ihtiyaç duyduğu bilgilere ulaşır.",
+            "Türk ahşap sanatının tarihsel gelişimiyle ilgili ulaştığı bilgileri doğrular.",
+            "Türk ahşap sanatının tarihsel gelişimiyle ilgili ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.2.4.2",
+          "m": "Türk ahşap sanatında sanatsal ürün tasarlayabilme",
+          "s": [
+            "Türk ahşap sanatında uygulanan motif ve desenleri inceler.",
+            "Türk ahşap sanatında uygulanan motif ve desenler bağlamında oluşturulan imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.2.4.3",
+          "m": "Türk ahşap sanatı tekniklerini uygulayarak sanatsal ürün oluşturabilme",
+          "s": [
+            "Türk ahşap sanatında sanatsal ürün oluşturmak için uygun görsel anlatım araçlarını ifade eder.",
+            "Türk ahşap sanatı tekniklerini uygulayarak tasarımını sanatsal ürüne dönüştürür."
+          ]
+        }
+      ]
+    }
+  ]
+}

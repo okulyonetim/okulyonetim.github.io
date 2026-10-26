@@ -1,0 +1,167 @@
+{
+  "ders": "Beden Eğitimi",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "PERFORMANSLA İLGİLİ FİZİKSEL UYGUNLUK",
+      "a": [
+        {
+          "k": "BES.7.1.1",
+          "m": "Egzersiz ve beslenme ilişkisini yorumlayabilme",
+          "s": [
+            "Egzersiz ve beslenme ilişkisini inceler.",
+            "Egzersiz ve beslenme ilişkisini kurar.",
+            "Egzersiz ve beslenme ilişkisini yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "BES.7.1.2",
+          "m": "Performansla ilgili fiziksel uygunluğu sağlayabilme",
+          "s": [
+            "Performansla ilgili fiziksel uygunluğu açıklar.",
+            "Performansla ilgili fiziksel uygunluk bileşenlerini içeren hareketleri uygular.",
+            "Performansla ilgili fiziksel uygunluk bileşenlerini geliştirir."
+          ]
+        },
+        {
+          "k": "BES.7.1.3",
+          "m": "Egzersiz ve beslenme konusunda medyada yer alan kaynakların güvenirliğini sorgulayabilme",
+          "s": [
+            "Medyada egzersiz ve beslenme ile ilgili merak ettiği konuyu tanımlar.",
+            "Medyada egzersiz ve beslenme ile ilgili konu hakkında sorular sorar.",
+            "İlgili konu hakkında bilgi toplar.",
+            "Toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinde çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FİLE VE DUVAR OYUNLARI",
+      "a": [
+        {
+          "k": "BES.7.2.1",
+          "m": "File ve duvar oyunlarına ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "File ve duvar oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "File ve duvar oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "File ve duvar oyunlarına ilişkin hareket kavramlarına uygun olarak hareket eder."
+          ]
+        },
+        {
+          "k": "BES.7.2.2",
+          "m": "File ve duvar oyunlarına ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "File ve duvar oyunlarına ilişkin hareket becerilerini algılar.",
+            "File ve duvar oyunlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "File ve duvar oyunlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "BES.7.2.3",
+          "m": "File ve duvar oyunlarına ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "File ve duvar oyunlarına ilişkin verilen taktiksel problemi belirler.",
+            "File ve duvar oyunlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "File ve duvar oyunlarına ilişkin seçilen taktik veya stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "AÇIK ALAN VE MACERA ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "BES.7.3.1",
+          "m": "Açık alan ve macera etkinliklerinde güvenli ortam oluşturabilme",
+          "s": [
+            "Açık alan ve macera etkinliklerine özgü riskleri belirler.",
+            "Açık alan ve macera etkinliklerinde önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "BES.7.3.2",
+          "m": "Açık alan ve macera etkinliklerine ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Açık alan ve Macera etkinliklerine ilişkin hareket becerilerini algılar.",
+            "Açık alan ve Macera etkinliklerine ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Açık alan ve Macera etkinliklerine ilişkin hareket becerilerini farklı durumlarda uygular."
+          ]
+        },
+        {
+          "k": "BES.7.3.3",
+          "m": "Açık alan ve macera etkinliklerinde grup liderliği sergileyebilme",
+          "s": [
+            "Açık alan ve macera etkinliklerinde grup liderliği özelliklerini tanımlar.",
+            "Açık alan ve macera etkinliklerinde grup liderliği özelliklerini davranışlarıyla gösterir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜLTÜREL BİRİKİMLERİMİZ VE OYUN",
+      "a": [
+        {
+          "k": "BES.7.4.1",
+          "m": "Beden eğitimi ve spor alanının öncülerini tanıyabilme",
+          "s": [
+            "Beden eğitimi ve spor alanının öncülerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BES.7.4.2",
+          "m": "Halk oyununa ilişkin hareket örüntülerini sergileyebilme",
+          "s": [
+            "Seçili halk oyununa ilişkin hareket örüntülerini algılar.",
+            "Seçili halk oyununa ilişkin hareket örüntülerinin basamaklarını gösterir.",
+            "Seçili halk oyununa ilişkin hareket örüntülerini uygular."
+          ]
+        },
+        {
+          "k": "BES.7.4.3",
+          "m": "Geleneksel oyunlara ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Geleneksel oyunlara ilişkin verilen hareket becerilerini algılar.",
+            "Geleneksel oyunlara ilişkin verilen hareket becerilerinin basamaklarını gösterir.",
+            "Geleneksel oyunlara ilişkin seçilen hareket becerilerini farklı ortamlarda uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HÜCUM OYUNLARI",
+      "a": [
+        {
+          "k": "BES.7.5.1",
+          "m": "Hücum oyunlarına ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Hücum oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Hücum oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Hücum oyunlarına ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.7.5.2",
+          "m": "Hücum oyunlarına ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Hücum oyunlarına ilişkin hareket becerilerini algılar.",
+            "Hücum oyunlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Hücum oyunlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "BES.7.5.3",
+          "m": "Hücum oyunlarına ilişkin farklı zorluk seviyelerinde taktik ve strateji geliştirebilme",
+          "s": [
+            "Hücum oyunlarına ilişkin taktiksel problemi belirler.",
+            "Hücum oyunlarına ilişkin problemin çözümüne ilişkin öneri sunar.",
+            "Hücum oyunlarına ilişkin seçilen taktik veya stratejiyi uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMADA İLERİ DÜZEY RİTMİK YAPILARI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.7.1.1",
+          "m": "Bağlamada otuz ikilik notaları çalabilme",
+          "s": [
+            "Bağlamada otuz ikilik notaları çözümler.",
+            "Bağlamada otuz ikilik notaları çalarken duruş ve tutuş pozisyonu alır.",
+            "Bağlamada otuz ikilik notalar ile çalgıya özgü teknikleri kullanır.",
+            "Bağlamada otuz ikilik notalar ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA TRİL TEKNİĞİNİ UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.7.2.1",
+          "m": "Bağlamada tril tekniğini çalabilme",
+          "s": [
+            "Bağlamada tril tekniğini çözümler.",
+            "Bağlamada tril tekniğini çalarken duruş ve tutuş pozisyonu alır.",
+            "Bağlamada tril tekniğini, çalgıya özgü teknikleri kullanır.",
+            "Bağlamada tril tekniği ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA ZEYBEK TAVRINI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.7.3.1",
+          "m": "Bağlamada zeybek tavrını çalabilme",
+          "s": [
+            "Bağlamada zeybek tavrını çözümler.",
+            "Bağlamada zeybek tavrını çalarken duruş ve tutuş pozisyonu alır.",
+            "Bağlamada zeybek tavrını, çalgıya özgü teknikleri kullanır.",
+            "Bağlamada zeybek tavır tekniği ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

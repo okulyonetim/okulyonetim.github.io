@@ -1,0 +1,70 @@
+{
+  "ders": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+  "grup": "7. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAKTİKSEL SINIFLANDIRMA VE ALAN/VURUŞ OYUNLARI",
+      "a": [
+        {
+          "k": "OTF.7.1.1",
+          "m": "Oyunları taktiksel özelliklerine göre sınıflandırabilme",
+          "s": [
+            "Oyunları taktiksel özelliklerine göre sınıflandırmaya ilişkin ölçütleri belirler.",
+            "Oyunları taktiksel özelliklerine göre ayırır.",
+            "Oyunları taktiksel özelliklerine göre tasnif eder.",
+            "Oyunları taktiksel sınıflandırma özelliklerine göre etiketler."
+          ]
+        },
+        {
+          "k": "OTF.7.1.2",
+          "m": "Alan ve vuruş oyunlarını çözümleyebilme",
+          "s": [
+            "Alan ve vuruş oyunlarının bileşenlerini belirler.",
+            "Alan ve vuruş oyunlarının özellikleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTF.7.1.3",
+          "m": "Alan ve vuruş oyunlarında güvenli ortam oluşturabilme",
+          "s": [
+            "Alan ve vuruş oyunlarında riskleri belirler.",
+            "Alan ve vuruş oyunlarında belirlediği risklere yönelik önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "OTF.7.1.4",
+          "m": "Alan ve vuruş oyunlarında taktik ve strateji geliştirebilme",
+          "s": [
+            "Alan ve vuruş oyunlarındaki taktiksel problemleri belirler.",
+            "Alan ve vuruş oyunlarında belirlenen problemlerin çözümüne ilişkin öneri sunar.",
+            "Alan ve vuruş oyunlarında seçilen taktiği uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HÜCUM OYUNLARI",
+      "a": [
+        {
+          "k": "OTF.7.2.1",
+          "m": "Hücum oyunlarını çözümleyebilme",
+          "s": [
+            "Hücum oyununa ilişkin ögeleri belirler.",
+            "Hücum oyunları arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTF.7.2.2",
+          "m": "Hücum oyununda taktik ve strateji geliştirebilme",
+          "s": [
+            "Hücum oyununda taktiksel problemi belirler.",
+            "Hücum oyununda belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "Hücum oyununda seçilen taktiği uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}
