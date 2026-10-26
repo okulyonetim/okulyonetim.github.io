@@ -1,0 +1,4103 @@
+{
+  "uretim": "2026-10-17",
+  "yontemler": [
+    "Akran Destekli Öğretim",
+    "Aşamalı Yardımla Öğretim",
+    "Ayrık Denemelerle Öğretim",
+    "Basamaklandırılmış Öğretim Yöntemi",
+    "Bekleme Süreli Öğretim",
+    "Bilgisayar Destekli Öğretim",
+    "Buluş Yoluyla Öğretim",
+    "Çıkarımda Bulunma",
+    "Çoklu Duyuya Dayalı Öğretim",
+    "Deney Yoluyla Öğretim",
+    "Doğal Öğretim",
+    "Doğrudan Öğretim",
+    "Drama",
+    "Eş Zamanlı İpucuyla Öğretim",
+    "Etkinlik Temelli Öğretim",
+    "Fırsat Öğretimi",
+    "Geçiş Merkezli Öğretim",
+    "Gösterim Tekniği (Demonstrasyon)",
+    "Gözlem",
+    "İleri Zincir Yöntemi",
+    "İpucuyla Öğretim",
+    "Koro Halinde Okuma",
+    "Model Olma",
+    "Oyun Temelli Öğretim",
+    "Örnek Olay Öğretimi",
+    "Problem Çözme Yöntemi",
+    "Proje Yöntemi",
+    "Replikli Öğretim",
+    "Sabit Bekleme Süreli Öğretim",
+    "Sesletim ve Çözümleme İle Öğretim",
+    "Soru-Cevap",
+    "Sunuş Yoluyla Öğretim",
+    "Tekrarlı Okuma",
+    "Tersine Zincir Yöntemi",
+    "Tüm Beceri Yöntemi",
+    "Video modelle Öğretim",
+    "Yankılı Okuma",
+    "Yanlışsız Öğretim Yöntemi"
+  ],
+  "materyaller": [
+    "Abaküs",
+    "Ahşap Bloklar",
+    "Akıllı Tahta",
+    "Bilgisayar",
+    "Bilmeceler",
+    "Bilye",
+    "Birim Küpler",
+    "Boncuk",
+    "Cetvel",
+    "Çalışma Kağıdı",
+    "Çeşitli Nesneler",
+    "Çeşitli Sıvılar",
+    "Çubuk",
+    "Defter",
+    "Ders Kitabı",
+    "Etkinlik Çizelgesi",
+    "Etkinlik Kutuları",
+    "Geometrik Şekiller",
+    "Hesap Makinesi",
+    "Hikaye Kitapları",
+    "İlişki Eşleme Kartları",
+    "Kareli Kağıt",
+    "Makara",
+    "Mıknatıs",
+    "Müzik Aletleri",
+    "Okuma Metinleri",
+    "Oyuncak",
+    "Örüntü Blokları",
+    "Öykü Kartları",
+    "Resim Kartları",
+    "Resimli Kartlar",
+    "Saat",
+    "Sayı Eşleme Kartları",
+    "Sayma Boncukları",
+    "Sesli Harfler",
+    "Sıralı Olay Kartları",
+    "Takvim",
+    "Tangram",
+    "Top",
+    "Video",
+    "Vücudumuz Maketi"
+  ],
+  "olcutler": [
+    "%60 (3/5)",
+    "%80 (4/5)",
+    "%100 (5/5)"
+  ],
+  "tanilar": [
+    "Hafif Düzeyde Zihinsel Yetersizlik",
+    "Orta Düzeyde Zihinsel Yetersizlik",
+    "Ağır Düzeyde Zihinsel Yetersizlik",
+    "Çok Ağır Düzeyde Zihinsel Yetersizlik",
+    "Hafif Düzeyde Otizm Spektrum Bozukluğu",
+    "Orta Düzeyde Otizm Spektrum Bozukluğu",
+    "Ağır Düzeyde Otizm Spektrum Bozukluğu",
+    "Özel Öğrenme Güçlüğü",
+    "Dikkat Eksikliği ve Hiperaktivite Bozukluğu",
+    "Dil ve Konuşma Güçlüğü",
+    "İşitme Yetersizliği",
+    "Görme Yetersizliği",
+    "Bedensel Yetersizlik",
+    "Süreğen Hastalık",
+    "Duygu ve Davranış Bozukluğu",
+    "Birden Fazla Yetersizlik",
+    "Özel Yetenekli Birey"
+  ],
+  "kaynak_uretim_tarihi": "2026-10-17",
+  "kademeler": [
+    {
+      "ad": "İlkokul",
+      "gruplar": [
+        {
+          "ad": "1. Sınıf",
+          "dersler": [
+            {
+              "ad": "Beden Eğitimi ve Oyun",
+              "f": "1-beden-egitimi-ve-oyun",
+              "n": 13,
+              "ks": 13,
+              "dosya": "1-beden-egitimi-ve-oyun.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "1-gorsel-sanatlar",
+              "n": 11,
+              "ks": 11,
+              "dosya": "1-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Hayat Bilgisi",
+              "f": "1-hayat-bilgisi",
+              "n": 23,
+              "ks": 23,
+              "dosya": "1-hayat-bilgisi.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 23
+            },
+            {
+              "ad": "Matematik",
+              "f": "1-matematik",
+              "n": 19,
+              "ks": 19,
+              "dosya": "1-matematik.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Müzik",
+              "f": "1-muzik",
+              "n": 13,
+              "ks": 13,
+              "dosya": "1-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Türkçe",
+              "f": "1-turkce",
+              "n": 289,
+              "ks": 289,
+              "dosya": "1-turkce.json",
+              "dogrulanan_unite_sayisi": 24,
+              "dogrulanan_kazanim_sayisi": 289
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "1-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 21,
+              "ks": 21,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 21
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "1-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "1-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "1-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 20,
+              "ks": 20,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "1-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "1-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "1-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            }
+          ]
+        },
+        {
+          "ad": "2. Sınıf",
+          "dersler": [
+            {
+              "ad": "Almanca Ach Sooo A1",
+              "f": "2-almanca-ach-sooo-a1",
+              "n": 30,
+              "ks": 30,
+              "dosya": "2-almanca-ach-sooo-a1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Beden Eğitimi ve Oyun",
+              "f": "2-beden-egitimi-ve-oyun",
+              "n": 12,
+              "ks": 12,
+              "dosya": "2-beden-egitimi-ve-oyun.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "2-gorsel-sanatlar",
+              "n": 11,
+              "ks": 11,
+              "dosya": "2-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Hayat Bilgisi",
+              "f": "2-hayat-bilgisi",
+              "n": 23,
+              "ks": 23,
+              "dosya": "2-hayat-bilgisi.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 23
+            },
+            {
+              "ad": "İngilizce",
+              "f": "2-m-ingilizce",
+              "n": 138,
+              "ks": 138,
+              "dosya": "2-m-ingilizce.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 138
+            },
+            {
+              "ad": "Matematik",
+              "f": "2-matematik",
+              "n": 25,
+              "ks": 25,
+              "dosya": "2-matematik.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Müzik",
+              "f": "2-muzik",
+              "n": 13,
+              "ks": 13,
+              "dosya": "2-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Türkçe",
+              "f": "2-turkce",
+              "n": 222,
+              "ks": 222,
+              "dosya": "2-turkce.json",
+              "dogrulanan_unite_sayisi": 12,
+              "dogrulanan_kazanim_sayisi": 222
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "2-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 21,
+              "ks": 21,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 21
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "2-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "2-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 11,
+              "ks": 11,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "2-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "2-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "2-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "2-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 9
+            }
+          ]
+        },
+        {
+          "ad": "3. Sınıf",
+          "dersler": [
+            {
+              "ad": "Almanca Ach Sooo A1",
+              "f": "3-almanca-ach-sooo-a1",
+              "n": 28,
+              "ks": 28,
+              "dosya": "3-almanca-ach-sooo-a1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Beden Eğitimi ve Oyun",
+              "f": "3-beden-egitimi-ve-oyun",
+              "n": 12,
+              "ks": 12,
+              "dosya": "3-beden-egitimi-ve-oyun.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "3-fen-bilimleri",
+              "n": 19,
+              "ks": 19,
+              "dosya": "3-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "3-m-gorsel-sanatlar",
+              "n": 11,
+              "ks": 11,
+              "dosya": "3-m-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Hayat Bilgisi",
+              "f": "3-hayat-bilgisi",
+              "n": 20,
+              "ks": 20,
+              "dosya": "3-hayat-bilgisi.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "İngilizce",
+              "f": "3-m-ingilizce",
+              "n": 138,
+              "ks": 138,
+              "dosya": "3-m-ingilizce.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 138
+            },
+            {
+              "ad": "Matematik",
+              "f": "3-matematik",
+              "n": 33,
+              "ks": 33,
+              "dosya": "3-matematik.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 33
+            },
+            {
+              "ad": "Müzik",
+              "f": "3-m-muzik",
+              "n": 12,
+              "ks": 12,
+              "dosya": "3-m-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Türkçe",
+              "f": "3-turkce",
+              "n": 185,
+              "ks": 185,
+              "dosya": "3-turkce.json",
+              "dogrulanan_unite_sayisi": 10,
+              "dogrulanan_kazanim_sayisi": 185
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "3-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 22,
+              "ks": 22,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 22
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "3-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "3-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "3-m-calgi-topluluklari-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "3-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Müzik Kültürü (Müzik Okulu)",
+              "f": "3-m-muzik-kulturu-muzik-okulu",
+              "n": 11,
+              "ks": 11,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-muzik-kulturu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "3-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "3-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "3-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 4
+            }
+          ]
+        },
+        {
+          "ad": "4. Sınıf",
+          "dersler": [
+            {
+              "ad": "Din Kültürü ve Ahlak Bilgisi",
+              "f": "4-d-din-kulturu-ve-ahlak-bilgisi",
+              "n": 15,
+              "ks": 15,
+              "dosya": "4-d-din-kulturu-ve-ahlak-bilgisi.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "4-d-fen-bilimleri",
+              "n": 44,
+              "ks": 44,
+              "dosya": "4-d-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 44
+            },
+            {
+              "ad": "İngilizce",
+              "f": "4-d-ingilizce",
+              "n": 10,
+              "ks": 10,
+              "dosya": "4-d-ingilizce.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Matematik",
+              "f": "4-d-matematik",
+              "n": 71,
+              "ks": 71,
+              "dosya": "4-d-matematik.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 71
+            },
+            {
+              "ad": "Sosyal Bilgiler",
+              "f": "4-d-sosyal-bilgiler",
+              "n": 33,
+              "ks": 33,
+              "dosya": "4-d-sosyal-bilgiler.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 33
+            },
+            {
+              "ad": "Türkçe",
+              "f": "4-d-turkce",
+              "n": 4,
+              "ks": 4,
+              "dosya": "4-d-turkce.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Beden Eğitimi",
+              "f": "4-d-beden-egitimi",
+              "n": 25,
+              "ks": 25,
+              "t": "Genel liste",
+              "dosya": "4-d-beden-egitimi.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "4-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 18,
+              "ks": 18,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 18
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "4-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "4-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 11,
+              "ks": 11,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "4-m-calgi-topluluklari-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "4-d-gorsel-sanatlar",
+              "n": 11,
+              "ks": 11,
+              "t": "Genel liste",
+              "dosya": "4-d-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "4-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Müzik",
+              "f": "4-d-muzik",
+              "n": 10,
+              "ks": 10,
+              "t": "Genel liste",
+              "dosya": "4-d-muzik.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Müzik Kültürü (Müzik Okulu)",
+              "f": "4-m-muzik-kulturu-muzik-okulu",
+              "n": 15,
+              "ks": 15,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-muzik-kulturu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "4-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 14,
+              "ks": 14,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "4-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "4-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Ortaokul",
+      "gruplar": [
+        {
+          "ad": "5. Sınıf",
+          "dersler": [
+            {
+              "ad": "Almanca Ach Sooo A2",
+              "f": "5-almanca-ach-sooo-a2",
+              "n": 43,
+              "ks": 43,
+              "dosya": "5-almanca-ach-sooo-a2.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 43
+            },
+            {
+              "ad": "Beden Eğitimi",
+              "f": "5-beden-egitimi",
+              "n": 17,
+              "ks": 17,
+              "dosya": "5-beden-egitimi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 17
+            },
+            {
+              "ad": "Bilişim Teknolojileri",
+              "f": "5-bilisim-teknolojileri",
+              "n": 17,
+              "ks": 17,
+              "dosya": "5-bilisim-teknolojileri.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 17
+            },
+            {
+              "ad": "Din Kültürü ve Ahlak Bilgisi",
+              "f": "5-din-kulturu-ve-ahlak-bilgisi",
+              "n": 18,
+              "ks": 18,
+              "dosya": "5-din-kulturu-ve-ahlak-bilgisi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 18
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "5-fen-bilimleri",
+              "n": 26,
+              "ks": 26,
+              "dosya": "5-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "5-gorsel-sanatlar",
+              "n": 11,
+              "ks": 11,
+              "dosya": "5-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "İngilizce",
+              "f": "5-ingilizce",
+              "n": 204,
+              "ks": 204,
+              "dosya": "5-ingilizce.json",
+              "dogrulanan_unite_sayisi": 9,
+              "dogrulanan_kazanim_sayisi": 204
+            },
+            {
+              "ad": "Matematik",
+              "f": "5-matematik",
+              "n": 23,
+              "ks": 23,
+              "dosya": "5-matematik.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 23
+            },
+            {
+              "ad": "Müzik",
+              "f": "5-muzik",
+              "n": 14,
+              "ks": 14,
+              "dosya": "5-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Sosyal Bilgiler",
+              "f": "5-sosyal-bilgiler",
+              "n": 20,
+              "ks": 20,
+              "dosya": "5-sosyal-bilgiler.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Türkçe",
+              "f": "5-turkce",
+              "n": 176,
+              "ks": 176,
+              "dosya": "5-turkce.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 176
+            },
+            {
+              "ad": "Afet Bilinci 1",
+              "f": "5-afet-bilinci-1",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "5-afet-bilinci-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Ahlak ve Vatandaşlık Eğitimi 1",
+              "f": "5-ahlak-ve-vatandaslik-egitimi-1",
+              "n": 12,
+              "ks": 12,
+              "t": "Seçmeli",
+              "dosya": "5-ahlak-ve-vatandaslik-egitimi-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Arapça (İHO)",
+              "f": "5-arapca-iho",
+              "n": 39,
+              "ks": 39,
+              "t": "İmam Hatip",
+              "dosya": "5-arapca-iho.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 39
+            },
+            {
+              "ad": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+              "f": "5-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Spor Ortaokulu",
+              "dosya": "5-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "5-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 14,
+              "ks": 14,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Bilişim Teknolojileri ve Yazılım (İHO)",
+              "f": "5-bilisim-teknolojileri-ve-yazilim-iho",
+              "n": 22,
+              "ks": 22,
+              "t": "İmam Hatip",
+              "dosya": "5-bilisim-teknolojileri-ve-yazilim-iho.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 22
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "5-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "5-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "5-m-calgi-topluluklari-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+              "f": "5-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Spor Ortaokulu",
+              "dosya": "5-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Çoklu Yabancı Dil Eğitim Modeli Almanca",
+              "f": "5-m-coklu-yabanci-dil-egitim-modeli-almanca",
+              "n": 60,
+              "ks": 60,
+              "t": "Seçmeli",
+              "dosya": "5-m-coklu-yabanci-dil-egitim-modeli-almanca.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 60
+            },
+            {
+              "ad": "Görgü Kuralları ve Nezaket 1",
+              "f": "5-gorgu-kurallari-ve-nezaket-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "5-gorgu-kurallari-ve-nezaket-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Halk Oyunları",
+              "f": "5-halk-oyunlari",
+              "n": 11,
+              "ks": 11,
+              "t": "Seçmeli",
+              "dosya": "5-halk-oyunlari.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+              "f": "5-m-kapsamli-spor-egitimi-spor-ortaokulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Spor Ortaokulu",
+              "dosya": "5-m-kapsamli-spor-egitimi-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "5-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 23,
+              "ks": 23,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 23
+            },
+            {
+              "ad": "Kur'an-ı Kerim (İHO)",
+              "f": "5-kur-an-i-kerim-iho",
+              "n": 20,
+              "ks": 20,
+              "t": "İmam Hatip",
+              "dosya": "5-kur-an-i-kerim-iho.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Kültür ve Medeniyetimize Yön Verenler-1",
+              "f": "5-kultur-ve-medeniyetimize-yon-verenler-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "5-kultur-ve-medeniyetimize-yon-verenler-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Masal ve Destanlarımız 1",
+              "f": "5-masal-ve-destanlarimiz-1",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "5-masal-ve-destanlarimiz-1.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Medya Okuryazarlığı",
+              "f": "5-ms-medya-okuryazarligi",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "5-ms-medya-okuryazarligi.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Müzik Tarihi (Müzik Okulu)",
+              "f": "5-m-muzik-tarihi-muzik-okulu",
+              "n": 16,
+              "ks": 16,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-muzik-tarihi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 16
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "5-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Okul Temelli Sosyal Sorumluluk Çalışmaları",
+              "f": "5-ms-okul-temelli-sosyal-sorumluluk-calismalari",
+              "n": 44,
+              "ks": 44,
+              "t": "Seçmeli",
+              "dosya": "5-ms-okul-temelli-sosyal-sorumluluk-calismalari.json",
+              "dogrulanan_unite_sayisi": 17,
+              "dogrulanan_kazanim_sayisi": 44
+            },
+            {
+              "ad": "Okuma Becerileri",
+              "f": "5-okuma-becerileri",
+              "n": 1,
+              "ks": 1,
+              "t": "Seçmeli",
+              "dosya": "5-okuma-becerileri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 1
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Drama",
+              "f": "5-oyun-ve-oyun-etkinlikleri-drama",
+              "n": 45,
+              "ks": 45,
+              "t": "Seçmeli",
+              "dosya": "5-oyun-ve-oyun-etkinlikleri-drama.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 45
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Geleneksel Oyunlar",
+              "f": "5-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "5-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Satranç",
+              "f": "5-oyun-ve-oyun-etkinlikleri-satranc",
+              "n": 44,
+              "ks": 44,
+              "t": "Seçmeli",
+              "dosya": "5-oyun-ve-oyun-etkinlikleri-satranc.json",
+              "dogrulanan_unite_sayisi": 11,
+              "dogrulanan_kazanim_sayisi": 44
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Zeka Oyunları",
+              "f": "5-oyun-ve-oyun-etkinlikleri-zeka-oyunlari",
+              "n": 32,
+              "ks": 32,
+              "t": "Seçmeli",
+              "dosya": "5-oyun-ve-oyun-etkinlikleri-zeka-oyunlari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 32
+            },
+            {
+              "ad": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+              "f": "5-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Spor Ortaokulu",
+              "dosya": "5-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Peygamberimizin Hayatı",
+              "f": "5-peygamberimizin-hayati",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "5-peygamberimizin-hayati.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Peygamberimizin Hayatı (İHO)",
+              "f": "5-peygamberimizin-hayati-iho",
+              "n": 10,
+              "ks": 10,
+              "t": "İmam Hatip",
+              "dosya": "5-peygamberimizin-hayati-iho.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Proje Tasarımı ve Uygulamaları",
+              "f": "5-proje-tasarimi-ve-uygulamalari",
+              "n": 48,
+              "ks": 48,
+              "t": "Seçmeli",
+              "dosya": "5-proje-tasarimi-ve-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 48
+            },
+            {
+              "ad": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+              "f": "5-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Spor Ortaokulu",
+              "dosya": "5-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Robotik Kodlama",
+              "f": "5-robotik-kodlama",
+              "n": 11,
+              "ks": 11,
+              "t": "Seçmeli",
+              "dosya": "5-robotik-kodlama.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Seçmeli Kur'an-ı Kerim",
+              "f": "5-secmeli-kur-an-i-kerim",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-kur-an-i-kerim.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Atletizm)",
+              "f": "5-secmeli-spor-etk-atletizm",
+              "n": 27,
+              "ks": 27,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-atletizm.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 27
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Badminton)",
+              "f": "5-secmeli-spor-etk-badminton",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-badminton.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Futbol)",
+              "f": "5-secmeli-spor-etk-futbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-futbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Hentbol)",
+              "f": "5-secmeli-spor-etk-hentbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-hentbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Masa Tenisi)",
+              "f": "5-secmeli-spor-etk-masa-tenisi",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-masa-tenisi.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Voleybol)",
+              "f": "5-secmeli-spor-etk-voleybol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-secmeli-spor-etk-voleybol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Spor ve Fiziki Etkinlikler",
+              "f": "5-ms-spor-ve-fiziki-etkinlikler",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "5-ms-spor-ve-fiziki-etkinlikler.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Şehrimiz",
+              "f": "5-sehrimiz",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "5-sehrimiz.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Temel Dini Bilgiler (İslam-1)",
+              "f": "5-temel-dini-bilgiler-islam-1",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "5-temel-dini-bilgiler-islam-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Temel Yaşam Becerileri",
+              "f": "5-temel-yasam-becerileri",
+              "n": 43,
+              "ks": 43,
+              "t": "Seçmeli",
+              "dosya": "5-temel-yasam-becerileri.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 43
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "5-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "5-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Türk Sosyal Hayatında Aile",
+              "f": "5-turk-sosyal-hayatinda-aile",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "5-turk-sosyal-hayatinda-aile.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Yapay Zekâ Uygulamaları",
+              "f": "5-ms-yapay-zeka-uygulamalari",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "5-ms-yapay-zeka-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Abazaca)",
+              "f": "5-m-yasayan-dil-ve-lehceler-abazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-abazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Adigece)",
+              "f": "5-m-yasayan-dil-ve-lehceler-adigece",
+              "n": 27,
+              "ks": 27,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-adigece.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 27
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Arnavutça)",
+              "f": "5-m-yasayan-dil-ve-lehceler-arnavutca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-arnavutca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Kurmancca)",
+              "f": "5-m-yasayan-dil-ve-lehceler-kurmancca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-kurmancca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Lazca)",
+              "f": "5-m-yasayan-dil-ve-lehceler-lazca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-lazca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Zazaca)",
+              "f": "5-m-yasayan-dil-ve-lehceler-zazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "5-m-yasayan-dil-ve-lehceler-zazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yazarlık ve Yazma Becerileri",
+              "f": "5-ms-yazarlik-ve-yazma-becerileri",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "5-ms-yazarlik-ve-yazma-becerileri.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 20
+            }
+          ]
+        },
+        {
+          "ad": "6. Sınıf",
+          "dersler": [
+            {
+              "ad": "Almanca Ach Sooo A2",
+              "f": "6-almanca-ach-sooo-a2",
+              "n": 33,
+              "ks": 33,
+              "dosya": "6-almanca-ach-sooo-a2.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 33
+            },
+            {
+              "ad": "Beden Eğitimi",
+              "f": "6-beden-egitimi",
+              "n": 13,
+              "ks": 13,
+              "dosya": "6-beden-egitimi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Bilişim Teknolojileri",
+              "f": "6-bilisim-teknolojileri",
+              "n": 25,
+              "ks": 25,
+              "dosya": "6-bilisim-teknolojileri.json",
+              "dogrulanan_unite_sayisi": 9,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Din Kültürü ve Ahlak Bilgisi",
+              "f": "6-din-kulturu-ve-ahlak-bilgisi",
+              "n": 20,
+              "ks": 20,
+              "dosya": "6-din-kulturu-ve-ahlak-bilgisi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "6-fen-bilimleri",
+              "n": 37,
+              "ks": 37,
+              "dosya": "6-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 37
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "6-gorsel-sanatlar",
+              "n": 10,
+              "ks": 10,
+              "dosya": "6-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "İngilizce",
+              "f": "6-ingilizce",
+              "n": 207,
+              "ks": 207,
+              "dosya": "6-ingilizce.json",
+              "dogrulanan_unite_sayisi": 9,
+              "dogrulanan_kazanim_sayisi": 207
+            },
+            {
+              "ad": "Matematik",
+              "f": "6-matematik",
+              "n": 26,
+              "ks": 26,
+              "dosya": "6-matematik.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Müzik",
+              "f": "6-muzik",
+              "n": 12,
+              "ks": 12,
+              "dosya": "6-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Sosyal Bilgiler",
+              "f": "6-sosyal-bilgiler",
+              "n": 20,
+              "ks": 20,
+              "dosya": "6-sosyal-bilgiler.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Türkçe",
+              "f": "6-turkce",
+              "n": 167,
+              "ks": 167,
+              "dosya": "6-turkce.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 167
+            },
+            {
+              "ad": "Afet Bilinci 1",
+              "f": "6-afet-bilinci-1",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "6-afet-bilinci-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Afet Bilinci 2",
+              "f": "6-afet-bilinci-2",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "6-afet-bilinci-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Ahlak ve Vatandaşlık Eğitimi 1",
+              "f": "6-ahlak-ve-vatandaslik-egitimi-1",
+              "n": 12,
+              "ks": 12,
+              "t": "Seçmeli",
+              "dosya": "6-ahlak-ve-vatandaslik-egitimi-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Ahlak ve Vatandaşlık Eğitimi 2",
+              "f": "6-ahlak-ve-vatandaslik-egitimi-2",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "6-ahlak-ve-vatandaslik-egitimi-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Arapça (İHO)",
+              "f": "6-arapca-iho",
+              "n": 41,
+              "ks": 41,
+              "t": "İmam Hatip",
+              "dosya": "6-arapca-iho.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 41
+            },
+            {
+              "ad": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+              "f": "6-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Spor Ortaokulu",
+              "dosya": "6-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "6-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 11,
+              "ks": 11,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Bilim Uygulamaları",
+              "f": "6-bilim-uygulamalari",
+              "n": 18,
+              "ks": 18,
+              "t": "Seçmeli",
+              "dosya": "6-bilim-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 18
+            },
+            {
+              "ad": "Bilişim Teknolojileri ve Yazılım (İHO)",
+              "f": "6-bilisim-teknolojileri-ve-yazilim-iho",
+              "n": 23,
+              "ks": 23,
+              "t": "İmam Hatip",
+              "dosya": "6-bilisim-teknolojileri-ve-yazilim-iho.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 23
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "6-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "6-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 11,
+              "ks": 11,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "6-m-calgi-topluluklari-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Çevre Eğitimi ve İklim Değişikliği",
+              "f": "6-cevre-egitimi-ve-iklim-degisikligi",
+              "n": 24,
+              "ks": 24,
+              "t": "Seçmeli",
+              "dosya": "6-cevre-egitimi-ve-iklim-degisikligi.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 24
+            },
+            {
+              "ad": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+              "f": "6-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Spor Ortaokulu",
+              "dosya": "6-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Çoklu Yabancı Dil Eğitim Modeli Almanca",
+              "f": "6-m-coklu-yabanci-dil-egitim-modeli-almanca",
+              "n": 60,
+              "ks": 60,
+              "t": "Seçmeli",
+              "dosya": "6-m-coklu-yabanci-dil-egitim-modeli-almanca.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 60
+            },
+            {
+              "ad": "Çoklu Yabancı Dil Eğitim Modeli İngilizce",
+              "f": "6-m-coklu-yabanci-dil-egitim-modeli-ingilizce",
+              "n": 184,
+              "ks": 184,
+              "t": "Seçmeli",
+              "dosya": "6-m-coklu-yabanci-dil-egitim-modeli-ingilizce.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 184
+            },
+            {
+              "ad": "Dijital Sanatlar-1",
+              "f": "6-dijital-sanatlar-1",
+              "n": 13,
+              "ks": 13,
+              "t": "Seçmeli",
+              "dosya": "6-dijital-sanatlar-1.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Geleneksel Sanatlar 1",
+              "f": "6-geleneksel-sanatlar-1",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "6-geleneksel-sanatlar-1.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Görgü Kuralları ve Nezaket 1",
+              "f": "6-gorgu-kurallari-ve-nezaket-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "6-gorgu-kurallari-ve-nezaket-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Görgü Kuralları ve Nezaket 2",
+              "f": "6-gorgu-kurallari-ve-nezaket-2",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "6-gorgu-kurallari-ve-nezaket-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Halk Oyunları",
+              "f": "6-halk-oyunlari",
+              "n": 11,
+              "ks": 11,
+              "t": "Seçmeli",
+              "dosya": "6-halk-oyunlari.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+              "f": "6-m-kapsamli-spor-egitimi-spor-ortaokulu",
+              "n": 15,
+              "ks": 15,
+              "t": "Spor Ortaokulu",
+              "dosya": "6-m-kapsamli-spor-egitimi-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "6-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 14,
+              "ks": 14,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Kur'an-ı Kerim (İHO)",
+              "f": "6-kur-an-i-kerim-iho",
+              "n": 22,
+              "ks": 22,
+              "t": "İmam Hatip",
+              "dosya": "6-kur-an-i-kerim-iho.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 22
+            },
+            {
+              "ad": "Kültür ve Medeniyetimize Yön Verenler-1",
+              "f": "6-kultur-ve-medeniyetimize-yon-verenler-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "6-kultur-ve-medeniyetimize-yon-verenler-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Kültür ve Medeniyetimize Yön Verenler-2",
+              "f": "6-kultur-ve-medeniyetimize-yon-verenler-2",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "6-kultur-ve-medeniyetimize-yon-verenler-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Masal ve Destanlarımız 1",
+              "f": "6-masal-ve-destanlarimiz-1",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "6-masal-ve-destanlarimiz-1.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Masal ve Destanlarımız 2",
+              "f": "6-masal-ve-destanlarimiz-2",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "6-masal-ve-destanlarimiz-2.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Matematik Uygulamaları",
+              "f": "6-matematik-uygulamalari",
+              "n": 19,
+              "ks": 19,
+              "t": "Seçmeli",
+              "dosya": "6-matematik-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Medya Okuryazarlığı",
+              "f": "6-ms-medya-okuryazarligi",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "6-ms-medya-okuryazarligi.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Müzik Tarihi (Müzik Okulu)",
+              "f": "6-m-muzik-tarihi-muzik-okulu",
+              "n": 19,
+              "ks": 19,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-muzik-tarihi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "6-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Okul Temelli Sosyal Sorumluluk Çalışmaları 1",
+              "f": "6-okul-temelli-sosyal-sorumluluk-calismalari-1",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-okul-temelli-sosyal-sorumluluk-calismalari-1.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Okuma Becerileri",
+              "f": "6-okuma-becerileri",
+              "n": 1,
+              "ks": 1,
+              "t": "Seçmeli",
+              "dosya": "6-okuma-becerileri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 1
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Drama",
+              "f": "6-6-sinif-oyun-ve-oyun-etkinlikleri-drama",
+              "n": 45,
+              "ks": 45,
+              "t": "Seçmeli",
+              "dosya": "6-6-sinif-oyun-ve-oyun-etkinlikleri-drama.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 45
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Geleneksel Oyunlar",
+              "f": "6-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "6-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Satranç",
+              "f": "6-oyun-ve-oyun-etkinlikleri-satranc",
+              "n": 44,
+              "ks": 44,
+              "t": "Seçmeli",
+              "dosya": "6-oyun-ve-oyun-etkinlikleri-satranc.json",
+              "dogrulanan_unite_sayisi": 11,
+              "dogrulanan_kazanim_sayisi": 44
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Zeka Oyunları",
+              "f": "6-oyun-ve-oyun-etkinlikleri-zeka-oyunlari",
+              "n": 32,
+              "ks": 32,
+              "t": "Seçmeli",
+              "dosya": "6-oyun-ve-oyun-etkinlikleri-zeka-oyunlari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 32
+            },
+            {
+              "ad": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+              "f": "6-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Spor Ortaokulu",
+              "dosya": "6-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Peygamberimizin Hayatı (İHO)",
+              "f": "6-peygamberimizin-hayati-iho",
+              "n": 10,
+              "ks": 10,
+              "t": "İmam Hatip",
+              "dosya": "6-peygamberimizin-hayati-iho.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Proje Tasarımı ve Uygulamaları",
+              "f": "6-proje-tasarimi-ve-uygulamalari",
+              "n": 48,
+              "ks": 48,
+              "t": "Seçmeli",
+              "dosya": "6-proje-tasarimi-ve-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 48
+            },
+            {
+              "ad": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+              "f": "6-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Spor Ortaokulu",
+              "dosya": "6-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Robotik Kodlama",
+              "f": "6-robotik-kodlama",
+              "n": 38,
+              "ks": 38,
+              "t": "Seçmeli",
+              "dosya": "6-robotik-kodlama.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 38
+            },
+            {
+              "ad": "Seçmeli Hukuk ve Adalet",
+              "f": "6-secmeli-hukuk-ve-adalet",
+              "n": 12,
+              "ks": 12,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-hukuk-ve-adalet.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Seçmeli Kur'an-ı Kerim",
+              "f": "6-secmeli-kur-an-i-kerim",
+              "n": 22,
+              "ks": 22,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-kur-an-i-kerim.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 22
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Atletizm)",
+              "f": "6-secmeli-spor-etk-atletizm",
+              "n": 27,
+              "ks": 27,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-atletizm.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 27
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Badminton)",
+              "f": "6-secmeli-spor-etk-badminton",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-badminton.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Futbol)",
+              "f": "6-secmeli-spor-etk-futbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-futbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Hentbol)",
+              "f": "6-secmeli-spor-etk-hentbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-hentbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Masa Tenisi)",
+              "f": "6-secmeli-spor-etk-masa-tenisi",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-masa-tenisi.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Voleybol)",
+              "f": "6-secmeli-spor-etk-voleybol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-secmeli-spor-etk-voleybol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Spor ve Fiziki Etkinlikler",
+              "f": "6-ms-spor-ve-fiziki-etkinlikler",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "6-ms-spor-ve-fiziki-etkinlikler.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Şehrimiz",
+              "f": "6-sehrimiz",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "6-sehrimiz.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Temel Dini Bilgiler (İslam-1)",
+              "f": "6-temel-dini-bilgiler-islam-1",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "6-temel-dini-bilgiler-islam-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Temel Dini Bilgiler İHO (İslam1)",
+              "f": "6-temel-dini-bilgiler-iho-islam1",
+              "n": 15,
+              "ks": 15,
+              "t": "İmam Hatip",
+              "dosya": "6-temel-dini-bilgiler-iho-islam1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Temel Yaşam Becerileri",
+              "f": "6-temel-yasam-becerileri",
+              "n": 43,
+              "ks": 43,
+              "t": "Seçmeli",
+              "dosya": "6-temel-yasam-becerileri.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 43
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "6-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "6-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Türk Sosyal Hayatında Aile",
+              "f": "6-turk-sosyal-hayatinda-aile",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "6-turk-sosyal-hayatinda-aile.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Yapay Zekâ Uygulamaları",
+              "f": "6-ms-yapay-zeka-uygulamalari",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "6-ms-yapay-zeka-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Abazaca)",
+              "f": "6-m-yasayan-dil-ve-lehceler-abazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-abazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Adigece)",
+              "f": "6-m-yasayan-dil-ve-lehceler-adigece",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-adigece.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Arnavutça)",
+              "f": "6-m-yasayan-dil-ve-lehceler-arnavutca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-arnavutca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Kurmancca)",
+              "f": "6-m-yasayan-dil-ve-lehceler-kurmancca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-kurmancca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Lazca)",
+              "f": "6-m-yasayan-dil-ve-lehceler-lazca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-lazca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Zazaca)",
+              "f": "6-m-yasayan-dil-ve-lehceler-zazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "6-m-yasayan-dil-ve-lehceler-zazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yazarlık ve Yazma Becerileri",
+              "f": "6-ms-yazarlik-ve-yazma-becerileri",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "6-ms-yazarlik-ve-yazma-becerileri.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 20
+            }
+          ]
+        },
+        {
+          "ad": "7. Sınıf",
+          "dersler": [
+            {
+              "ad": "Beden Eğitimi",
+              "f": "7-beden-egitimi",
+              "n": 15,
+              "ks": 15,
+              "dosya": "7-beden-egitimi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Din Kültürü ve Ahlak Bilgisi",
+              "f": "7-din-kulturu-ve-ahlak-bilgisi",
+              "n": 17,
+              "ks": 17,
+              "dosya": "7-din-kulturu-ve-ahlak-bilgisi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 17
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "7-fen-bilimleri",
+              "n": 35,
+              "ks": 35,
+              "dosya": "7-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 35
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "7-m-gorsel-sanatlar",
+              "n": 10,
+              "ks": 10,
+              "dosya": "7-m-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "İngilizce",
+              "f": "7-ingilizce",
+              "n": 64,
+              "ks": 64,
+              "dosya": "7-ingilizce.json",
+              "dogrulanan_unite_sayisi": 11,
+              "dogrulanan_kazanim_sayisi": 64
+            },
+            {
+              "ad": "Matematik",
+              "f": "7-matematik",
+              "n": 30,
+              "ks": 30,
+              "dosya": "7-matematik.json",
+              "dogrulanan_unite_sayisi": 9,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Müzik",
+              "f": "7-m-muzik",
+              "n": 16,
+              "ks": 16,
+              "dosya": "7-m-muzik.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 16
+            },
+            {
+              "ad": "Sosyal Bilgiler",
+              "f": "7-sosyal-bilgiler",
+              "n": 17,
+              "ks": 17,
+              "dosya": "7-sosyal-bilgiler.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 17
+            },
+            {
+              "ad": "Teknoloji Tasarım",
+              "f": "7-teknoloji-tasarim",
+              "n": 31,
+              "ks": 31,
+              "dosya": "7-teknoloji-tasarim.json",
+              "dogrulanan_unite_sayisi": 9,
+              "dogrulanan_kazanim_sayisi": 31
+            },
+            {
+              "ad": "Türkçe",
+              "f": "7-turkce",
+              "n": 141,
+              "ks": 141,
+              "dosya": "7-turkce.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 141
+            },
+            {
+              "ad": "Afet Bilinci 1",
+              "f": "7-afet-bilinci-1",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "7-afet-bilinci-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Afet Bilinci 2",
+              "f": "7-afet-bilinci-2",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "7-afet-bilinci-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Ahlak ve Vatandaşlık Eğitimi 1",
+              "f": "7-ahlak-ve-vatandaslik-egitimi-1",
+              "n": 12,
+              "ks": 12,
+              "t": "Seçmeli",
+              "dosya": "7-ahlak-ve-vatandaslik-egitimi-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Ahlak ve Vatandaşlık Eğitimi 2",
+              "f": "7-ahlak-ve-vatandaslik-egitimi-2",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "7-ahlak-ve-vatandaslik-egitimi-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Arapça (İHO)",
+              "f": "7-arapca-iho",
+              "n": 38,
+              "ks": 38,
+              "t": "İmam Hatip",
+              "dosya": "7-arapca-iho.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 38
+            },
+            {
+              "ad": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+              "f": "7-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Spor Ortaokulu",
+              "dosya": "7-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "7-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Bilgi Teknolojileri ve Yazılım",
+              "f": "7-bilgi-teknolojileri-ve-yazilim",
+              "n": 34,
+              "ks": 34,
+              "t": "Seçmeli",
+              "dosya": "7-bilgi-teknolojileri-ve-yazilim.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 34
+            },
+            {
+              "ad": "Bilim Uygulamaları",
+              "f": "7-bilim-uygulamalari",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "7-bilim-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 8,
+              "ks": 8,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "7-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "7-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 14,
+              "ks": 14,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "7-m-calgi-topluluklari-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Çevre Eğitimi ve İklim Değişikliği",
+              "f": "7-cevre-egitimi-ve-iklim-degisikligi",
+              "n": 24,
+              "ks": 24,
+              "t": "Seçmeli",
+              "dosya": "7-cevre-egitimi-ve-iklim-degisikligi.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 24
+            },
+            {
+              "ad": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+              "f": "7-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Spor Ortaokulu",
+              "dosya": "7-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Çoklu Yabancı Dil Eğitim Modeli Almanca",
+              "f": "7-m-coklu-yabanci-dil-egitim-modeli-almanca",
+              "n": 72,
+              "ks": 72,
+              "t": "Seçmeli",
+              "dosya": "7-m-coklu-yabanci-dil-egitim-modeli-almanca.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 72
+            },
+            {
+              "ad": "Çoklu Yabancı Dil Eğitim Modeli İngilizce",
+              "f": "7-m-coklu-yabanci-dil-egitim-modeli-ingilizce",
+              "n": 191,
+              "ks": 191,
+              "t": "Seçmeli",
+              "dosya": "7-m-coklu-yabanci-dil-egitim-modeli-ingilizce.json",
+              "dogrulanan_unite_sayisi": 8,
+              "dogrulanan_kazanim_sayisi": 191
+            },
+            {
+              "ad": "Dijital Sanatlar-1",
+              "f": "7-dijital-sanatlar-1",
+              "n": 13,
+              "ks": 13,
+              "t": "Seçmeli",
+              "dosya": "7-dijital-sanatlar-1.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Düşünme Eğitimi 1",
+              "f": "7-dusunme-egitimi-1",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "7-dusunme-egitimi-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Geleneksel Sanatlar 1",
+              "f": "7-geleneksel-sanatlar-1",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "7-geleneksel-sanatlar-1.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Geleneksel Sanatlar 2",
+              "f": "7-geleneksel-sanatlar-2",
+              "n": 11,
+              "ks": 11,
+              "t": "Seçmeli",
+              "dosya": "7-geleneksel-sanatlar-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Görgü Kuralları ve Nezaket 1",
+              "f": "7-gorgu-kurallari-ve-nezaket-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "7-gorgu-kurallari-ve-nezaket-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Görgü Kuralları ve Nezaket 2",
+              "f": "7-gorgu-kurallari-ve-nezaket-2",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "7-gorgu-kurallari-ve-nezaket-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Halk Oyunları",
+              "f": "7-halk-oyunlari",
+              "n": 11,
+              "ks": 11,
+              "t": "Seçmeli",
+              "dosya": "7-halk-oyunlari.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+              "f": "7-m-kapsamli-spor-egitimi-spor-ortaokulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Spor Ortaokulu",
+              "dosya": "7-m-kapsamli-spor-egitimi-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "7-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Kur'an-ı Kerim (İHO)",
+              "f": "7-kur-an-i-kerim-iho",
+              "n": 25,
+              "ks": 25,
+              "t": "İmam Hatip",
+              "dosya": "7-kur-an-i-kerim-iho.json",
+              "dogrulanan_unite_sayisi": 14,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Kültür ve Medeniyetimize Yön Verenler-1",
+              "f": "7-kultur-ve-medeniyetimize-yon-verenler-1",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "7-kultur-ve-medeniyetimize-yon-verenler-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Kültür ve Medeniyetimize Yön Verenler-2",
+              "f": "7-kultur-ve-medeniyetimize-yon-verenler-2",
+              "n": 9,
+              "ks": 9,
+              "t": "Seçmeli",
+              "dosya": "7-kultur-ve-medeniyetimize-yon-verenler-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Masal ve Destanlarımız 1",
+              "f": "7-masal-ve-destanlarimiz-1",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "7-masal-ve-destanlarimiz-1.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Masal ve Destanlarımız 2",
+              "f": "7-masal-ve-destanlarimiz-2",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "7-masal-ve-destanlarimiz-2.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Matematik Uygulamaları",
+              "f": "7-matematik-uygulamalari",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "7-matematik-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Müzik Tarihi (Müzik Okulu)",
+              "f": "7-m-muzik-tarihi-muzik-okulu",
+              "n": 17,
+              "ks": 17,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-muzik-tarihi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 17
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "7-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Okul Temelli Sosyal Sorumluluk Çalışmaları 1",
+              "f": "7-okul-temelli-sosyal-sorumluluk-calismalari-1",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-okul-temelli-sosyal-sorumluluk-calismalari-1.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Okul Temelli Sosyal Sorumluluk Çalışmaları 2",
+              "f": "7-okul-temelli-sosyal-sorumluluk-calismalari-2",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "7-okul-temelli-sosyal-sorumluluk-calismalari-2.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Okuma Becerileri",
+              "f": "7-okuma-becerileri",
+              "n": 1,
+              "ks": 1,
+              "t": "Seçmeli",
+              "dosya": "7-okuma-becerileri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 1
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Drama",
+              "f": "7-oyun-ve-oyun-etkinlikleri-drama",
+              "n": 45,
+              "ks": 45,
+              "t": "Seçmeli",
+              "dosya": "7-oyun-ve-oyun-etkinlikleri-drama.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 45
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Geleneksel Oyunlar",
+              "f": "7-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "7-oyun-ve-oyun-etkinlikleri-geleneksel-oyunlar.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Satranç",
+              "f": "7-oyun-ve-oyun-etkinlikleri-satranc",
+              "n": 44,
+              "ks": 44,
+              "t": "Seçmeli",
+              "dosya": "7-oyun-ve-oyun-etkinlikleri-satranc.json",
+              "dogrulanan_unite_sayisi": 11,
+              "dogrulanan_kazanim_sayisi": 44
+            },
+            {
+              "ad": "Oyun ve Oyun Etkinlikleri-Zeka Oyunları",
+              "f": "7-oyun-ve-oyun-etkinlikleri-zeka-oyunlari",
+              "n": 32,
+              "ks": 32,
+              "t": "Seçmeli",
+              "dosya": "7-oyun-ve-oyun-etkinlikleri-zeka-oyunlari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 32
+            },
+            {
+              "ad": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+              "f": "7-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Spor Ortaokulu",
+              "dosya": "7-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Peygamberimizin Hayatı",
+              "f": "7-peygamberimizin-hayati",
+              "n": 10,
+              "ks": 10,
+              "t": "Seçmeli",
+              "dosya": "7-peygamberimizin-hayati.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Peygamberimizin Hayatı (İHO)",
+              "f": "7-peygamberimizin-hayati-iho",
+              "n": 10,
+              "ks": 10,
+              "t": "İmam Hatip",
+              "dosya": "7-peygamberimizin-hayati-iho.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Proje Tasarımı ve Uygulamaları",
+              "f": "7-proje-tasarimi-ve-uygulamalari",
+              "n": 48,
+              "ks": 48,
+              "t": "Seçmeli",
+              "dosya": "7-proje-tasarimi-ve-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 7,
+              "dogrulanan_kazanim_sayisi": 48
+            },
+            {
+              "ad": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+              "f": "7-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Spor Ortaokulu",
+              "dosya": "7-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Seçmeli Hukuk ve Adalet",
+              "f": "7-secmeli-hukuk-ve-adalet",
+              "n": 12,
+              "ks": 12,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-hukuk-ve-adalet.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Seçmeli İlet. ve Sunum Bec.",
+              "f": "7-secmeli-ilet-ve-sunum-bec",
+              "n": 33,
+              "ks": 33,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-ilet-ve-sunum-bec.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 33
+            },
+            {
+              "ad": "Seçmeli Kur'an-ı Kerim",
+              "f": "7-secmeli-kur-an-i-kerim",
+              "n": 25,
+              "ks": 25,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-kur-an-i-kerim.json",
+              "dogrulanan_unite_sayisi": 14,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Seçmeli Medya Okuryazarlığı",
+              "f": "7-secmeli-medya-okuryazarligi",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-medya-okuryazarligi.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 20
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Atletizm)",
+              "f": "7-secmeli-spor-etk-atletizm",
+              "n": 27,
+              "ks": 27,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-atletizm.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 27
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Badminton)",
+              "f": "7-secmeli-spor-etk-badminton",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-badminton.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Futbol)",
+              "f": "7-secmeli-spor-etk-futbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-futbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Hentbol)",
+              "f": "7-secmeli-spor-etk-hentbol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-hentbol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Masa Tenisi)",
+              "f": "7-secmeli-spor-etk-masa-tenisi",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-masa-tenisi.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Seçmeli Spor Etk. (Voleybol)",
+              "f": "7-secmeli-spor-etk-voleybol",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-secmeli-spor-etk-voleybol.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Spor ve Fiziki Etkinlikler",
+              "f": "7-ms-spor-ve-fiziki-etkinlikler",
+              "n": 8,
+              "ks": 8,
+              "t": "Seçmeli",
+              "dosya": "7-ms-spor-ve-fiziki-etkinlikler.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 8
+            },
+            {
+              "ad": "Şehrimiz",
+              "f": "7-sehrimiz",
+              "n": 30,
+              "ks": 30,
+              "t": "Seçmeli",
+              "dosya": "7-sehrimiz.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 30
+            },
+            {
+              "ad": "Temel Dini Bilgiler (İslam-1)",
+              "f": "7-temel-dini-bilgiler-islam-1",
+              "n": 15,
+              "ks": 15,
+              "t": "Seçmeli",
+              "dosya": "7-temel-dini-bilgiler-islam-1.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 15
+            },
+            {
+              "ad": "Temel Dini Bilgiler (İslam-2)",
+              "f": "7-temel-dini-bilgiler-islam-2",
+              "n": 19,
+              "ks": 19,
+              "t": "Seçmeli",
+              "dosya": "7-temel-dini-bilgiler-islam-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Temel Dini Bilgiler İHO (İslam-2)",
+              "f": "7-temel-dini-bilgiler-iho-islam-2",
+              "n": 19,
+              "ks": 19,
+              "t": "İmam Hatip",
+              "dosya": "7-temel-dini-bilgiler-iho-islam-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Temel Yaşam Becerileri",
+              "f": "7-temel-yasam-becerileri",
+              "n": 43,
+              "ks": 43,
+              "t": "Seçmeli",
+              "dosya": "7-temel-yasam-becerileri.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 43
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "7-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "7-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Türk Sosyal Hayatında Aile",
+              "f": "7-turk-sosyal-hayatinda-aile",
+              "n": 26,
+              "ks": 26,
+              "t": "Seçmeli",
+              "dosya": "7-turk-sosyal-hayatinda-aile.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 26
+            },
+            {
+              "ad": "Yapay Zeka Uygulamaları",
+              "f": "7-yapay-zeka-uygulamalari",
+              "n": 38,
+              "ks": 38,
+              "t": "Seçmeli",
+              "dosya": "7-yapay-zeka-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 38
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Abazaca)",
+              "f": "7-m-yasayan-dil-ve-lehceler-abazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-abazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Adigece)",
+              "f": "7-m-yasayan-dil-ve-lehceler-adigece",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-adigece.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Arnavutça)",
+              "f": "7-m-yasayan-dil-ve-lehceler-arnavutca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-arnavutca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Kurmancca)",
+              "f": "7-m-yasayan-dil-ve-lehceler-kurmancca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-kurmancca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Lazca)",
+              "f": "7-m-yasayan-dil-ve-lehceler-lazca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-lazca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yaşayan Dil ve Lehçeler (Zazaca)",
+              "f": "7-m-yasayan-dil-ve-lehceler-zazaca",
+              "n": 28,
+              "ks": 28,
+              "t": "Seçmeli",
+              "dosya": "7-m-yasayan-dil-ve-lehceler-zazaca.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 28
+            },
+            {
+              "ad": "Yazarlık ve Yazma Becerileri",
+              "f": "7-ms-yazarlik-ve-yazma-becerileri",
+              "n": 20,
+              "ks": 20,
+              "t": "Seçmeli",
+              "dosya": "7-ms-yazarlik-ve-yazma-becerileri.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 20
+            }
+          ]
+        },
+        {
+          "ad": "8. Sınıf",
+          "dersler": [
+            {
+              "ad": "Din Kültürü ve Ahlak Bilgisi",
+              "f": "8-d-din-kulturu-ve-ahlak-bilgisi",
+              "n": 11,
+              "ks": 11,
+              "dosya": "8-d-din-kulturu-ve-ahlak-bilgisi.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Fen Bilimleri",
+              "f": "8-d-fen-bilimleri",
+              "n": 62,
+              "ks": 62,
+              "dosya": "8-d-fen-bilimleri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 62
+            },
+            {
+              "ad": "İngilizce",
+              "f": "8-d-ingilizce",
+              "n": 10,
+              "ks": 10,
+              "dosya": "8-d-ingilizce.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Matematik",
+              "f": "8-d-matematik",
+              "n": 52,
+              "ks": 52,
+              "dosya": "8-d-matematik.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 52
+            },
+            {
+              "ad": "T.C. İnkılap Tarihi ve Atatürkçülük",
+              "f": "8-d-t-c-inkilap-tarihi-ve-ataturkculuk",
+              "n": 39,
+              "ks": 39,
+              "dosya": "8-d-t-c-inkilap-tarihi-ve-ataturkculuk.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 39
+            },
+            {
+              "ad": "Türkçe",
+              "f": "8-d-turkce",
+              "n": 3,
+              "ks": 3,
+              "dosya": "8-d-turkce.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Beden Eğitimi",
+              "f": "8-d-beden-egitimi",
+              "n": 33,
+              "ks": 33,
+              "t": "Genel liste",
+              "dosya": "8-d-beden-egitimi.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 33
+            },
+            {
+              "ad": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+              "f": "8-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Spor Ortaokulu",
+              "dosya": "8-m-beden-egitimi-ve-sporun-temelleri-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+              "f": "8-m-beden-egitimi-oyun-ve-muzik-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-beden-egitimi-oyun-ve-muzik-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu",
+              "n": 4,
+              "ks": 4,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-baglama-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu",
+              "n": 10,
+              "ks": 10,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-flut-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-gitar-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-kanun-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 5,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-kaval-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-keman-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-ney-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-piyano-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu",
+              "n": 2,
+              "ks": 2,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-ud-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 2
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-viyola-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+              "f": "8-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu",
+              "n": 7,
+              "ks": 7,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-calgi-egitimi-viyolonsel-modulu-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 7
+            },
+            {
+              "ad": "Bireysel Ses Eğitimi (Müzik Okulu)",
+              "f": "8-m-bireysel-ses-egitimi-muzik-okulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-bireysel-ses-egitimi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Çalgı Toplulukları (Müzik Okulu)",
+              "f": "8-m-calgi-topluluklari-muzik-okulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-calgi-topluluklari-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+              "f": "8-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu",
+              "n": 3,
+              "ks": 3,
+              "t": "Spor Ortaokulu",
+              "dosya": "8-m-cocuklarda-atletik-performans-uygulamalari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Görsel Sanatlar",
+              "f": "8-d-gorsel-sanatlar",
+              "n": 10,
+              "ks": 10,
+              "t": "Genel liste",
+              "dosya": "8-d-gorsel-sanatlar.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 10
+            },
+            {
+              "ad": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+              "f": "8-m-kapsamli-spor-egitimi-spor-ortaokulu",
+              "n": 13,
+              "ks": 13,
+              "t": "Spor Ortaokulu",
+              "dosya": "8-m-kapsamli-spor-egitimi-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Koro ve Repertuvar (Müzik Okulu)",
+              "f": "8-m-koro-ve-repertuvar-muzik-okulu",
+              "n": 14,
+              "ks": 14,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-koro-ve-repertuvar-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 14
+            },
+            {
+              "ad": "Müzik",
+              "f": "8-d-muzik",
+              "n": 11,
+              "ks": 11,
+              "t": "Genel liste",
+              "dosya": "8-d-muzik.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 11
+            },
+            {
+              "ad": "Müzik Tarihi (Müzik Okulu)",
+              "f": "8-m-muzik-tarihi-muzik-okulu",
+              "n": 21,
+              "ks": 21,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-muzik-tarihi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 21
+            },
+            {
+              "ad": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+              "f": "8-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu",
+              "n": 12,
+              "ks": 12,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-muziksel-isitme-okuma-ve-yazma-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 12
+            },
+            {
+              "ad": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+              "f": "8-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu",
+              "n": 6,
+              "ks": 6,
+              "t": "Spor Ortaokulu",
+              "dosya": "8-m-oyun-ve-taktiksel-farkindalik-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 6
+            },
+            {
+              "ad": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+              "f": "8-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu",
+              "n": 5,
+              "ks": 5,
+              "t": "Spor Ortaokulu",
+              "dosya": "8-m-ritim-egitimi-ve-halk-oyunlari-spor-ortaokulu.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 5
+            },
+            {
+              "ad": "Seçmeli Görgü Kuralları ve Nezaket",
+              "f": "8-d-secmeli-gorgu-kurallari-ve-nezaket",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-gorgu-kurallari-ve-nezaket.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Halk Oyunları",
+              "f": "8-d-secmeli-halk-oyunlari",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-halk-oyunlari.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Matematik ve Bilim Uygulamaları",
+              "f": "8-d-secmeli-matematik-ve-bilim-uygulamalari",
+              "n": 4,
+              "ks": 4,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-matematik-ve-bilim-uygulamalari.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 4
+            },
+            {
+              "ad": "Seçmeli Müzik",
+              "f": "8-d-secmeli-muzik",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-muzik.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Okuma Becerileri",
+              "f": "8-d-secmeli-okuma-becerileri",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-okuma-becerileri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Peygamberimizin Hayatı",
+              "f": "8-d-secmeli-peygamberimizin-hayati",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-peygamberimizin-hayati.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Spor ve Fizikî Etkinlikler",
+              "f": "8-d-secmeli-spor-ve-fiziki-etkinlikler",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-spor-ve-fiziki-etkinlikler.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Temel Dini Bilgiler",
+              "f": "8-d-secmeli-temel-dini-bilgiler",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-temel-dini-bilgiler.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Seçmeli Yazarlık ve Yazma Becerileri",
+              "f": "8-d-secmeli-yazarlik-ve-yazma-becerileri",
+              "n": 3,
+              "ks": 3,
+              "t": "Genel liste",
+              "dosya": "8-d-secmeli-yazarlik-ve-yazma-becerileri.json",
+              "dogrulanan_unite_sayisi": 1,
+              "dogrulanan_kazanim_sayisi": 3
+            },
+            {
+              "ad": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+              "f": "8-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu",
+              "n": 9,
+              "ks": 9,
+              "t": "Müzik Okulu",
+              "dosya": "8-m-turk-muzigi-teori-ve-uygulamasi-muzik-okulu.json",
+              "dogrulanan_unite_sayisi": 3,
+              "dogrulanan_kazanim_sayisi": 9
+            },
+            {
+              "ad": "Peygamberimizin Hayatı",
+              "f": "8-peygamberimizin-hayati",
+              "n": 25,
+              "ks": 25,
+              "t": "Seçmeli",
+              "dosya": "8-peygamberimizin-hayati.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 25
+            },
+            {
+              "ad": "Seçmeli Kur'an-ı Kerim",
+              "f": "8-secmeli-kur-an-i-kerim",
+              "n": 13,
+              "ks": 13,
+              "t": "Seçmeli",
+              "dosya": "8-secmeli-kur-an-i-kerim.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Temel Dini Bilgiler (İslam-2)",
+              "f": "8-temel-dini-bilgiler-islam-2",
+              "n": 19,
+              "ks": 19,
+              "t": "Seçmeli",
+              "dosya": "8-temel-dini-bilgiler-islam-2.json",
+              "dogrulanan_unite_sayisi": 4,
+              "dogrulanan_kazanim_sayisi": 19
+            },
+            {
+              "ad": "Arapça (İHO)",
+              "f": "8-arapca-iho",
+              "n": 39,
+              "ks": 39,
+              "t": "İmam Hatip",
+              "dosya": "8-arapca-iho.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 39
+            },
+            {
+              "ad": "Kur'an-ı Kerim (İHO)",
+              "f": "8-kur-an-i-kerim-iho",
+              "n": 13,
+              "ks": 13,
+              "t": "İmam Hatip",
+              "dosya": "8-kur-an-i-kerim-iho.json",
+              "dogrulanan_unite_sayisi": 2,
+              "dogrulanan_kazanim_sayisi": 13
+            },
+            {
+              "ad": "Peygamberimizin Hayatı (İHO)",
+              "f": "8-peygamberimizin-hayati-iho",
+              "n": 25,
+              "ks": 25,
+              "t": "İmam Hatip",
+              "dosya": "8-peygamberimizin-hayati-iho.json",
+              "dogrulanan_unite_sayisi": 6,
+              "dogrulanan_kazanim_sayisi": 25
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "paket_bilgisi": {
+    "amac": "Koruk Asistan BEP modülü için ilkokul ve ortaokul kazanım kataloğu",
+    "sinif_sayisi": 8,
+    "ders_dosyasi_sayisi": 400,
+    "kaynak_arsiv": "bep_veri_arsiv.zip",
+    "not": "Dosyalar kaynak arşivden alınmıştır; öğrenciye özel BEP verisi içermez."
+  }
+}
