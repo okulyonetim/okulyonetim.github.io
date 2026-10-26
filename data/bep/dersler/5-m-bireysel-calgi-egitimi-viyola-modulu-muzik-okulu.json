@@ -1,0 +1,53 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİ SES SİSTEMİ",
+      "a": [
+        {
+          "k": "VİY.5.1.1",
+          "m": "Türk müziği ses aralıklarını çalabilme",
+          "s": [
+            "Türk müziği ses aralıklarını içeren egzersizleri veya ezgileri çözümler.",
+            "Türk müziği ses aralıklarını doğru şekilde çalabilmek için çalgıya özgü duruş ve tutuş pozisyonunu alır.",
+            "Viyolada Türk müziği seslerini elde etmek için uygun parmak ve yay tekniklerini kullanır.",
+            "Türk müziği ses aralıklarını, seslerini içeren ezgileri müziksel bileşenlere uygun şekilde çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGAH DIZISI İLE PARÇA ÇALABILME",
+      "a": [
+        {
+          "k": "VİY.5.2.1",
+          "m": "Viyolada çargâh makam dizisi ile şarkıları çalabilme",
+          "s": [
+            "Viyolada çargâh makamındaki şarkıları çözümler.",
+            "Viyolada çargâh makamındaki şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Viyolada çargâh makamındaki şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "Viyolada çargâh makamındaki şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BUSELIK DIZISI ILE PARÇA ÇALABILME",
+      "a": [
+        {
+          "k": "VİY.5.3.1",
+          "m": "Viyolada buselik makam dizisi ile şarkıları çalabilme",
+          "s": [
+            "Viyolada buselik makamındaki şarkıları çözümler.",
+            "Viyolada buselik makamındaki şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Viyoladabuselik makamındaki şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "Viyolada buselik makamındaki şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "ders": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "OYUN VE ÇOCUK",
+      "a": [
+        {
+          "k": "OTF.5.1.1",
+          "m": "Hareketin çocuğun bütünsel gelişimine etkisini açıklayabilme",
+          "s": [
+            "Hareketin çocuğun bütünsel gelişimine etkisini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OTF.5.1.2",
+          "m": "Oyun ve çocuk ilişkisini yapılandırabilme",
+          "s": [
+            "Oyun ve çocuk kavramları arasında mantıksal ilişkiler ortaya koyar.",
+            "Oyun oynamanın çocuk üzerindeki olumlu etkilerini ilişkilendirerek uyumlu bir bütün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OYUNUN DOĞASI",
+      "a": [
+        {
+          "k": "OTF.5.2.1",
+          "m": "Oyunları özelliklerine göre sınıflandırabilme",
+          "s": [
+            "Oyunlara ait özellikleri belirler.",
+            "Oyunları oynanma şekli ve amacına göre ayırır.",
+            "Oyunları oynanma şekli ve amacına göre tasnif eder.",
+            "Oyunları oynanma şekli ve amacına göre etiketler."
+          ]
+        },
+        {
+          "k": "OTF.5.2.2",
+          "m": "Oyunlarla fiziksel uygunluğu sağlayabilme",
+          "s": [
+            "Oyunlarla fiziksel uygunluk bileşenlerini açıklar.",
+            "Oyunlarda fiziksel uygunluk bileşenlerini içeren hareketleri uygular.",
+            "Oyunlarla fiziksel uygunluk bileşenlerini geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OYUNUN ÇEŞİTLİLİĞİ",
+      "a": [
+        {
+          "k": "OTF.5.3.1",
+          "m": "Kültürün oyunların içeriği ve etkilerine ilişkin özelliklerini yorumlayabilme",
+          "s": [
+            "Oyunun kültürel özelliklerini fark ederek ilişkilerini inceler.",
+            "Geleneksel bir oyunu, günümüz oyunları ile harmanlayarak yeni bir oyuna dönüştürür.",
+            "Oyunların kültürel unsurları etkilediği ve bu unsurlardan etkilendiğini kendi cümleleri ile ifade eder."
+          ]
+        },
+        {
+          "k": "OTF.5.3.2",
+          "m": "Günümüz oyunları ile geleneksel oyunları karşılaştırabilme",
+          "s": [
+            "Günümüz oyunları ile geleneksel oyunlara ilişkin özellikleri belirler.",
+            "Günümüz oyunları ile geleneksel oyunların belirlenen özelliklere ilişkin benzerliklerini listeler.",
+            "Günümüz oyunları ile geleneksel oyunların belirlenen özelliklere ilişkin farklılıklarını listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞ BİRLİĞİ İÇEREN OYUN",
+      "a": [
+        {
+          "k": "OTF.5.4.1",
+          "m": "İş birliği içeren oyunda grup dinamiği sağlayabilme",
+          "s": [
+            "İş birliği içeren oyunda görev paylaşımı yapar.",
+            "İş birliği içeren oyunda gruba katkıda bulunur.",
+            "İş birliği içeren oyunda grup ile yardımlaşır."
+          ]
+        },
+        {
+          "k": "OTF.5.4.2",
+          "m": "İş birliği içeren oyunlara yönelik hareketleri sergileyebilme",
+          "s": [
+            "İş birliği içeren oyunlarda hareket becerilerini algılar.",
+            "İş birliği içeren oyunlarda hareket becerilerinin basamaklarını gösterir.",
+            "İş birliği içeren oyunlarda hareket becerilerini farklı durum ve ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "OTF.5.4.3",
+          "m": "Adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "Adil oyun kavramını açıklar.",
+            "Adil oyun kavramına uygun hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

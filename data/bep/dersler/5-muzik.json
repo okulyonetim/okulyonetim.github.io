@@ -1,0 +1,143 @@
+{
+  "ders": "Müzik",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "MÜZİK DİLİ",
+      "a": [
+        {
+          "k": "MÜZ.5.1.1",
+          "m": "İstiklâl Marşı’nı ezgisine dikkat ederek söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "İstiklâl Marşı’nın müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.1.2",
+          "m": "Farklı türdeki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.1.4",
+          "m": "Ortak repertuvardaki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.1.3",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.1.5",
+          "m": "Müzik eserlerine bedensel hareketlerle eşlik edebilme",
+          "s": [
+            "Ritmik yapıya/eserin anlamına uygun hareketler belirler.",
+            "Ritmik yapıya/eserin anlamına uygun hareketler sergiler."
+          ]
+        },
+        {
+          "k": "MÜZ.5.1.7",
+          "m": "Güzel sanatlarla ilgili kavramları sınıflandırabilme",
+          "s": [
+            "Güzel sanatlarla ilgili kavramlara ilişkin değişkenleri belirler.",
+            "Güzel sanatlarla ilgili kavramları ayrıştırır.",
+            "Güzel sanatlarla ilgili kavramları tasnif eder.",
+            "Güzel sanatlarla ilgili kavramları etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK KÜLTÜRÜ",
+      "a": [
+        {
+          "k": "MÜZ.5.2.1",
+          "m": "Atatürk’ün güzel sanatlara verdiği önemi özetleyebilme",
+          "s": [
+            "Atatürk’ün güzel sanatlara verdiği önemi çözümler.",
+            "Atatürk’ün güzel sanatlara verdiği önemi sınıflandırır.",
+            "Atatürk’ün güzel sanatlara verdiği önemi yorumlar (Kendi cümleleriyle aktarır.)"
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.2",
+          "m": "Farklı türdeki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.5",
+          "m": "Belirli gün ve haftalarla ilgili eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.3",
+          "m": "Nefesli çalgıların özelliklerini karşılaştırabilme",
+          "s": [
+            "Nefesli çalgıların özelliklerini ifade eder.",
+            "Nefesli çalgıların özelliklerine ilişkin benzerlikleri ifade eder.",
+            "Nefesli çalgıların özelliklerine ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.4",
+          "m": "Klavyeli çalgıların özelliklerini karşılaştırabilme",
+          "s": [
+            "Klavyeli çalgıların özelliklerini ifade eder.",
+            "Klavyeli çalgıların özelliklerine ilişkin benzerlikleri ifade eder.",
+            "Klavyeli çalgıların özelliklerine ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.6",
+          "m": "Popüler müzik türlerini karşılaştırabilme",
+          "s": [
+            "Popüler müzik türlerinin özelliklerini ifade eder.",
+            "Popüler müzik türlerine ilişkin benzerlikleri ifade eder.",
+            "Popüler müzik türlerine ilişkin farklılıkları ifade eder."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.7",
+          "m": "Ortak repertuvardaki eserleri söyleyebilme",
+          "s": [
+            "Bedenini söylemeye hazır hâle getirir.",
+            "Uygun söyleme tekniklerini kullanır.",
+            "Eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MÜZ.5.2.8",
+          "m": "Müzik eserlerine bedensel hareketlerle eşlik edebilme",
+          "s": [
+            "Ritmik yapıya/eserin anlamına uygun hareketler belirler.",
+            "Ritmik yapıya/eserin anlamına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    }
+  ]
+}

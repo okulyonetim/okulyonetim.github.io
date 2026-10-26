@@ -1,0 +1,182 @@
+{
+  "ders": "Beden Eğitimi",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAREKET VE ZİNDELİK",
+      "a": [
+        {
+          "k": "BES.5.1.1",
+          "m": "Fiziksel aktiviteler sırasında vücudunda meydana gelen değişimleri sorgulayabilme",
+          "s": [
+            "Fiziksel aktiviteler sırasında vücudunda meydana gelen değişimleri tanımlar.",
+            "Vücudunda meydana gelen değişimler hakkında sorular sorar.",
+            "Vücudunda meydana gelen değişimler hakkında bilgi toplar.",
+            "Topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BES.5.1.2",
+          "m": "Fiziksel hareketsizliğin getirdiği sonuçları yorumlayabilme",
+          "s": [
+            "Fiziksel hareketsizliğin getirdiği sonuçları inceler.",
+            "Fiziksel hareketsizliğin getirdiği sonuçları farklı örneklerle açıklar.",
+            "Fiziksel hareketsizliğin getirdiği sonuçları yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "BES.5.1.3",
+          "m": "Fiziksel aktivite ve zindelik ilişkisini çözümleyebilme",
+          "s": [
+            "Fiziksel aktivite ve zindeliğe ilişkin bileşenleri belirler.",
+            "Fiziksel aktivite ve zindeliğe ilişkin bileşenler arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "BES.5.1.4",
+          "m": "Fiziksel uygunluk kavramını açıklayabilme",
+          "s": [
+            "Fiziksel uygunluk kavramını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İŞ BİRLİKLİ OYUNLAR",
+      "a": [
+        {
+          "k": "BES.5.2.1",
+          "m": "İş birlikli oyunlarda hareket kavramlarını uygulayabilme",
+          "s": [
+            "İş birlikli oyunlarda hareket kavramlarını ayırt eder.",
+            "İş birlikli oyunlarda hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "İş birlikli oyunlarda kavramlara uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.5.2.2",
+          "m": "İş birlikli oyunlarda hareket becerisi sergileyebilme",
+          "s": [
+            "İş birlikli oyunlarda hareket becerilerini algılar.",
+            "İş birlikli oyunlarda hareket becerilerinin basamaklarını gösterir.",
+            "İş birlikli oyunlarda hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "BES.5.2.3",
+          "m": "İş birlikli oyunlarda taktik ve strateji geliştirebilme",
+          "s": [
+            "İş birlikli oyunlarda taktiksel problemi belirler.",
+            "İş birlikli oyunlarda belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "İş birlikli oyunlarda seçilen taktik ve stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HAYALİMDEKİ OYUN",
+      "a": [
+        {
+          "k": "BES.5.3.1",
+          "m": "Tasarlayacakları oyunlarda güvenli ortam oluşturabilme",
+          "s": [
+            "Tasarlayacakları oyunlarda ortaya çıkabilecek riskleri belirler.",
+            "Tasarlayacakları oyunlarda belirlenen risklere yönelik önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "BES.5.3.2",
+          "m": "Oyunların farklı özelliklerinden yararlanarak özgün bir oyun sentezleyebilme",
+          "s": [
+            "Tasarlayacağı oyunun özelliklerini belirler.",
+            "Tasarlayacağı oyunun özellikleri arasında ilişki kurar.",
+            "Özgün bir oyun oluşturur."
+          ]
+        },
+        {
+          "k": "BES.5.3.3",
+          "m": "Tasarlanan oyunlarda adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "Tasarlanan oyunlarda adil oyun anlayışını açıklar.",
+            "Tasarlanan oyunlarda adil oyun anlayışına uygun hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HAREKETİN ESTETİĞİ VE RİTMİ",
+      "a": [
+        {
+          "k": "BES.5.4.1",
+          "m": "Jimnastiğe ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Jimnastiğe ilişkin hareket kavramlarını ayırt eder.",
+            "Jimnastiğe ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Jimnastiğe ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.5.4.2",
+          "m": "Jimnastiğe ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Jimnastiğe ilişkin hareket becerilerini algılar.",
+            "Jimnastiğe ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Jimnastiğe ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "BES.5.4.3",
+          "m": "Müzik eşliğinde dansa özgü ritmik hareket edebilme",
+          "s": [
+            "Harekete veya müziğe ilişkin ritmi algılar.",
+            "Verilen ritme uygun hareket eder.",
+            "Müzik eşliğinde dansa özgü ritmik hareket becerilerini sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DAHA HIZLI, DAHA YÜKSEĞE, DAHA GÜÇLÜ VE BİRLİKTE",
+      "a": [
+        {
+          "k": "BES.5.5.1",
+          "m": "Çocuk atletizmine ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Çocuk atletizmine ilişkin kavramları ayırt eder.",
+            "Çocuk atletizmine ilişkin beceriler ile kavramlar arasında ilişki kurar.",
+            "Çocuk atletizmine ilişkin kavramlara uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.5.5.2",
+          "m": "Çocuk atletizmine ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Çocuk atletizmine ilişkin hareket becerilerini algılar.",
+            "Çocuk atletizmine ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Çocuk atletizmine ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "S.5.5.3",
+          "m": "Olimpik ve paralimpik oyunların önemini açıklayabilme",
+          "s": [
+            "Olimpik ve paralimpik oyunların önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BES.5.5.3",
+          "m": "Olimpik ve paralimpik oyunların önemini açıklayabilme",
+          "s": [
+            "Olimpik ve paralimpik oyunların önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

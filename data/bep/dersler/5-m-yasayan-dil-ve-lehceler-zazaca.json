@@ -1,0 +1,300 @@
+{
+  "ders": "Yaşayan Dil ve Lehçeler (Zazaca)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "OKULUM",
+      "a": [
+        {
+          "k": "ZAZ.5.1.D",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.1.0",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.1.K",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.1.Y",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.1.DBS",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.1.SÖS",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.1.SES",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "EVİM",
+      "a": [
+        {
+          "k": "ZAZ.5.2.D",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.2.O",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.2.K",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.2.Y",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.2.DBS",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçer kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.2.SÖS",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçer kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.2.SES",
+          "m": "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Evim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "MEVSİM VE TAKVİM",
+      "a": [
+        {
+          "k": "ZAZ.5.3.D",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.3.O",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.3.K",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.3.Y",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.3.DBS",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.3.SÖS",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.3.SES",
+          "m": "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Mevsim ve Takvim\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "BEDEN VE SAĞLIK",
+      "a": [
+        {
+          "k": "ZAZ.5.4.D",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.4.O",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.4.K",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.4.Y",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.5.4.DBS",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.4.SÖS",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.5.4.SES",
+          "m": "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Beden ve Sağlık\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

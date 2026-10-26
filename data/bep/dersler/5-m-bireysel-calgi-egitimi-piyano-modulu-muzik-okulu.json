@@ -1,0 +1,122 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PİYANODA TEMEL KAVRAMLAR 3",
+      "a": [
+        {
+          "k": "PYN.5.1.1",
+          "m": "5/8‘lik ve 6/8‘lik ölçü biriminde yazılan eser veya etüdü çalabilme",
+          "s": [
+            "5/8‘lik ve 6/8‘lik ölçü biriminde yazılan eser veya etüdü çözümler.",
+            "5/8‘lik ve 6/8‘lik ölçü biriminde yazılan eser veya etüdü çalmada duruş ve tutuş pozisyonu alır.",
+            "5/8‘lik ve 6/8‘lik ölçü biriminde yazılan eser veya etüdü çalmada çalgıya özgü teknikleri kullanır.",
+            "5/8‘lik ve 6/8‘lik ölçü biriminde yazılan eser veya etüdün müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.1.2",
+          "m": "Üçleme nota biriminin farkını karşılaştırabilme",
+          "s": [
+            "Üçleme nota biriminin özelliklerini belirler.",
+            "Üçleme nota biriminin benzerliklerini listeler.",
+            "Üçleme nota biriminin farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "PYN.5.1.3",
+          "m": "Artikülasyon işaretlerini eser veya etüt içinde çalabilme",
+          "s": [
+            "Artikülasyon işaretlerini eser veya etüdü çözümler.",
+            "Artikülasyon işaretlerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Artikülasyon işaretlerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Artikülasyon işaretlerinin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.1.4",
+          "m": "Fa ve sol anahtarında ek çizgide yer alan notaları eser veya etüt içinde çalabilme",
+          "s": [
+            "Fa ve sol anahtarında ek çizgide yer alan notaların yer aldığı eser veya etüdü çözümler.",
+            "Fa ve sol anahtarında ek çizgide yer alan notaları çalmada duruş ve tutuş pozisyonu alır.",
+            "Fa ve sol anahtarında ek çizgide yer alan notaları çalmada çalgıya özgü teknikleri kullanır.",
+            "Fa ve sol anahtarında ek çizgide yer alan notaların müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TEKNİK 3",
+      "a": [
+        {
+          "k": "PYN.5.2.1",
+          "m": "Senkoplu ritimleri eser veya etüt içinde çalabilme",
+          "s": [
+            "Senkoplu ritimlerin yer aldığı eser veya etüdü çözümler.",
+            "Senkoplu ritimleri çalmada duruş ve tutuş pozisyonu alır.",
+            "Senkoplu ritimleri çalmada çalgıya özgü teknikleri kullanır.",
+            "Senkoplu ritimlerin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.2.2",
+          "m": "Do majör, sol majör ve fa majör dizilerini bir ve iki oktav çalabilme",
+          "s": [
+            "Do majör, sol majör ve fa majör dizilerini bir ve iki oktav olarak çözümler.",
+            "Do majör, sol majör ve fa majör dizilerini bir ve iki oktav çalmada duruş ve tutuş pozisyonu alır.",
+            "Do majör, sol majör ve fa majör dizilerini bir ve iki oktav çalmada çalgıya özgü teknikleri kullanır.",
+            "Do majör, sol majör ve fa majör dizilerini bir ve iki oktav müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.2.3",
+          "m": "İki ve üç bağlı notaları eser veya etüt içinde çalabilme",
+          "s": [
+            "İki ve üç bağlı notaların yer aldığı eser veya etüdü çözümler.",
+            "İki ve üç bağlı notaları çalmada duruş ve tutuş pozisyonu alır.",
+            "İki ve üç bağlı notaları çalmada çalgıya özgü teknikleri kullanır.",
+            "İki ve üç bağlı notaların müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.2.4",
+          "m": "Dört el için yazılmış etüt veya eseri çalabilme",
+          "s": [
+            "Dört el için yazılmış etüt veya eseri çözümler.",
+            "Dört el için yazılmış etüt veya eseri çalmada duruş ve tutuş pozisyonu alır.",
+            "Dört el için yazılmış etüt veya eserde çalgıya özgü teknikleri kullanır.",
+            "Dört el için yazılmış etüt veya eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.5.2.5",
+          "m": "Üç sesli akorlara yönelik etüt çalabilme",
+          "s": [
+            "Üç sesli akorların yer aldığı etüdü çözümler.",
+            "Üç sesli akorları çalmada duruş ve tutuş pozisyonu alır.",
+            "Üç sesli akorları çalmada çalgıya özgü teknikleri kullanır.",
+            "Üç sesli akorların müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA BUSELİK MAKAMI",
+      "a": [
+        {
+          "k": "PYN.5.3.1",
+          "m": "Buselik makamına yönelik eser çalabilme",
+          "s": [
+            "Buselik makamına yönelik eseri çözümler.",
+            "Buselik makamını çalmada duruş ve tutuş pozisyonu alır.",
+            "Buselik makamını çalmada çalgıya özgü teknikleri kullanır.",
+            "Buselik makamın müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "ders": "Robotik Kodlama",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: ROBOTIK SISTEMLERE GIRIŞ VE TEMEL PROGRAMLAMA",
+      "a": [
+        {
+          "k": "RK1.1.1",
+          "m": "Robotik sistemlere ilişkin temel kavramları sınıflandırabilme",
+          "s": [
+            "Robotik sistemlere ilişkin temel kavramları belirler.",
+            "Robotik sistemlere ilişkin temel kavramları günlük hayat ile ilişkilendirir.",
+            "Robotik sistemlere ilişkin temel kavramları kullanım alanlarına göre gruplandırır."
+          ]
+        },
+        {
+          "k": "RK1.1.2",
+          "m": "Robotik kodlamaya ilişkin etik ve güvenlik-gizlilik önlemlerini yönetebilme",
+          "s": [
+            "Robotik kodlamaya ilişkin etik ve güvenlik-gizlilik önlemlerini yönetir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK1.1.3",
+          "m": "Robotik sistemlerde algoritmik düşünebilme",
+          "s": [
+            "Robotik sistemlerde algoritmik düşünür."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK1.1.4",
+          "m": "Robotik sistemlerde algoritmayı test edebilme",
+          "s": [
+            "Robotik sistemlerde geliştirdiği algoritmayı örnek girdilerle test eder.",
+            "Algoritmadaki hataları ayıklayarak kullanıma hazır hâle getirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: ROBOTIK SISTEM GELİŞTİRME ORTAMLARI VE BİLEŞENLERİ",
+      "a": [
+        {
+          "k": "RK1.2.1",
+          "m": "Robotik sistemlerde çevrim içi blok tabanlı yazılım geliştirme ortamını hazırlayabilme",
+          "s": [
+            "Robotik sistemlerde çevrim içi blok tabanlı yazılım geliştirme ortamlarını tanır.",
+            "Robotik sistemlerde çevrim içi blok tabanlı yazılım geliştirme ortamını belirler.",
+            "Robotik sistemlerde çevrim içi blok tabanlı yazılım geliştirme ortamını düzenler."
+          ]
+        },
+        {
+          "k": "RK1.2.2",
+          "m": "Robotik sistemlerde çevrim içi yazılım geliştirme sürecinde kullanılan bileşenlerden",
+          "s": [
+            "Robotik sistemlerde çevrim içi yazılım geliştirme sürecinde kullanılan bileşenlerden."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: ROBOTIK DEVRE TASARIMI",
+      "a": [
+        {
+          "k": "RK1.3.1",
+          "m": "Çevrim içi benzetim araçları kullanarak robotik devre modeli geliştirebilme",
+          "s": [
+            "Çevrim içi benzetim araçlarını kullanarak yapılacak robotik devre modeli için gerçek hayat problemini belirler.",
+            "Çevrim içi benzetim araçlarını kullanarak problem çözümü için robotik devre modeli oluşturur.",
+            "Çevrim içi benzetim araçlarını kullanarak geliştirilen robotik devre modelini uygular.",
+            "Robotik devre modelinin süreç ve sonuçlarını değerlendirir."
+          ]
+        },
+        {
+          "k": "RK1.3.2",
+          "m": "Donanım bileşenlerini kullanarak robotik devre modeli geliştirebilme",
+          "s": [
+            "Donanım bileşenlerini kullanarak yapılacak robotik devre modeli için gerçek hayat problemini belirler.",
+            "Belirlenen problemin çözümü için donanım bileşenlerini kullanarak robotik devre modeli oluşturur.",
+            "Donanım bileşenlerini kullanarak geliştirilen robotik devre modelini uygular.",
+            "Donanım bileşenlerini kullanarak geliştirilen robotik devre modelinin süreç ve sonuçlarını değerlendirir."
+          ]
+        },
+        {
+          "k": "RK1.3.3",
+          "m": "Çevrim içi blok tabanlı yazılım geliştirme ortamında robotik programlama sürecini yönetebilme",
+          "s": [
+            "Çevrim içi blok tabanlı yazılım geliştirme ortamında robotik programlama sürecini yönetir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK1.3.4",
+          "m": "Çevrim içi blok tabanlı yazılım geliştirme ortamında oluşturulan robotik programı test edebilme",
+          "s": [
+            "Çevrim içi blok tabanlı ortamda geliştirdiği robotik programı test eder.",
+            "Çevrim içi blok tabanlı ortamda geliştirdiği robotik programı hataları ayıklayarak kullanıma hazır hâle getirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: FARKLI DÜZEYLERDE ROBOTIK UYGULAMALAR",
+      "a": [
+        {
+          "k": "RK1.4.1",
+          "m": "Yazılım geliştirme sürecinde robotik sistemler ile entegre temel düzey bir ürün geliştirebilme",
+          "s": [
+            "Yazılım geliştirme sürecinde robotik sistemler ile entegre temel düzey bir ürün geliştirir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

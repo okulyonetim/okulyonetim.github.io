@@ -1,0 +1,68 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KANUNDA SEGÂH DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.5.1.1",
+          "m": "Segâh dizisi ve özelliklerini örnek etüt ve eserlerle çalabilme",
+          "s": [
+            "Segâh dizisinde yazılmış etüt veya eserleri çözümler.",
+            "Segâh dizisini çalarken kanuna özgü duruş pozisyonu alır.",
+            "Segâh dizisini çalarken kanuna özgü teknikleri kullanır.",
+            "Segâh dizisini çalarken kanuna özgü müziksel bileşenleri kullanır"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA ÇARPMA TEKNİĞİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.5.2.1",
+          "m": "Çarpma tekniğini çaldığı eserlerde uygulayabilme",
+          "s": [
+            "Çarpma tekniğini çalarken yazılmış etüt veya eserleri çözümler.",
+            "Çarpma tekniğini çalarken uygun duruş ve tutuş pozisyonu alır.",
+            "Çarpma tekniğini çalarken uygun teknikleri kullanır.",
+            "Çarpma tekniğini çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA HÜSEYNİ DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.5.3.1",
+          "m": "Hüseyni dizisini ve özelliklerini örnek eser ve etütlerle çalabilme",
+          "s": [
+            "Hüseyni dizisini ve özelliklerini örnek eser ve etütlerle çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Hüseyni dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Hüseyni dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Hüseyni dizisinin seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA GÖÇÜRME (TRANSPOZE) YAPIYORUM",
+      "a": [
+        {
+          "k": "KNN.5.4.1",
+          "m": "Göçürme (transpoze) tekniğini uygulayabilme",
+          "s": [
+            "Göçürme (transpoze) tekniği ile yazılmış etüt veya eserleri çözümler.",
+            "Göçürme (transpoze) tekniğini çalarken uygun duruş ve tutuş pozisyonu alır.",
+            "Göçürme (transpoze) tekniğini çalarken uygun teknikleri kullanır.",
+            "Göçürme (transpoze) tekniğini çalarken uygun müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NİM SOFYAN, SOFYAN VE SEMAİ USULLERİNDE UYGULAMALAR",
+      "a": [
+        {
+          "k": "UD.5.1.1",
+          "m": "Nim sofyan usulünde Türk müziği eserleri çalabilme",
+          "s": [
+            "Nim Sofyan usulündeki egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak nim sofyan usulünde Türk müziği eserleri çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak nim sofyan usulünde Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "UD.5.1.2",
+          "m": "Semai usulünde Türk müziği eserleri çalabilme",
+          "s": [
+            "Semai usulündeki egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak semai usulünde Türk müziği eserleri çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak semai usulünde Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "UD.5.1.3",
+          "m": "Sofyan usulünde Türk müziği eserleri çalabilme",
+          "s": [
+            "Sofyan usulündeki egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak semai usulünde Türk müziği eserleri çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak semai usulünde Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGÂH VE BUSELİK DİZİLERİNDE ETÜT VE ESER UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.5.2.1",
+          "m": "Çargâh makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Çargâh makamında çalacağı egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak çargâh makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak çargâh makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "UD.5.2.2",
+          "m": "Buselik makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Buselik makamında çalacağı egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak buselik makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Ezgisel yapıya uygun olarak buselik makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDİ DİZİSİNDE ETÜT VE ESER UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.5.3.1",
+          "m": "Kürdi makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Kürdi makamında çalacağı egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak kürdi makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak kürdi makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

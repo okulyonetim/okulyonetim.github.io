@@ -1,0 +1,91 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ENHARMONİK SESLER",
+      "a": [
+        {
+          "k": "FLT.5.1.1",
+          "m": "Öğrenilen notaların diğer adlarını sınıflandırabilme",
+          "s": [
+            "Diyez ve bemollü notalara ilişkin ölçütleri belirler.",
+            "Diyez ve bemollü notaları ayırır.",
+            "Diyez ve bemollü notaları tasnif eder.",
+            "Diyez ve Bemollü notaları etiketler."
+          ]
+        },
+        {
+          "k": "FLT.5.1.2",
+          "m": "İki farklı nota yazımı (diyez ve bemol) kullanarak egzersiz ve etüt çalabilme",
+          "s": [
+            "İki farklı nota yazımı kullanarak (diyez ve bemol) yazılmış egzersiz ve etütleri çözümler.",
+            "İki farklı nota yazımı kullanarak (diyez ve bemol) egzersiz ve etüt çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "İki farklı nota yazımı kullanarak (diyez ve bemol) egzersiz ve etüt çalabilmek için flüte özgü teknikleri kullanır.",
+            "İki farklı nota yazımı kullanarak (diyez ve bemol) egzersiz ve etüt çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KROMATİK DİZİ",
+      "a": [
+        {
+          "k": "FLT.5.2.1",
+          "m": "Çıkıcı ve inici kromatik dizileri çalabilme",
+          "s": [
+            "Birinci oktav “fa“ dan ikinci oktav “fa“ ya kadar olan kromatik dizileri çözümler.",
+            "Birinci oktav “fa“ dan ikinci oktav “fa“ ya kadar olan kromatik dizileri çalabilmek için duruş ve tutuş pozisyonu alır",
+            "Birinci oktav “fa“ dan ikinci oktav “fa“ ya kadar olan kromatik dizileri çalarken flüte özgü teknikleri kullanır.",
+            "Birinci oktav “fa“ dan ikinci oktav “fa“ ya kadar olan kromatik dizileri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAMSAL DİZİLER-1 (ÇARGÂH-NİHAVENT)",
+      "a": [
+        {
+          "k": "FLT.5.3.1",
+          "m": "Çargâh makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Çargâh makamının motiflerini tanır.",
+            "Çargâh makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Çargâh makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.5.3.2",
+          "m": "Çargâh makamında eserler çalabilme",
+          "s": [
+            "Çargâh makamındaki eserleri çözümler.",
+            "Çargâh makamında eserler çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Çargâh makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Çargâh makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.5.3.3",
+          "m": "Nihavent makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Nihavent makamının motiflerini tanır.",
+            "Nihavent makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Nihavent makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.5.3.4",
+          "m": "Nihavent makamında eserler çalabilme",
+          "s": [
+            "Nihavent makamındaki eserleri çözümler.",
+            "Nihavent makamında eserler çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Nihavent makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Nihavent makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

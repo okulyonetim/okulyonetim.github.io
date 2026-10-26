@@ -1,0 +1,283 @@
+{
+  "ders": "Fen Bilimleri",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: GÖKYÜZÜNDEKİ KOMŞULARIMIZ VE BİZ",
+      "a": [
+        {
+          "k": "FB.5.1.1",
+          "m": "Güneş’in yapısı ve dönme hareketi ile ilgili bilgileri toplayabilme",
+          "s": [
+            "Güneş’in yapısı ve dönme hareketi ile ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak Güneş’in yapısı ve dönme hareketi hakkında bilgileri bulur.",
+            "Güneş’in yapısı ve dönme hareketi hakkında bulduğu bilgileri doğrular.",
+            "Güneş’in yapısı ve dönme hareketi hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "FB.5.1.2",
+          "m": "Ay’ın özellikleri, dönme ve dolanma hareketleri ile ilgili bilimsel çıkarım yapabilme",
+          "s": [
+            "Ay’ın özellikleri, dönme ve dolanma hareketleri ile ilgili nitelikleri tanımlar.",
+            "Ay’ın özellikleri, dönme ve dolanma hareketleri ile ilgili topladığı verileri kaydeder.",
+            "Ay’ın özellikleri, dönme ve dolanma hareketleri ile ilgili verileri yorumlar ve değerlendirir."
+          ]
+        },
+        {
+          "k": "FB.5.1.3",
+          "m": "Ay’ın evrelerini temsil eden bilimsel model oluşturabilme",
+          "s": [
+            "Ay’ın evrelerini temsil eden bir model önerir.",
+            "Ay’ın evrelerini temsil eden modelini yeni kanıtlara bağlı olarak yeniler."
+          ]
+        },
+        {
+          "k": "FB.5.1.4",
+          "m": "Güneş, Dünya ve Ay’ın birbirlerine göre hareketlerini ve hacimsel büyAüklüklerini temsil eden bilimsel model oluşturabilme",
+          "s": [
+            "Güneş, Dünya ve Ay’ın birbirlerine göre hareketlerini ve büyüklüklerini temsil eden bir model önerir.",
+            "Güneş, Dünya ve Ay’ın birbirlerine göre hareketlerini ve büyüklüklerini temsil eden modelini yeni kanıtlara göre yeniler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: KUVVETİ TANIYALIM",
+      "a": [
+        {
+          "k": "FB.5.2.1",
+          "m": "Kuvveti büyüklüğü ile operasyonel tanımlayabilme",
+          "s": [
+            "Kuvvetin niteliklerini tanımlar.",
+            "Kuvvetin büyüklüğünü dinamometre ile ölçer.",
+            "Kuvvetin büyüklüğünü Newton (N) birimi ile tanımlar."
+          ]
+        },
+        {
+          "k": "FB.5.2.2",
+          "m": "Basit araç gereçle bilimsel bir dinamometre modeli oluşturabilme",
+          "s": [
+            "Basit araç gereçle bir dinamometre modeli önerir.",
+            "Tasarladığı dinamometre modelini yeni kanıtlara göre yeniler."
+          ]
+        },
+        {
+          "k": "FB.5.2.3",
+          "m": "Kütle ve ağırlık kavramlarını karşılaştırabilme",
+          "s": [
+            "Kütle ve ağırlığa ilişkin özellikleri belirler.",
+            "Belirlenen özelliklere ilişkin benzerlikleri listeler.",
+            "Belirlenen özelliklere ilişkin farklılıkları listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: CANLILARIN YAPISINA YOLCULUK",
+      "a": [
+        {
+          "k": "FB.5.3.1",
+          "m": "Bitki ve hayvan hücrelerini temel kısımları ve özellikleri açısından karşılaştırabilme",
+          "s": [
+            "Bitki ve hayvan hücrelerinin özelliklerini belirler.",
+            "Bitki ve hayvan hücrelerinin benzer özelliklerini listeler.",
+            "Bitki ve hayvan hücrelerinin farklı özelliklerini listeler."
+          ]
+        },
+        {
+          "k": "FB.5.3.2",
+          "m": "Hücre-doku-organ-sistem-organizma kavramlarını yapılandırabilme",
+          "s": [
+            "Hücre-doku-organ-sistem-organizma kavramlarına ilişkin hiyerarşik ilişkileri ortaya koyar.",
+            "Hücre-doku-organ-sistem-organizma kavramlarına ilişkin elde ettiği bilgileri uyumlu bir bütün olarak ortaya koyar."
+          ]
+        },
+        {
+          "k": "FB.5.3.3",
+          "m": "Destek ve hareket sistemine ait yapıları sınıflandırabilme",
+          "s": [
+            "Destek ve hareket sistemine ait yapıların niteliklerini tanımlar.",
+            "Destek ve hareket sistemine ait yapıları niteliklerine göre ayrıştırır.",
+            "Destek ve hareket sistemine ait yapıları gruplandırır.",
+            "Destek ve hareket sistemine ait yapıları etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.3.4",
+          "m": "Destek ve hareket sisteminin sağlığı için yapılması gerekenler konusunda bilgi toplayabilme",
+          "s": [
+            "Destek ve hareket sisteminin sağlığı ile ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak destek ve hareket sisteminin sağlığı hakkında bilgiler bulur.",
+            "Destek ve hareket sisteminin sağlığı hakkında bulduğu bilgileri doğrular.",
+            "Ulaştığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: IŞIĞIN DÜNYASI",
+      "a": [
+        {
+          "k": "FB.5.4.1",
+          "m": "Bir kaynaktan çıkan ışığın her yönde doğrusal bir yol izlediğini bilimsel olarak gözlemleyebilme",
+          "s": [
+            "Bir kaynaktan çıkan ışığın izlediği yolu gözlemleyerek niteliklerini tanımlar.",
+            "Gözlemleri sonucunda ışığın izlediği yola ilişkin elde edilen verileri kaydeder.",
+            "Işığın her yönde doğrusal bir yol izlediğini açıklar."
+          ]
+        },
+        {
+          "k": "FB.5.4.2",
+          "m": "Maddeleri ışığı geçirme durumlarına göre sınıflandırabilme",
+          "s": [
+            "Maddelerin ışığı geçirme durumlarına göre niteliklerini belirler.",
+            "Maddeleri ışığı geçirme durumlarına göre ayrıştırır.",
+            "Maddeleri ışığı geçirme durumlarına göre gruplandırır.",
+            "Maddeleri ışığı geçirme durumlarına göre etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.4.3",
+          "m": "Tam gölgeyi bilimsel olarak gözlemleyebilme",
+          "s": [
+            "Tam gölgenin niteliklerini tanımlar.",
+            "Tam gölgeye ait elde ettiği verileri kaydeder.",
+            "Tam gölgeyi etkileyen değişkenleri açıklar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. ÜNİTE: MADDENİN DOĞASI",
+      "a": [
+        {
+          "k": "FB.5.5.1",
+          "m": "Maddeleri tanecikli, boşluklu ve hareketli yapısına göre sınıflandırabilme",
+          "s": [
+            "Maddelerin tanecikli, boşluklu ve hareketli yapısının niteliklerini belirler.",
+            "Maddeleri tanecikli, boşluklu ve hareketli yapısına göre ayrıştırır.",
+            "Maddeleri tanecikli, boşluklu ve hareketli yapısına göre katı, sıvı ve gaz olarak gruplandırır.",
+            "Maddeleri tanecikli, boşluklu ve hareketli yapılarına göre farklı gruplar altında etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.5.2",
+          "m": "Isı ve sıcaklık kavramlarını karşılaştırabilme",
+          "s": [
+            "Isı ve sıcaklık kavramlarının özelliklerini belirler.",
+            "Isı ve sıcaklık kavramlarının özelliklerine ilişkin benzerlikleri listeler.",
+            "Isı ve sıcaklık kavramlarının özelliklerine ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "FB.5.5.3",
+          "m": "Sıcaklığı farklı olan sıvıların karıştırılması sonucu ısı alışverişi olduğuna yönelik bilimsel çıkarım yapabilme",
+          "s": [
+            "Sıvılar arasındaki ısı alışverişinin niteliklerini tanımlar.",
+            "Sıvıların karıştırılmadan önceki ve sonraki sıcaklıklarına dair verileri toplar ve kaydeder.",
+            "Karıştırılan sıvılar arasında ısı alışverişi olduğunu yorumlayarak değerlendirir."
+          ]
+        },
+        {
+          "k": "FB.5.5.4",
+          "m": "Maddenin ısı etkisiyle hâl değiştirebileceğini bilimsel gözleme dayalı tahmin edebilme",
+          "s": [
+            "Maddenin ısı etkisiyle hâl değiştirebileceğine ilişkin ön bilgi ve deneyimlerine dayalı önerme oluşturur.",
+            "Gözleme dayalı olan ve olmayan önermeleri karşılaştırır.",
+            "Maddenin ısı etkisiyle hâl değiştirebileceğini temellendirebilmek için gözlem verilerinden sonuç çıkarır.",
+            "Gözlemlenmemiş duruma ilişkin tahminde bulunur.",
+            "Tahminlerinin geçerliğini sorgular."
+          ]
+        },
+        {
+          "k": "FB.5.5.5",
+          "m": "Maddeleri ısı iletimi bakımından sınıflandırabilme",
+          "s": [
+            "Maddelerin ısı iletimi bakımından niteliklerini belirler.",
+            "Maddeleri ısı iletkeni veya yalıtkanı olarak ayrıştırır.",
+            "Maddeleri ısı iletkeni veya yalıtkanı olarak gruplandırır.",
+            "Maddeleri ısı iletkeni veya yalıtkanı olarak etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.5.6",
+          "m": "Isı yalıtımını gösteren model oluşturabilme",
+          "s": [
+            "Isı yalıtımı ile ilgili model önerir.",
+            "Yeni kanıtlarla modeli yeniler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "6. ÜNİTE: YAŞAMIMIZDAKİ ELEKTRİK",
+      "a": [
+        {
+          "k": "FB.5.6.1",
+          "m": "Bir elektrik devresindeki elemanları sembollerinin olup olmamasına göre sınıflandırabilme",
+          "s": [
+            "Bir elektrik devresindeki elemanların sembollerini belirler.",
+            "Bir elektrik devresindeki elemanları sembollerinin olup olmamasına göre ayrıştırır.",
+            "Bir elektrik devresindeki elemanları sembollerinin olup olmamasına göre gruplandırır.",
+            "Bir elektrik devresindeki elemanların sembollerini niteliklerine göre etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.6.2",
+          "m": "Şemasını çizdiği elektrik devresine uygun deney yapabilme",
+          "s": [
+            "Çizdiği elektrik devresine uygun deney düzeneği tasarlar.",
+            "Deney ile ilgili ölçme ve veri analizi yapar."
+          ]
+        },
+        {
+          "k": "FB.5.6.3",
+          "m": "Bir elektrik devresindeki ampul parlaklığını etkileyen değişkenlerin neler olduğuna ilişkin hipotez oluşturabilm",
+          "s": [
+            "Elektrik devrelerindeki ampul parlaklığını etkileyen değişkenleri tanımlar.",
+            "Pil ve ampul sayısını değiştirerek ampul parlaklığındaki değişimi neden-sonuç ilişkisi bağlamında belirler.",
+            "Ampul parlaklığındaki bağımlı, bağımsız ve kontrol edilen değişkenleri belirler.",
+            "Bağımsız değişken olarak pil sayısı ve ampul sayısını kontrol eder.",
+            "Farklı elektrik devreleri üzerinden ampul parlaklığının pil sayısı ve ampul sayısına bağlı olarak değiştiğine yönelik önermelerde bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "7. ÜNİTE: SÜRDÜRÜLEBİLİR YAŞAM VE GERİ DÖNÜŞÜM",
+      "a": [
+        {
+          "k": "FB.5.7.1",
+          "m": "Evsel atıklarda geri dönüştürülebilen ve dönüştürülemeyen maddeleri sınıflandırabilme",
+          "s": [
+            "Evsel atıkların niteliklerini tanımlar.",
+            "Evsel atıkları geri dönüştürülebilen ve dönüştürülemeyen olarak ayrıştırır.",
+            "Evsel atıkları geri dönüştürülebilen ve dönüştürülemeyen olarak gruplandırır.",
+            "Evsel atıkları geri dönüştürülebilen ve dönüştürülemeyen olarak etiketler."
+          ]
+        },
+        {
+          "k": "FB.5.7.2",
+          "m": "Kaynakların etkili kullanımı konusunda geri dönüşümün önemli olduğuna yönelik bilimsel çıkarımda bulunabilme",
+          "s": [
+            "Kaynakların etkili kullanımı ve geri dönüşüme ait nitelikleri tanımlar.",
+            "Kaynakların etkili kullanımı konusunda geri dönüşümün önemine ilişkin topladığı verileri kaydeder.",
+            "Kaynakların etkili kullanımı konusunda geri dönüşümün önemine ilişkin verileri değerlendirir."
+          ]
+        },
+        {
+          "k": "FB.5.7.3",
+          "m": "Yakın çevresinde atık yönetiminin uygulanabilirliğine ilişkin deneyimlerini yansıtabilme",
+          "s": [
+            "Yakın çevresinde atık yönetimine ilişkin deneyimlerini gözden geçirir.",
+            "Yakın çevresinde atık yönetimine ilişkin deneyimlerine dayalı çıkarım yapar.",
+            "Yakın çevresinde atık yönetimine ilişkin ulaşılan çıkarımları değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

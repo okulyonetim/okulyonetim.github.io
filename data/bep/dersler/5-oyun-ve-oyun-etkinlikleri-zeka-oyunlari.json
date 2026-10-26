@@ -1,0 +1,294 @@
+{
+  "ders": "Oyun ve Oyun Etkinlikleri-Zeka Oyunları",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "OOE.ZO.1.1. ÜNİTE: AKIL YÜRÜTME VE İŞLEM OYUNLARI",
+      "a": [
+        {
+          "k": "OOE.ZO.1.1.1",
+          "m": "Akıl yürütme ve işlem oyunlarında verilen oyunun genel kurallarını açıklar.",
+          "s": [
+            "Akıl yürütme ve işlem oyunlarında verilen oyunun genel kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.1.2",
+          "m": "Akıl yürütme ve işlem oyunlarında verilen ipuçlarıyla mantıksal çıkarımlar yapar.",
+          "s": [
+            "Akıl yürütme ve işlem oyunlarında verilen ipuçlarıyla mantıksal çıkarımlar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.1.3",
+          "m": "Akıl yürütme ve işlem oyunlarının çözümünde zihinden dört işlem yapar.",
+          "s": [
+            "Akıl yürütme ve işlem oyunlarının çözümünde zihinden dört işlem yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.1.4",
+          "m": "Başlangıç düzeyindeki akıl yürütme ve işlem oyunlarını oynar.",
+          "s": [
+            "Başlangıç düzeyindeki akıl yürütme ve işlem oyunlarını oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.1.5",
+          "m": "Akıl yürütme ve işlem oyununa özgü temel stratejileri kullanır.",
+          "s": [
+            "Akıl yürütme ve işlem oyununa özgü temel stratejileri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.1.6",
+          "m": "Ulusal ve uluslararası zekâ yarışmaları ve turnuvalarının yapıldığını açıklar.",
+          "s": [
+            "Ulusal ve uluslararası zekâ yarışmaları ve turnuvalarının yapıldığını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ZO.1.2. ÜNİTE: SÖZEL OYUNLAR",
+      "a": [
+        {
+          "k": "OOE.ZO.1.2.1",
+          "m": "Sözel oyunların temel kurallarını açıklar.",
+          "s": [
+            "Sözel oyunların temel kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.2.2",
+          "m": "Sözel oyunlarda verilen ipuçlarıyla mantıksal çıkarımlar yapar.",
+          "s": [
+            "Sözel oyunlarda verilen ipuçlarıyla mantıksal çıkarımlar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.2.3",
+          "m": "Oyuna uygun kelimeler türetir.",
+          "s": [
+            "Oyuna uygun kelimeler türetir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.2.4",
+          "m": "Başlangıç düzeyi sözel oyunları oynar.",
+          "s": [
+            "Başlangıç düzeyi sözel oyunları oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.2.5",
+          "m": "Sözel oyunlara özgü temel stratejileri kullanır.",
+          "s": [
+            "Sözel oyunlara özgü temel stratejileri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.2.6",
+          "m": "Orta düzey sözel oyunları oynar.",
+          "s": [
+            "Orta düzey sözel oyunları oynar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ZO.1.3. ÜNİTE: GEOMETRİK MEKANİK OYUNLAR",
+      "a": [
+        {
+          "k": "OOE.ZO.1.3.1",
+          "m": "Geometrik mekanik oyunların temel kurallarını açıklar.",
+          "s": [
+            "Geometrik mekanik oyunların temel kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.3.2",
+          "m": "Geometrik şekilleri tanır.",
+          "s": [
+            "Geometrik şekilleri tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.3.3",
+          "m": "Üç boyutlu cisimler arasında hareket, ilişki ve örüntüyü açıklar.",
+          "s": [
+            "Üç boyutlu cisimler arasında hareket, ilişki ve örüntüyü açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.3.4",
+          "m": "Başlangıç düzeyi geometrik mekanik oyunlar oynar.",
+          "s": [
+            "Başlangıç düzeyi geometrik mekanik oyunlar oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.3.5",
+          "m": "Geometrik mekanik oyunlarla ilgili temel stratejileri kullanır.",
+          "s": [
+            "Geometrik mekanik oyunlarla ilgili temel stratejileri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.3.6",
+          "m": "Orta düzey geometrik mekanik oyunlar oynar.",
+          "s": [
+            "Orta düzey geometrik mekanik oyunlar oynar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ZO.1.4. ÜNİTE: HAFIZA OYUNLARI",
+      "a": [
+        {
+          "k": "OOE.ZO.1.4.1",
+          "m": "Hafıza oyunlarının temel kurallarını açıklar.",
+          "s": [
+            "Hafıza oyunlarının temel kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.4.2",
+          "m": "Başlangıç düzeyinde hafıza oyunları oynar.",
+          "s": [
+            "Başlangıç düzeyinde hafıza oyunları oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.4.4",
+          "m": "Orta düzeyde hafıza oyunları oynar.",
+          "s": [
+            "Orta düzeyde hafıza oyunları oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.4.3",
+          "m": "Hafıza oyunlarının temel stratejilerini açıklar.",
+          "s": [
+            "Hafıza oyunlarının temel stratejilerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ZO.1.5. ÜNİTE: STRATEJİ OYUNLARI",
+      "a": [
+        {
+          "k": "OOE.ZO.1.5.1",
+          "m": "Strateji oyunlarının temel kurallarını kavrar.",
+          "s": [
+            "Strateji oyunlarının temel kurallarını kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.5.2",
+          "m": "Strateji oyunlarını başlangıç düzeyinde oynar.",
+          "s": [
+            "Strateji oyunlarını başlangıç düzeyinde oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.5.3",
+          "m": "Strateji oyunlarında başlangıç hamlelerini planlar.",
+          "s": [
+            "Strateji oyunlarında başlangıç hamlelerini planlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.5.4",
+          "m": "Strateji oyunlarında başlangıç hamlelerini uygular.",
+          "s": [
+            "Strateji oyunlarında başlangıç hamlelerini uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.5.5",
+          "m": "Orta düzey strateji oyunları oynar.",
+          "s": [
+            "Orta düzey strateji oyunları oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.5.6",
+          "m": "Dünya genelinde oynanan strateji oyunlarını tanır.",
+          "s": [
+            "Dünya genelinde oynanan strateji oyunlarını tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ZO.1.6. ÜNİTE: ZEKÂ SORULARI",
+      "a": [
+        {
+          "k": "OOE.ZO.1.6.1",
+          "m": "Zekâ sorularının temel prensiplerini kavrar.",
+          "s": [
+            "Zekâ sorularının temel prensiplerini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.6.2",
+          "m": "Başlangıç düzeyinde zekâ soruları çözer.",
+          "s": [
+            "Başlangıç düzeyinde zekâ soruları çözer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.6.4",
+          "m": "Zekâ sorularında kullanılan temel stratejileri kavrar.",
+          "s": [
+            "Zekâ sorularında kullanılan temel stratejileri kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ZO.1.6.3",
+          "m": "Zekâ sorularında verilen ipuçlarıyla mantıksal çıkarımlar yapar.",
+          "s": [
+            "Zekâ sorularında verilen ipuçlarıyla mantıksal çıkarımlar yapar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

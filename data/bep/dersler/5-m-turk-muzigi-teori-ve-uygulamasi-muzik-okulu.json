@@ -1,0 +1,86 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİNDE DÖRTLÜLER",
+      "a": [
+        {
+          "k": "TMT.5.1.1",
+          "m": "Türk müziğinde dörtlüleri işitebilme",
+          "s": [
+            "Dörtlüleri tanır.",
+            "Dinlemiş olduğu dörtlüleri işitsel olarak ayırt eder.",
+            "İşittiği dörtlüleri ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.5.1.2",
+          "m": "Türk müziğinde dörtlüleri okuyabilme.",
+          "s": [
+            "Okuduğu dörtlüleri tanır.",
+            "Okuduğu dörtlüleri ayırt eder.",
+            "Dörtlüleri okuyarak uygular."
+          ]
+        },
+        {
+          "k": "TMT.5.1.3",
+          "m": "Türk müziğinde dörtlüleri yazabilme",
+          "s": [
+            "Türk müziğinde dörtlülerin bileşenlerini tanır.",
+            "Türk müziğinde dörtlülerin bileşenlerini ayırt eder.",
+            "Türk müziğinde dörtlülerin bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE BEŞLİLER",
+      "a": [
+        {
+          "k": "TMT.5.2.1",
+          "m": "Türk müziğinde beşlileri işitebilme",
+          "s": [
+            "Beşlileri tanır.",
+            "Dinlemiş olduğu beşlileri işitsel olarak ayırt eder.",
+            "Dinlemiş olduğu beşlileri işitsel olarak ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.5.2.2",
+          "m": "Türk müziğinde beşlileri okuyabilme",
+          "s": [
+            "Okuduğu beşlileri tanır.",
+            "Okuduğu beşlileri ayırt eder.",
+            "Beşlileri okuyarak uygular."
+          ]
+        },
+        {
+          "k": "TMT.5.2.3",
+          "m": "Türk müziğinde beşlileri yazabilme",
+          "s": [
+            "Beşlileri yazar.",
+            "Beşlilerin bileşenlerini tanır.",
+            "Beşlilerin bileşenlerini ayırt eder"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KENDİ EZGİMİ YAZIYORUM",
+      "a": [
+        {
+          "k": "TMT.5.3.1",
+          "m": "Öğrendiği dörtlü ve beşli ses dizilerinden ezgi yazabilme",
+          "s": [
+            "Yazdığı ezgilerin dörtlü ve beşlilerinin bileşenlerini tanır.",
+            "Yazdığı ezgilerin dörtlü ve beşlilerinin bileşenlerini ayırt eder.",
+            "Yazdığı ezgilerin dörtlü ve beşlilerinin bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

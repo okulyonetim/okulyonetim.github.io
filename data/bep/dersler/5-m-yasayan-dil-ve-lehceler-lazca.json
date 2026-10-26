@@ -1,0 +1,300 @@
+{
+  "ders": "Yaşayan Dil ve Lehçeler (Lazca)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "OKULDA İLK GÜNÜM",
+      "a": [
+        {
+          "k": "LAZ.5.1.D",
+          "m": "\"Okulda İlk Günüm\" temasındaki sosyal etkileşim durumlarında temel ifade leri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.1.O",
+          "m": "\"Okulda İlk Günüm\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak anlam landırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.1.K",
+          "m": "\"Okulda İlk Günüm\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.1.Y",
+          "m": "\"Okulda İlk Günüm\" temasındaki sosyal etkileşim durumlarında temel ifade lerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.1.DBS",
+          "m": "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır.",
+          "s": [
+            "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şe kilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.1.SÖS",
+          "m": "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.1.SES",
+          "m": "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulda İlk Günüm\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "AİLEM",
+      "a": [
+        {
+          "k": "LAZ.5.2.D",
+          "m": "\"Ailem\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.2.O",
+          "m": "\"Ailem\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.2.K",
+          "m": "\"Ailem\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.2.Y",
+          "m": "\"Ailem\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.2.DBS",
+          "m": "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.2.SÖS",
+          "m": "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.2.SES",
+          "m": "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Ailem\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OKULUM",
+      "a": [
+        {
+          "k": "LAZ.5.3.D",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.3.O",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.3.K",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.3.Y",
+          "m": "\"Okulum\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.3.DBS",
+          "m": "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.3.SÖS",
+          "m": "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.3.SES",
+          "m": "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Okulum\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GÜNLÜK HAYATIM",
+      "a": [
+        {
+          "k": "LAZ.5.4.D",
+          "m": "\"Günlük Hayatım\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.4.O",
+          "m": "\"Günlük Hayatım\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri; ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.4.K",
+          "m": "\"Günlük Hayatım\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.4.Y",
+          "m": "\"Günlük Hayatım\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "LAZ.5.4.DBS",
+          "m": "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.4.SÖS",
+          "m": "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "LAZ.5.4.SES",
+          "m": "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Günlük Hayatım\" temasında sosyal etkileşim durumlarında temel ifadelere uygun sesletimi seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,243 @@
+{
+  "ders": "Bilişim Teknolojileri ve Yazılım (İHO)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "BİLİŞİM TEKNOLOJİLERİNİN HAYATIMIZDAKİ YERİ",
+      "a": [
+        {
+          "k": "BTY.5.1.1",
+          "m": "Günlük yaşamda kullanılan bilişim teknolojilerini sınıflandırabilme",
+          "s": [
+            "Bilişim teknolojilerine ilişkin temel kavramları belirler.",
+            "Geçmişten günümüze bilişim teknolojilerindeki benzerlikleri ve farklılıkları ilişkilendirir.",
+            "Bilişim teknolojilerini kullanım alanlarına göre gruplandırır."
+          ]
+        },
+        {
+          "k": "BTY.5.1.2",
+          "m": "Bilişim teknolojilerinin birey ve toplum üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Farklı bilişim teknolojilerinin olumlu ve olumsuz yönleri ile ilgili çözümleme yapar.",
+            "Farklı bilişim teknolojilerinin kullanımına göre fiziksel güvenlik önlemleri ile ilgili sınıflandırma yapar.",
+            "Bilişim teknolojilerini kullanmanın beden ve ruh sağlığı üzerindeki etkilerini kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "BTY.5.1.3",
+          "m": "Dijital vatandaşlık uygulamalarını sınıflandırabilme",
+          "s": [
+            "Dijital kimlik kavramını belirler.",
+            "Dijital ayak izinin etkilerini bilişim teknolojilerinin kullanım alanları ile ilişkilendirir.",
+            "Dijital vatandaşlık uygulamalarını kullanım alanlarına göre gruplandırır."
+          ]
+        },
+        {
+          "k": "BTY.5.1.4",
+          "m": "Yapay zekâ ile ilgili temel kavramları ve özellikleri sorgulayabilme",
+          "s": [
+            "Yapay zekâ ile ilgili temel kavram ve özelliklere ilişkin merak ettiği konuları tanımlar.",
+            "Yapay zekâ ile ilgili temel kavram ve özellikleri hakkında sorular sorar.",
+            "Yapay zekâ ile ilgili temel kavram ve özellikleri hakkında bilgi toplar.",
+            "Yapay zekâ ile ilgili temel kavram ve özellikleri hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Yapay zekânın olası etkilerine ilişkin topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BTY.5.1.5",
+          "m": "Bilgisayar sistemlerini çözümleyebilme",
+          "s": [
+            "Bilgisayar sistemlerinin temel bileşenlerini belirler.",
+            "Bilgisayar sistemlerinin temel bileşenleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "BTY.5.1.6",
+          "m": "Dosya ve klasör yönetimi ile ilgili temel işlemlerle çalışabilme",
+          "s": [
+            "Temel dosya ve klasör düzenleme işlemlerini belirler.",
+            "Temel dosya ve klasör düzenleme işlemlerini kullanır.",
+            "Dosya ve klasör sıkıştırma işlemlerini verimlilik kapsamında değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DİJİTAL ÜRÜN TASARIM VE GELİŞTİRME",
+      "a": [
+        {
+          "k": "BTY.5.2.1",
+          "m": "Görsel düzenleme programlarından yararlanabilme",
+          "s": [
+            "Görsellerin temel özelliklerini tanır.",
+            "Uygun görsel düzenleme programını belirler.",
+            "Belirlenen görsel düzenleme programının arayüz özelliklerini kullanır.",
+            "Kullanılan görsel düzenleme programını kullanım alanları/verimliliği açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.5.2.2",
+          "m": "Görsel için kurgu oluşturabilme",
+          "s": [
+            "Görsel tasarlanacak gerçek hayat problemini belirler.",
+            "Görsel hazırlama sürecinde kullanılacak hikâye/senaryo unsurlarını belirler.",
+            "Belirlenen unsurları kapsayan hikâye/senaryo oluşturur.",
+            "Hikâyeyi/senaryoyu bütünlük/kullanışlılık açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.5.2.3",
+          "m": "Görsel dosyası geliştirebilme",
+          "s": [
+            "Tasarlanan hikâye/senaryo unsurlarına uygun bir görsel oluşturur.",
+            "Oluşturulan görseli belirlenen ölçütler açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.5.2.4",
+          "m": "Kelime işlemci programlarından yararlanabilme",
+          "s": [
+            "Kelime işlemci programlarının temel özelliklerini tanır.",
+            "Uygun kelime işlemci programını belirler.",
+            "Belirlenen kelime işlemci programının arayüz özelliklerini kullanır.",
+            "Kullanılan kelime işlemci programını kullanım alanları/verimliliği açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.5.2.5",
+          "m": "Kelime işlemci dosyası geliştirebilme",
+          "s": [
+            "Kelime işlemci dosyası oluşturur.",
+            "Oluşturulan kelime işlemci dosyasını belirlenen ölçütler açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLGİSAYAR AĞLARI VE İLETİŞİM",
+      "a": [
+        {
+          "k": "BTY.5.3.1",
+          "m": "Bilgisayar ağları ve bileşenlerini sorgulayabilme",
+          "s": [
+            "Bilgisayar ağları ve bileşenleri ile ilgili merak ettiği konuları tanımlar.",
+            "Bilgisayar ağları ve bileşenleri hakkında sorular sorar.",
+            "Bilgisayar ağları ve bileşenleri hakkında bilgi toplar.",
+            "Bilgisayar ağları ve bileşenleri hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Bilgisayar ağları ve bileşenleri hakkında topladığı bilgiler hakkında çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BTY.5.3.2",
+          "m": "Bilgisayar ağları ve bağlanma yöntemlerini sınıflandırabilme",
+          "s": [
+            "Bilgisayar ağlarında kullanılan bağlanma yöntemlerini belirler.",
+            "Bilgisayar ağlarında kullanılan bağlanma yöntem ve teknolojilerini ilişkilendirir.",
+            "Bilgisayar ağlarında kullanılan bileşenlerin işlevlerini gruplandırır."
+          ]
+        },
+        {
+          "k": "BTY.5.3.3",
+          "m": "İnternet ile amacına uygun olarak çalışabilme",
+          "s": [
+            "İnternette bilgiye ulaşmak için uygun kaynakları belirler.",
+            "Bilginin doğruluğunu değerlendirmek için internetteki farklı bilgi kaynaklarını kullanır.",
+            ". Bilgiye ulaşmak için kullandığı kaynakları uygunluk/verimlilik kapsamında değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİŞİM ETİĞİ VE SİBER GÜVENLİK",
+      "a": [
+        {
+          "k": "BTY.5.4.1",
+          "m": "Bilişim etiği kural ve ilkelerini yorumlayabilme",
+          "s": [
+            "Bilişim etiği ile ilgili temel kavramları inceler.",
+            "Bilişim etiği kural ve ilkelerini bağlamdan kopmadan günlük hayatta kullanılacak şekilde dönüştürür.",
+            "Bilişim etiği kural ve ilkelerine uygun davranmanın önemini yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "BTY.5.4.2",
+          "m": "Dijital ortamlarda gizlilik ve güvenlik önlemlerini yönetebilme",
+          "s": [
+            "Dijital ortamlarda karşılaşabileceği gizlilik ve güvenlik risklerini belirler.",
+            "Dijital ortamlarda alabileceği gizlilik ve güvenlik önlemlerini belirler.",
+            "Dijital ortamlarda bilgi gizliliği ve güvenliğinin temel bileşenlerini ayırt eder.",
+            "Dijital ortamda karşılaşılan bir durumu gizlilik ve güvenlik önlemleri açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ",
+      "a": [
+        {
+          "k": "BTY.5.5.1",
+          "m": "Yapay zekâ uygulamalarını sınıflandırabilme",
+          "s": [
+            "Yapay zekâ uygulamalarını belirler.",
+            "Yapay zekâ uygulamalarının çalışma sistemi bileşenlerini ilişkilendirir.",
+            "Yapay zekâ uygulamalarını alt boyutlara göre gruplandırır."
+          ]
+        },
+        {
+          "k": "BTY.5.5.2",
+          "m": "Yapay zekâya ilişkin etik ve güvenlik/gizlilik önlemlerini yönetebilme",
+          "s": [
+            "Yapay zekâda etik ve güvenlik/gizlilik risklerini belirler.",
+            "Yapay zekâda etik ve güvenlik/gizlilik önlemlerini belirler.",
+            "Yapay zekâda etik ilkelerin ve bilgi güvenliğinin/gizliliğinin temel bileşenlerini ayırt eder.",
+            "Yapay zekâ uygulamalarını etik ilkeler ile e-güvenlik/e-gizlilik açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZILIM TASARIMI VE PROGRAMLAMA",
+      "a": [
+        {
+          "k": "BTY.5.6.1",
+          "m": "Problem çözümü için algoritmik düşünebilme",
+          "s": [
+            "Günlük yaşamda karşılaştığı bir problemi belirler.",
+            "Belirlediği problemin girdi ve çıktılarını belirler.",
+            "Belirlediği problemin çözümüne ilişkin işlem adımlarını listeler.",
+            "İşlem adımlarını akış şeması ile gösterir."
+          ]
+        },
+        {
+          "k": "BTY.5.6.2",
+          "m": "Algoritma oluşturmada test edebilme-hata ayıklayabilme",
+          "s": [
+            "Geliştirdiği algoritmayı test eder.",
+            "Hataları ayıklayarak algoritmayı kullanıma hazır hâle getirir."
+          ]
+        },
+        {
+          "k": "BTY.5.6.3",
+          "m": "Yazılım geliştirme sürecinde kullanılan bileşenlerden yararlanabilme",
+          "s": [
+            "Yazılım geliştirme sürecinin bileşenlerini tanımlar.",
+            "Yazılım geliştirme sürecinin bileşenlerini kullanır.",
+            "Yazılım geliştirme sürecinde kullandığı bileşenleri değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.5.6.4",
+          "m": "Blok tabanlı ortamda yazılım geliştirme sürecini yönetebilme",
+          "s": [
+            "Blok tabanlı ortamda yazılım geliştirme sürecini planlar.",
+            "Blok tabanlı ortamda yazılımı tasarlar.",
+            "Blok tabanlı ortamda yazılımı oluşturur.",
+            "Blok tabanlı ortamda oluşturulan yazılımı değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

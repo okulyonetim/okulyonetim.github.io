@@ -1,0 +1,86 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "DİZİ VE KAVRAMLAR",
+      "a": [
+        {
+          "k": "KMN.5.1.1",
+          "m": "Dizi ile ilgili bilgi toplayabilme",
+          "s": [
+            "Dizi kavramlarına ait bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Diziyle ilgili araçları kullanılarak gereken bilgileri bulur.",
+            "Diziyle ilgili bilgileri doğrular.",
+            "Dizi ile ilgili bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "KMN.5.1.2",
+          "m": "Türk müziğindeki perde ve Batı müziğindeki nota isimlerini karşılaştırabilme",
+          "s": [
+            "Batı ve Türk müziği nota ve perde isimlerinin özelliklerini belirler.",
+            "Belirlenen özelliklere göre Batı ve Türk müziğindeki seslerin benzerliklerini listeler.",
+            "Batı ve Türk müziğine ilişkin nota ve perdenin farklılıklarını listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGÂH DİZİSİ",
+      "a": [
+        {
+          "k": "KMN.5.2.1",
+          "m": "Çargâh dizisinde eser ve etüt çalabilme",
+          "s": [
+            "Çargâh dizisinde çalınacak eseri çözümler.",
+            "Çargâh dizisini çalarken uygun duruş ve tutuş pozisyonu sergiler.",
+            "Çargâh dizisini çalarken kemana özgü teknikleri kullanır.",
+            "Çargâh dizisini çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BUSELİK DİZİSİ",
+      "a": [
+        {
+          "k": "KMN.5.3.1",
+          "m": "Buselik dizisinde ritmik bileşenleri ayırt ederek akıcı ve bütünsel şekilde okuyabilme",
+          "s": [
+            "Buselik dizisinde ritmik ve ezgisel bileşenleri tanır.",
+            "Buselik dizisinde ritmik ve ezgisel bileşenleri ayırt eder.",
+            "Buselik dizisinde ritmik veya ezgisel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.5.3.2",
+          "m": "Buselik dizisinde eser ve etüt çalabilme",
+          "s": [
+            "Buselik dizisinde çalınacak eseri çözümler.",
+            "Buselik dizisini çalarken uygun duruş ve tutuş pozisyonu sergiler.",
+            "Buselik dizisini çalarken kemana özgü teknikleri kullanır.",
+            "Buselik dizisini çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGÂH VE BUSELİK DİZİLERİNDE ETÜT VE ESER ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.5.4.1",
+          "m": "Çargâh ve buselik dizilerinde etüt ve eserleri çalabilme",
+          "s": [
+            "Çargâh ve buselik dizilerinde bulunan etüt ve eserleri çözümler.",
+            "Duruş ve tutuş pozisyonu alarak çargâh ve buselik dizilerinde bulunan etüt ve eserleri çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak etüt ve eserleri çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

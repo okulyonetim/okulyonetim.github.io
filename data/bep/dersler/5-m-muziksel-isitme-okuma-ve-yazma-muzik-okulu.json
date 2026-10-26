@@ -1,0 +1,136 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAM DÖRTLÜLER-1",
+      "a": [
+        {
+          "k": "MİOY.5.1.1",
+          "m": "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini yazabilme",
+          "s": [
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini tanır.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini ayırt eder.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.1.2",
+          "m": "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini okuyabilme",
+          "s": [
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerinin bileşenlerini tanır.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerinin bileşenlerini ayırt eder.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.1.3",
+          "m": "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini işitebilme",
+          "s": [
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini bileşenlerini işitsel olarak tanır.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini bileşenlerini işitsel olarak ayırt eder.",
+            "Çargâh dörtlüsü, kürdi dörtlüsü ve buselik dörtlülerini bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAM DÖRTLÜLER-2",
+      "a": [
+        {
+          "k": "MİOY.5.2.1",
+          "m": "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini yazabilme",
+          "s": [
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini tanır.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini ayırt eder.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.2.2",
+          "m": "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini okuyabilme",
+          "s": [
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerinin bileşenlerini tanır.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerinin bileşenlerini ayırt eder.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.2.3",
+          "m": "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlülerini işitebilme",
+          "s": [
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlü bileşenlerini işitsel olarak tanır.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlü bileşenlerini işitsel olarak ayırteder.",
+            "Rast dörtlüsü, uşşak dörtlüsü ve hicaz dörtlü bileşenlerini işitsel olarak ifadeeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAM BEŞLİLER-1",
+      "a": [
+        {
+          "k": "MİOY.5.3.1",
+          "m": "Çargâh beşlisi, kürdi beşlisi ve buselik beşlilerini yazabilme",
+          "s": [
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşlilerini tanır.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşlilerini ayırt eder.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşlilerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.3.2",
+          "m": "Çargâh beşlisi, kürdi beşlisi ve buselik beşlilerini okuyabilme",
+          "s": [
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini tanır.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini işitsel olarak ayırt eder.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.3.3",
+          "m": "Çargâh beşlisi, kürdi beşlisi ve buselik beşlileri işitebilme",
+          "s": [
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini işitsel olarak tanır.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini işitsel olarak ayırt eder.",
+            "Çargâh beşlisi, kürdi beşlisi ve buselik beşli bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAM BEŞLİLER-2",
+      "a": [
+        {
+          "k": "MİOY.5.4.1",
+          "m": "Rast beşlisi, hüseyni beşlisi ve hicaz beşlisini yazabilme",
+          "s": [
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşlilerini tanır.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşlilerini ayırt eder.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşlilerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.4.2",
+          "m": "Rast beşlisi, hüseyni beşlisi ve hicaz beşlisini okuyabilme",
+          "s": [
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini tanır.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini işitsel olarak ayırt eder.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.5.4.3",
+          "m": "Rast beşlisi, hüseyni beşlisi ve hicaz beşlisini işitebilme",
+          "s": [
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini işitsel olarak tanır.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini işitsel olarak ayırt eder.",
+            "Rast beşlisi, hüseyni beşlisi ve hicaz beşli bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

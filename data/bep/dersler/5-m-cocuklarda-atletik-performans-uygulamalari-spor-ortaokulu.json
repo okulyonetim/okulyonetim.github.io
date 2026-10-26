@@ -1,0 +1,107 @@
+{
+  "ders": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "DENGE VE KAVRAM UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.5.1.1",
+          "m": "Dengenin sportif performans üzerindeki etkileri özetleyebilme",
+          "s": [
+            "Dengenin sportif performans üzerindeki etkilerini çözümler.",
+            "Dengenin sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Dengenin sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.1.2",
+          "m": "Test sonuçlarına dayalı olarak denge düzeyini değerlendirebilme",
+          "s": [
+            "Dengeye ilişkin ölçüt belirler.",
+            "Denge düzeyini ölçer.",
+            "Test sonuçlarını belirlenen ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.1.3",
+          "m": "Denge egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Denge bileşenlerini açıklar.",
+            "Denge bileşeni egzersizlerini uygular.",
+            "Denge egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ESNEKLİK KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.5.2.1",
+          "m": "Esnekliğin sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Esnekliğin sağlık ve sportif performans üzerindeki etkilerini çözümler.",
+            "Esnekliğin sağlık ve sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Esnekliğin sağlık ve sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.2.2",
+          "m": "Testler ile kendi esneklik düzeyini değerlendirebilme",
+          "s": [
+            "Esneklikle ilgili ölçüt belirler.",
+            "Esnekliğini ölçer.",
+            "Ölçme sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.2.3",
+          "m": "Esneklik egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Esneklik bileşenlerini açıklar.",
+            "Esneklik bileşeni egzersizlerini uygular.",
+            "Esneklik egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KOORDİNASYON KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.5.3.1",
+          "m": "Koordinasyonun sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Koordinasyonun sportif performans üzerindeki etkilerini çözümler.",
+            "Koordinasyonun sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Koordinasyonun sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.3.2",
+          "m": "Koordinasyon testleri ile düzeyini değerlendirebilme",
+          "s": [
+            "Koordinasyon ile ilgili ölçüt belirler.",
+            "Koordinasyonu ölçer.",
+            "Koordinasyon sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Koordinasyon sonuçlarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.5.3.3",
+          "m": "Koordinasyon egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Koordinasyon bileşenlerini açıklar.",
+            "Koordinasyon içeren egzersizleri uygular.",
+            "Koordinasyon egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

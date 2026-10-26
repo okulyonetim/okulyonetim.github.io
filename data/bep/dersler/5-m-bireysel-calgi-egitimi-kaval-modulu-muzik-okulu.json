@@ -1,0 +1,98 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVALDA İKİNCİ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "KVL.5.1.1",
+          "m": "La# (si♭), do# (re♭), notalarını çalabilme ,",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Seslendireceği notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "KVL.5.1.2",
+          "m": "Mi♭ (re#), si♭2 notalarını çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Seslendireceği notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA USÜL(RİTM) UYGULAMALARI-1",
+      "a": [
+        {
+          "k": "KVL.5.2.1",
+          "m": "Nim sofyan usulünde Türk halk müziği eserleri çalabilme",
+          "s": [
+            "Nim sofyan usulünde Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak nim sofyan usulünde Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.5.2.2",
+          "m": "Semai usulünde Türk halk müziği eserleri çalabilme",
+          "s": [
+            "Semai usulünde Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak semai usulünde Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.5.2.3",
+          "m": "Sofyan usulünde Türk halk müziği eserleri çalabilme",
+          "s": [
+            "Sofyan usulünde Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak semai usulünde Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVAL MAKAMLAR VE UYGULAMALARI 1.",
+      "a": [
+        {
+          "k": "KVL.5.3.1",
+          "m": "Çargâh makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Çargâh makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak çargâh makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVAL MAKAMLAR VE UYGULAMALARI-2.",
+      "a": [
+        {
+          "k": "KVL.5.4.1",
+          "m": "Kürdi makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Kürdi makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak kürdi makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

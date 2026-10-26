@@ -1,0 +1,415 @@
+{
+  "ders": "Oyun ve Oyun Etkinlikleri-Satranç",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "OOE.ST.1.1. ÜNİTE: SATRANCI TANIYALIM",
+      "a": [
+        {
+          "k": "OOE.ST.1.1.1",
+          "m": "Tarihsel süreç içinde satrancın ülkemizde ve dünyadaki gelişimini açıklar.",
+          "s": [
+            "Tarihsel süreç içinde satrancın ülkemizde ve dünyadaki gelişimini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.1.2",
+          "m": "Satrancın kendisinde yaratacağı farklılıkları açıklar.",
+          "s": [
+            "Satrancın kendisinde yaratacağı farklılıkları açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.2. ÜNİTE: SATRANÇ TAHTASI VE TAŞ",
+      "a": [
+        {
+          "k": "OOE.ST.1.2.1",
+          "m": "Satranç tahtasının özelliklerini açıklar.",
+          "s": [
+            "Satranç tahtasının özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.2",
+          "m": "Taşların satranç tahtasındaki hareketlerini ifade eder.",
+          "s": [
+            "Taşların satranç tahtasındaki hareketlerini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.3",
+          "m": "Satranç tahtasında yatay, dikey ve çapraz yolları açıklar.",
+          "s": [
+            "Satranç tahtasında yatay, dikey ve çapraz yolları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.4",
+          "m": "Satranç oyununun kurallarını ve terimlerini ifade eder.",
+          "s": [
+            "Satranç oyununun kurallarını ve terimlerini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.5",
+          "m": "Satranç tahtasındaki kareleri isimlendirmeyi açıklar.",
+          "s": [
+            "Satranç tahtasındaki kareleri isimlendirmeyi açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.6",
+          "m": "Satranç taşlarının değerlerinin puan karşılığını ifade eder.",
+          "s": [
+            "Satranç taşlarının değerlerinin puan karşılığını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.7",
+          "m": "Satranç oyununda saldırı altındaki taşların korumasını analiz eder.",
+          "s": [
+            "Satranç oyununda saldırı altındaki taşların korumasını analiz eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.8",
+          "m": "Satranç oyununda taş istemeyi açıklar.",
+          "s": [
+            "Satranç oyununda taş istemeyi açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.2.9",
+          "m": "Satranç oyununda taş almayı uygular.",
+          "s": [
+            "Satranç oyununda taş almayı uygular."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.3. ÜNİTE: ŞAH, TEHDİT VE MAT",
+      "a": [
+        {
+          "k": "OOE.ST.1.3.1",
+          "m": "Satranç oyununda şah çekmeyi uygular.",
+          "s": [
+            "Satranç oyununda şah çekmeyi uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.2",
+          "m": "Şah tehdidini ortadan kaldırmak için gerekli hamlelerle tehditten kurtulur.",
+          "s": [
+            "Şah tehdidini ortadan kaldırmak için gerekli hamlelerle tehditten kurtulur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.3",
+          "m": "Mat etmeyi açıklar.",
+          "s": [
+            "Mat etmeyi açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.4",
+          "m": "Şahın diğer taşlardan farklı alınacağını ifade eder.",
+          "s": [
+            "Şahın diğer taşlardan farklı alınacağını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.5",
+          "m": "Satranç oyununda tek hamlelik basit matları yapar.",
+          "s": [
+            "Satranç oyununda tek hamlelik basit matları yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.6",
+          "m": "Satranç oyununda beraberlik kavramını açıklar.",
+          "s": [
+            "Satranç oyununda beraberlik kavramını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.3.7",
+          "m": "Satranç oyununda mat ile pat hamlelerinin birbirinden farklı olduğunu ayırt eder.",
+          "s": [
+            "Satranç oyununda mat ile pat hamlelerinin birbirinden farklı olduğunu ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.4. ÜNİTE: ŞAH, TEHDİT VE SAVUNMA",
+      "a": [
+        {
+          "k": "OOE.ST.1.4.1",
+          "m": "Satrançta şah tehditlerini olgunlaşmadan fark eder.",
+          "s": [
+            "Satrançta şah tehditlerini olgunlaşmadan fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.4.2",
+          "m": "Rakibin hamlelerine karşı etkili savunma tekniklerini kullanır.",
+          "s": [
+            "Rakibin hamlelerine karşı etkili savunma tekniklerini kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.5. ÜNİTE: SATRANCIN ÖZEL KURALLARI",
+      "a": [
+        {
+          "k": "OOE.ST.1.5.1",
+          "m": "Satranç oyununda rok hamlesinin nasıl yapılacağını ifade eder.",
+          "s": [
+            "Satranç oyununda rok hamlesinin nasıl yapılacağını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.5.2",
+          "m": "Piyonun geçerken alma (empasant) hamlesini uygular.",
+          "s": [
+            "Piyonun geçerken alma (empasant) hamlesini uygular."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.6. ÜNİTE: SATRANCI GELİŞTİRİYORUM",
+      "a": [
+        {
+          "k": "OOE.ST.1.6.1",
+          "m": "Oyun ortasında rakip oyuncunun hamlelerine göre stratejiler geliştirir.",
+          "s": [
+            "Oyun ortasında rakip oyuncunun hamlelerine göre stratejiler geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.6.2",
+          "m": "Satranç oyununda oyun sonu prensiplerini açıklar.",
+          "s": [
+            "Satranç oyununda oyun sonu prensiplerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.6.3",
+          "m": "Satranç saatinin işleyişini açıklar.",
+          "s": [
+            "Satranç saatinin işleyişini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.7. ÜNİTE: MAT KALIPLARI",
+      "a": [
+        {
+          "k": "OOE.ST.1.7.1",
+          "m": "Mat etmek için çeşitli mat kalıplarını kullanır.",
+          "s": [
+            "Mat etmek için çeşitli mat kalıplarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.7.2",
+          "m": "Farklı tipte iki hamlelik mat konumlarını çözer.",
+          "s": [
+            "Farklı tipte iki hamlelik mat konumlarını çözer."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.8. ÜNİTE: TEMEL TAKTİKLER",
+      "a": [
+        {
+          "k": "OOE.ST.1.8.1",
+          "m": "Atak hedeflerini açıklar.",
+          "s": [
+            "Atak hedeflerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.8.2",
+          "m": "Çatal taktiğini uygular.",
+          "s": [
+            "Çatal taktiğini uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.8.3",
+          "m": "Satranç oyununda açmaz taktiğini açıklar.",
+          "s": [
+            "Satranç oyununda açmaz taktiğini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.8.4",
+          "m": "Satranç oyununda şiş taktiğini açıklar.",
+          "s": [
+            "Satranç oyununda şiş taktiğini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.8.5",
+          "m": "Satranç kombinasyonlarını, amaçlarına ve kullanıldıkları durumlara göre sınıflandırır.",
+          "s": [
+            "Satranç kombinasyonlarını, amaçlarına ve kullanıldıkları durumlara göre sınıflandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.9. ÜNİTE: OYUN SONU",
+      "a": [
+        {
+          "k": "OOE.ST.1.9.1",
+          "m": "Oyun sonunda temel matları açıklar.",
+          "s": [
+            "Oyun sonunda temel matları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.9.2",
+          "m": "Satranç oyununda geçer piyonların önemini açıklar.",
+          "s": [
+            "Satranç oyununda geçer piyonların önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.9.3",
+          "m": "Piyon terfi etme sırasında geçer piyon oluşabilecek kareleri ifade eder.",
+          "s": [
+            "Piyon terfi etme sırasında geçer piyon oluşabilecek kareleri ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.9.4",
+          "m": "Taş üstünlüğüne rağmen beraberlik durumlarını uygular.",
+          "s": [
+            "Taş üstünlüğüne rağmen beraberlik durumlarını uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.9.5",
+          "m": "Temel kale oyun sonlarını açıklar.",
+          "s": [
+            "Temel kale oyun sonlarını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.10. ÜNİTE: AÇILIŞ İLKELERİ",
+      "a": [
+        {
+          "k": "OOE.ST.1.10.1",
+          "m": "Açılışta temel stratejiler ile konumunu geliştirir.",
+          "s": [
+            "Açılışta temel stratejiler ile konumunu geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.10.2",
+          "m": "Açılışta yapılan yaygın hataları analiz eder.",
+          "s": [
+            "Açılışta yapılan yaygın hataları analiz eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.10.4",
+          "m": "Temel açılış kurallarını gösteren klasik oyunları inceler.",
+          "s": [
+            "Temel açılış kurallarını gösteren klasik oyunları inceler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.10.3",
+          "m": "Açılış prensipleriyle kısa oyunlar oynar.",
+          "s": [
+            "Açılış prensipleriyle kısa oyunlar oynar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.ST.1.11. ÜNİTE: TURNUVA KURALLARI",
+      "a": [
+        {
+          "k": "OOE.ST.1.11.1",
+          "m": "Turnuva kurallarını açıklar.",
+          "s": [
+            "Turnuva kurallarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.11.2",
+          "m": "Turnuva kurallarında kural dışı durumları açıklar.",
+          "s": [
+            "Turnuva kurallarında kural dışı durumları açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.ST.1.11.3",
+          "m": "Turnuvada satrancın etik kurallarını değerlendirir.",
+          "s": [
+            "Turnuvada satrancın etik kurallarını değerlendirir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

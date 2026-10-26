@@ -1,0 +1,120 @@
+{
+  "ders": "Halk Oyunları",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HALK OYUNLARINA GİRİŞ",
+      "a": [
+        {
+          "k": "HO.1.1",
+          "m": "Halk oyunlarının temel kavramlarını açıklayabilme",
+          "s": [
+            "Halk oyunlarının temel kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HO.1.2",
+          "m": "Seçilen halk oyunlarının ortaya çıkış hikâyelerini yorumlayabilme",
+          "s": [
+            "Seçilen halk oyunlarının hikâyelerini inceler.",
+            "Seçilen halk oyunlarının hikâyelerini bağlamından kopmadan yazılı, görsel veya dijital ürünlere dönüştürür.",
+            "Seçilen halk oyunlarının hikâyelerini anlamını değiştirmeden yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "HO.1.3",
+          "m": "Farklı ölçü ve tartım kalıplarına göre ritmik hareket edebilme",
+          "s": [
+            "Farklı ölçü ve tartım kalıplarına ilişkin ritmi algılar.",
+            "Farklı ölçü ve tartım kalıplarına uygun ritmik hareket eder.",
+            "Farklı ölçü ve tartım kalıplarına uygun hareket becerilerini sergiler."
+          ]
+        },
+        {
+          "k": "HO.1.4",
+          "m": "Basit ölçülü ritim kalıplarıyla ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla basit ölçülü ritim kalıplarını algılar.",
+            "Basit ölçülü ritim kalıplarıyla yapılan temel halk oyunları adımlama çalışmalarında ritme uygun hareket eder.",
+            "Basit ölçülü ritim kalıpları ve müzik eşliğinde seçilen halk oyunlarını sergiler."
+          ]
+        },
+        {
+          "k": "HO.1.5",
+          "m": "Birleşik ölçülü ritim kalıplarıyla ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla birleşik ölçülü ritim kalıplarını algılar.",
+            "Birleşik ölçülü ritim kalıplarıyla yapılan halk oyunları çalışmalarında ritme uygun hareket eder.",
+            "Birleşik ölçülü ritim kalıpları ile seçilen halk oyunlarının adımlamalarını sergiler."
+          ]
+        },
+        {
+          "k": "HO.1.6",
+          "m": "Seçilen halk oyununda ritmik hareket edebilme",
+          "s": [
+            "Seçilen halk oyununun ritmini algılar.",
+            "Seçilen halk oyununa uygun ritmik hareket eder.",
+            "Seçilen halk oyununun hareket becerilerini sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜLTÜREL ZENGİNLİĞİMİZ HALK OYUNLARI",
+      "a": [
+        {
+          "k": "HO.2.1",
+          "m": "Farklı kültürlere, yörelere ve ülkelere ait halk oyunlarının hareketlerini, ritmik",
+          "s": [
+            "Farklı kültürlere ve yörelere ait halk oyunlarının hareketlerini, ritmik yapısını ve kültürel bağlamlarına ilişkin özellikleri belirler.",
+            "Farklı kültürlere ve yörelere ait halk oyunlarının hareketlerini, ritmik yapısını ve kültürel bağlamlarına ilişkin benzerlikleri listeler.",
+            "Farklı kültürlere ve yörelere ait halk oyunlarının hareketlerini, ritmik yapısını ve kültürel bağlamlarına ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "HO.2.2",
+          "m": "Farklı kültürlere ve yörelere ait halk oyunlarına özgü ritmik hareket edebilme",
+          "s": [
+            "Seçilen halk oyunlarında müziğe ve harekete ilişkin ritmi algılar.",
+            "Seçilen halk oyunlarında ritme uygun hareket eder.",
+            "Seçilen halk oyunlarında ritmik hareket becerilerini sergiler."
+          ]
+        },
+        {
+          "k": "HO.2.3",
+          "m": "Farklı kültürlere ve yörelere ait halk oyunlarına özgü çalışmalarda eşle/grupla",
+          "s": [
+            "Seçilen halk oyunlarına özgü çalışmalarda eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen halk oyunlarına özgü çalışmalarda eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyunlarına özgü çalışmalarda eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HALK OYUNLARINDA SAHNELEME",
+      "a": [
+        {
+          "k": "HO.3.1",
+          "m": "Seçilen halk oyunlarında koreografi ve sahnelemeye yönelik bileşenleri açıklayabilme",
+          "s": [
+            "Seçilen halk oyunlarında koreografi ve sahnelemeye yönelik bileşenleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HO.3.2",
+          "m": "Seçilen halk oyununun sahneleme sürecinde eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen halk oyununun sahneleme sürecinde ritim ve ezgi eşliğinde eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen halk oyununun sahneleme sürecinde ritim ve ezgi eşliğinde eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyununun sahneleme sürecinde ritim ve ezgi eşliğinde eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,508 @@
+{
+  "ders": "Okul Temelli Sosyal Sorumluluk Çalışmaları",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SOSYAL SORUMLULUK",
+      "a": [
+        {
+          "k": "OTSSÇ.1.1.1",
+          "m": "Sosyal sorumluluk ile ilgili kavramları çözümleyebilme",
+          "s": [
+            "Sosyal sorumluluk ile ilgili kavramları belirler.",
+            "Belirlenen kavramlar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.1.2",
+          "m": "Bireysel ve toplumsal sorumlulukların topluma katkısını karşılaştırabilme",
+          "s": [
+            "Bireysel ve toplumsal sorumlulukların topluma katkısını belirler.",
+            "Bireysel ve toplumsal sorumlulukların topluma katkılarının benzerliklerini listeler.",
+            "Bireysel ve toplumsal sorumlulukların topluma katkılarının farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.1.3",
+          "m": "Sosyal sorumluluğun toplum açısından önemine ilişkin ürün oluşturabilme",
+          "s": [
+            "Sosyal sorumluluğun toplum açısından önemine ilişkin çıkarımda bulunur.",
+            "Sosyal sorumluluğun toplum açısından önemine ilişkin bir ürün oluşturur.",
+            "Sosyal sorumluluğun toplum açısından önemine ilişkin oluşturulan ürünleri paylaşır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL DEĞERLER VE AHLAK",
+      "a": [
+        {
+          "k": "OTSSÇ.1.2.1",
+          "m": "Toplumsal değerler ve ahlak ilkeleri hakkında bilgi toplayabilme",
+          "s": [
+            "Toplumsal değerler ve ahlak ilkeleri hakkında bilgi toplayabileceği kaynakları belirler.",
+            "Belirlediği kaynaklardan toplumsal değerler ve ahlak ilkeleri hakkında bilgiler bulur.",
+            "Toplumsal değerler ve ahlak ilkeleri hakkında belirlediği kaynaklardan edindiği bilgileri doğrular.",
+            "Toplumsal değerler ve ahlak ilkeleri hakkında belirlediği kaynaklardan edindiği bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.2.2",
+          "m": "Toplumsal değerlerin sınıf ve okul ortamındaki önemini gözleme dayalı tahmin edebilme",
+          "s": [
+            "Toplumsal değerlerin sınıf ve okul ortamındaki önemini, yaptığı ön gözlemlerle ilişkilendirir.",
+            "Toplumsal değerlerin sınıf ve okul ortamındaki önemi hakkında çıkarımlar yapar.",
+            "Toplumsal değerlerin sınıf ve okul ortamındaki önemine ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.2.3",
+          "m": "Dijital ortamda toplumsal değerlere aykırı davranışları sorgulayabilme",
+          "s": [
+            "Dijital ortamda toplumsal değerlere aykırı davranışları tanımlar.",
+            "Dijital ortamda toplumsal değerlere aykırı davranışlar hakkında sorular sorar.",
+            "Dijital ortamda toplumsal değerlere aykırı davranışlar hakkında bilgi toplar.",
+            "Dijital ortamda toplumsal değerlere aykırı davranışlar hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Dijital ortamda toplumsal değerlere aykırı davranışların doğruluğunu değerlendirdiği bilgiler hakkında çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL YARDIMLAŞMA",
+      "a": [
+        {
+          "k": "OTSSÇ.1.3.1",
+          "m": "Yardımlaşma, dayanışma ve diğerkâmlık kavramları hakkında bilgi toplaya bilme",
+          "s": [
+            "Yardımlaşma, dayanışma ve diğerkâmlık kavramları hakkında bilgi toplayacağı kaynakları belirler.",
+            "Yardımlaşma, dayanışma ve diğerkâmlık kavramları hakkındaki bilgileri belirlediği kaynaklardan bulur.",
+            "Yardımlaşma, dayanışma ve diğerkâmlık kavramları hakkındaki belirlediği kaynak lardan bulduğu bilgileri doğrular.",
+            "Yardımlaşma, dayanışma ve diğerkâmlık kavramları hakkındaki doğruladığı bilgile ri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.3.2",
+          "m": "Tarihimizdeki yardımlaşma örneklerine tarihsel bağlam oluşturabilme",
+          "s": [
+            "Tarihimizdeki yardımlaşma örneklerini kaynaklara dayalı analiz eder.",
+            "Tarihimizdeki yardımlaşma örneklerinin uygulanan dönem koşullarını fark eder.",
+            "Tarihimizdeki yardımlaşma örneklerini günümüz koşullarıyla karşılaştırır.",
+            "Tarihimizdeki yardımlaşma örneklerini ait oldukları dönemin koşulları içerisinde açıklar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.3.3",
+          "m": "STK ve kamu kurumlarının yardımlaşmadaki rollerini yorumlayabilme",
+          "s": [
+            "STK ve kamu kurumlarının yardımlaşmadaki rollerini inceler.",
+            "STK ve kamu kurumlarının yardımlaşmadaki rollerini bağlamdan kopmadan dönüştürür.",
+            "STK ve kamu kurumlarının yardımlaşmadaki rollerini nesnel, doğru ve anlamı değiştirmeden yeniden ifade eder"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇEVRE VE SÜRDÜRÜLEBİLİRLİK",
+      "a": [
+        {
+          "k": "OTSSÇ.1.4.1",
+          "m": "Yaşadığı yerdeki çevre sorunlarına yönelik çözüm önerilerini müzakere edebilme",
+          "s": [
+            "Yaşadığı yerdeki çevre sorunlarını fark eder.",
+            "Yaşadığı yerdeki çevre sorunlarının nedenlerine yönelik farklı bakış açılarını karşılaştırır.",
+            "Yaşadığı yerdeki çevre sorunlarına yönelik çözüm arar.",
+            "Yaşadığı yerdeki çevre sorunlarına yönelik farklı görüş ve düşünceleri dikkate alarak kendi düşüncelerini düzenler.",
+            "Yaşadığı yerdeki çevre sorunlarına yönelik çözüm yollarını günlük hayatına yansıtır."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.4.2",
+          "m": "Geri dönüşüm, enerji tasarrufu gibi sürdürülebilir uygulamaları özetleyebilme",
+          "s": [
+            "Geri dönüşüm, enerji tasarrufu gibi sürdürülebilir uygulamaları çözümler.",
+            "Geri dönüşüm, enerji tasarrufu gibi sürdürülebilir uygulamaları sınıflandırır.",
+            "Geri dönüşüm, enerji tasarrufu gibi sürdürülebilir uygulamaları yorumlar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.4.3",
+          "m": "Geri dönüşüm ve sıfır atık projelerinin katkılarına ilişkin oluşturduğu ürünü paylaşabilme",
+          "s": [
+            "Geri dönüşüm ve sıfır atık projelerinin katkılarına ilişkin kanıtlara dayanarak çıkarım yapar.",
+            "Geri dönüşüm ve sıfır atık projelerinin katkılarına ilişkin kanıtlardaki bilgilerden hareketle görüşünü yansıtan ürün oluşturur.",
+            "Geri dönüşüm ve sıfır atık projelerinin katkılarına ilişkin görüşlerine dayalı olarak oluşturduğu ürünü paylaşır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SOSYAL SORUMLULUK",
+      "a": [
+        {
+          "k": "OTSSÇ.2.1.1",
+          "m": "Eğitim, sağlık ve çevre alanlarındaki sosyal sorumluluk çalışmalarını özetleyebilme",
+          "s": [
+            "Eğitim, sağlık ve çevre alanlarındaki sosyal sorumluluk çalışmalarını çözümler.",
+            "Eğitim, sağlık ve çevre alanlarındaki sosyal sorumluluk çalışmalarını sınıflandırır.",
+            "Eğitim, sağlık ve çevre alanlarındaki sosyal sorumluluk çalışmalarını yorumlar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.1.2",
+          "m": "Sorumluluk bilinciyle hareket eden bireylerin ortak özelliklerini genelleme yapabilme",
+          "s": [
+            "Sorumluluk bilinciyle hareket eden bireylerin ortak özellikleri hakkında bilgi toplar.",
+            "Sorumluluk bilinciyle hareket eden bireylerin ortak özelliklerini belirler.",
+            "Sorumluluk bilinciyle hareket eden bireylerin farklı özelliklerini belirler.",
+            "Sorumluluk bilinciyle hareket eden bireylerin ortak özellikleri hakkında önermelerde bulunur."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.1.3",
+          "m": "Sosyal sorumluluk çalışmalarının birey ve toplum ilişkisi üzerindeki etkisini yorumlayabilme",
+          "s": [
+            "Sosyal sorumluluk çalışmalarının birey ve toplum ilişkisi üzerindeki etkisini inceler.",
+            "Sosyal sorumluluk çalışmalarının birey ve toplum ilişkisi üzerindeki etkisini bağlamdan kopmadan dönüştürür.",
+            "Sosyal sorumluluk çalışmalarının birey ve toplum ilişkisi üzerindeki etkisini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL DEĞERLER VE AHLAK",
+      "a": [
+        {
+          "k": "OTSSÇ.2.2.1",
+          "m": "Toplumsal değerler ve ahlak ilkelerinin toplumsal bütünleşmedeki rolünü yorumlayabilme",
+          "s": [
+            "Toplumsal değerler ve ahlak ilkelerinin toplumsal bütünleşmedeki rolünü inceler.",
+            "Toplumsal değerler ve ahlak ilkelerinin toplumsal bütünleşmedeki rolünü yazılı, görsel ve dijital ürünlere dönüştürür.",
+            "Toplumsal değerler ve ahlak ilkelerinin toplumsal bütünleşmedeki rolünü kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.2.2",
+          "m": "Günlük yaşamda karşılaştığı durumlara değer odaklı fikir üretebilme",
+          "s": [
+            "Günlük yaşamda karşılaştığı durumları fark eder.",
+            "Günlük yaşamda karşılaştığı durumlara ilişkin benzer deneyimleri inceler.",
+            "Günlük yaşamda karşılaştığı durumlara ilişkin değer odaklı fikir üretir."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.2.3",
+          "m": "Dijital ortamlarda toplumsal değerler ve ahlak ilkelerine uygun davranış örneklerini yansıtabilme",
+          "s": [
+            "Dijital ortamlardaki toplumsal değerler ve ahlak ilkelerine uygun davranış örneklerini gözden geçirir.",
+            "Dijital ortamlarda uyulması gereken toplumsal değerler ve ahlak ilkelerine uygun davranış örneklerine ilişkin çıkarım yapar.",
+            "Dijital ortamlarda uyulması gereken toplumsal değerler ve ahlak ilkelerine uygun davranış örneklerine ilişkin çıkarımları değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL YARDIMLAŞMA",
+      "a": [
+        {
+          "k": "OTSSÇ.2.3.1",
+          "m": "Toplumsal sorunların çözümünde STK ve kamu kurumlarının çalışmaları hakkında kaynaklardan bilgi toplayabilme",
+          "s": [
+            "Toplumsal sorunların çözümünde STK ve kamu kurumlarının çalışmaları ile ilgili kaynakları belirler.",
+            "Toplumsal sorunların çözümünde STK ve kamu kurumlarının çalışmaları ile ilgili belirlediği kaynaklardan bilgileri bulur.",
+            "Toplumsal sorunların çözümünde STK ve kamu kurumlarının çalışmaları ile ilgili belirlediği kaynakların uygunluğunu açıklar.",
+            "Toplumsal sorunların çözümünde STK ve kamu kurumlarının çalışmaları ile ilgili belirlediği kaynaklardan ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.3.2",
+          "m": "Gönüllülüğün bireysel gelişim ve topluma katkısını tartışabilme",
+          "s": [
+            "Gönüllülüğün bireysel gelişim ve topluma katkılarını gerekçeleriyle sunar.",
+            "Gönüllülüğün bireysel gelişim ve topluma katkıda bulunması hakkında çelişkileri tespit eder.",
+            "Gönüllülüğün bireysel gelişim ve topluma katkısı hakkındaki görüşleri kabul eder veya çürütür."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.3.3",
+          "m": "Sosyal yardımlaşma için sınıf içinde küçük bir kampanya fikrini eyleme dönüştürebilme",
+          "s": [
+            "Sosyal yardımlaşma için bir kampanya planı yapar.",
+            "Sosyal yardımlaşma için yaptığı kampanya planını uygular.",
+            "Sosyal yardımlaşma için yaptığı kampanya planını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇEVRE VE SÜRDÜRÜLEBİLİRLİK",
+      "a": [
+        {
+          "k": "OTSSÇ.2.4.1",
+          "m": "Çevre kirliliğine neden olan riskleri değerlendirerek karar verebilme",
+          "s": [
+            "Çevre kirliliğine neden olan riskleri belirler.",
+            "Çevre kirliliğine neden olan riskleri analiz eder.",
+            "Çevre kirliliğini önlemeye yönelik alınacak tedbirlere ilişkin öneride bulunur.",
+            "Çevre kirliliğini önlemeye yönelik alınacak tedbirlere ilişkin gerekçeli yargıda bulunur.",
+            "Çevre kirliliğine neden olan riskleri gözden geçirir."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.4.2",
+          "m": "Çevre sorunlarına yönelik çözüm önerilerini müzakere edebilme",
+          "s": [
+            "Çevre sorunlarını fark eder.",
+            "Çevre sorunlarının nedenlerine yönelik farklı görüşleri karşılaştırır.",
+            "Çevre sorunlarına yönelik çözüm arar.",
+            "Çevre sorunlarına yönelik çözüm önerisini düzenler.",
+            "Çevre sorunlarına yönelik çözüm önerisini günlük yaşama yansıtır."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.4.3",
+          "m": "Çevresel farkındalık için geliştirdiği proje fikrini sonuçlandırabilme",
+          "s": [
+            "Çevresel farkındalık için geliştirdiği proje fikrine uygun bir ürün oluşturur.",
+            "Çevresel farkındalık için geliştirdiği proje fikrine uygun olarak oluşturduğu ürünü tanıtır.",
+            "Çevresel farkındalık için geliştirdiği proje fikrinin sonuçlarını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL SAĞLIK",
+      "a": [
+        {
+          "k": "OTSSÇ.1.5.1",
+          "m": "Toplumsal sağlık sorunlarının nedenleri hakkında bilgi toplayabilme",
+          "s": [
+            "Toplumsal sağlık sorunlarının nedenlerini araştıracağı kaynakları belirler.",
+            "Toplumsal sağlık sorunlarının nedenlerini belirlediği kaynaklardan bulur.",
+            "Toplumsal sağlık sorunlarının nedenleri ile ilgili belirlediği kaynaklardan edindiği bilgileri doğrular.",
+            "Toplumsal sağlık sorunlarının nedenleri ile ilgili belirlediği kaynaklardan edindiği bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.5.2",
+          "m": "Bağımlılık türlerini ve uzak durma yollarını özetleyebilme",
+          "s": [
+            "Bağımlılık türlerini ve uzak durma yollarını çözümler.",
+            "Bağımlılık türlerini ve uzak durma yollarını sınıflandırır.",
+            "Bağımlılık türlerini ve uzak durma yollarını yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KATILIM VE FARKINDALIK",
+      "a": [
+        {
+          "k": "OTSSÇ.1.6.1",
+          "m": "Yakın çevresindeki toplumsal sorunlar hakkında çıkarım yapabilme",
+          "s": [
+            "Yakın çevresindeki toplumsal sorunlar hakkında varsayımda bulunur.",
+            "Yakın çevresindeki toplumsal sorunları listeler.",
+            "Yakın çevresindeki toplumsal sorunları karşılaştırır.",
+            "Yakın çevresindeki toplumsal sorunların etkileri hakkında tahminlerde bulunur.",
+            "Yakın çevresindeki toplumsal sorunların etkilerini değerlendirir."
+          ]
+        },
+        {
+          "k": "OTSSÇ.1.6.2",
+          "m": "Yakın çevresindeki toplumsal sorunların çözümüne yönelik okul temelli farkındalık fikri üretebilme",
+          "s": [
+            "Yakın çevresindeki toplumsal sorunların çözülebilmesinin önemini fark eder.",
+            "Yakın çevresindeki toplumsal sorunların çözümüne yönelik benzer deneyimleri inceler.",
+            "Yakın çevresindeki toplumsal sorunların çözümüne yönelik okul temelli farkındalık fikri üretir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL SAĞLIK",
+      "a": [
+        {
+          "k": "OTSSÇ.2.5.1",
+          "m": "Sağlıklı yaşam alışkanlıklarından hijyen, uyku, egzersiz ve beslenmenin toplumsal sağlığa katkılarını yorumlayabilme",
+          "s": [
+            "Sağlıklı yaşam alışkanlıklarından hijyen, uyku, egzersiz ve beslenmenin toplumsal sağlığa katkılarını inceler.",
+            "Sağlıklı yaşam alışkanlıklarından hijyen, uyku, egzersiz ve beslenmenin toplumsal sağlığa katkılarını yazılı, görsel veya dijital bir ürüne dönüştürür.",
+            "Sağlıklı yaşam alışkanlıklarından hijyen, uyku, egzersiz ve beslenmenin toplumsal katkılarını kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.5.2",
+          "m": "Teknoloji bağımlılığının toplumsal sağlık açısından etkilerini ve çözüm yollarını tartışabilme",
+          "s": [
+            "Teknoloji bağımlılığının toplumsal sağlık açısından etkilerine ve çözüm yollarına gerekçeler sunar.",
+            "Teknoloji bağımlılığının toplumsal sağlığa etkileri ve çözüm yolları üzerindeki tartışmalardaki tutarsızlıkları tespit eder.",
+            "Teknoloji bağımlılığının toplumsal sağlığa etkileri ve çözüm yollarına yönelik görüşleri çürütür veya kabul eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KATILIM VE FARKINDALIK",
+      "a": [
+        {
+          "k": "OTSSÇ.2.6.1",
+          "m": "Toplumsal sorunların çözümünde kitle iletişim araçlarının rolünü sorgulayabilme",
+          "s": [
+            "Toplumsal sorunların çözümünde kitle iletişim araçlarının önemi ile ilgili merak ettiği konuları tanımlar.",
+            "Toplumsal sorunların çözümünde kitle iletişim araçlarının önemi ile ilgili sorular sorar.",
+            "Toplumsal sorunların çözümünde kitle iletişim araçlarının önemi ile ilgili bilgi toplar.",
+            "Toplumsal sorunların çözümünde kitle iletişim araçlarının önemi ile ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Toplumsal sorunların çözümünde kitle iletişim araçlarının önemi ile ilgili topladığı bilgilerden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.2.6.2",
+          "m": "Kitle iletişim araçlarını kullanarak toplumsal sorunlara dikkat çeken bir proje fikrini sonuçlandırabilme",
+          "s": [
+            "Kitle iletişim araçlarını kullanarak toplumsal sorunlara dikkat çeken bir proje oluşturur.",
+            "Kitle iletişim araçlarını kullanarak toplumsal sorunlara dikkat çeken projeyi tanıtır.",
+            "Kitle iletişim araçlarını kullanarak toplumsal sorunlara dikkat çeken projesinin sonuçlarını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SOSYAL SORUMLULUK",
+      "a": [
+        {
+          "k": "OTSSÇ.3.1.1",
+          "m": "Sosyal sorumluluk projelerinin toplum üzerindeki etkilerini sorgulayabilme",
+          "s": [
+            "Sosyal sorumluluk projelerinin toplum üzerindeki etkileri ile ilgili merak ettiği konuları tanımlar.",
+            "Sosyal sorumluluk projelerinin toplum üzerindeki etkileri ile ilgili merak ettiği konular hakkında sorular sorar.",
+            "Sosyal sorumluluk projelerinin toplum üzerindeki etkileri ile ilgili merak ettiği konular hakkında bilgi toplar.",
+            "Sosyal sorumluluk projelerinin toplum üzerindeki etkileri ile ilgili merak ettiği konular hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Sosyal sorumluluk projelerinin toplum üzerindeki etkileri ile ilgili merak ettiği konular hakkında topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.1.2",
+          "m": "Sosyal girişimcilik kavramına yönelik meraka dayalı sorular sorabilme",
+          "s": [
+            "Sosyal girişimcilik kavramına yönelik merak ettiği konuları belirler.",
+            "Sosyal girişimcilik kavramına yönelik merak ettiği konular hakkında sorular sorar."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.1.3",
+          "m": "Yaşadığı çevrede belirlediği bir toplumsal sorunun çözümüne yönelik fikir üretebilme",
+          "s": [
+            "Yaşadığı çevrede belirlediği bir toplumsal sorunun çözümünün önemini fark eder.",
+            "Yaşadığı çevrede belirlediği bir toplumsal sorunun çözümüne yönelik benzer girişimleri inceler.",
+            "Yaşadığı çevrede belirlediği bir toplumsal sorunun çözümüne yönelik fikirler üretir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL DEĞERLER VE AHLAK",
+      "a": [
+        {
+          "k": "OTSSÇ.3.2.1",
+          "m": "Toplumsal değerler ve ahlak ilkeleri ihlallerinin toplumsal yapıya etkisini tartışabilme",
+          "s": [
+            "Toplumsal değerler ve ahlak ilkeleri ihlallerinin toplumsal yapıya etkileri hakkında temellendirme yapar.",
+            "Toplumsal değerler ve ahlak ilkeleri ihlallerinin toplumsal yapıya etkilerine ilişkin çelişkileri tespit eder.",
+            "Toplumsal değerler ve ahlak ilkeleri ihlallerinin toplumsal yapıya etkileri hakkındaki görüşleri kabul eder veya çürütür."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.2.2",
+          "m": "Kültürel mirasın toplumsal değerlerle ilişkisini yorumlayabilme",
+          "s": [
+            "Kültürel mirasın toplumsal değerlerle ilişkisini inceler.",
+            "Kültürel mirasın toplumsal değerlerle ilişkisini bağlamdan kopmadan dönüştürür.",
+            "Kültürel mirasın toplumsal değerlerle ilişkisini yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.2.3",
+          "m": "Toplumsal değerler ve ahlak ilkelerine ilişkin oluşturduğu ürünü paylaşabilme",
+          "s": [
+            "Toplumsal değerler ve ahlak ilkelerine ilişkin kanıtlara dayalı çıkarımda bulunur.",
+            "Toplumsal değerler ve ahlak ilkelerine ilişkin kendi çıkarımlarına dayalı ürün oluşturur.",
+            "Toplumsal değerler ve ahlak ilkelerine ilişkin oluşturulan ürünleri paylaşır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL YARDIMLAŞMA",
+      "a": [
+        {
+          "k": "OTSSÇ.3.3.1",
+          "m": "Ülkemizde uygulanmış toplumsal yardımlaşma proje örnekleri hakkında bilgi toplayabilme",
+          "s": [
+            "Ülkemizde uygulanmış toplumsal yardımlaşma proje örnekleri hakkında bilgi toplayacağı araçları belirler.",
+            "Ülkemizde uygulanmış toplumsal yardımlaşma proje örnekleri hakkında belirlediği araçları kullanarak bilgileri bulur.",
+            "Ülkemizde uygulanmış toplumsal yardımlaşma proje örnekleri hakkında ulaştığı bilgileri doğrular.",
+            "Ülkemizde uygulanmış toplumsal yardımlaşma proje örnekleri hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.3.2",
+          "m": "Ulusal düzeyde toplumsal yardımlaşma için etkinlik düzenleyebilme",
+          "s": [
+            "Ulusal düzeyde toplumsal yardımlaşma için etkinlik planı yapar.",
+            "Ulusal düzeyde toplumsal yardımlaşma için hazırladığı etkinlik planını uygular.",
+            "Ulusal düzeyde toplumsal yardımlaşma için hazırladığı etkinlik planını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇEVRE VE SÜRDÜRÜLEBİLİRLİK",
+      "a": [
+        {
+          "k": "OTSSÇ.3.4.1",
+          "m": "Ülkemizdeki çevre koruma kurumları hakkında bilgi toplayabilme",
+          "s": [
+            "Ülkemizde çevre koruma politikaları ortaya koyan kurum ve kuruluşlara dair bilgilere ulaşmak amacıyla kullanacağı kaynakları belirler.",
+            "Ülkemizde çevre koruma politikaları ortaya koyan kurum ve kuruluşlara dair bilgileri, belirlediği kaynaklardan toplar.",
+            "Ülkemizde çevre koruma politikaları ortaya koyan kurum ve kuruluşlara dair topladığı bilgileri doğrular.",
+            "Ülkemizde çevre koruma politikaları ortaya koyan kurum ve kuruluşlara dair topladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.4.2",
+          "m": "Sürdürülebilirlik ilkesine göre çevre farkındalık etkinliği düzenleyebilme",
+          "s": [
+            "Sürdürülebilirlik ilkesine göre çevre farkındalık etkinlik planı yapar.",
+            "Sürdürülebilirlik ilkesine göre hazırladığı çevre farkındalık etkinliğini uygular.",
+            "Sürdürülebilirlik ilkesine göre uyguladığı çevre farkındalık etkinliğini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUMSAL SAĞLIK",
+      "a": [
+        {
+          "k": "OTSSÇ.3.5.1",
+          "m": "Sağlıklı yaşamı tehdit eden durumların çözümü için fikir üretebilme",
+          "s": [
+            "Sağlıklı yaşamı tehdit eden durumları fark eder.",
+            "Sağlıklı yaşamı tehdit eden durumların çözümlerine ilişkin benzer projeleri inceler.",
+            "Sağlıklı yaşamı tehdit eden durumlara yönelik çözüm önerileri üretir."
+          ]
+        },
+        {
+          "k": "OTSSÇ.3.5.2",
+          "m": "Bağımlılıkla mücadele eden kurum ve kuruluşları çözümleyebilme",
+          "s": [
+            "Bağımlılıkla mücadele eden kurum ve kuruluşları belirler.",
+            "Bağımlılıkla mücadele eden kurum ve kuruluşlar arasındaki ilişkiyi belirler."
+          ]
+        }
+      ]
+    }
+  ]
+}

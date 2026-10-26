@@ -1,0 +1,148 @@
+{
+  "ders": "Beden Eğitimi, Oyun ve Müzik (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAREKETLİ YAŞAM, SAĞLIKLI GELECEK",
+      "a": [
+        {
+          "k": "BOM.5.1.1",
+          "m": "Isınma ve hazırlık çalışmalarına katılabilme",
+          "s": [
+            "Isınma ve derse hazırlık çalışmalarına katılma ihtiyacını fark eder.",
+            "Isınma ve derse hazırlık çalışmalarında düzeyini geliştirmek için plan yapar.",
+            "Isınma ve derse hazırlık çalışmalarını yaptığı plana göre uygular."
+          ]
+        },
+        {
+          "k": "BOM.5.1.2",
+          "m": "Dönüş hareketlerini sergileyebilme",
+          "s": [
+            "Dönüş hareketlerini algılar.",
+            "Dönüş hareketlerinin basamaklarını gösterir.",
+            "Dönüş hareketlerini uygular."
+          ]
+        },
+        {
+          "k": "BOM.5.1.3",
+          "m": "Öğrendiği hareketleri bir araya getirerek özgün bir bütün oluşturabilme",
+          "s": [
+            "Öğrendiği temel hareketleri belirler.",
+            "Hareketler arasında ilişki kurar.",
+            "Hareketleri birleştirerek özgün bir bütün oluşturur"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FARKLI RİTİMLER",
+      "a": [
+        {
+          "k": "BOM.5.2.1",
+          "m": "Vücudunu ritim çalgısı gibi kullanarak özgün bir ritim oluşturabilme",
+          "s": [
+            "5/8’lik ezgilerdeki 2 ve 3 zamanlı vuruşları belirler.",
+            "2 ve 3 zamanlı vuruşlar arasında ilişki kurar.",
+            "2 ve 3 zamanlı vuruşları birleştirerek özgün bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.5.2.2",
+          "m": "Dinlediği ve söylediği müziklere ritim çalgıları ile eşlik edebilme",
+          "s": [
+            "Dinlediği ve söylediği müziklerin vuruşlarını belirler.",
+            "Dinlediği ve söylediği müziklere eşlik edeceği ritim kalıbını seçer.",
+            "Seçtiği ritim kalıbıyla dinlediği ve söylediği müziklere ritim çalgılarıyla eşlik eder."
+          ]
+        },
+        {
+          "k": "BOM.5.2.3",
+          "m": "Farklı ritmik yapıdaki ezgilere uygun hareketler sergileyebilme",
+          "s": [
+            "5/8’lik ezgilere uygun hareketler belirler.",
+            "5/8’lik yapıdaki ezgilere uygun hareketler sergiler."
+          ]
+        },
+        {
+          "k": "BOM.5.2.4",
+          "m": "Şarkı veya türkülerdeki farklı bölümleri dansa dönüştürebilme",
+          "s": [
+            "Şarkı veya türkülerdeki farklı bölümleri belirler.",
+            "Şarkı veya türkülerdeki bölümlere uygun hareketler seçer.",
+            "Hazırladığı dansı sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAKIM OL, ADİL OYNA",
+      "a": [
+        {
+          "k": "BOM.5.3.1",
+          "m": "Oyun ve etkinliklerde adil oyun davranışına uygun hareket edebilme",
+          "s": [
+            "Oyun ve etkinliklerde adil oyun anlayışını açıklar.",
+            "Oyun ve etkinliklerde adil oyun anlayışına göre hareket eder."
+          ]
+        },
+        {
+          "k": "BOM.5.3.2",
+          "m": "Kurallı takım oyunları oluşturabilme",
+          "s": [
+            "Oluşturacağı oyunu ve kuralları belirler.",
+            "Oyunun amacı ve kuralları arasında ilişki kurar.",
+            "Kurallı oyun oluşturur."
+          ]
+        },
+        {
+          "k": "BOM.5.3.3",
+          "m": "Geleneksel çocuk oyunlarını oynayabilme",
+          "s": [
+            "Geleneksel çocuk oyunlarını oynar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "HORON",
+      "a": [
+        {
+          "k": "BOM.5.4.1",
+          "m": "Halk oyunları türlerinden horonun genel özelliklerini açıklayabilme",
+          "s": [
+            "Halk oyunları türlerinden horonun genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.5.4.2",
+          "m": "Halk oyunları türlerinden horonun geleneksel giyim kuşam özelliklerini açıklayabilme",
+          "s": [
+            "Halk oyunları türlerinden horonun geleneksel giyim kuşam özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BOM.5.4.3",
+          "m": "Horon oyunları müziklerinin özelliklerini ayırt edebilme",
+          "s": [
+            "Horon oyunları müziklerinin müziksel bileşenlerini fark eder.",
+            "Horon oyunları müziklerinin müziksel bileşenlerini ayırt eder.",
+            "Horon oyunları müziklerinin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "BOM.5.4.4",
+          "m": "Horon oyunlarının adımlarını sergileyebilme",
+          "s": [
+            "Horon oyunlarının ritmik yapısına uygun hareketler belirler.",
+            "Horon oyunlarını ritimsel ve ezgisel yapısına uygun sergiler."
+          ]
+        }
+      ]
+    }
+  ]
+}

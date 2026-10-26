@@ -1,0 +1,91 @@
+{
+  "ders": "Spor ve Fiziki Etkinlikler",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "I. ÜNİTE: SPOR BRANŞIMI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "SFE.1.1",
+          "m": "Seçilen spor branşının tarihsel gelişimini özetleyebilme",
+          "s": [
+            "Seçilen spor branşının tarihsel gelişimini çözümler.",
+            "Seçilen spor branşının gelişim sürecinde yer alan önemli dönem ve gelişmeleri sınıflandırır.",
+            "Seçilen spor branşının gelişimini etkileyen faktörleri neden sonuç ilişkileriyle yorumlar."
+          ]
+        },
+        {
+          "k": "SFE.1.2",
+          "m": "Seçilen spor branşının kurallarını çözümleyebilme",
+          "s": [
+            "Seçilen spor branşının kurallarını oluşturan temel ögeleri belirler.",
+            "Seçilen spor branşının kuralları arasındaki mantıksal ilişkileri belirler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "II. ÜNİTE: SPOR BRANŞINA ÖZGÜ HAREKET BECERİLERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "SFE.2.1",
+          "m": "Seçilen spor branşında güvenli ortam oluşturabilme",
+          "s": [
+            "Seçilen spor branşında ortaya çıkabilecek riskleri belirler.",
+            "Belirlediği risklere karşı önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "SFE.2.2",
+          "m": "Seçilen spor branşına özgü hareket becerilerini sergileyebilme",
+          "s": [
+            "Seçilen spor branşına özgü hareket becerilerini algılar.",
+            "Seçilen spor branşına özgü hareket becerisinin basamaklarını gösterir.",
+            "Seçilen spor branşına özgü hareket becerilerini oyun, yarışma veya antrenman ortamlarında uygular."
+          ]
+        },
+        {
+          "k": "SFE.2.3",
+          "m": "Seçilen spor branşına özgü fiziksel uygunluğu sağlayabilme",
+          "s": [
+            "Seçilen spor branşına özgü fiziksel uygunluk bileşenlerini açıklar.",
+            "Seçilen spor branşına yönelik fiziksel uygunluk bileşenlerini geliştirmeye yönelik hareketleri (sürat koşusu, denge egzersizi vb.) uygular.",
+            "Seçilen spor branşına özgü fiziksel uygunluk bileşenlerini geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "III. ÜNİTE: SPOR BRANŞININ TAKTİK BECERİLERİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "SFE.3.1",
+          "m": "Seçilen Spor branşına özgü taktik ve strateji geliştirebilme",
+          "s": [
+            "Seçilen spor branşına özgü taktiksel ve stratejik problemleri belirler.",
+            "Seçilen spor branşına özgü belirlenen taktiksel ve stratejik duruma yönelik çözüm önerileri sunar.",
+            "Seçilen spor branşına özgü geliştirilen taktik veya stratejiyi oyun ve yarışma ortamında uygular."
+          ]
+        },
+        {
+          "k": "SFE.3.2",
+          "m": "Seçilen spor branşında adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "Seçilen spor branşında adil oyun ilkelerini açıklar.",
+            "Seçilen spor branşında adil oyun anlayışına uygun davranır."
+          ]
+        },
+        {
+          "k": "SFE.3.3",
+          "m": "Seçilen spor branşında takım/grup liderliği sergileme",
+          "s": [
+            "Seçilen spor branşında takım/grup liderliği özelliklerini tanır.",
+            "Seçilen spor branşında takım/grup liderliği özelliklerini gösterir."
+          ]
+        }
+      ]
+    }
+  ]
+}

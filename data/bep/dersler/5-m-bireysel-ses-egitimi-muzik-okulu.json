@@ -1,0 +1,134 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN SESİ VE SES SAĞLIĞI",
+      "a": [
+        {
+          "k": "BSE.5.1.1",
+          "m": "Sesin oluşumunu açıklayabilme",
+          "s": [
+            "Sesin oluşumunu açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.5.1.2",
+          "m": "Ses sağlığını korumaya yönelik davranışları ifade edebilme",
+          "s": [
+            "Ses sağlığını korumaya yönelik davranışları ifade eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SOLUNUM ORGANLARI",
+      "a": [
+        {
+          "k": "BSE.5.2.1",
+          "m": "Solunum organları ile ilgili bilgi toplayabilme",
+          "s": [
+            "Solunum organları ile ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak solunum organları ile ilgili bilgileri bulur.",
+            "Solunum organları ile ilgili bilgileri doğrular.",
+            "Solunum organları ile ilgili bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "BSE.5.2.2",
+          "m": "Solunum organlarının yerini bedeninde gösterebilme",
+          "s": [
+            "Solunum organlarının yerini bedeninde gösterir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.5.3.1",
+          "m": "Düzeyine uygun eserler seslendirebilme",
+          "s": [
+            "Düzeyine uygun eserler seslendirirken bedenini söylemeye hazır hâle getirir.",
+            "Düzeyine uygun eserler seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Düzeyine uygun eserler seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.3.2",
+          "m": "5/8’lik, 7/8’lik ve 9/8’lik usullerde eserler seslendirebilme",
+          "s": [
+            "5/8’lik, 7/8’lik ve 9/8’lik usullerdeki eserleri seslendirirken bedenini söylemeye hazır hâle getirir.",
+            "5/8’lik, 7/8’lik ve 9/8’lik usullerdeki eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "5/8’lik, 7/8’lik ve 9/8’lik usullerdeki eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.3.3",
+          "m": "Basit makamlarda eserler seslendirebilme",
+          "s": [
+            "Basit makamlarda eserler seslendirirken bedenini söylemeye hazır hâle getirir.",
+            "Basit makamlarda eserler seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Basit makamlarda eserler seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.5.4.1",
+          "m": "”İstiklal Marşı”nı seslendirebilme",
+          "s": [
+            "”İstiklal Marşı” nı seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "”İstiklal Marşı” nı seslendirirken uygun söyleme tekniklerini kullanır.",
+            "”İstiklal Marşı” nı seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.4.2",
+          "m": "Millî ve manevi değerlerle ilgili eserleri seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme teknikleri kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.4.3",
+          "m": "Atatürk’ün sevdiği türküleri seslendirebilme",
+          "s": [
+            "Atatürk’ün sevdiği türküleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk’ün sevdiği türküleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk’ün sevdiği türküleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.4.4",
+          "m": "Belirli gün ve haftalarla ilgili müzikleri anlamına uygun seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.5.4.5",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

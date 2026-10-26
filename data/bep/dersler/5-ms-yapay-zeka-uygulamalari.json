@@ -1,0 +1,184 @@
+{
+  "ders": "Yapay Zekâ Uygulamaları",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAYATIMIZDA YAPAY ZEKÂ",
+      "a": [
+        {
+          "k": "YZU.1.1.1",
+          "m": "Yapay zekâya ilişkin temel kavramları sorgulayabilme",
+          "s": [
+            "Yapay zekâya ilişkin temel kavramları tanımlar.",
+            "Yapay zekâya ilişkin temel kavramlar ile ilgili sorular sorar.",
+            "Yapay zekâya ilişkin temel kavramlar ile ilgili bilgi toplar.",
+            "Yapay zekâya ilişkin temel kavramlar ile ilgili toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "YZU.1.1.2",
+          "m": "Yapay zekânın uygulamalarını sınıflandırabilme",
+          "s": [
+            "Yapay zekâ uygulamalarını belirler.",
+            "Yapay zekâ uygulamalarının çalışma sistemi bileşenlerini ilişkilendirir.",
+            "Yapay zekâ uygulamalarını alt boyutlara göre gruplandırır."
+          ]
+        },
+        {
+          "k": "YZU.1.1.3",
+          "m": "Yapay zekâya ilişkin etik ve güvenlik-mahremiyet önlemlerini yönetebilme",
+          "s": [
+            "Yapay zekâda etik ve güvenlik/mahremiyet risklerini belirler.",
+            "Yapay zekâda etik ve güvenlik/mahremiyet önlemlerini belirler.",
+            "Yapay zekâda etik ilkelerin ve bilgi güvenliğinin/mahremiyetinin temel bileşenlerini ayırt eder.",
+            "Yapay zekâ uygulamalarını etik ilkeler ile güvenlik/mahremiyet açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ GELİŞTİRME ORTAMLARI",
+      "a": [
+        {
+          "k": "YZU.1.2.1",
+          "m": "Yapay zekâ teknolojileri ile çalışabilme",
+          "s": [
+            "Yapay zekâ araç ve teknolojilerini amacına uygun olarak belirler.",
+            "Yapay zekâ araç ve teknolojilerini amacına uygun olarak kullanır.",
+            "Yapay zekâ araç ve teknolojilerini uygunluk/verimlilik kapsamında değerlendirir."
+          ]
+        },
+        {
+          "k": "YZU.1.2.2",
+          "m": "Blok tabanlı yapay zekâ uygulama-geliştirme ortamını hazırlayabilme",
+          "s": [
+            "Blok tabanlı yapay zekâ uygulama-geliştirme ortamlarını tanır.",
+            "Blok tabanlı yapay zekâ uygulama-geliştirme ortamını belirler.",
+            "Blok tabanlı yapay zekâ uygulama-geliştirme ortamını düzenler."
+          ]
+        },
+        {
+          "k": "YZU.1.2.3",
+          "m": "Blok tabanlı yapay zekâ uygulama-geliştirme sürecinde kullanılan bileşenlerden yararlanabilme",
+          "s": [
+            "Blok tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini tanır.",
+            "Blok tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini kullanır.",
+            "Blok tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ UYGULAMALARI",
+      "a": [
+        {
+          "k": "YZU.1.3.1",
+          "m": "Yapay zekâ modeli geliştirmek için bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ modeli girdileri için uygun araçları belirler.",
+            "Yapay zekâ modeli girdileri hakkında bilgileri bulur.",
+            "Yapay zekâ modeli girdilerini doğrular.",
+            "Yapay zekâ modeli girdilerini kaydeder."
+          ]
+        },
+        {
+          "k": "YZU.1.3.2",
+          "m": "Blok tabanlı ortamda yapay zekâ modeli geliştirme",
+          "s": [
+            "Blok tabanlı ortamda yapay zekâ modeli için gerçek hayat problemi belirler.",
+            "Belirlenen problemin çözümü veya olası risklerin önlenmesi için girdileri kullanarak yapay zekâ modeli oluşturur.",
+            "Yapay zekâ modelini uygular.",
+            "Yapay zekâ modelinin süreç ve sonuçlarını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HAYATIMIZDA YAPAY ZEKÂ",
+      "a": [
+        {
+          "k": "YZU.2.1.1",
+          "m": "Makine öğrenmesine ilişkin temel kavramları sorgulayabilme",
+          "s": [
+            "Makine öğrenmesine ilişkin temel kavramları tanımlar.",
+            "Makine öğrenmesine ilişkin temel kavramlar ile ilgili sorular sorar.",
+            "Makine öğrenmesine ilişkin temel kavramlar ile ilgili bilgi toplar.",
+            "Makine öğrenmesine ilişkin temel kavramlar ile ilgili toplanan bilgilerin doğruluğunu, etik ve güvenlik/ mahremiyet açısından uygunluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "YZU.2.1.2",
+          "m": "Bulanık mantığa ilişkin temel kavramları sorgulayabilme",
+          "s": [
+            "Bulanık mantığa ilişkin temel kavramları tanımlar.",
+            "Bulanık mantığa ilişkin temel kavramlar ile ilgili sorular sorar.",
+            "Bulanık mantığa ilişkin temel kavramlar ile ilgili bilgi toplar.",
+            "Bulanık mantığa ilişkin temel kavramlar ile ilgili toplanan bilgilerin doğruluğunu, etik ve güvenlik/ mahremiyet açısından uygunluğunu değerlendirir.",
+            "Toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "YZU.2.1.3",
+          "m": "Yapay zekâ bileşenlerini ayrıştırabilme",
+          "s": [
+            "Yapay zekâ bileşenlerini içeren problemi alt problemlere ayırır.",
+            "Her bir alt problemi uygun yaklaşımlarla çözümler.",
+            "Alt problemleri bütünsel bir çözüm için birleştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ UYGULAMA-GELIŞTIRME ORTAMLARI",
+      "a": [
+        {
+          "k": "YZU.2.2.1",
+          "m": "Metin tabanlı yapay zekâ uygulama-geliştirme ortamını hazırlama",
+          "s": [
+            "Metin tabanlı yapay zekâ uygulama-geliştirme ortamlarını tanır.",
+            "Metin tabanlı yapay zekâ uygulama-geliştirme ortamını belirler.",
+            "Metin tabanlı yapay zekâ uygulama-geliştirme ortamını düzenler."
+          ]
+        },
+        {
+          "k": "YZU.2.2.2",
+          "m": "Metin tabanlı yapay zekâ uygulama-geliştirme sürecinde kullanılan bileşenlerden yararlanabilme",
+          "s": [
+            "Metin tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini tanır.",
+            "Metin tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini kullanır.",
+            "Metin tabanlı yapay zekâ uygulama-geliştirme süreci bileşenlerini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ UYGULAMALARI",
+      "a": [
+        {
+          "k": "YZU.2.3.1",
+          "m": "Yapay zekâ modeli geliştirmek için bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ modeli girdileri için uygun araçları belirler.",
+            "Yapay zekâ modeli girdileri hakkındaki bilgileri bulur.",
+            "Yapay zekâ modeli girdilerini doğrular.",
+            "Yapay zekâ modeli girdilerini kaydeder."
+          ]
+        },
+        {
+          "k": "YZU.2.3.2",
+          "m": "Metin tabanlı ortamda yapay zekâ modeli geliştirme",
+          "s": [
+            "Metin tabanlı ortamda yapay zekâ modeli için gerçek hayat problemi belirler.",
+            "Belirlenen problemin çözümü veya olası risklerin önlenmesi için girdileri kullanarak yapay zekâ modeli oluşturur.",
+            "Yapay zekâ modelini uygular.",
+            "Yapay zekâ modelinin süreç ve sonuçlarını etik ve güvenlik/mahremiyet açısından uygunluğunu değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

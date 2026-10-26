@@ -1,0 +1,403 @@
+{
+  "ders": "Oyun ve Oyun Etkinlikleri-Drama",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "OOE.D.1.1. ÜNİTE: DRAMA İLE TANIŞMA",
+      "a": [
+        {
+          "k": "OOE.D.1.1.1.1",
+          "m": "Drama çalışmalarına katılır.",
+          "s": [
+            "Drama çalışmalarına katılır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.1.2",
+          "m": "Kendi özelliklerini grup üyelerine drama etkinlikleriyle tanıtır.",
+          "s": [
+            "Kendi özelliklerini grup üyelerine drama etkinlikleriyle tanıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.1.3",
+          "m": "Grup üyelerinin özelliklerini drama etkinlikleriyle tanır.",
+          "s": [
+            "Grup üyelerinin özelliklerini drama etkinlikleriyle tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.1.4",
+          "m": "Mekânı drama etkinlikleri ile tanır.",
+          "s": [
+            "Mekânı drama etkinlikleri ile tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.2.1",
+          "m": "Dramada iletişimin önemini açıklar.",
+          "s": [
+            "Dramada iletişimin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.2.2",
+          "m": "Grup üyeleriyle iletişim ve etkileşime girmeye istekli olur.",
+          "s": [
+            "Grup üyeleriyle iletişim ve etkileşime girmeye istekli olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.1.2.3",
+          "m": "İletişim ve etkileşim çalışmalarında jest, mimik ve beden dilini kullanır.",
+          "s": [
+            "İletişim ve etkileşim çalışmalarında jest, mimik ve beden dilini kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.2. ÜNİTE: DUYU, UYUM VE GÜVEN",
+      "a": [
+        {
+          "k": "OOE.D.1.2.1.1",
+          "m": "Duyularını kullanma konusunda farkındalık kazanır.",
+          "s": [
+            "Duyularını kullanma konusunda farkındalık kazanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.1.2",
+          "m": "Drama sürecinde duyularını etkin biçimde kullanır.",
+          "s": [
+            "Drama sürecinde duyularını etkin biçimde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.2.1",
+          "m": "Drama çalışmalarında uyumun önemini fark eder.",
+          "s": [
+            "Drama çalışmalarında uyumun önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.2.2",
+          "m": "Grupla hareket etmeye istekli olur.",
+          "s": [
+            "Grupla hareket etmeye istekli olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.2.3",
+          "m": "Grupla birlikte üretme sürecinde etkin rol oynar.",
+          "s": [
+            "Grupla birlikte üretme sürecinde etkin rol oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.3.1",
+          "m": "Drama sürecinde güven duygusunun önemini fark eder.",
+          "s": [
+            "Drama sürecinde güven duygusunun önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.2.3.2",
+          "m": "Güven çalışmalarına etkin katılır.",
+          "s": [
+            "Güven çalışmalarına etkin katılır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.3. ÜNİTE: DRAMA VE OYUN",
+      "a": [
+        {
+          "k": "OOE.D.1.3.1.1",
+          "m": "Drama ve oyun ilişkisini fark eder.",
+          "s": [
+            "Drama ve oyun ilişkisini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.2",
+          "m": "Oyunlara katılmaya ve oyun oynamaya istekli olur.",
+          "s": [
+            "Oyunlara katılmaya ve oyun oynamaya istekli olur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.3",
+          "m": "Oyunu belirlenen kurallara göre oynar.",
+          "s": [
+            "Oyunu belirlenen kurallara göre oynar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.4",
+          "m": "Oyunun genel özelliklerini fark eder.",
+          "s": [
+            "Oyunun genel özelliklerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.5",
+          "m": "Oyun ve etkinliklerde uyum ve iş birliği içinde hareket eder.",
+          "s": [
+            "Oyun ve etkinliklerde uyum ve iş birliği içinde hareket eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.6",
+          "m": "Oyun ve etkinliklerde başkalarının haklarına saygı gösterir.",
+          "s": [
+            "Oyun ve etkinliklerde başkalarının haklarına saygı gösterir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.3.1.7",
+          "m": "Oyun ve etkinliklerde bireysel farklılıklar konusunda hassasiyet göstermenin önemini fark eder.",
+          "s": [
+            "Oyun ve etkinliklerde bireysel farklılıklar konusunda hassasiyet göstermenin önemini fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.4. ÜNİTE: ROL OYNAMA VE DOĞAÇLAMA",
+      "a": [
+        {
+          "k": "OOE.D.1.4.1.1",
+          "m": "Rol oynama ve doğaçlamanın özelliklerini fark eder.",
+          "s": [
+            "Rol oynama ve doğaçlamanın özelliklerini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.4.1.2",
+          "m": "Rol oynama ve doğaçlamanın drama açısından önemini kavrar.",
+          "s": [
+            "Rol oynama ve doğaçlamanın drama açısından önemini kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.4.1.3",
+          "m": "Drama çalışmalarında rol oynama ve doğaçlamanın özelliklerinden yararlanır.",
+          "s": [
+            "Drama çalışmalarında rol oynama ve doğaçlamanın özelliklerinden yararlanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.4.1.4",
+          "m": "Üstlendiği rolü gereğine uygun canlandırır.",
+          "s": [
+            "Üstlendiği rolü gereğine uygun canlandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.5. ÜNİTE: DRAMA VE DİĞER SANATLAR",
+      "a": [
+        {
+          "k": "OOE.D.1.5.1.1",
+          "m": "Drama ve tiyatronun ortak ve farklı yönlerini ifade eder.",
+          "s": [
+            "Drama ve tiyatronun ortak ve farklı yönlerini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.2.1",
+          "m": "Maske ve drama ilişkisini fark eder.",
+          "s": [
+            "Maske ve drama ilişkisini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.2.2",
+          "m": "Maskeler aracılığıyla doğaçlamalar yapar.",
+          "s": [
+            "Maskeler aracılığıyla doğaçlamalar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.2.3",
+          "m": "Drama ile kukla ilişkisini fark eder.",
+          "s": [
+            "Drama ile kukla ilişkisini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.3.2",
+          "m": "Görsel sanat ürünleri aracılığıyla doğaçlama yapar.",
+          "s": [
+            "Görsel sanat ürünleri aracılığıyla doğaçlama yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.3.3",
+          "m": "Doğaçlama yoluyla görsel sanat ürünleri oluşturur.",
+          "s": [
+            "Doğaçlama yoluyla görsel sanat ürünleri oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.4.1",
+          "m": "Yazınsal türler ile drama ilişkisini kurar.",
+          "s": [
+            "Yazınsal türler ile drama ilişkisini kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.4.2",
+          "m": "Yazınsal türleri dramada bir araç olarak kullanır.",
+          "s": [
+            "Yazınsal türleri dramada bir araç olarak kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.4.3",
+          "m": "Doğaçlamalardan yazınsal metinler oluşturur.",
+          "s": [
+            "Doğaçlamalardan yazınsal metinler oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.5.1",
+          "m": "Doğadaki çeşitli sesleri ve ritimleri fark eder.",
+          "s": [
+            "Doğadaki çeşitli sesleri ve ritimleri fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.2.4",
+          "m": "Kuklalar aracılığıyla doğaçlamalar yapar.",
+          "s": [
+            "Kuklalar aracılığıyla doğaçlamalar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.3.1",
+          "m": "Drama ile görsel sanatların ilişkisini fark eder.",
+          "s": [
+            "Drama ile görsel sanatların ilişkisini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.5.2",
+          "m": "Doğaçlamalarda ritimden yararlanır.",
+          "s": [
+            "Doğaçlamalarda ritimden yararlanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.5.5.3",
+          "m": "Ritimli etkinliklerde bedeni ile doğaçlamalar yapar.",
+          "s": [
+            "Ritimli etkinliklerde bedeni ile doğaçlamalar yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.6. ÜNİTE: DRAMA VE TOPLUM",
+      "a": [
+        {
+          "k": "OOE.D.1.6.1.1",
+          "m": "Toplumsal yaşam durumlarının drama ile ele alındığını fark eder.",
+          "s": [
+            "Toplumsal yaşam durumlarının drama ile ele alındığını fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.6.1.2",
+          "m": "Toplumsal yaşam durumlarından hareketle doğaçlamalar yapar.",
+          "s": [
+            "Toplumsal yaşam durumlarından hareketle doğaçlamalar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.6.2.1",
+          "m": "Toplumsal farkındalık ve duyarlılık temalarına ilişkin drama çalışmalarına katılır.",
+          "s": [
+            "Toplumsal farkındalık ve duyarlılık temalarına ilişkin drama çalışmalarına katılır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.6.2.2",
+          "m": "Farkındalık, duyarlık temalı çalışmalardaki deneyimlerini yaratıcı yollarla ifade eder.",
+          "s": [
+            "Farkındalık, duyarlık temalı çalışmalardaki deneyimlerini yaratıcı yollarla ifade eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "OOE.D.1.7. ÜNİTE: DRAMA VE OKUL DIŞI ÖĞRENME ORTAMLARI",
+      "a": [
+        {
+          "k": "OOE.D.1.7.1.2",
+          "m": "Okul dışı mekanlarda bulunan nesnelerden yararlanarak doğaçlamalar yapar.",
+          "s": [
+            "Okul dışı mekanlarda bulunan nesnelerden yararlanarak doğaçlamalar yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OOE.D.1.7.1.1",
+          "m": "Okul dışı mekanlardan drama ortamı olarak yararlanabileceğini fark eder.",
+          "s": [
+            "Okul dışı mekanlardan drama ortamı olarak yararlanabileceğini fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

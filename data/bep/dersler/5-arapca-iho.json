@@ -1,0 +1,360 @@
+{
+  "ders": "Arapça (İHO)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. MERHABA",
+      "a": [
+        {
+          "k": "ARP.5.1.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapar 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.2",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.3",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.5",
+          "m": "KONUŞMA-ANLATMA 5.1.5.1. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmaya hazırlık yapabilme 5.1.5.2. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşma modelini taklit edebilme 5.1.5.3. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.1.5.4. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarını uygulamaya geçirebilme 5.1.5.5. Selamlaşma, tanışma ve vedalaşmayla ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "Sunulan bilgileri farklı bağlamlar içinde basit, doğal, doğru ve gereken şekilde bireysel ve sözlü olarak yeniden düzenleyerek kullanır.",
+            "Yeniden yapılandırılan bilgiyi doğru bir biçimde paylaşarak basit ve doğal şekilde sözlü iletişimde bulunur."
+          ]
+        },
+        {
+          "k": "ARP.5.1.6",
+          "m": "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapabilme 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapar 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "1.MERHABA",
+      "a": [
+        {
+          "k": "ARP.5.1.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapar 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.2",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.3",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.5",
+          "m": "KONUŞMA-ANLATMA 5.1.5.1. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmaya hazırlık yapabilme 5.1.5.2. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşma modelini taklit edebilme 5.1.5.3. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.1.5.4. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarını uygulamaya geçirebilme 5.1.5.5. Selamlaşma, tanışma ve vedalaşmayla ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "Sunulan bilgileri farklı bağlamlar içinde basit, doğal, doğru ve gereken şekilde bireysel ve sözlü olarak yeniden düzenleyerek kullanır.",
+            "Yeniden yapılandırılan bilgiyi doğru bir biçimde paylaşarak basit ve doğal şekilde sözlü iletişimde bulunur."
+          ]
+        },
+        {
+          "k": "ARP.5.1.6",
+          "m": "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapabilme 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapar 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "1.MERHABA 1. DÖNEM 1. SINAV",
+      "a": [
+        {
+          "k": "ARP.5.1.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.1.1.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlemeye/izlemeye hazırlık yapar 5.1.1.2. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.1.1.3. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.2",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.1.2.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.3",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.1.3.1. Selamlaşma, tanışma ve vedalaşmayla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.5.1.4.SESLETİM SEÇME-KULLANMA 5.1.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.1.5",
+          "m": "KONUŞMA-ANLATMA 5.1.5.1. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmaya hazırlık yapabilme 5.1.5.2. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşma modelini taklit edebilme 5.1.5.3. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.1.5.4. Selamlaşma, tanışma ve vedalaşmayla ilgili konuşmalarını uygulamaya geçirebilme 5.1.5.5. Selamlaşma, tanışma ve vedalaşmayla ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "Sunulan bilgileri farklı bağlamlar içinde basit, doğal, doğru ve gereken şekilde bireysel ve sözlü olarak yeniden düzenleyerek kullanır.",
+            "Yeniden yapılandırılan bilgiyi doğru bir biçimde paylaşarak basit ve doğal şekilde sözlü iletişimde bulunur."
+          ]
+        },
+        {
+          "k": "ARP.5.1.6",
+          "m": "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapabilme 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme\" \"1. Dönem 1. Sınav",
+          "s": [
+            "YAZMA-ANLATMA 5.1.6.1. Hedef harflerin müstakil hâllerini ve harekeleri yazmaya hazırlık yapar 5.1.6.2. Hedef harflerin müstakil hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme\" \"1. Dönem 1. Sınav."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. SINIFIM",
+      "a": [
+        {
+          "k": "ARP.5.2.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.2.1.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.2.1.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.2.1.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içeriği anlamlandırabilme 5.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.2.1.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlemeye/izlemeye hazırlık yapar 5.2.1.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.2.1.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içeriği anlamlandırır 5.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.2",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.2.2.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.2.2.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.3",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.2.3.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.5.2.4.SESLETİM SEÇME-KULLANMA 5.2.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.2.3.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.5.2.4.SESLETİM SEÇME-KULLANMA 5.2.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.5",
+          "m": "KONUŞMA-ANLATMA 5.2.5.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmaya hazırlık yapabilme 5.2.5.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşma modelini taklit edebilme 5.2.5.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.2.5.4. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarını uygulamaya geçirebilme 5.2.5.5. Sınıf eşyaları ve eğitim araçlarıyla ilgili bilgilerini kullanarak iletişim kurabilme 5.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 5.2.5.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmaya hazırlık yapar 5.2.5.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşma modelini taklit eder 5.2.5.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 5.2.5.4. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarını uygulamaya geçirir 5.2.5.5. Sınıf eşyaları ve eğitim araçlarıyla ilgili bilgilerini kullanarak iletişim kurar 5.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.6",
+          "m": "YAZMA-ANLATMA 5.2.6.1. Hedef harflerin kelime içindeki hâllerini ve harekeleri yazmaya hazırlık yapabilme 5.2.6.2. Hedef harflerin kelime içindeki hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme 5.2.6.3. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.2.6.1. Hedef harflerin kelime içindeki hâllerini ve harekeleri yazmaya hazırlık yapar 5.2.6.2. Hedef harflerin kelime içindeki hâllerinin ve harekelerin yazılışlarını modelden kopyalar 5.2.6.3. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. SINIFIM 1. DÖNEM 2. SINAV",
+      "a": [
+        {
+          "k": "ARP.5.2.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.2.1.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.2.1.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.2.1.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içeriği anlamlandırabilme 5.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.2.1.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlemeye/izlemeye hazırlık yapar 5.2.1.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.2.1.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içeriği anlamlandırır 5.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.2",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.2.2.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.2.2.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.3",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.2.3.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.5.2.4.SESLETİM SEÇME-KULLANMA 5.2.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.2.3.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.5.2.4.SESLETİM SEÇME-KULLANMA 5.2.4.1. Hedef harfleri ve sesleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.5",
+          "m": "KONUŞMA-ANLATMA 5.2.5.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmaya hazırlık yapabilme 5.2.5.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşma modelini taklit edebilme 5.2.5.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.2.5.4. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarını uygulamaya geçirebilme 5.2.5.5. Sınıf eşyaları ve eğitim araçlarıyla ilgili bilgilerini kullanarak iletişim kurabilme 5.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 5.2.5.1. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmaya hazırlık yapar 5.2.5.2. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşma modelini taklit eder 5.2.5.3. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 5.2.5.4. Sınıf eşyaları ve eğitim araçlarıyla ilgili konuşmalarını uygulamaya geçirir 5.2.5.5. Sınıf eşyaları ve eğitim araçlarıyla ilgili bilgilerini kullanarak iletişim kurar 5.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.2.6",
+          "m": "YAZMA-ANLATMA 5.2.6.1. Hedef harflerin kelime içindeki hâllerini ve harekeleri yazmaya hazırlık yapabilme 5.2.6.2. Hedef harflerin kelime içindeki hâllerinin ve harekelerin yazılışlarını modelden kopyalayabilme 5.2.6.3. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.2.6.1. Hedef harflerin kelime içindeki hâllerini ve harekeleri yazmaya hazırlık yapar 5.2.6.2. Hedef harflerin kelime içindeki hâllerinin ve harekelerin yazılışlarını modelden kopyalar 5.2.6.3. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. AİLEM",
+      "a": [
+        {
+          "k": "ARP.5.3.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.3.1.1. Aile üyeleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapabilme 5.3.1.2. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.3.1.3. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.3.1.1. Aile üyeleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapar 5.3.1.2. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.3.1.3. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.2",
+          "m": "OKUMA-ANLAMLANDIRMA 5.3.2.1. Aile üyeleri ve mesleklerle ilgili okumaya hazırlık yapabilme 5.3.2.2. Aile üyeleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 5.3.2.3. Aile üyeleri ve mesleklerle ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 5.3.2.1. Aile üyeleri ve mesleklerle ilgili okumaya hazırlık yapar 5.3.2.2. Aile üyeleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 5.3.2.3. Aile üyeleri ve mesleklerle ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.3.3.1. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.3.3.1. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.3.4.1. Üniteyle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.3.4.1. Üniteyle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.5",
+          "m": "KONUŞMA-ANLATMA 5.3.5.1. Aile üyeleri ve mesleklerle ilgili konuşmaya hazırlık yapabilme 5.3.5.2. Aile üyeleri ve mesleklerle ilgili konuşma modelini taklit edebilme 5.3.5.3. Aile üyeleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.3.5.4. Aile üyeleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirebilme 5.3.5.5. Aile üyeleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 5.3.5.1. Aile üyeleri ve mesleklerle ilgili konuşmaya hazırlık yapar 5.3.5.2. Aile üyeleri ve mesleklerle ilgili konuşma modelini taklit eder 5.3.5.3. Aile üyeleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 5.3.5.4. Aile üyeleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirir 5.3.5.5. Aile üyeleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.6",
+          "m": "YAZMA-ANLATMA 5.3.6.1. Üniteyle ilgili yazmaya hazırlık yapabilme 5.3.6.2. Üniteyle ilgili yazı modelini kopyalayabilme 5.3.6.3. Üniteyle ilgili yazılarında içerik oluşturabilme 5.3.6.4. Aile üyeleri ve mesleklerle ilgili yazılarını uygulamaya geçirebilme 5.3.6.5. Aile üyeleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.3.6.1. Üniteyle ilgili yazmaya hazırlık yapar 5.3.6.2. Üniteyle ilgili yazı modelini kopyalar 5.3.6.3. Üniteyle ilgili yazılarında içerik oluşturur 5.3.6.4. Aile üyeleri ve mesleklerle ilgili yazılarını uygulamaya geçirir 5.3.6.5. Aile üyeleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. AİLEM 2. DÖNEM 1. SINAV",
+      "a": [
+        {
+          "k": "ARP.5.3.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.3.1.1. Aile üyeleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapabilme 5.3.1.2. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.3.1.3. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.3.1.1. Aile üyeleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapar 5.3.1.2. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.3.1.3. Aile üyeleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.3.2",
+          "m": "OKUMA-ANLAMLANDIRMA 5.3.2.1. Aile üyeleri ve mesleklerle ilgili okumaya hazırlık yapabilme 5.3.2.2. Aile üyeleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 5.3.2.3. Aile üyeleri ve mesleklerle ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 5.3.2.1. Aile üyeleri ve mesleklerle ilgili okumaya hazırlık yapar 5.3.2.2. Aile üyeleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 5.3.2.3. Aile üyeleri ve mesleklerle ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. GÜZEL EVİM",
+      "a": [
+        {
+          "k": "ARP.5.4.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 5.4.1.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlemeye/izlemeye hazırlık yapabilme 5.4.1.2. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 5.4.1.3. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içeriği anlamlandırabilme 5.4.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 5.4.1.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlemeye/izlemeye hazırlık yapar 5.4.1.2. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 5.4.1.3. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içeriği anlamlandırır 5.4.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.4.2",
+          "m": "OKUMA-ANLAMLANDIRMA 5.4.2.1. Evin bölümleri, ev eşyaları, sayılarla ilgili okumaya hazırlık yapabilme 5.4.2.2. Evin bölümleri, ev eşyaları, sayılarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 5.4.2.3. Evin bölümleri, ev eşyaları, sayılarla ilgili okuduğu içeriği anlamlandırabilme 5.4.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 5.4.2.1. Evin bölümleri, ev eşyaları, sayılarla ilgili okumaya hazırlık yapar 5.4.2.2. Evin bölümleri, ev eşyaları, sayılarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 5.4.2.3. Evin bölümleri, ev eşyaları, sayılarla ilgili okuduğu içeriği anlamlandırır 5.4.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.4.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 5.4.3.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 5.4.3.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.4.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 5.4.4.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 5.4.4.1. Evin bölümleri, ev eşyaları, sayılarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.4.5",
+          "m": "KONUŞMA-ANLATMA 5.4.5.1. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmaya hazırlık yapabilme 5.4.5.2. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşma modelini taklit edebilme 5.4.5.3. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 5.4.5.4. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmalarını uygulamaya geçirebilme 5.4.5.5. Evin bölümleri, ev eşyaları, sayılarla ilgili bilgilerini kullanarak iletişim kurabilme 5.4.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 5.4.5.1. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmaya hazırlık yapar 5.4.5.2. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşma modelini taklit eder 5.4.5.3. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 5.4.5.4. Evin bölümleri, ev eşyaları, sayılarla ilgili konuşmalarını uygulamaya geçirir 5.4.5.5. Evin bölümleri, ev eşyaları, sayılarla ilgili bilgilerini kullanarak iletişim kurar 5.4.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.5.4.6",
+          "m": "YAZMA-ANLATMA 5.4.6.1. Evin bölümleri, ev eşyaları, sayılarla ilgili yazmaya hazırlık yapabilme 5.4.6.2. Evin bölümleri, ev eşyaları, sayılarla ilgili yazı modelini kopyalayabilme 5.4.6.3. Evin bölümleri, ev eşyaları, sayılarla ilgili yazılarında içerik oluşturabilme 5.4.6.4. Evin bölümleri, ev eşyaları, sayılarla ilgili yazılarını uygulamaya geçirebilme c) Hazırlıklı/hazırlıksız yazma görevi için iletilerini açık bir biçimde ifade eder. 5.4.6.5. Evin bölümleri, ev eşyaları, sayılarla ilgili bilgilerini yazılarında yeniden yapılandırabilme 5.4.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 5.4.6.1. Evin bölümleri, ev eşyaları, sayılarla ilgili yazmaya hazırlık yapar 5.4.6.2. Evin bölümleri, ev eşyaları, sayılarla ilgili yazı modelini kopyalar 5.4.6.3. Evin bölümleri, ev eşyaları, sayılarla ilgili yazılarında içerik oluşturur 5.4.6.4. Evin bölümleri, ev eşyaları, sayılarla ilgili yazılarını uygulamaya geçirir c) Hazırlıklı/hazırlıksız yazma görevi için iletilerini açık bir biçimde ifade eder. 5.4.6.5. Evin bölümleri, ev eşyaları, sayılarla ilgili bilgilerini yazılarında yeniden yapılandırır 5.4.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

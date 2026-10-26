@@ -1,0 +1,377 @@
+{
+  "ders": "Temel Yaşam Becerileri",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "TYB.1.1. ÜNİTE: İLETİŞİM",
+      "a": [
+        {
+          "k": "TYB.1.1.1",
+          "m": "İletişim sürecini açıklar.",
+          "s": [
+            "İletişim sürecini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.2",
+          "m": "Etkili iletişimin unsurlarını açıklar.",
+          "s": [
+            "Etkili iletişimin unsurlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.3",
+          "m": "İletişimde dinlemenin önemini açıklar.",
+          "s": [
+            "İletişimde dinlemenin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.4",
+          "m": "İletişimde dönüt vermenin gereğini sorgular.",
+          "s": [
+            "İletişimde dönüt vermenin gereğini sorgular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.5",
+          "m": "İletişimde beden dilinin önemini açıklar.",
+          "s": [
+            "İletişimde beden dilinin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.6",
+          "m": "Sözsüz iletişim becerilerini kullanır.",
+          "s": [
+            "Sözsüz iletişim becerilerini kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.7",
+          "m": "Kişiler arasındaki iletişimi etkileyen faktörleri açıklar.",
+          "s": [
+            "Kişiler arasındaki iletişimi etkileyen faktörleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.8",
+          "m": "İletişimde karşılıklı güvenin önemini ifade eder.",
+          "s": [
+            "İletişimde karşılıklı güvenin önemini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.9",
+          "m": "Kişiler arası ilişkileri yönetmenin önemini tartışır.",
+          "s": [
+            "Kişiler arası ilişkileri yönetmenin önemini tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.10",
+          "m": "İletişim engelleri ve çatışmaları ile ilgili kavramları ayırt eder.",
+          "s": [
+            "İletişim engelleri ve çatışmaları ile ilgili kavramları ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.1.11",
+          "m": "İletişim engellerinin ve çatışmalarının iletişim üzerindeki etkisini değerlendirir.",
+          "s": [
+            "İletişim engellerinin ve çatışmalarının iletişim üzerindeki etkisini değerlendirir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TYB.1.2. ÜNİTE: SORUMLU OLMA",
+      "a": [
+        {
+          "k": "TYB.1.2.1",
+          "m": "Sosyal hayatındaki sorumluluklarını ifade eder.",
+          "s": [
+            "Sosyal hayatındaki sorumluluklarını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.2",
+          "m": "Çalışmalarda sorumluluk almanın önemini açıklar.",
+          "s": [
+            "Çalışmalarda sorumluluk almanın önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.3",
+          "m": "Sorumluluğunu aldığı işi vaktinde bitirmenin önemini örneklerle açıklar.",
+          "s": [
+            "Sorumluluğunu aldığı işi vaktinde bitirmenin önemini örneklerle açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.4",
+          "m": "Sorumluluklarını yerine getirmediğinde doğabilecek problemleri ifade eder.",
+          "s": [
+            "Sorumluluklarını yerine getirmediğinde doğabilecek problemleri ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.5",
+          "m": "Çevresine ve çevresindeki canlılara karşı sorumluluklarını açıklar.",
+          "s": [
+            "Çevresine ve çevresindeki canlılara karşı sorumluluklarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.6",
+          "m": "Sorumluluğunu yerine getirmenin kendisine hissettirdiklerini açıklar.",
+          "s": [
+            "Sorumluluğunu yerine getirmenin kendisine hissettirdiklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.2.7",
+          "m": "Sorumlu davranmayı; adil olma, saygı ve başarı ile ilişkilendirir.",
+          "s": [
+            "Sorumlu davranmayı; adil olma, saygı ve başarı ile ilişkilendirir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TYB.1.3. ÜNİTE: ÖĞRENMEYİ ÖĞRENME",
+      "a": [
+        {
+          "k": "TYB.1.3.1",
+          "m": "Öğrenme stratejilerini ayırt eder.",
+          "s": [
+            "Öğrenme stratejilerini ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.2",
+          "m": "Kendine uygun öğrenme stratejisini seçer.",
+          "s": [
+            "Kendine uygun öğrenme stratejisini seçer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.3",
+          "m": "Kendine uygun öğrenme stratejilerini test eder.",
+          "s": [
+            "Kendine uygun öğrenme stratejilerini test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.4",
+          "m": "Çalışma ve öğrenme taktiklerini etkin olarak kullanır.",
+          "s": [
+            "Çalışma ve öğrenme taktiklerini etkin olarak kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.5",
+          "m": "Öğrendiği yeni bilgi ile önceki bilgilerini ilişkilendirir.",
+          "s": [
+            "Öğrendiği yeni bilgi ile önceki bilgilerini ilişkilendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.6",
+          "m": "İhtiyaç duyduğu bilgiye ulaşmanın yollarını sunar.",
+          "s": [
+            "İhtiyaç duyduğu bilgiye ulaşmanın yollarını sunar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.7",
+          "m": "Ulaştığı bilgileri günlük hayatta kullanır.",
+          "s": [
+            "Ulaştığı bilgileri günlük hayatta kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.8",
+          "m": "Bilginin doğruluğunu teyit etmede bilgi iletişim teknolojilerinin önemini tartışır.",
+          "s": [
+            "Bilginin doğruluğunu teyit etmede bilgi iletişim teknolojilerinin önemini tartışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.9",
+          "m": "Bilgi iletişim teknolojilerini kullanarak problemlere farklı çözümler üretir.",
+          "s": [
+            "Bilgi iletişim teknolojilerini kullanarak problemlere farklı çözümler üretir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.3.10",
+          "m": "Kendi öğrenme şeklini keşfeder.",
+          "s": [
+            "Kendi öğrenme şeklini keşfeder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TYB.1.4. ÜNİTE: PROBLEM ÇÖZME VE KARAR VERME",
+      "a": [
+        {
+          "k": "TYB.1.4.1",
+          "m": "Günlük yaşam içinde karşılaşılan problemleri tanımlar.",
+          "s": [
+            "Günlük yaşam içinde karşılaşılan problemleri tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.2",
+          "m": "Günlük yaşamda karşılaşılan problemlere ilişkin bilgi toplar.",
+          "s": [
+            "Günlük yaşamda karşılaşılan problemlere ilişkin bilgi toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.3",
+          "m": "Günlük yaşamda karşılaşılan problemlere yönelik alternatif çözüm yolları belirler.",
+          "s": [
+            "Günlük yaşamda karşılaşılan problemlere yönelik alternatif çözüm yolları belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.4",
+          "m": "Problemlere bulduğu çözümlerin avantaj ve dezavantajlarını değerlendirir.",
+          "s": [
+            "Problemlere bulduğu çözümlerin avantaj ve dezavantajlarını değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.5",
+          "m": "Problemlere bulduğu çözümlere karar verme sürecinde dikkat edilmesi gereken unsurları belirler.",
+          "s": [
+            "Problemlere bulduğu çözümlere karar verme sürecinde dikkat edilmesi gereken unsurları belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.6",
+          "m": "Problemlere bulduğu çözümlere yönelik karar verme sürecindeki riskleri, sonuçları bakımından değerlendirir.",
+          "s": [
+            "Problemlere bulduğu çözümlere yönelik karar verme sürecindeki riskleri, sonuçları bakımından değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.7",
+          "m": "Çözüm yolları arasından uygun çözümü seçer.",
+          "s": [
+            "Çözüm yolları arasından uygun çözümü seçer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.8",
+          "m": "Problem çözümüne yönelik karar verme sürecinde ön yargı ve yanılgıları ayırt eder.",
+          "s": [
+            "Problem çözümüne yönelik karar verme sürecinde ön yargı ve yanılgıları ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.4.9",
+          "m": "Problem çözümüne yönelik alınan kararların olası sonuçlarını fark eder.",
+          "s": [
+            "Problem çözümüne yönelik alınan kararların olası sonuçlarını fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TYB.1.5. ÜNİTE: ELEŞTİREL DÜŞÜNME",
+      "a": [
+        {
+          "k": "TYB.1.5.1",
+          "m": "Farklı düşünme biçimlerini örneklerle açıklar.",
+          "s": [
+            "Farklı düşünme biçimlerini örneklerle açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.5.2",
+          "m": "Düşünmeyi etkileyen bilişsel ön yargıları fark eder.",
+          "s": [
+            "Düşünmeyi etkileyen bilişsel ön yargıları fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.5.3",
+          "m": "Eleştirel düşünmeyi tanımlar.",
+          "s": [
+            "Eleştirel düşünmeyi tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.5.5",
+          "m": "Eleştirel düşünmenin temel ilke ve yöntemlerini açıklar.",
+          "s": [
+            "Eleştirel düşünmenin temel ilke ve yöntemlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.5.6",
+          "m": "Eleştirel düşünmede akıl yürütme yöntemlerini kullanır.",
+          "s": [
+            "Eleştirel düşünmede akıl yürütme yöntemlerini kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TYB.1.5.4",
+          "m": "Eleştirel düşünmenin önemini tartışır.",
+          "s": [
+            "Eleştirel düşünmenin önemini tartışır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

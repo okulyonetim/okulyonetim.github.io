@@ -1,0 +1,106 @@
+{
+  "ders": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SPORUN TARİHİ VE TEMEL KAVRAMLARI",
+      "a": [
+        {
+          "k": "BEST.5.1.1",
+          "m": "Beden eğitimi ve sporun tarihsel gelişimini sorgulayabilme",
+          "s": [
+            "Beden eğitimi ve sporun tarihsel gelişimini tanımlar.",
+            "Beden eğitimi ve sporun tarihsel gelişimi hakkında sorular sorar.",
+            "Beden eğitimi ve sporun tarihsel gelişimi hakkında bilgi toplar.",
+            "Beden eğitimi ve sporun tarihsel gelişimi hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Beden eğitimi ve sporun tarihsel gelişimi hakkında toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BEST.5.1.2",
+          "m": "Beden eğitimi ve sporun temel kavramlarını açıklayabilme",
+          "s": [
+            "Beden eğitimi ve sporun temel kavramlarını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SPORUN ÇEŞİTLİLİĞİ",
+      "a": [
+        {
+          "k": "BEST.5.2.1",
+          "m": "Farklı spor branşlarını özelliklerine göre genelleyebilme",
+          "s": [
+            "Farklı spor branşları hakkında bilgi toplar.",
+            "Farklı spor branşlarının ortak özelliklerini belirler.",
+            "Farklı spor branşlarının ortak olmayan özelliklerini belirler.",
+            "Farklı spor branşlarının özellikleri üzerinden önermede bulunur."
+          ]
+        },
+        {
+          "k": "BEST.5.2.2",
+          "m": "Spor ortamlarında yer alan paydaşları sorgulayabilme",
+          "s": [
+            "Spor ortamlarında yer alan paydaşları tanımlar.",
+            "Spor ortamlarında yer alan paydaşlar hakkında sorular sorar.",
+            "Spor ortamlarında yer alan paydaşlarla ilgili bilgi toplar.",
+            "Spor ortamlarında yer alan paydaşlar ile ilgili toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Spor ortamlarında yer alan paydaşlar ile ilgili toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BEDEN EĞİTİMİ VE SPORUN TEMEL DEĞERLERİ",
+      "a": [
+        {
+          "k": "BEST.5.3.1",
+          "m": "Spor organizasyonlarını sorgulayabilme",
+          "s": [
+            "Spor organizasyonlarını tanımlar.",
+            "Spor organizasyonları hakkında sorular sorar.",
+            "Spor organizasyonları hakkında bilgi toplar.",
+            "Spor organizasyonları hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Spor organizasyonları hakkında toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BEST.5.3.2",
+          "m": "Adil oyuna ilişkin bilgileri özetleyebilme",
+          "s": [
+            "Adil oyuna ilişkin bilgileri çözümler.",
+            "Adil oyuna ilişkin bilgileri sınıflandırır.",
+            "Adil oyun oynamayı yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPOR TESİSLERİ VE MALZEMELERİ",
+      "a": [
+        {
+          "k": "BEST.5.4.1",
+          "m": "Farklı sporlar branşlarına özgü tesis ve malzemeleri sınıflandırabilme",
+          "s": [
+            "Farklı spor branşlarına özgü tesis ve malzemelere ilişkin değişken ve ölçütleri belirler.",
+            "Farklı spor branşlarına özgü tesis ve malzemeleri kullanım durumlarına göre ayrıştırır.",
+            "Farklı spor branşlarına özgü tesis ve malzemeleri tanır.",
+            "Farklı spor branşlarına özgü tesis ve malzemeleri etiketler."
+          ]
+        },
+        {
+          "k": "BEST.5.4.2",
+          "m": "Spor ortamlarında güvenli ortam oluşturabilme",
+          "s": [
+            "Spor ortamlarındaki riskleri belirler.",
+            "Spor ortamlarında önleyici tedbirler alır."
+          ]
+        }
+      ]
+    }
+  ]
+}

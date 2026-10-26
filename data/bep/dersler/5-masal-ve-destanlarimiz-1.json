@@ -1,0 +1,239 @@
+{
+  "ders": "Masal ve Destanlarımız 1",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: MASALLAR I",
+      "a": [
+        {
+          "k": "MD.1.1.1",
+          "m": "Masal türü hakkında anlam oluşturabilme",
+          "s": [
+            "Masalın, yazarı bilinmeyen bir tür olduğu hususunda ön bilgileri ile bağlantı kurar.",
+            "Masalın olağanüstü ögeler, bir öğüt, kalıplaşmış sözcük ve söz grupları içerdiğini tahmin eder.",
+            "Masalda zaman ve yerin belirsiz olduğu hakkında çıkarım yapar.",
+            "Masallarda bulunan tezatlıkları karşılaştırır.",
+            "Masaldaki kişi ve varlık ögelerini özelliklerine göre sınıflandırır.",
+            "Edindiği bilgilere göre masalla ilgili tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.1.2",
+          "m": "Masal metninde verilenler hakkında gözleme dayalı tahmin edebilme",
+          "s": [
+            "Masalın başlık ve görsellerinden hareketle yaptığı tahminlerini içerik ile ilişkilendirir.",
+            "Masalın başlığı ve görsellerine ilişkin çıkarım yapar.",
+            "Masalın verilen bölümünden yararlanarak öncesi veya sonrası hakkında yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MD.1.1.3",
+          "m": "Masalın yapı unsurlarını çözümleyebilme",
+          "s": [
+            "Masalın yapı unsurları ve bölümlerine ilişkin parçaları belirler.",
+            "Masalın yapı unsurları ve bölümlerine ilişkin parçalar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MD.1.1.4",
+          "m": "Masalın vermek istediği ileti ile ilgili anlam oluşturabilme",
+          "s": [
+            "Masalın konusunu bulmak için ön bilgilerle bağlantı kurar.",
+            "Masaldaki ana fikri ve yardımcı düşünceleri tahmin eder.",
+            "Masalda yer alan değerler ile ilgili çıkarım yapar.",
+            "Masaldaki değerler ile günlük yaşantısındaki deneyimlerini karşılaştırır.",
+            "Masaldaki örtük iletileri sınıflandırır.",
+            "Masalda verilmek istenen iletilere tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.1.5",
+          "m": "Masallar hakkında araştırma yaparak bilgi toplayabilme",
+          "s": [
+            "Yöresindeki masallar hakkında araştırma yaparken kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak yöresine ait masallar hakkındaki bilgileri bulur.",
+            "Yöresindeki masallara dair ulaşılan bilgileri doğrular.",
+            "Ulaşıp doğruladığı bilgilerden yola çıkarak yöresindeki masallardan birini kaydeder."
+          ]
+        },
+        {
+          "k": "MD.1.1.6",
+          "m": "Araştırdığı masalı sunmada kural uygulayabilme",
+          "s": [
+            "Araştırdığı masalın sunumu ile ilgili plan hazırlar.",
+            "Araştırdığı masalı sunarken düşünceyi geliştirme yollarını kullanır.",
+            "Araştırdığı masalı sunarken içeriğe uygun söz varlığını kullanır.",
+            "Araştırdığı masalı sunarken iletileri açık ve örtük biçimde ifade eder.",
+            "Araştırdığı masalı sunarken dil yapılarını uygular.",
+            "Araştırdığı masalı sunarken bağdaşıklık ögelerini kullanır.",
+            "Araştırdığı masalı sunarken beden dilini ve mekânı etkili bir şekilde kullanır.",
+            "İçeriğe uygun oluşturduğu masalı sunar."
+          ]
+        },
+        {
+          "k": "MD.1.1.7",
+          "m": "Masalın özelliklerine uygun içerik oluşturabilme",
+          "s": [
+            "Masalında vereceği iletiyi ve kullanacağı değerleri ifade ederken ön bilgileriyle bağlantı kurar.",
+            "Masalında kullanacağı yer ve zaman ögelerini, kişi ve varlık kadrosunu, kurgulayacağı olay örgüsünü, olağanüstü ögeleri, sözcükleri ve söz gruplarını tahmin eder.",
+            "Masalında işleyeceği tezatlıkları karşılaştırır.",
+            "Masalında döşeme, serim, düğüm, çözüm ve dilek bölümlerini sınıflandırır.",
+            "Masalında kullanacağı yer ve zaman ögelerini, kişi ve varlık kadrosunu, kurgulayacağı olay örgüsünü, olağanüstü ögeleri, tezatlıkları, sözcükleri ve söz gruplarını yeniden ifade eder.",
+            "Masalının içeriğine uygun yazarak tepki verir.",
+            "Yazdığı masalın içeriğine uygun görselle anlam oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: DOĞAL DESTANLAR I",
+      "a": [
+        {
+          "k": "MD.1.2.1",
+          "m": "Destan türü hakkında anlam oluşturabilme",
+          "s": [
+            "Destanların sözlü kültür ürünü olduğuna dair ön bilgileri ile bağlantı kurar.",
+            "Destan türünün millî özellikler taşıdığını, toplumu derinden etkileyen olayları içerdiğini, olağanüstülükler barındırdığını tahmin eder.",
+            "Destanların oluşum aşamaları (ortaya çıkma, yayılma, derleme), bu türün coşkulu bir söyleyişi olduğu hakkında çıkarım yapar.",
+            "Destanlardaki motifleri karşılaştırır.",
+            "Destanları doğal ve yapma destan olarak sınıflandırır.",
+            "Edindiği bilgilere göre doğal destanla ilgili tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.2.2",
+          "m": "Doğal destan hakkında gözleme dayalı tahmin edebilme",
+          "s": [
+            "Destanın başlık ve görsellerinden hareketle yaptığı tahminleri içerik ile ilişkilendirir.",
+            "Destanın başlığı ve görsellerine ilişkin çıkarım yapar.",
+            "Destanın verilen bölümünden yararlanarak öncesi veya sonrası hakkında yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MD.1.2.3",
+          "m": "Doğal destanın yapı unsurlarını çözümleyebilme",
+          "s": [
+            "Destanın yapı unsurları ve bölümlerine ilişkin parçaları belirler.",
+            "Destanın yapı unsurları ve bölümlerine ilişkin parçalar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MD.1.2.4",
+          "m": "Doğal destanın vermek istediği ileti ile ilgili anlam oluşturabilme",
+          "s": [
+            "Destanın konusunu bulmak için ön bilgilerle bağlantı kurar.",
+            "Destandaki anlamını bilmediği sözcükleri, destanın ana fikrini/ana duygusunu ve yardımcı düşüncelerini tahmin eder.",
+            "Destanda yer alan değerler ile ilgili çıkarım yapar.",
+            "Destandaki değerler ile günlük yaşantısındaki deneyimlerini karşılaştırır.",
+            "Destandaki örtük iletileri sınıflandırır.",
+            "Destanda verilmek istenen iletilere tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.2.5",
+          "m": "Doğal destanlar hakkında araştırma yaparak bilgi toplayabilme",
+          "s": [
+            "Doğal destanlar hakkında araştırma yaparken kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak doğal destanlar hakkındaki bilgileri bulur.",
+            "Doğal destanlara dair ulaşılan bilgileri doğrular.",
+            "Ulaşıp doğruladığı bilgilerden yola çıkarak doğal destanlardan birini kaydeder."
+          ]
+        },
+        {
+          "k": "MD.1.2.6",
+          "m": "Araştırdığı doğal destanı sunmada kural uygulayabilme",
+          "s": [
+            "Araştırdığı destanın sunumu ile ilgili plan hazırlar.",
+            "Araştırdığı destanı sunarken düşünceyi geliştirme yollarını kullanır.",
+            "Araştırdığı destanı sunarken içeriğe uygun söz varlığını kullanır.",
+            "Araştırdığı destanı sunarken iletileri açık ve örtük biçimde ifade eder.",
+            "Araştırdığı destanı sunarken dil yapılarını uygular.",
+            "Araştırdığı destanı sunarken bağdaşıklık ögelerini kullanır.",
+            "Araştırdığı destanı sunarken beden dilini ve mekânı etkili bir şekilde kullanır."
+          ]
+        },
+        {
+          "k": "MD.1.2.7",
+          "m": "Araştırdığı doğal destandan yola çıkarak yeni bir kahraman yapılandırabilme",
+          "s": [
+            "Araştırdığı destandaki kahramanların özelliklerini inceleyerek oluşturacağı kahramanların fiziksel ve kişisel özelliklerini ortaya koyar.",
+            "Tespit ettiği özelliklerle ilgili ön bilgilerinden yararlanarak yeni bir kahraman oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: YAPMA DESTANLAR I",
+      "a": [
+        {
+          "k": "MD.1.3.1",
+          "m": "Yapma destan türü hakkında anlam oluşturabilme",
+          "s": [
+            "Yapma destanların bir yazarının olduğuna dair ön bilgileri ile bağlantı kurar.",
+            "Doğal destanlardan yola çıkarak yapma destanların daha yakın zamanda yazıldığını tahmin eder.",
+            "Yapma destanların toplumda iz bırakan bir olay üzerine yazıldığı hakkında çıkarım yapar.",
+            "Doğal destanlarla yapma destanların yazılış biçimini (nesir/nazım) karşılaştırır.",
+            "Yapma destanların yapı unsurlarını (yer, zaman, kişi ve varlık kadrosu, olay örgüsü) sınıflandırır.",
+            "Edindiği bilgilere göre yapma destanla ilgili tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.3.2",
+          "m": "Yapma destanın vermek istediği ileti ile ilgili anlam oluşturabilme",
+          "s": [
+            "Yapma destanın konusunu bulmak için ön bilgileriyle bağlantı kurar.",
+            "Yapma destandaki anlamını bilmediği sözcükleri ve destanın ana fikrini/ana duygusunu tahmin eder.",
+            "Yapma destanda yer alan değerler ile ilgili çıkarım yapar.",
+            "Yapma destandaki değerler ile günlük yaşantısındaki deneyimlerini karşılaştırır.",
+            "Yapma destandaki örtük iletileri sınıflandırır.",
+            "Yapma destanda verilmek istenen iletilere tepki verir."
+          ]
+        },
+        {
+          "k": "MD.1.3.3",
+          "m": "Yapma destanları okumayı yönetebilme",
+          "s": [
+            "\"Çanakkale Şehitlerine\" adlı destanı inceler ve nasıl okuyacağına ilişkin görüş oluşturur.",
+            "\"Çanakkale Şehitlerine\" adlı destanın okuma sürecinde jest-mimik, vurgu, tonlama, durak, telaffuz gibi unsurların kullanımına yönelik seçim yapar."
+          ]
+        },
+        {
+          "k": "MD.1.3.4",
+          "m": "Okuduğu bir yapma destan hakkında çıkarım yapabilme",
+          "s": [
+            "\"Çanakkale Şehitlerine\" adlı destanda anlamını bilmediği sözcüklerin anlamları hakkında varsayımda bulunur.",
+            "\"Çanakkale Şehitlerine\" adlı destandaki kahramanları bularak kahramanların özelliklerine dair örüntüleri listeler.",
+            "\"Çanakkale Şehitlerine\" adlı destanla farklı bir metni karşılaştırır.",
+            "\"Çanakkale Şehitlerine\" adlı destanın ana fikrine/ana duygusuna dair önerme sunar.",
+            "\"Çanakkale Şehitlerine\" adlı destanın ana fikrine/ana duygusuna dair sunduğu önermeyi metindeki örüntüye göre değerlendirir."
+          ]
+        },
+        {
+          "k": "MD.1.3.5",
+          "m": "Doğal destan ile yapma destanı karşılaştırabilme",
+          "s": [
+            "Doğal ve yapma destanlardaki karşılaştırılabilir unsurlara ilişkin özellikleri belirler.",
+            "Belirlenen özelliklerden hareketle benzerlikleri listeler.",
+            "Belirlenen özelliklerden hareketle farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "MD.1.3.6",
+          "m": "Yapma destanın özelliklerine uygun yazacağı destan hakkında içerik oluşturabilme",
+          "s": [
+            "Yazacağı destanın ana fikri/ana duygusu ve konusu ile ön bilgileri arasında bağlantı kurar.",
+            "Ön bilgilerinden yola çıkarak yazacağı destanda kullanacağı yer ve zaman ögelerini, kahramanları ve kurgulayacağı olay örgüsünü tahmin eder.",
+            "Yapma destanında kullanacağı kahramanların özelliklerini karşılaştırır.",
+            "Yazacağı destanda karşılaştırdığı kahramanları özelliklerine göre sınıflandırır.",
+            "Yapma destanında kullanacağı yer ve zaman ögelerini, kahramanları, kurgulayacağı olay örgüsünü yeniden ifade eder.",
+            "Yapma destanın özelliklerine uygun yazarak tepki verir.",
+            "Yazdığı destanın içeriğine uygun görselle anlam oluşturur.",
+            "İçeriğe uygun oluşturduğu yapma destanı sunar."
+          ]
+        }
+      ]
+    }
+  ]
+}

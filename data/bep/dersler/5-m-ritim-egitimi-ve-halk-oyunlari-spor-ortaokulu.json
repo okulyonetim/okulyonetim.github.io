@@ -1,0 +1,84 @@
+{
+  "ders": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "YAŞAMIN VE SPORUN RİTMİ",
+      "a": [
+        {
+          "k": "RİHO.5.1.1",
+          "m": "Vücudundaki ve günlük yaşamdaki ritimleri belirleyebilme",
+          "s": [
+            "Vücudundaki ve günlük yaşamdaki ritimleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RİHO.5.1.2",
+          "m": "Dinlediği müzik ve ritimlerin özelliklerini karşılaştırabilme",
+          "s": [
+            "Dinlediği müzik ve ritimlerin özelliklerini belirler.",
+            "Dinlediği müzik ve ritimlerin benzer özelliklerini listeler.",
+            "Dinlediği müzik ve ritimlerin farklı özelliklerini listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RİTMİ HİSSET, HAREKETE BAŞLA",
+      "a": [
+        {
+          "k": "RİHO.5.2.1",
+          "m": "Bedenini ve nesneleri kullanarak ritmik hareket edebilme",
+          "s": [
+            "Bedenini ve nesneleri kullanarak ritme uygun hareket edebilmeyi algılar.",
+            "Bedenini ve nesneleri kullanarak ritme uygun hareket eder.",
+            "Bedenini ve nesneleri kullanarak ritmik hareket becerileri sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.5.2.2",
+          "m": "Hareket becerileri ile ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla yürüme/koşma/sıçrama vb. hareketlerinin doğru formunu algılar.",
+            "Ritmik çalışmalarda nesne kullanarak yürüme/koşma/sıçrama vb. hareket becerilerinde ritme uygun hareket eder.",
+            "Hareket becerileri içeren ritmik çalışmaları doğru formda sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.5.2.3",
+          "m": "Ritmik çalışmalarda eşle/grupla hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarda eşle/grupla yapılan hareket örüntülerindeki rollerini tanımlar.",
+            "Ritmik çalışmalarda eşle/grupla yapılan hareket örüntülerindeki rollerini yerine getirir.",
+            "Ritmik çalışmalarda eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BASİT ÖLÇÜLÜ RİTİM EĞİTİMİ VE HALK OYUNLARIMIZ",
+      "a": [
+        {
+          "k": "RİHO.5.3.1",
+          "m": "Basit ölçülü ritim kalıplarıyla ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla basit ölçülü ritim kalıplarını algılar.",
+            "Basit ölçülü ritim kalıplarıyla yapılan temel halk oyunları adımlama çalışmalarında ritme uygun hareket eder.",
+            "Basit ölçülü ritim kalıpları ve müzik eşliğinde seçilen halk oyunlarını sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.5.3.2",
+          "m": "Basit ölçülü ritim kalıplarıyla yapılan halk oyunları çalışmalarında koreografiye uygun eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen halk oyunlarına özgü hazırlanan koreografide eşle/grupla hareket ederken rollerini tanımlar. b Seçilen halk oyunlarına özgü hazırlanan koreografi çalışmalarında eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyunlarına özgü hazırlanan koreografinin sergilenmesinde eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

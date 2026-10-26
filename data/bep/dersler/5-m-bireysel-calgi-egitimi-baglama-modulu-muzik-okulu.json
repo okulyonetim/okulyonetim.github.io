@@ -1,0 +1,52 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMANIN TARİHÎ GELİŞİMİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.5.1.1",
+          "m": "Bağlamanın tarihsel gelişimini yorumlayabilme",
+          "s": [
+            "Bağlamanın tarihsel gelişimini inceler.",
+            "Bağlamanın tarihsel gelişimini bağlamdan kopmadan dönüştürür.",
+            "Bağlamanın tarihsel gelişimini nesnel, doğru anlamı değiştirmeyecek bir şekilde yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA SÜSLEME TEKNİĞİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.5.2.1",
+          "m": "Bağlamada süsleme tekniğini çalabilme",
+          "s": [
+            "Bağlamadaki süsleme tekniğini çözümler.",
+            "Bağlama ile süsleme tekniğini çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile süsleme tekniğini çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile süsleme tekniğinin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA NİHAVENT MAKAMINI ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.5.3.1",
+          "m": "Bağlamada nihavent makamını çalabilme",
+          "s": [
+            "Bağlamada nihavent makamını çözümler.",
+            "Bağlama ile nihavent makamını çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile nihavent makamını çalmada çalgıya özgü teknikleri kullanır.",
+            "Bağlama ile nihavent makamının müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

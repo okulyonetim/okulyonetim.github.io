@@ -1,0 +1,77 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "5. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TOPLU İCRA (DÖRTLÜ GRUP)",
+      "a": [
+        {
+          "k": "ÇT.5.1.1",
+          "m": "Dörtlü grup eserleri dinleyebilme",
+          "s": [
+            "Dinlediği dörtlü eserlerin müziksel bileşenlerini fark eder.",
+            "Dinlediği dörtlü eserlerin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği dörtlü eserlerin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "ÇT.5.1.2",
+          "m": "Dörtlü şarkılar çalabilme",
+          "s": [
+            "Dörtlü şarkılarda çalacağı eseri çözümler.",
+            "Dörtlü şarkılar çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Dörtlü şarkılar çalarken çalgıya özgü teknikleri kullanır.",
+            "Dörtlü şarkılar çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜÇÜK USULLERLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "ÇT.5.2.1",
+          "m": "Tek sesli küçük usullerdeki eserleri toplu çalabilme",
+          "s": [
+            "Küçük usullerdeki eserleri toplu eseri çözümler.",
+            "Küçük usullerdeki eserleri toplu çalmada çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Küçük usullerdeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Küçük usullerdeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGÂH MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.5.3.1",
+          "m": "Çargâh makam dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Çargâh makamın dizisindeki toplu çalınacak eserleri çözümler.",
+            "Çargâh makamındaki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Çargâh makamındaki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Çargâh makamındaki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BUSELİK MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.5.4.1",
+          "m": "Buselik makam dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Buselik makam dizisindeki toplu çalınacak eseri çözümler.",
+            "Buselik makam dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Buselik makam dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Buselik makam dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}
