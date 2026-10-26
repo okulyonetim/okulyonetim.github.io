@@ -1,0 +1,81 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MÜZİĞİN TANIMI",
+      "a": [
+        {
+          "k": "TMT.1.1.1",
+          "m": "Müziği tanımlayabilme",
+          "s": [
+            "Müziği tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TMT.1.1.2",
+          "m": "Müzikle ilgili materyalleri tanımlayabilme",
+          "s": [
+            "Müzikle ilgili materyalleri tanımlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK TERİMLERİ",
+      "a": [
+        {
+          "k": "TMT.1.2.1",
+          "m": "Porteyi tanıyabilme",
+          "s": [
+            "Porteyi tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TMT.1.2.2",
+          "m": "Müzikte anahtar kavramını tanıyabilme",
+          "s": [
+            "Müzikte anahtar kavramını tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "TMT.1.2.3",
+          "m": "Nota işaretlerini tanıyabilme",
+          "s": [
+            "Nota işaretlerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİKTE SES KAVRAMI",
+      "a": [
+        {
+          "k": "TMT.1.3.1",
+          "m": "Müzikal olan/olmayan sesleri işitebilme",
+          "s": [
+            "Müzikal olan/olmayan sesleri tanır.",
+            "Müzikal olan/olmayan sesleri işitsel olarak ayırt eder.",
+            "Müzikal olan/olmayan sesleri ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.1.3.2",
+          "m": "Ölçülü seslerin bileşenlerini dinleyebilme",
+          "s": [
+            "Müzikal seslerin bileşenlerini tanır.",
+            "Müzikal sesleri işitsel olarak ayırt eder.",
+            "Müzikal sesleri açıklar."
+          ]
+        }
+      ]
+    }
+  ]
+}

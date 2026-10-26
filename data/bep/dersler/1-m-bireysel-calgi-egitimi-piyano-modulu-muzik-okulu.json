@@ -1,0 +1,80 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "PYN.1.1.1",
+          "m": "Çalgıları Tanıyabilme",
+          "s": [
+            "Çalgıları Tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "PYN.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM (PİYANO)",
+      "a": [
+        {
+          "k": "PYN.1.3.1",
+          "m": "Piyanoyu tanıyabilme",
+          "s": [
+            "Piyanoyu tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PYN.1.3.2",
+          "m": "Piyanonun bölümlerini sınıflandırabilme",
+          "s": [
+            "Piyano çalgısının bölümlerini belirler.",
+            "Piyano çalgısının bölümlerini ayırır.",
+            "Piyano çalgısının bölümlerini tasnif eder.",
+            "Piyano çalgısının bölümlerini isimlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TEMEL DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "PYN.1.4.1",
+          "m": "Piyanoda doğru duruş ve oturuş biçimini uygulayabilme",
+          "s": [
+            "Piyanoda doğru duruş ve oturuş biçimini uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PYN.1.4.2",
+          "m": "Siyah tuşları ikili ve üçlü şekilde sınıflandırabilme",
+          "s": [
+            "Piyanoda ikili ve üçlü siyah tuşları belirler.",
+            "Piyanoda ikili ve üçlü siyah tuşları ayırır.",
+            "Piyanoda ikili ve üçlü siyah tuşları tasnif eder.",
+            "Piyanoda ikili ve üçlü siyah tuşları isimlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

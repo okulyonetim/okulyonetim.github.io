@@ -1,0 +1,138 @@
+{
+  "ders": "Beden Eğitimi ve Oyun",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAREKET EDİYORUM",
+      "a": [
+        {
+          "k": "BEO.1.1.1",
+          "m": "Oyunlarda hareket kavramlarını uygulayabilme",
+          "s": [
+            "Beden farkındalığı, alan farkındalığı, efor ve hareket ilişkileri kavramlarını ayırt eder.",
+            "Hareket ile beden farkındalığı, alan farkındalığı, efor ve hareket ilişkileri kavramları arasında bağ kurar.",
+            "Beden farkındalığı, alan farkındalığı, efor ve hareket ilişkileri temel kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BEO.1.1.2",
+          "m": "Oyunlar sırasında güvenli ortam oluşturabilme",
+          "s": [
+            "Oyunlar sırasında ortaya çıkabilecek riskleri tanımlar.",
+            "Oyunlar sırasında ortaya çıkabilecek risklere ilişkin önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "BEO.1.1.3",
+          "m": "Temel hareket becerilerini açıklayabilme",
+          "s": [
+            "Temel hareket becerilerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.1.1.4",
+          "m": "Temel hareket becerilerini sergileyebilme",
+          "s": [
+            "Yer değiştirme, nesne kontrolü ve denge becerilerini algılar.",
+            "Yer değiştirme, nesne kontrolü ve denge becerilerinin basamaklarını gösterir.",
+            "Yer değiştirme, nesne kontrolü ve denge becerilerini farklı durumlarda uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "OYUNU KURALINA GÖRE OYNUYORUM",
+      "a": [
+        {
+          "k": "BEO.1.2.1",
+          "m": "Oyunlarda temel hareket becerilerini sergileyebilme",
+          "s": [
+            "Oyunlarda yer değiştirme, nesne kontrolü ve denge becerilerini algılar.",
+            "Oyunlarda yer değiştirme, nesne kontrolü ve denge becerilerinin basamaklarını gösterir.",
+            "Oyunlarda yer değiştirme, nesne kontrolü ve denge becerilerini farklı durumlarda uygular."
+          ]
+        },
+        {
+          "k": "BEO.1.2.2",
+          "m": "Oyun kurallarını uygulayabilme",
+          "s": [
+            "Oyun kurallarını uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.1.2.3",
+          "m": "Oyunlarda taktik ve stratejiyi kullanabilme",
+          "s": [
+            "Oyunlarda taktik ve stratejiyi kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.1.2.4",
+          "m": "Oyunlarda adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "Adil oyun anlayışını açıklar.",
+            "Oyunlarda adil oyun anlayışına uygun hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RİTİMLE HAREKET EDİYORUM",
+      "a": [
+        {
+          "k": "BEO.1.3.1",
+          "m": "Ritmik hareket edebilme",
+          "s": [
+            "Temel hareket becerilerini kullanarak verilen ritmi algılar.",
+            "Temel hareket becerilerini kullanarak ritme uygun hareket eder.",
+            "Temel hareket becerilerini kullanarak ritmik hareket becerilerini sergiler."
+          ]
+        },
+        {
+          "k": "BEO.1.3.2",
+          "m": "Eşle veya grupla hareket edebilme",
+          "s": [
+            "Eşle veya grupla hareket ederken rolleri tanımlar.",
+            "Eşle veya grupla hareket ederken rolleri yerine getirir.",
+            "Eşle veya grupla uyumlu hareket eder."
+          ]
+        },
+        {
+          "k": "BEO.1.3.3",
+          "m": "Takım veya grup liderliği sergileyebilme",
+          "s": [
+            "Takım veya grup liderliği özelliklerini tanır.",
+            "Takım veya grup liderliği özelliklerini gösterir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FİZİKSEL AKTİVİTEYE KATILIYORUM VE SAĞLIKLI BÜYÜYORUM",
+      "a": [
+        {
+          "k": "BEO.1.4.1",
+          "m": "Fiziksel aktivite ve sağlık ilişkisini fark edebilme",
+          "s": [
+            "Fiziksel aktivite ve sağlık ilişkisini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEO.1.4.2",
+          "m": "Okul içi fiziksel aktiviteye katılabilme",
+          "s": [
+            "Fiziksel aktivite düzeyini fark eder.",
+            "Fiziksel aktivite düzeyini geliştirmek için plan yapar.",
+            "Fiziksel aktiviteye ilişkin planı uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

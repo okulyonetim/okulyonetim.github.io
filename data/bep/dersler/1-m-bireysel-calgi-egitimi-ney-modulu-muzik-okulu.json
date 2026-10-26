@@ -1,0 +1,103 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "NEY.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "NEY.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM (NEY)",
+      "a": [
+        {
+          "k": "NEY.1.3.1",
+          "m": "Ney sesini dinleyebilme",
+          "s": [
+            "Ney sesini fark eder.",
+            "Ney sesini diğer çalgıların sesinden ayırt eder.",
+            "Ney sesini açıklar."
+          ]
+        },
+        {
+          "k": "NEY.1.3.2",
+          "m": "Neyi tanıyabilme",
+          "s": [
+            "Neyi tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.1.3.3",
+          "m": "Farklı boyutlarda yapılan neyleri tanıyabilme",
+          "s": [
+            "Farklı boyutlarda yapılan neyleri tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "NEY.1.3.4",
+          "m": "Farklı materyallerden yapılan neyleri çözümleyebilme",
+          "s": [
+            "Farklı materyallerden yapılan neye ilişkin özellikleri belirler.",
+            "Farklı materyallerden yapılan neylerin özellikleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "NEY.1.3.5",
+          "m": "Neyin tarihini ve gelişim sürecini yorumlayabilme",
+          "s": [
+            "Neyin tarihsel dönemlerdeki görsellerini inceler.",
+            "Neyin tarihsel dönemlerdeki görsellerini yorumlar.",
+            "Neyin tarihsel dönemlerdeki görsellerin içeriğini yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK DİNLİYORUM",
+      "a": [
+        {
+          "k": "NEY.1.4.1",
+          "m": "Müzik dinleyebilme",
+          "s": [
+            "Dinlediği eserin müziksel bileşenlerini tanır.",
+            "Dinlediği eserin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği eserin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "NEY.1.4.2",
+          "m": "Dinlediği Türk müziği eserleri içerisinde nefesli çalgıları seçebilme",
+          "s": [
+            "Dinlediği Türk müziği eserleri içerisinde nefesli çalgıları seçer."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MÜZİĞİ KEŞFEDİYORUM",
+      "a": [
+        {
+          "k": "MİOY.1.1.1",
+          "m": "Müziği tanıyabilme",
+          "s": [
+            "Müziği tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK YAZI VE TERİMLERİNİ ÖĞRENİYORUM-1",
+      "a": [
+        {
+          "k": "MİOY.1.2.1",
+          "m": "Müzik terimlerini tanıyabilme",
+          "s": [
+            "Müzik terimlerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MİOY.1.2.2",
+          "m": "Müzik terimlerini sentezleyebilme",
+          "s": [
+            "Verilen müzik ögelerini belirler.",
+            "Müzik ögeleri arasında ilişki kurar.",
+            "Müzik ögelerini birleştirerek bir bütün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİRLİK VE İKİLİK NOTALAR",
+      "a": [
+        {
+          "k": "MİOY.1.3.1",
+          "m": "Birlik ve ikilik notaları işitebilme",
+          "s": [
+            "Birlik ve ikilik notaları tanır.",
+            "Birlik ve ikilik notaları ayırt eder.",
+            "Birlik ve ikilik notaları ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.1.3.2",
+          "m": "Birlik ve ikilik notaları okuyabilme",
+          "s": [
+            "Birlik ve ikilik notaları tanır.",
+            "Birlik ve ikilik notaları ayırt eder.",
+            "Birlik ve ikilik notaları uygular."
+          ]
+        },
+        {
+          "k": "MİOY.1.3.3",
+          "m": "Birlik ve ikilik notaları yazabilme",
+          "s": [
+            "Birlik ve ikilik notaları kavramını tanır.",
+            "Birlik ve ikilik notaları ayırt eder.",
+            "Birlik ve ikilik notaları uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ARALIKLARI ÖĞRENİYORUM-1",
+      "a": [
+        {
+          "k": "MİOY.1.4.1",
+          "m": "Tam ses, yarım sesi yazabilme",
+          "s": [
+            "Tam - yarım sesi tanır.",
+            "Tam - yarım sesi ayırt eder.",
+            "Tam - yarım sesi uygular."
+          ]
+        },
+        {
+          "k": "MİOY.1.4.2",
+          "m": "Küçük ve büyük ikili aralıkları işitebilme",
+          "s": [
+            "Küçük ve büyük ikili aralık bileşenlerini tanır.",
+            "Küçük ve büyük ikili aralık bileşenlerini işitsel olarak ayırt eder.",
+            "Küçük ve büyük ikili aralık bileşenlerini ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.1.4.3",
+          "m": "Küçük ikili ve büyük aralıkları okuyabilme",
+          "s": [
+            "Küçük ve büyük ikili aralık kavramını tanır.",
+            "Küçük ve büyük ikili aralık kavramını ayırt eder.",
+            "Küçük ve büyük ikili aralık kavramını uygular."
+          ]
+        },
+        {
+          "k": "MİOY.1.4.4",
+          "m": "Küçük ikili ve büyük aralıkları yazabilme",
+          "s": [
+            "Küçük ve büyük ikili aralıkları tanır.",
+            "Küçük ve büyük ikili aralıkları ayırt eder.",
+            "Küçük ve büyük ikili aralıkları uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİ USULLERİNİ ÖĞRENİYORUM-1",
+      "a": [
+        {
+          "k": "MİOY.1.5.1",
+          "m": "Türk müziği usullerini dinleyebilme",
+          "s": [
+            "Türk müziği usullerini tanır.",
+            "Türk müziği usullerini ayırt eder.",
+            "Türk müziği usullerini açıklar."
+          ]
+        },
+        {
+          "k": "MİOY.1.5.2",
+          "m": "Dinlediği eserlerin usullerine uygun hareket sergileyebilme",
+          "s": [
+            "Dinlediği eserlerin usul yapısına uygun hareketler belirler.",
+            "Dinlediği eserlerin usul yapısına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SES KAYNAKLARI",
+      "a": [
+        {
+          "k": "BSE.1.1.1",
+          "m": "İşittiği tüm seslerin bir kaynağı olduğunu fark edebilme",
+          "s": [
+            "İşittiği tüm seslerin bir kaynağı olduğunu fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.1.1.2",
+          "m": "Çevresinde duyduğu sesleri sınıflandırabilme",
+          "s": [
+            "Çevresinde duyduğu seslere ilişkin değişkenleri belirler.",
+            "Çevresinde duyduğu sesleri ayırır.",
+            "Çevresinde duyduğu sesleri kaynağına göre tasnif eder.",
+            "Çevresinde duyduğu sesleri kaynağına göre isimlendirir."
+          ]
+        },
+        {
+          "k": "BSE.1.1.3",
+          "m": "Doğadan, çevreden ve nesnelerden duyduğu sesleri taklit edebilme",
+          "s": [
+            "Doğadan, çevreden ve nesnelerden duyduğu sesleri taklit eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.1.1.4",
+          "m": "Çevresinde duyduğu düzenli, düzensiz, uyumlu ve uyumsuz sesleri çözümleyebilme",
+          "s": [
+            "Çevresinde duyduğu düzenli, düzensiz, uyumlu ve uyumsuz sesleri belirler.",
+            "Çevresinde duyduğu düzenli, düzensiz, uyumlu ve uyumsuz sesler arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "BSE.1.1.5",
+          "m": "Kendi sesinin özelliklerini tanıyabilme",
+          "s": [
+            "Kendi sesinin özelliklerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.1.2.1",
+          "m": "Konuşmada ve şarkı söylemede solunumun önemini açıklayabilme",
+          "s": [
+            "Konuşmada ve şarkı söylemede solunumun önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.1.2.2",
+          "m": "Düzeyine uygun eserleri seslendirebilme",
+          "s": [
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirirken uygun söyleme teknikleri kullanır.",
+            "Anatomik yapısına ve ses özelliklerine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.1.2.3",
+          "m": "Yalın ve kısa tekerleme çalışmaları yapabilme",
+          "s": [
+            "Yalın ve kısa tekerleme çalışmaları yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.1.3.1",
+          "m": "Millî ve manevi değerlerle ilgili eserleri seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.1.3.2",
+          "m": "Atatürk konulu okul şarkılarını seslendirebilme",
+          "s": [
+            "Atatürk konulu okul şarkılarını seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk konulu okul şarkılarını seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk konulu okul şarkılarını seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.1.3.3",
+          "m": "Belirli gün ve haftaların anlamına uygun eserler seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.1.3.4",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

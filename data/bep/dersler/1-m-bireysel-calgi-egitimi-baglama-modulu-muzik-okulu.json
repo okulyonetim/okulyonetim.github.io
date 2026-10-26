@@ -1,0 +1,81 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "BAĞL.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM (BAĞLAMA)",
+      "a": [
+        {
+          "k": "BAĞL.1.3.1",
+          "m": "Bağlamayı oluşturan bölümleri ve bağlamanın yapısını sınıflandırabilme",
+          "s": [
+            "Bağlamanın bölümlerini ve yapısını belirler.",
+            "Bağlamanın bölümlerini ve yapısını ayırır.",
+            "Bağlamanın genel yapısını tasnif eder.",
+            "Bağlamanın bölümlerini ve yapısını adlandırır."
+          ]
+        },
+        {
+          "k": "BAĞL.1.3.2",
+          "m": "Bağlamanın tel ve perde ilişkisi ile ilgili gözleme dayalı tahmin yapabilme",
+          "s": [
+            "Bağlamadaki tel gruplarını ve perdeleri birbirleriyle ilişkilendirir.",
+            "Bağlamadaki perdelerin tel gruplarına göre basılarak üretildiği ses ile ilgili çıkarımlar yapar.",
+            "Bağlamadaki perdelerin ses oluşumları ile ilgili yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA TEMEL DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "BAĞL.1.4.1",
+          "m": "Bağlamada sağ ve sol elin tutuşunu sınıflandırabilme",
+          "s": [
+            "Bağlamada sağ ve sol elin tutuşuna ilişkin ölçütler belirler.",
+            "Bağlamada sağ ve sol elin tutuşuna ilişkin verileri ayırır.",
+            "Bağlamada sağ ve sol elin tutuş biçimini tasnif eder.",
+            "Bağlamada sağ ve sol elin tutuş biçimini adlandırır."
+          ]
+        },
+        {
+          "k": "BAĞL.1.4.2",
+          "m": "Bağlamada boş teller üzerinde sağ bilek kullanabilme",
+          "s": [
+            "Bağlamada boş teller üzerinde sağ bilek kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

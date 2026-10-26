@@ -1,0 +1,92 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "GTR.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "GTR.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM (GİTAR)",
+      "a": [
+        {
+          "k": "GTR.1.3.1",
+          "m": "Gitarın yapısı ve bölümlerini tanıyabilme",
+          "s": [
+            "Gitarın yapısı ve bölümlerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.1.3.2",
+          "m": "Farklı boyutlardaki gitarları tanıyabilme",
+          "s": [
+            "Farklı boyutlardaki gitarları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA TEMEL DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "GTR.1.4.1",
+          "m": "Gitarda ellerini doğru konumlandırabilme",
+          "s": [
+            "Gitarda ellerini doğru konumlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.1.4.2",
+          "m": "Gitarda sağ ve sol el parmakları için kullanılan harfleri ve numaraları belirleyebilme",
+          "s": [
+            "Gitarda sağ ve sol el parmakları için kullanılan harfleri ve numaraları belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.1.4.3",
+          "m": "Gitarın akordunu yapabilme",
+          "s": [
+            "Gitarın akordunu yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GTR.1.4.4",
+          "m": "Gitarın sap kısmından gövdeye doğru gidildikçe seslerin inceldiğini fark edebilme",
+          "s": [
+            "Gitarın sap kısmından gövdeye doğru gidildikçe seslerin inceldiğini fark eder."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

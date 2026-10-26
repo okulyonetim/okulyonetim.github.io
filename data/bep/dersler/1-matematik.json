@@ -1,0 +1,212 @@
+{
+  "ders": "Matematik",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "NESNELERİN GEOMETRİSİ (1)",
+      "a": [
+        {
+          "k": "MAT.1.3.1",
+          "m": "Hedefe ulaşmak için mesafeleri ve yönleri içeren yönergeleri çözümleyebilme",
+          "s": [
+            "Yönergede yer alan mesafe ve yönleri içeren kavramları belirler.",
+            "Yönergeleri kullanarak başlangıç noktası ve hedef arasında ilişki kurar."
+          ]
+        },
+        {
+          "k": "MAT.1.3.2",
+          "m": "Nesnelerin eşliğini değerlendirebilme",
+          "s": [
+            "Nesnelerin eşliği için bir ölçüt belirler.",
+            "Ölçüte uygun bilgileri kullanarak ölçme yapar.",
+            "Yapılan ölçmeye dayalı olarak elde ettiği sonuçları ölçüt ile karşılaştırır.",
+            "Karşılaştırmalarına ilişkin olarak yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (1)",
+      "a": [
+        {
+          "k": "MAT.1.1.1",
+          "m": "Rakamları ve 20’ye kadar olan sayıları (20 dâhil), niceliklerin büyüklüklerini temsil etmek için kullanabilme",
+          "s": [
+            "Niceliklerin büyüklüklerinin farklı temsillerini tanır.",
+            "Karşılaştığı niceliklerin büyüklüklerini, farklı temsilleri bağlamında belirler.",
+            "Karşılaştığı niceliklerin büyüklüklerini rakam ve sayılarla okur ve yazar."
+          ]
+        },
+        {
+          "k": "AT.1.1.2",
+          "m": "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunu sayarken parçalar arasında ilişkileri çözümleyebilme",
+          "s": [
+            "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunun parçalarını belirler.",
+            "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunu sayarken parçalar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.1.1.2",
+          "m": "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunu sayarken parçalar arasında ilişkileri çözümleyebilme",
+          "s": [
+            "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunun parçalarını belirler.",
+            "Ögeleri dağınık veya düzenli bir şekilde bulunan bir nesne grubunu sayarken parçalar arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.1.1.3",
+          "m": "Nesnelerin sıra sayısını gösterebilme",
+          "s": [
+            "Nesnelerin sıra sayısını gösterir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MAT.1.1.4",
+          "m": "İki niceliğin büyüklüğünü “çok”, “daha çok”, “az”, “daha az” veya “eşit” terimle- riyle karşılaştırabilme",
+          "s": [
+            "İki niceliğin büyüklüğünü “çok”, “daha çok”, “az”, “daha az” veya “eşit” terimleriyle ifade eder.",
+            "İfade edilen büyüklüklere ilişkin benzerlikleri listeler.",
+            "İfade edilen büyüklüklere ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "MAT.1.1.5",
+          "m": "100’e kadar ileriye ve 20’den geriye doğru ritmik sayabilme",
+          "s": [
+            "100’e kadar ileriye ve 20’den geriye doğru ritmik sayar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MAT.1.1.6",
+          "m": "Artan veya azalan sayı ve şekil örüntülerini çözümleyebilme",
+          "s": [
+            "Sayı ve şekil örüntülerinin ardışık ögelerini belirler.",
+            "Sayı ve şekil örüntülerinin ardışık ögeleri arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "MAT.1.1.7",
+          "m": "Verilen bir çokluktaki ilişkilerden yararlanarak 20’ye kadar (20 dâhil) olan nesnelerin sayısını tahmin edebilme",
+          "s": [
+            "Verilen bir çokluktaki ilişkileri gözlem ve deneyimleri ile ilişkilendirir.",
+            "Bir çokluğun büyüklüğünü stratejiye dayanarak tahmin eder.",
+            "Tahmin edilen sonuç ile sayma sonucunu karşılaştırarak yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (2)",
+      "a": [
+        {
+          "k": "MAT.1.1.8",
+          "m": "Standart olmayan uygun ölçme araçları ile nesnelerin uzunluğunu ve tartacağı kütlenin ölçüm sonuçlarını tahmin edebilme",
+          "s": [
+            "Ölçeceği uzunluğa ve kütleye uygun standart olmayan ölçme aracını belirler.",
+            "Ölçeceği uzunluğun ve tartacağı kütlenin ölçüm sonuçlarını belirlenen standart olmayan ölçü birimi cinsinden tahmin eder.",
+            "Tahmininin doğruluğuna ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE",
+      "a": [
+        {
+          "k": "MAT.1.2.1",
+          "m": "Günlük yaşamın içerdiği toplama ve çıkarma işlemlerini çözümleyebilme",
+          "s": [
+            "Günlük yaşam durumunun toplama ve çıkarma işlemlerinden hangisini gerektirdiğini fark eder.",
+            "Günlük yaşam durumuna karşılık gelen toplama ve çıkarma işlemlerini birbiri ile ilişkilendirir."
+          ]
+        },
+        {
+          "k": "MAT.1.2.2",
+          "m": "Toplama ve çıkarma işlemlerinin sonuçlarını tahminde bulunarak ve zihinden işlem yaparak muhakeme edebilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerine ilişkin ögeleri belirler.",
+            "Toplama ve çıkarma işlemlerine ilişkin ögeler arasındaki ilişkileri belirler.",
+            "Toplama ve çıkarma işlemlerine yönelik tahmin ve zihinden işlem sonuçları arasında ilişki kurar.",
+            "Tahmin ve zihinden işlem sonuçlarının tutarlılığını ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.1.2.3",
+          "m": "Eşit işaretinin anlamını toplama ve çıkarma işlemi bağlamında yorumlayabilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerinde eşit işaretinin kullanımını inceler.",
+            "Eşit işaretinin anlamını kullanarak bir toplama ya da çıkarma işlemini dönüştürür.",
+            "Dönüştürdüğü toplama ve çıkarma işlemlerini kendi cümleleriyle ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.1.2.4",
+          "m": "Toplama ve çıkarma işlemlerinin ilişkisini yorumlayabilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerinin ilişkisini inceler.",
+            "Toplama ve çıkarma işlemlerini tersine dönüştürür.",
+            "Toplama ve çıkarma işlemlerinin ilişkisini yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE SAYILAR VE NİCELİKLER (3)",
+      "a": [
+        {
+          "k": "MAT.1.2.4",
+          "m": "Toplama ve çıkarma işlemlerinin ilişkisini yorumlayabilme",
+          "s": [
+            "Toplama ve çıkarma işlemlerinin ilişkisini inceler.",
+            "Toplama ve çıkarma işlemlerini tersine dönüştürür.",
+            "Toplama ve çıkarma işlemlerinin ilişkisini yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.1.1.9",
+          "m": "Paraların (1 TL, 5 TL, 10 TL, 20 TL, 50 TL, 100 TL ve 200 TL) temsil ettiği büyüklükleri tanıyabilme",
+          "s": [
+            "Paraların (1 TL, 5 TL, 10 TL, 20 TL, 50 TL, 100 TL ve 200 TL) temsil ettiği büyüklükleri tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (3) NESNELERİN GEOMETRİSİ (2)",
+      "a": [
+        {
+          "k": "MAT.1.1.9",
+          "m": "Paraların (1 TL, 5 TL, 10 TL, 20 TL, 50 TL, 100 TL ve 200 TL) temsil ettiği büyüklükleri tanıyabilme",
+          "s": [
+            "Paraların (1 TL, 5 TL, 10 TL, 20 TL, 50 TL, 100 TL ve 200 TL) temsil ettiği büyüklükleri tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "VERİYE DAYALI ARAŞTIRMA",
+      "a": [
+        {
+          "k": "MAT.1.4.1",
+          "m": "Kategorik veriye dayalı temel veri grubu ile çalışabilme ve veriye dayalı karar verebilme",
+          "s": [
+            "Kategorik veriye dayalı istatiksel araştırma gerektiren günlük yaşam durumu belirler.",
+            "Kategorik veriye dayalı betimleme gerektirebilecek araştırma soruları oluşturur.",
+            "Kategorik verileri toplamak için plan yapar.",
+            "Kategorik verileri toplar ve analize hazırlar.",
+            "Toplanan verileri analiz etmek için görselleştirme araçlarından çetele, sıklık tablosu ve nesne grafiğini seçer.",
+            "Seçtiği araçlarla verileri görselleştirerek analiz eder.",
+            "Araştırma sonuçlarını yorumlar.",
+            "Araştırma sonuçlarını araştırma sorularına göre değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

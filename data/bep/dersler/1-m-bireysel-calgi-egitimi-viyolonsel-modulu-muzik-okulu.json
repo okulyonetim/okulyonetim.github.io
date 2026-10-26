@@ -1,0 +1,89 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "VLS.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "VLS.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA ÇALGIMI TANIYORUM (VİYOLONSEL)",
+      "a": [
+        {
+          "k": "VLS.1.3.1",
+          "m": "Dinlediği Türk müziği eserleri içerisinde yaylı çalgıları seçebilme",
+          "s": [
+            "Dinlediği Türk müziği eserleri içerisinde yaylı çalgıları seçer."
+          ],
+          "t": 1
+        },
+        {
+          "k": "VLS.1.3.2",
+          "m": "Viyolonsel sesini dinleyebilme",
+          "s": [
+            "Viyolonselin müziksel bileşenlerini tanır.",
+            "Viyolonselin müziksel bileşenlerini ayırt eder.",
+            "Viyolonselin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "VLS.1.3.3",
+          "m": "Viyolonselin ana parçalarını sınıflandırabilme",
+          "s": [
+            "Viyolonselin bölümlerine ilişkin ölçütleri belirler.",
+            "Viyolonselin bölümlerini işlevlerine göre ayırır.",
+            "Viyolonselin ana bölümlerini sınıflandırır.",
+            "Her bir bölümü isimlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA VİYOLONSELDE TEMEL DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "VLS.1.4.1",
+          "m": "Viyolonselin oturuş ve tutuş tekniğini gözlemleyebilme",
+          "s": [
+            "Viyolonselin oturuş ve tutuşunu gözlemlemek için ölçüt belirler.",
+            "Belirledikleri ölçütlerle viyolonselin oturuş ve tutuşuna ilişkin veri toplar.",
+            "Viyolonselin oturuş ve tutuşuna ilişkin verileri kaydeder."
+          ]
+        },
+        {
+          "k": "VLS.1.4.2",
+          "m": "Sol elin viyolonselde konumlandırılmasını gözlemleyebilme",
+          "s": [
+            "Sol elin konumlandırılmasını gözlemlemek için ölçüt belirler.",
+            "Belirledikleri ölçütlerle sol elin pozisyonuna ilişkin veri toplar.",
+            "Sol elin konumlandırılmasına ilişkin verileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

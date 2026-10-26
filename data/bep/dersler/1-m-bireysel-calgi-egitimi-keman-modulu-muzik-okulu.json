@@ -1,0 +1,86 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "KMN.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "KMN.1.2.1",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM",
+      "a": [
+        {
+          "k": "KMN.1.3.1",
+          "m": "Kemanı tanıyabilme",
+          "s": [
+            "Kemanı tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.1.3.2",
+          "m": "Kemanın özelliklerini tanıyabilme",
+          "s": [
+            "Kemanın özelliklerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.1.3.3",
+          "m": "Çalgının tarihi hakkında bilgi toplayabilme",
+          "s": [
+            "Tarihsel gelişimiyle ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak ilgili bilgileri toplar.",
+            "Çalgının tarihiyle ilgili bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIDA TEMEL DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "KMN.1.4.1",
+          "m": "Kemanın bakımını yapabilme",
+          "s": [
+            "Kemanın bakımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.1.4.2",
+          "m": "Yayın bakımını yapabilme",
+          "s": [
+            "Yayın bakımını yapar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

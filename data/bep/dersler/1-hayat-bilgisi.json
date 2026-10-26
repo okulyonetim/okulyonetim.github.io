@@ -1,0 +1,226 @@
+{
+  "ders": "Hayat Bilgisi",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "BEN VE OKULUM",
+      "a": [
+        {
+          "k": "HB.1.1.1",
+          "m": "Öğretmeni ve arkadaşlarıyla tanışabilme",
+          "s": [
+            "Öğretmeni ve arkadaşları kendilerini tanıtırken onları etkin bir şekilde dinler.",
+            "Öğretmenine ve arkadaşlarına kendisini tanıtırken sözlü ve sözsüz olarak etkileşim kurar."
+          ]
+        },
+        {
+          "k": "HB.1.1.2",
+          "m": "Okul ortamını tanıyabilme",
+          "s": [
+            "Kendisi için yeni olan sınıfını, okulunun bölümlerini ve okul çalışanlarını fark eder.",
+            "Okul ortamına ve çalışanlarına ilişkin gözlemlerini ifade eder."
+          ]
+        },
+        {
+          "k": "HB.1.1.3",
+          "m": "Sınıf ve okul ortamında kurallara uygun davranabilme",
+          "s": [
+            "Sınıf ve okul ortamındaki kuralları fark eder.",
+            "Sınıf ve okul ortamında kurallara uygun davranışlar sergiler."
+          ]
+        },
+        {
+          "k": "HB.1.1.4",
+          "m": "Fiziksel özelliklerini ve temel duygularını açıklayabilme",
+          "s": [
+            "Fiziksel özelliklerini ve temel duygularını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SAĞLIĞIM VE GÜVENLİĞİM",
+      "a": [
+        {
+          "k": "HB.1.2.1",
+          "m": "Sağlıklı büyüme ve gelişme için yapması gerekenleri belirleyebilme",
+          "s": [
+            "Sağlıklı büyüme ve gelişme için yapması gerekenleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.2.2",
+          "m": "Kişisel alanının sınırlarını belirleyebilme",
+          "s": [
+            "Kişisel alanının sınırlarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.2.3",
+          "m": "Temel trafik kurallarına uygun davranabilme",
+          "s": [
+            "Temel trafik kurallarına uygun davranır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.2.4",
+          "m": "Acil durumlarda yapılması gerekenleri belirleyebilme",
+          "s": [
+            "Acil durumlarda yapılması gerekenleri belirler."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "AİLEM VE TOPLUM",
+      "a": [
+        {
+          "k": "HB.1.3.1",
+          "m": "Aile olmanın önemini fark edebilme",
+          "s": [
+            "Aile olmanın önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.3.2",
+          "m": "Aile yaşamında nezaket ve görgü kurallarına uygun davranabilme",
+          "s": [
+            "Aile yaşamında nezaket ve görgü kurallarına uygun davranır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.3.3",
+          "m": "Aile bireylerinin görev ve sorumluluklarını çözümleyebilme",
+          "s": [
+            "Aile içindeki görev ve sorumluluklarını belirler.",
+            "Aile bireylerinin görev ve sorumlulukları ilişkilendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAŞADIĞIM YER VE ÜLKEM",
+      "a": [
+        {
+          "k": "HB.1.4.1",
+          "m": "Yaşadığı yerin ve ülkemizin genel özelliklerini açıklayabilme",
+          "s": [
+            "Yaşadığı yerin ve ülkemizin genel özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.4.2",
+          "m": "Türk Bayrağı ve İstiklâl Marşı’nın önemini ifade edebilme",
+          "s": [
+            "Türk Bayrağı ve İstiklâl Marşı’nın önemini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.4.3",
+          "m": "Mustafa Kemal Atatürk’ün hayatıAyla ilgili bilgilerAi ifade edebilme",
+          "s": [
+            "Mustafa Kemal Atatürk’ün hayatıAyla ilgili bilgilerAi ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.4.4",
+          "m": "Millî gün ve bayramlarda yaşadığı duyguları ifade edebilme",
+          "s": [
+            "Millî gün ve bayramlarda yaşadığı duyguları ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.4.5",
+          "m": "Dinî gün ve bayramlarda yaşadığı duyguları ifade edebilme",
+          "s": [
+            "Dinî gün ve bayramlarda yaşadığı duyguları ifade eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "DOĞA VE ÇEVRE",
+      "a": [
+        {
+          "k": "HB.1.5.1",
+          "m": "Yakın çevresinde bulunan doğadaki varlıkları gözlemleyebilme",
+          "s": [
+            "Doğadaki varlıkları gözlemleme amacını belirler.",
+            "Doğadaki varlıklara ilişkin veri toplar.",
+            "Doğadaki varlıklara ilişkin topladığı verileri sınıflandırarak kaydeder."
+          ]
+        },
+        {
+          "k": "HB.1.5.2",
+          "m": "Modeller üzerinden gök cisimlerini karşılaştırabilme",
+          "s": [
+            "Modeller üzerinden gök cisimlerinin (Güneş, Dünya ve Ay) özelliklerini belirler.",
+            "Modeller üzerinden gök cisimlerinin (Güneş, Dünya ve Ay) benzerliklerini listeler.",
+            "Modeller üzerinden gök cisimlerinin (Güneş, Dünya ve Ay) farklılıklarını listeler."
+          ]
+        },
+        {
+          "k": "HB.1.5.3",
+          "m": "Afet türlerini tanıyabilme",
+          "s": [
+            "Afet türlerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "HB.1.5.4",
+          "m": "Geri dönüştürülebilen atıkları sınıflandırabilme",
+          "s": [
+            "Geri dönüştürülebilen atıkları belirler.",
+            "Geri dönüştürülebilen atıkları ayrıştırır.",
+            "Geri dönüştürülebilen atıkları tasnif eder.",
+            "Geri dönüştürülebilen atıkları etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİM, TEKNOLOJİ VE SANAT",
+      "a": [
+        {
+          "k": "HB.1.6.1",
+          "m": "Bilimle ilgili merak ettiklerini sorabilme",
+          "s": [
+            "Bilim ile ilgili merak ettiği konuları belirler.",
+            "Bilim ile ilgili merak ettiği konular hakkında sorular sorar."
+          ]
+        },
+        {
+          "k": "HB.1.6.2",
+          "m": "Teknoloji ile ilgili merak ettiklerini sorabilme",
+          "s": [
+            "Teknoloji ile ilgili merak ettiği konuları belirler.",
+            "Teknoloji ile merak ettiği konular hakkında sorular sorar."
+          ]
+        },
+        {
+          "k": "HB.1.6.3",
+          "m": "Sanatla ilgili merak ettiklerini sorabilme",
+          "s": [
+            "Sanat ile ilgili merak ettiği konuları belirler.",
+            "Sanat ile ilgili merak ettiği konular hakkında sorular sorar."
+          ]
+        }
+      ]
+    }
+  ]
+}

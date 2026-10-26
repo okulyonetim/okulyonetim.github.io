@@ -1,0 +1,134 @@
+{
+  "ders": "Görsel Sanatlar",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAYAT VE SANAT",
+      "a": [
+        {
+          "k": "GS.1.1.1",
+          "m": "Çevresindeki nesnelerin renklerini ve geometrik şekillerini algılayabilme",
+          "s": [
+            "Nesnelerin renklerini ve geometrik şekillerini gözlemler.",
+            "Renkler ve geometrik şekillerle benzerlik gösteren nesneleri karşılaştırır."
+          ]
+        },
+        {
+          "k": "GS.1.1.2",
+          "m": "Farklı renkler ve geometrik şekillerdeki doğal ve yapay malzemelerle kolaj yapabilme",
+          "s": [
+            "Farklı renkler ve şekillerdeki nesnelerle pano tasarlar.",
+            "Farklı renkler ve geometrik şekillerdeki doğal ve yapay malzemelerle kolaj oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATIN GÖRSEL DİLİ",
+      "a": [
+        {
+          "k": "GS.1.2.1",
+          "m": "Görsel işaret ve sembollerdeki mesajları okuyabilme",
+          "s": [
+            "Çevresindeki işaret ve sembollerin görsel mesajlarını algılar.",
+            "Çevresindeki işaret ve sembollerin görsel mesajlarını anlamlandırır."
+          ]
+        },
+        {
+          "k": "GS.1.2.2",
+          "m": "Renkleri, şekilleri ve sembolleri kullanarak çevreye ilişkin bilgilendirici levha yapabilme",
+          "s": [
+            "Renkler, şekiller ve sembollerden yararlanarak çevrenin ihtiyaçlarını karşılayan bilgilendirici levha tasarlar.",
+            "Renkler, şekiller ve sembolleri kullanarak bilgilendirici levha oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATÇILAR VE ESERLERİ",
+      "a": [
+        {
+          "k": "GS.1.3.1",
+          "m": "Çağdaş Türk resim sanatında peyzaj temalı eserleri inceleyebilme",
+          "s": [
+            "Peyzaj temalı eseri sanatsal açıdan betimler.",
+            "Peyzaj temalı eseri sanatsal açıdan çözümler.",
+            "Peyzaj temalı eseri sanatsal açıdan yorumlar.",
+            "Peyzaj temalı eser hakkında sanatsal yargıda bulunur."
+          ]
+        },
+        {
+          "k": "GS.1.3.2",
+          "m": "Renk ve şekil tekrarlarıyla doğa izlenimlerini yansıtan peyzaj yapabilme",
+          "s": [
+            "Renk ve şekil tekrarlarıyla doğa izlenimlerini yansıtan peyzaj tasarlar.",
+            "Renk ve şekil tekrarlarıyla doğa izlenimlerini yansıtan peyzaj oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇİZİM VE GÖRSEL İFADE",
+      "a": [
+        {
+          "k": "GS.1.4.1",
+          "m": "Temel çizgi türlerini kullanarak serbest çizim yapabilme",
+          "s": [
+            "Farklı çizgi türleriyle kompozisyon tasarlar.",
+            "Farklı çizgi türleriyle desen oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RENK VE ESTETİK",
+      "a": [
+        {
+          "k": "GS.1.5.1",
+          "m": "Büyük-küçük şekiller ve renklerle resim yapabilme",
+          "s": [
+            "Büyük-küçük şekiller ve renklerden oluşan kompozisyon tasarlar.",
+            "Şekiller ve renklerle uyumlu bir kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MİLLÎ DEĞERLER VE SANAT",
+      "a": [
+        {
+          "k": "GS.1.6.1",
+          "m": "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı'nın önemine ilişkin düşüncelerini yansıtan renkli resim yapabilme",
+          "s": [
+            "23 Nisan Ulusal Egemenlik ve Çocuk Bayramı'nın önemine ilişkin düşüncelerini yansıtan kompozisyon oluşturur.\""
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZE VE KÜLTÜR",
+      "a": [
+        {
+          "k": "GS.1.7.1",
+          "m": "Tabiat tarihi müzesi koleksiyonunu sınıflandırabilme",
+          "s": [
+            "Tabiat tarihi müzesindeki eserlere ait özellikleri belirler.",
+            "Tabiat tarihi müzesinde bulunan eserleri biçimsel özelliklerine göre ayrıştırır.",
+            "Tabiat tarihi müzesindeki eserleri bulundukları mekânlara göre tasnif eder.",
+            "Tabiat tarihi müzesinde tasnif ettiği eserleri etiketler."
+          ]
+        },
+        {
+          "k": "GS.1.7.2",
+          "m": "Okulunda tabiat tarihi müzesi yapabilme",
+          "s": [
+            "Tabiat tarihi müzesi koleksiyonuna uygun doğal objeler ve materyallerle müze tasarlar.",
+            "Tabiat tarihi müzesi koleksiyonuna uygun eserlerle müze oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

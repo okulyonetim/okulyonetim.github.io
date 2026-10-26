@@ -1,0 +1,103 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "1. Sınıf",
+  "kademe": "İlkokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇALGILARI TANIYORUM",
+      "a": [
+        {
+          "k": "KVL.1.1.1",
+          "m": "Çalgıları tanıyabilme",
+          "s": [
+            "Çalgıları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGI SESLERİNİ AYIRT EDİYORUM",
+      "a": [
+        {
+          "k": "KVL.1.2.2",
+          "m": "Çalgıların seslerini ayırt edebilme",
+          "s": [
+            "Çalgıların seslerini ayırt eder."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÇALGIMI TANIYORUM (KAVAL)",
+      "a": [
+        {
+          "k": "KVL.1.3.1",
+          "m": "Kaval sesini dinleyebilme",
+          "s": [
+            "Kaval sesini tanır.",
+            "Kaval sesini diğer çalgıların sesinden ayırt eder.",
+            "Kaval sesini kendi cümleleriyle açıklar."
+          ]
+        },
+        {
+          "k": "KVL.1.3.2",
+          "m": "Kavalı tanıyabilme",
+          "s": [
+            "Kavalı tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.1.3.3",
+          "m": "Farklı boyutlarda yapılan kavalları tanıyabilme",
+          "s": [
+            "Farklı boyutlarda yapılan kavalları tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KVL.1.3.4",
+          "m": "Farklı materyallerden yapılan kavalları çözümleyebilme",
+          "s": [
+            "Farklı materyallerden yapılan kavala ilişkin özellikleri belirler.",
+            "Farklı materyallerden yapılan kavalların özellikleri arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "KVL.1.3.5",
+          "m": "Kavalın tarihini ve gelişim sürecini yorumlayabilme",
+          "s": [
+            "Kavalın tarihsel dönemlerdeki görsellerini inceler.",
+            "Kavalın tarihsel dönemlerdeki görsellerini yorumlar.",
+            "Kavalın tarihsel dönemlerdeki görsellerin içeriğini yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZİK DİNLİYORUM",
+      "a": [
+        {
+          "k": "KVL.1.4.1",
+          "m": "Müzik dinleyebilme",
+          "s": [
+            "Dinlediği eserin müziksel bileşenlerini tanır.",
+            "Dinlediği eserin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği eserin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "KVL.1.4.2",
+          "m": "Dinlediği Türk halk müziği eserleri içerisinde nefesli çalgıları seçebilme",
+          "s": [
+            "Dinlediği Türk halk müziği eserleri içerisinde nefesli çalgıları seçer."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}
