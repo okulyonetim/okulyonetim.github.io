@@ -1,0 +1,192 @@
+{
+  "ders": "Müzik Tarihi (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK HALK MÜZİĞİNİN GENEL YAPISI",
+      "a": [
+        {
+          "k": "MT.6.1.1",
+          "m": "Türk halk müziğinin yapısal özellikleri hakkında bilgi toplayabilme",
+          "s": [
+            "Türk halk müziğinin yapısal özellikleri hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk halk müziğinin yapısal özellikleri hakkındaki bilgileri bulur.",
+            "Türk halk müziğinin yapısal özellikleri hakkında ulaşılan bilgileri doğrular.",
+            "Türk halk müziğinin yapısal özellikleri hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.6.1.2",
+          "m": "Dinlediği Türk halk müziği biçimlerine ait eserleri karşılaştırabilme",
+          "s": [
+            "Dinlediği Türk halk müziğinin uzun hava ve kırık hava gibi biçimlerine ait özellikleri belirler.",
+            "Dinlediği Türk halk müziğinin uzun hava ve kırık hava gibi biçimlerine ait benzerlikleri listeler.",
+            "Dinlediği Türk halk müziğinin uzun hava ve kırık hava gibi biçimlerine ait farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "MT.6.1.3",
+          "m": "Türk halk müziğinde farklı yörelere ait eserleri karşılaştırabilme",
+          "s": [
+            "Türk halk müziğinde farklı yörelere ait eserlerin ezgi, ritim, makam, kullanılan çalgılar gibi özelliklerini belirler.",
+            "Türk halk müziğinde farklı yörelere ait eserlerin ezgi, ritim, makam ve kullanılan çalgılar açısından benzerliklerini listeler.",
+            "Türk halk müziğinde farklı yörelere ait eserlerin ezgi, ritim, makam ve kullanılan çalgılar açısından farklılıklarını listerler."
+          ]
+        },
+        {
+          "k": "MT.6.1.4",
+          "m": "Türk halk müziğinde kullanılan çalgıları sınıflandırabilme",
+          "s": [
+            "Türk halk müziğinde kullanılan çalgıların ses üretme biçimlerini belirler.",
+            "Türk halk müziğinde kullanılan çalgıları ses üretme biçimlerine göre ayırır.",
+            "Türk halk müziği çalgılarını ses üretme biçimlerine göre gruplandırır.",
+            "Türk halk müziği çalgı gruplarını etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İSLAMİYET ÖNCESİ DÖNEM’DE TÜRK HALK MÜZİĞİ",
+      "a": [
+        {
+          "k": "MT.6.2.1",
+          "m": "Türkistan’daki ilk Türk topluluklarının yaşamında müziğin önemini açıklayabilme",
+          "s": [
+            "Türkistan’daki ilk Türk topluluklarının yaşamında müziğin önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.2.2",
+          "m": "Türkistan’daki ilk Türk topluluklarının yaşamında ozanların rolünü açıklayabilme",
+          "s": [
+            "Türkistan’daki ilk Türk topluluklarının yaşamında ozanların rolünü açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.2.3",
+          "m": "İlk Türk topluluklarının çalgılarını sayabilme",
+          "s": [
+            "İlk Türk topluluklarının çalgılarını sayar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.2.4",
+          "m": "Dede Korkut Hikâyeleri’nin çalgı eşliğinde söylendiğini ifade edebilme",
+          "s": [
+            "Dede Korkut Hikâyeleri’nin çalgı eşliğinde söylendiğini ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.2.5",
+          "m": "Dede Korkut Hikâyeleri’nin Türk müzik tarihi açısından önemini açıklayabilme",
+          "s": [
+            "Dede Korkut Hikâyeleri’nin Türk müzik tarihi açısından önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İSLAMİYETİN ETKİSİ ALTINDAKİ DÖNEM'DE TÜRK HALK MÜ Z İĞİ",
+      "a": [
+        {
+          "k": "MT.6.3.1",
+          "m": "İslamiyet etkisi altındaki Türk halk müziğinin özelliklerini açıklayabilme",
+          "s": [
+            "İslamiyet etkisi altındaki Türk halk müziğinin özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.3.2",
+          "m": "Türk halk müziğinin Anadolu’daki değişim sürecini çözümleyebilme",
+          "s": [
+            "Türk halk müziğinin Anadolu’daki değişim sürecine dair unsurları belirler.",
+            "Türk halk müziğinin Anadolu’daki değişim sürecinin unsurları arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "MT.6.3.3",
+          "m": "Anadolu’da âşıklık geleneğini açıklayabilme",
+          "s": [
+            "Anadolu’da âşıklık geleneğini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.3.4",
+          "m": "Âşıklık geleneğinin Anadolu’daki önemli temsilcilerini tanıyabilme",
+          "s": [
+            "Âşıklık geleneğinin Anadolu’daki önemli temsilcilerini tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "CUMHURİYET DÖNEMİ’NDE TÜRK HALK MÜZİĞİ ALANINDA YAPILAN ÇALIŞMALAR",
+      "a": [
+        {
+          "k": "MT.6.4.1",
+          "m": "Atatürk’ün Türk halk müziği ile ilgili düşüncelerini açıklayabilme",
+          "s": [
+            "Atatürk’ün Türk halk müziği ile ilgili düşüncelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.6.4.2",
+          "m": "Atatürk’ün düşünceleri doğrultusunda müzik alanında yapılan çalışmalar hakkında bilgi toplayabilme",
+          "s": [
+            "Bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak konu hakkındaki bilgileri bulur.",
+            "Konu hakkında ulaştığı bilgileri doğrular.",
+            "Konu hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.6.4.3",
+          "m": "Türk halk müziği eserlerinin derleme ve notaya alınma sürecine ilişkin bilgi toplayabilme",
+          "s": [
+            "Bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak konu hakkındaki bilgileri bulur.",
+            "Konu hakkında ulaştığı bilgileri doğrular.",
+            "Konu hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.6.4.4",
+          "m": "Devlet radyosunun kurulmasının Türk halk müziğine katkılarını yorumlayabilme",
+          "s": [
+            "Devlet radyosunun Türk halk müziğine katkılarını inceler.",
+            "Devlet radyosunun Türk halk müziğine katkılarına örnekler verir.",
+            "Devlet radyosunun kurulmasının Türk halk müziğine katkılarını ifade eder."
+          ]
+        },
+        {
+          "k": "MT.6.4.5",
+          "m": "Teknolojik gelişmelerin Türk halk müziği üzerindeki etkilerini yorumlayabilme",
+          "s": [
+            "Teknolojik gelişmelerin Türk halk müziğine etkilerini inceler.",
+            "Teknolojik gelişmelerin Türk halk müziğine etkilerine örnekler verir.",
+            "Teknolojik gelişmelerin Türk halk müziğine etkilerini ifade eder."
+          ]
+        },
+        {
+          "k": "MT.6.4.6",
+          "m": "Cumhuriyet Dönemi’nde öne çıkan Türk halk müziği ozanlarını tanıyabilme",
+          "s": [
+            "Cumhuriyet Dönemi’nde öne çıkan Türk halk müziği ozanlarını tanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

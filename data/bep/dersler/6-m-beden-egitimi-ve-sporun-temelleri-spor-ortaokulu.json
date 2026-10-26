@@ -1,0 +1,90 @@
+{
+  "ders": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN VÜCUDUNUN TEMEL ANATOMİSİ",
+      "a": [
+        {
+          "k": "BEST.6.1.1",
+          "m": "İnsan vücudunun temel anatomik yapılarını sorgulayabilme",
+          "s": [
+            "İnsan vücudunun temel anatomik yapılarını tanımlar.",
+            "İnsan vücudunun temel anatomik yapıları hakkında sorular sorar.",
+            "İnsan vücudunun temel anatomik yapıları hakkında bilgi toplar.",
+            "İnsan vücudunun temel anatomik yapıları hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "İnsan vücudunun temel anatomik yapıları hakkında toplanan bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BEST.6.1.2",
+          "m": "Egzersizin insan vücudu üzerine olan etkilerini sorgulayabilme",
+          "s": [
+            "Egzersizin vücudun sistemleri üzerine olan etkileri hakkında mevcut bilgisi dâhilinde varsayımda bulunur.",
+            "Egzersizin vücudun sistemleri üzerine olan etkileri hakkında örüntüleri listeler.",
+            "Egzersizin vücudun sistemleri üzerine olan etkilerini karşılaştırır.",
+            "Egzersizin vücudun sistemleri üzerine olan etkileri hakkında önerme sunar.",
+            "Egzersizin vücudun sistemleri üzerine olan etkilerini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "AKTİF YAŞAM VE ZİNDELİK",
+      "a": [
+        {
+          "k": "BEST.6.2.1",
+          "m": "Yaşam boyu sporun etkilerini özetleyebilme",
+          "s": [
+            "Yaşam boyu spor kavramı ile ilgili çözümleme yapar.",
+            "Yaşam boyu sporun psikolojik, fiziksel ve sosyal etkilerini sınıflandırır.",
+            "Yaşam boyu sporun birey ve toplum üzerine etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "BEST.6.2.2",
+          "m": "Fiziksel uygunluk kavramlarını sorgulayabilme",
+          "s": [
+            "Fiziksel uygunluk kavramlarını tanımlar.",
+            "Fiziksel uygunluk kavramları hakkında sorular sorar.",
+            "Fiziksel uygunluk kavramları hakkında bilgi toplar.",
+            "Fiziksel uygunluk kavramları hakkında topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Fiziksel uygunluk kavramları hakkında çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TOPLUM VE SPOR",
+      "a": [
+        {
+          "k": "BEST.6.3.1",
+          "m": "Sporun birey ve toplum üzerindeki sosyolojik etkilerini yorumlayabilme",
+          "s": [
+            "Sporun birey ve toplum üzerindeki sosyolojik etkilerini inceler.",
+            "Sporun birey ve toplum üzerindeki sosyolojik önemini bağlamdan kopmadan dönüştürür.",
+            "Kendi cümleleriyle sporun birey ve toplum üzerindeki sosyolojik etkilerini yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİREY VE SPOR",
+      "a": [
+        {
+          "k": "BEST.6.4.1",
+          "m": "Spor psikolojisinin sporcu performansı üzerindeki etkilerini sorgulayabilme",
+          "s": [
+            "Psikoloji ve spor psikolojisi kavramlarını tanımlar.",
+            "Spor psikolojisinin temel kavramları hakkında sorular sorar.",
+            "Spor psikolojisinin sporcu performansı üzerine etkileri ile ilgili bilgi toplar.",
+            "Spor psikolojisinin sporcu performansı üzerine etkileri ile ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Spor psikolojisinin sporcu performansı üzerine etkileri ile ilgili topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

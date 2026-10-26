@@ -1,0 +1,81 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÜÇ ZAMANLI ÖLÇÜLER",
+      "a": [
+        {
+          "k": "FLT.6.1.1",
+          "m": "3/8, 6/8 ve 9/8’lik ölçüleri çalabilme",
+          "s": [
+            "3/8, 6/8 ve 9/8’lik ölçülerde etüt, egzersiz ve eserleri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak 3/8, 6/8 ve 9/8’lik ölçülerde etüt, egzersiz ve eser çalar.",
+            "3/8, 6/8 ve 9/8’lik ölçülerde etüt, egzersiz ve eser çalarken flüte özgü teknikleri kullanır.",
+            "3/8, 6/8 ve 9/8’lik ölçülerde etüt, egzersiz ve eser çalarken müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE 2. OKTAV SOL DİYEZ/LA BEMOL SESLERİ",
+      "a": [
+        {
+          "k": "FLT.6.2.1",
+          "m": "Flütte 2. oktav sol diyez/la bemol sesini çalabilme",
+          "s": [
+            "2. oktav sol diyez/la bemol sesini etüt, egzersiz ve eser içerisinde çözümler.",
+            "2. oktav sol diyez/la bemol sesini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "2. oktav sol diyez/la bemol sesini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAMSAL DİZİLER-2 (BUSELİK-KÜRDİ)",
+      "a": [
+        {
+          "k": "FLT.6.3.1",
+          "m": "Buselik makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Buselik makamının motiflerini tanır.",
+            "Buselik makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Buselik makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.6.3.2",
+          "m": "Buselik makamında eserler çalabilme",
+          "s": [
+            "Buselik makamındaki eserleri çözümler.",
+            "Buselik makamında eserler çalabilmek için duruş, tutuş pozisyonu alır.",
+            "Buselik makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Buselik makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.6.3.3",
+          "m": "Kürdi makamının melodik motiflerini ayırt ederek dinleyebilme",
+          "s": [
+            "Kürdi makamının motiflerini tanır.",
+            "Kürdi makamının karar sesini ve müziksel bileşenlerini ayırt eder.",
+            "Kürdi makamının müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "FLT.6.3.4",
+          "m": "Kürdi makamında eserler çalabilme",
+          "s": [
+            "Kürdi makamındaki eserleri çözümler.",
+            "Kürdi makamında eserler çalabilmek için duruş, tutuş pozisyonu alır.",
+            "Kürdi makamında eserler çalarken flüte özgü teknikleri kullanır.",
+            "Kürdi makamında eserler çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

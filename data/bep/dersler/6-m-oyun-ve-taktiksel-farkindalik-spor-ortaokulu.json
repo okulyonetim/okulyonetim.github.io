@@ -1,0 +1,76 @@
+{
+  "ders": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HAYALİMDEKİ OYUN",
+      "a": [
+        {
+          "k": "OTF.6.1.1",
+          "m": "Özgün bir oyun sentezleyebilme",
+          "s": [
+            "Tasarlayacağı oyunda kullanacağı bileşenleri belirler.",
+            "Tasarlayacağı oyunda belirlediği bileşenler arasında ilişki kurar.",
+            "Bileşenleri bir araya getirerek özgün bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "OTF.6.1.2",
+          "m": "Tasarladığı oyun içerisinde adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "Tasarladığı oyunda adil oyun anlayışını açıklar.",
+            "Tasarladığı oyunda adil oyun anlayışına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "OTF.6.1.3",
+          "m": "Tasarlanan oyuna ilişkin güvenli ortam oluşturabilme",
+          "s": [
+            "Tasarladığı oyundaki riskleri belirler.",
+            "Tasarladığı oyunda belirlediği risklere yönelik önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "OTF.6.1.4",
+          "m": "Tasarladığı oyunu oynatırken grup liderliği sergileyebilme",
+          "s": [
+            "Tasarladıkları oyunu oynatırken grup liderliği özelliklerini tanır.",
+            "Tasarladıkları oyunu oynatırken liderlik özelliklerini gösterir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAKTİKSEL OYUN OYNUYORUM",
+      "a": [
+        {
+          "k": "OTF.6.2.1",
+          "m": "Taktiksel oyun modelini açıklayabilme",
+          "s": [
+            "Taktiksel oyun modelini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "OTF.6.2.2",
+          "m": "Oynadığı oyunlardaki taktikleri çözümleyebilme",
+          "s": [
+            "Oynadığı oyunlardaki taktikleri oluşturan ögeleri belirler.",
+            "Taktikleri oluşturan ögeler arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTF.6.2.3",
+          "m": "Oyunlarda taktik geliştirebilme",
+          "s": [
+            "Oyundaki taktiksel problemi belirler.",
+            "Oyuna özgü belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "Oyuna özgü seçilen taktiği uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

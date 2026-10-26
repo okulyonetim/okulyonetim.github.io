@@ -1,0 +1,68 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Gitar Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "GİTARDA KÜÇÜK USULLERLE RİTİM ÇALIŞMALARI 2",
+      "a": [
+        {
+          "k": "GTR.6.1.1",
+          "m": "Gitarda 5/8, 6/8, 7/8’lik ritimlerle şarkı çalabilme",
+          "s": [
+            "5/8, 6/8, 7/8 ’lik usullerdeki şarkıları çözümler.",
+            "5/8, 6/8, 7/8 ’lik usullerdeki şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "5/8, 6/8, 7/8 ’lik usullerdeki şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "5/8, 6/8, 7/8 ’lik usullerdeki şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GİTARDA BARE ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "GTR.6.2.1",
+          "m": "Gitarda bareli akorlarla şarkılar çalabilme",
+          "s": [
+            "Gitarda bareli akorları çözümler.",
+            "Gitarda şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Gitarda şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "Gitarda şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDİ MAKAM DİZİSİYLE İCRA",
+      "a": [
+        {
+          "k": "GTR.6.3.1",
+          "m": "Gitarda kürdi makamındaki şarkıları çalabilme",
+          "s": [
+            "Gitarda kürdi makamındaki şarkıları çözümler.",
+            "Gitarda kürdi makamındaki şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Gitarda kürdi makamındaki şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "Gitarda kürdi makamındaki şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ MAKAM DİZİSİYLE İCRA",
+      "a": [
+        {
+          "k": "GTR.6.4.1",
+          "m": "Gitarda hicaz makamındaki şarkıları çalabilme",
+          "s": [
+            "Gitarda hicaz makamındaki şarkıları çözümler. ,",
+            "Gitarda hicaz makamındaki şarkıları çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Gitarda hicaz makamındaki şarkıları çalarken çalgıya özgü teknikleri kullanır.",
+            "Gitarda hicaz makamındaki şarkıları çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

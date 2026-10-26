@@ -1,0 +1,337 @@
+{
+  "ders": "Robotik Kodlama",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "RK.1.1. ÜNİTE: ROBOTİK KAVRAMINA GİRİŞ",
+      "a": [
+        {
+          "k": "RK.1.1.1.1",
+          "m": "Robotik kavramını açıklar.",
+          "s": [
+            "Robotik kavramını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.1.2.1",
+          "m": "Robotik uygulamalarının günlük hayata katkılarını örnekler üzerinden açıklar.",
+          "s": [
+            "Robotik uygulamalarının günlük hayata katkılarını örnekler üzerinden açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.1.2.2",
+          "m": "Robotik uygulamalarının günlük hayata olabilecek olumsuz etkilerini örnekler",
+          "s": [
+            "Robotik uygulamalarının günlük hayata olabilecek olumsuz etkilerini örnekler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.1.2.3",
+          "m": "Robotik uygulamaların günlük hayattaki riskli yönlerini araştırır.",
+          "s": [
+            "Robotik uygulamaların günlük hayattaki riskli yönlerini araştırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "RK.1.2. ÜNİTE: KODLAMAYA GİRİŞ",
+      "a": [
+        {
+          "k": "RK.1.2.1.1",
+          "m": "Algoritma kavramını tanımlar.",
+          "s": [
+            "Algoritma kavramını tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.1.2",
+          "m": "Algoritmanın işlem adımlarından oluştuğunu fark eder.",
+          "s": [
+            "Algoritmanın işlem adımlarından oluştuğunu fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.1.3",
+          "m": "Algoritmanın işlem adımlarının sırasının önemini fark eder.",
+          "s": [
+            "Algoritmanın işlem adımlarının sırasının önemini fark eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.2.1",
+          "m": "Karar yapılarının tanımını yapar.",
+          "s": [
+            "Karar yapılarının tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.2.2",
+          "m": "Karar yapılarının kullanım alanlarını açıklar.",
+          "s": [
+            "Karar yapılarının kullanım alanlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.3.1",
+          "m": "Döngü kavramının tanımını yapar.",
+          "s": [
+            "Döngü kavramının tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.3.2",
+          "m": "Döngü kavramının kullanım alanlarını açıklar.",
+          "s": [
+            "Döngü kavramının kullanım alanlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.4.1",
+          "m": "Veri türlerini açıklar.",
+          "s": [
+            "Veri türlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.5.1",
+          "m": "Değişken kavramının tanımını yapar.",
+          "s": [
+            "Değişken kavramının tanımını yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.6.1",
+          "m": "Akış diyagramı kavramını açıklar.",
+          "s": [
+            "Akış diyagramı kavramını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.6.2",
+          "m": "Akış diyagramında kullanılan sembollerin anlamlarını açıklar.",
+          "s": [
+            "Akış diyagramında kullanılan sembollerin anlamlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.2.6.3",
+          "m": "Bir problemin çözümüne yönelik akış diyagramı oluşturur.",
+          "s": [
+            "Bir problemin çözümüne yönelik akış diyagramı oluşturur."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "RK.1.3. ÜNİTE: ROBOTİK KODLAMA ORTAMLARI",
+      "a": [
+        {
+          "k": "RK.1.3.1.1",
+          "m": "Çevrim içi blok tabanlı ortamlara erişim sağlar.",
+          "s": [
+            "Çevrim içi blok tabanlı ortamlara erişim sağlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.3.1.2",
+          "m": "Çevrim dışı blok tabanlı geliştirme ortamının kurulumunu yapar.",
+          "s": [
+            "Çevrim dışı blok tabanlı geliştirme ortamının kurulumunu yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.3.1.3",
+          "m": "Blok tabanlı geliştirme ortamının arayüzünü tanır.",
+          "s": [
+            "Blok tabanlı geliştirme ortamının arayüzünü tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.3.1.4",
+          "m": "Blok tabanlı geliştirme ortamına ait algılayıcıları ayırt eder.",
+          "s": [
+            "Blok tabanlı geliştirme ortamına ait algılayıcıları ayırt eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.3.2.1",
+          "m": "Robotik kodlama benzetim ortamlarını açıklar.",
+          "s": [
+            "Robotik kodlama benzetim ortamlarını açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "RK.1.4. ÜNİTE: ROBOTİK KODLAMA UYGULAMALARINA AİT BİLEŞENLER",
+      "a": [
+        {
+          "k": "RK.1.4.1.1",
+          "m": "Robotik kodlamada kullanılan elektronik devre elemanlarını tanır.",
+          "s": [
+            "Robotik kodlamada kullanılan elektronik devre elemanlarını tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.4.1.2",
+          "m": "Elektronik devre kartlarının sistem (girdi, işlem, çıktı) bileşenlerini açıklar.",
+          "s": [
+            "Elektronik devre kartlarının sistem (girdi, işlem, çıktı) bileşenlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.4.1.3",
+          "m": "Robotik kodlama uygulamalarında kullanılan algılayıcı türlerini açıklar.",
+          "s": [
+            "Robotik kodlama uygulamalarında kullanılan algılayıcı türlerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.4.1.4",
+          "m": "Elektronik devre kartlarına farklı tür algılayıcıları bağlar.",
+          "s": [
+            "Elektronik devre kartlarına farklı tür algılayıcıları bağlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "RK.1.5. ÜNİTE: FARKLI ORTAMLARDA ROBOTİK DEVRE TASARIMI",
+      "a": [
+        {
+          "k": "RK.1.5.1.1",
+          "m": "Çevrim içi benzetim araçlarını kullanarak robotik devre tasarımı yapar.",
+          "s": [
+            "Çevrim içi benzetim araçlarını kullanarak robotik devre tasarımı yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.1.2",
+          "m": "Fiziksel (gerçek) ortamda robotik devre tasarımı yapar.",
+          "s": [
+            "Fiziksel (gerçek) ortamda robotik devre tasarımı yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.1.3",
+          "m": "Blok tabanlı ortamda bir amaca yönelik program hazırlar.",
+          "s": [
+            "Blok tabanlı ortamda bir amaca yönelik program hazırlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.1.4",
+          "m": "Çevrim içi ortamda hazırlanan programı benzetim araçlarını kullanarak test eder.",
+          "s": [
+            "Çevrim içi ortamda hazırlanan programı benzetim araçlarını kullanarak test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.1.5",
+          "m": "Hazırlanan programı fiziksel (gerçek) ortamda test eder.",
+          "s": [
+            "Hazırlanan programı fiziksel (gerçek) ortamda test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.1",
+          "m": "Led uygulama projesi tasarlar.",
+          "s": [
+            "Led uygulama projesi tasarlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.2",
+          "m": "Projeye uygun bileşenleri belirler.",
+          "s": [
+            "Projeye uygun bileşenleri belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.5",
+          "m": "Benzetim ortamındaki devreyi test eder.",
+          "s": [
+            "Benzetim ortamındaki devreyi test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.6",
+          "m": "Yazılımsal ve donanımsal hataları ayıklar.",
+          "s": [
+            "Yazılımsal ve donanımsal hataları ayıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.7",
+          "m": "Fiziksel (gerçek) ortamda devreyi oluşturur.",
+          "s": [
+            "Fiziksel (gerçek) ortamda devreyi oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.8",
+          "m": "Fiziksel (gerçek) ortamda devreyi test eder.",
+          "s": [
+            "Fiziksel (gerçek) ortamda devreyi test eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.3",
+          "m": "Proje tasarımına uygun yazılım bileşenlerini blok tabanlı ortam üzerine yerleştirir.",
+          "s": [
+            "Proje tasarımına uygun yazılım bileşenlerini blok tabanlı ortam üzerine yerleştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "RK.1.5.2.4",
+          "m": "Benzetim ortamında devreyi hazırlar.",
+          "s": [
+            "Benzetim ortamında devreyi hazırlar."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

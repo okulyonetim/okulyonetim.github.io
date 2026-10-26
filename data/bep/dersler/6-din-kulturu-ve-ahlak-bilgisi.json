@@ -1,0 +1,213 @@
+{
+  "ders": "Din Kültürü ve Ahlak Bilgisi",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. PEYGAMBER VE İLAHİ KİTAP İNANCI",
+      "a": [
+        {
+          "k": "DKAB.6.1.1",
+          "m": "Peygamberlerin insanlara rehber olarak gönderilmesi hakkında bilgi toplayabilme",
+          "s": [
+            "Peygamber inancı konusunu araştırır.",
+            "Peygamber inancıyla ilgili bilgileri bulur.",
+            "Peygamber inancıyla ilgili ulaştığı bilgileri öğretmen rehberliğinde doğrular.",
+            "Peygamber inancıyla ilgili ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "DKAB.6.1.2",
+          "m": "Vahiylerin insanlara ilettiği mesajları yapılandırabilme",
+          "s": [
+            "Vahyin gönderiliş amacıyla ilgili nedensel ilişkiler ortaya koyar.",
+            "Vahyin gönderiliş amacıyla ilgili nedensel ilişkilere dayalı unsurlardan hareketle uyumlu bir bakış açısı geliştirir."
+          ]
+        },
+        {
+          "k": "DKAB.6.1.3",
+          "m": "İlahi kitaplarla ilgili bilgileri çözümleyebilme",
+          "s": [
+            "Temel İslam kaynaklarından hareketle ilahi kitapların Tevrat, Zebur, İncil ve Kur’an-ı Kerim olduğunu öğretmen rehberliğinde açıklar.",
+            "İlahi kitaplar arasındaki kronolojik ilişkiyi inceler."
+          ]
+        },
+        {
+          "k": "DKAB.6.1.4",
+          "m": "Felak suresini ve bu surenin anlamını okuyarak yorumlayabilme",
+          "s": [
+            "Felak suresini ve bu surenin anlamını okur.",
+            "Felak suresinin anlamını kendi hayatı için anlamlı hâle getirir.",
+            "Felak suresinin anlamını değiştirmeyecek şekilde özetler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. RAMAZAN VE ORUÇ",
+      "a": [
+        {
+          "k": "DKAB.6.2.1",
+          "m": "Ramazan ayının oruç ve Kur’an ayı olduğunu çözümleyebilme",
+          "s": [
+            "Temel İslam kaynaklarından hareketle ramazan ayını oruç ve Kur’an ayı olarak öğretmen rehberliğinde açıklar.",
+            "Ramazan ayı ile oruç ve Kur’an okuma ibadeti arasındaki ilişkiyi inceler."
+          ]
+        },
+        {
+          "k": "DKAB.6.2.2",
+          "m": "Oruç ibadeti hakkında bilgi toplayabilme",
+          "s": [
+            "Oruç ibadeti konusunu araştırır.",
+            "Oruç ibadeti hakkında bilgiler bulur.",
+            "Oruç ibadeti hakkında elde ettiği bilgileri öğretmen rehberliğinde doğrular.",
+            "Oruç ibadeti hakkında elde ettiği bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "DKAB.6.2.3",
+          "m": "Oruç ibadetinin insana kazandırdıklarını yapılandırabilme",
+          "s": [
+            "Oruç ibadetinin insana kazandırdıklarını inceleyerek mantıksal ilişkiler kurar.",
+            "Oruç ibadetinin insana kazandırdıkları hakkında kendi elde ettiği bilgilerden hareketle uyumlu bir bakış açısı geliştirir."
+          ]
+        },
+        {
+          "k": "DKAB.6.2.4",
+          "m": "İftar duasını ve bu duanın anlamını okuyarak yorumlayabilme",
+          "s": [
+            "İftar duasını ve bu duanın anlamını okur.",
+            "İftar duasının anlamını kendi hayatı için anlamlı hâle getirir.",
+            "İftar duasının anlamını değiştirmeyecek şekilde özetler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. AHLAKİ DAVRANIŞLAR",
+      "a": [
+        {
+          "k": "DKAB.6.3.1",
+          "m": "Doğru sözlü olmayı kendi hayatına yansıtabilme",
+          "s": [
+            "Doğru sözlü olmanın önemini kendisinden ve çevresinden hareketle gözden geçirir.",
+            "Doğru sözlü olmanın bireysel ve toplumsal açıdan önemine dair çıkarımda bulunur.",
+            "Doğru sözlü olmanın önemiyle ilgili ulaştığı çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "DKAB.6.3.2",
+          "m": "Merhamet kavramını ayırt edebilme",
+          "s": [
+            "Merhametli olmanın bireysel ve toplumsal boyutlarını inceler.",
+            "Merhametli olmayı kendi hayatı için anlamlı hâle getirir.",
+            "Merhametli olmanın önemini kendi cümleleriyle yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "DKAB.6.3.3",
+          "m": "Adap ve nezaket kurallarını özetleyebilme",
+          "s": [
+            "Adap ve nezaket kurallarını çözümler.",
+            "Adap ve nezaket kurallarını sınıflandırır.",
+            "Adap ve nezaket kurallarını yorumlar."
+          ]
+        },
+        {
+          "k": "DKAB.6.3.4",
+          "m": "Vatanını sevmenin önemi hakkında çıkarım yapabilme",
+          "s": [
+            "Vatanını sevmenin önemi hakkında mevcut bilgisi dâhilinde varsayımda bulunur.",
+            "Vatan sevgisiyle ilişkili kavramları listeler.",
+            "Vatan sevgisiyle ilişkili kavramları birbirleriyle ilişkisi açısından karşılaştırır.",
+            "Vatan sevgisinin önemi hakkında önermeler sunar.",
+            "Vatan sevgisinin önemi hakkında önermelerle ilgili değerlendirmede bulunur."
+          ]
+        },
+        {
+          "k": "DKAB.6.3.5",
+          "m": "Kunut dualarını ve bu duaların anlamlarını okuyarak yorumlayabilme",
+          "s": [
+            "Kunut dualarını ve bu duaların anlamlarını okur.",
+            "Kunut dualarının anlamlarını kendi hayatı için anlamlı hâle getirir.",
+            "Kunut dualarının anlamlarını değiştirmeyecek şekilde özetler."
+          ]
+        },
+        {
+          "k": "DKAB.6.4.1",
+          "m": "Hz. Muhammed’in (sav) doğduğu çevreyi tarihsel bağlamda değerlendirebilme",
+          "s": [
+            "Hz. Muhammed’in (sav) doğduğu çevre hakkındaki bilgileri temel kaynaklardan hareketle farkeder.",
+            "Hz. Muhammed’in (sav) doğduğu çevreyi koşulları içerisinde açıklar.",
+            "Hz. Muhammed’in (sav) doğduğu çevrenin koşullarını analiz eder.",
+            "Hz. Muhammed’in (sav) doğduğu çevrenin koşullarını günümüz koşullarıyla karşılaştırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. PEYGAMBERLİĞİNDEN ÖNCE HZ. MUHAMMED",
+      "a": [
+        {
+          "k": "DKAB.6.4.1",
+          "m": "Hz. Muhammed’in (sav) doğduğu çevreyi tarihsel bağlamda değerlendirebilme",
+          "s": [
+            "Hz. Muhammed’in (sav) doğduğu çevre hakkındaki bilgileri temel kaynaklardan hareketle farkeder.",
+            "Hz. Muhammed’in (sav) doğduğu çevreyi koşulları içerisinde açıklar.",
+            "Hz. Muhammed’in (sav) doğduğu çevrenin koşullarını analiz eder.",
+            "Hz. Muhammed’in (sav) doğduğu çevrenin koşullarını günümüz koşullarıyla karşılaştırır."
+          ]
+        },
+        {
+          "k": "DKAB.6.4.2",
+          "m": "Hz. Muhammed’in (sav) çocukluk yılları hakkında verilen bilgileri yorumlayabilme",
+          "s": [
+            "Hz. Muhammed’in (sav) çocukluk yıllarında yaşadıklarını inceler.",
+            "Hz. Muhammed’in (sav) çocukluk yıllarında yaşadıklarını kendi ifadeleriyle, doğru ve bilgiyi değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "DKAB.6.4.3",
+          "m": "Hz. Muhammed’in (sav) gençlik yılları hakkında verilen bilgileri yapılandırabilme",
+          "s": [
+            "Hz. Muhammed’in (sav) gençlik yıllarında yaşadıklarından hareketle çıkarımda bulunur.",
+            "Hz. Muhammed’in (sav) gençlik yıllarına dair öğrendikleri üzerine düşüncelerini ifade eder."
+          ]
+        },
+        {
+          "k": "DKAB.6.4.4",
+          "m": "Fil suresini ve bu surenin anlamını okuyarak yorumlayabilme",
+          "s": [
+            "Fil suresini ve bu surenin anlamını okur.",
+            "Fil suresinin anlamını kendi hayatı için anlamlı hâle getirir.",
+            "Fil suresinin anlamını değiştirmeyecek şekilde özetler."
+          ]
+        },
+        {
+          "k": "DKAB.6.5.1",
+          "m": "Geleneğimizde, edebiyatımızda ve musikimizde dinin izlerini özetleyebilme",
+          "s": [
+            "Geleneğimizde, edebiyatımızda ve musikimizde dinin izleriyle ilgili çözümleme yapar.",
+            "Din ve kültür ilişkisini gelenek, edebiyat ve musiki örneklerinden hareketle sınıflandırır.",
+            "Dinin geleneğimiz, edebiyatımız ve musikimize etkisini yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. KÜLTÜRÜMÜZDE DİNİ MOTİFLER",
+      "a": [
+        {
+          "k": "DKAB.6.5.1",
+          "m": "Geleneğimizde, edebiyatımızda ve musikimizde dinin izlerini özetleyebilme",
+          "s": [
+            "Geleneğimizde, edebiyatımızda ve musikimizde dinin izleriyle ilgili çözümleme yapar.",
+            "Din ve kültür ilişkisini gelenek, edebiyat ve musiki örneklerinden hareketle sınıflandırır.",
+            "Dinin geleneğimiz, edebiyatımız ve musikimize etkisini yorumlar."
+          ]
+        }
+      ]
+    }
+  ]
+}

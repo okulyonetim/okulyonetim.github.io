@@ -1,0 +1,148 @@
+{
+  "ders": "Beden Eğitimi",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "SAĞLIKLA İLGİLİ FİZİKSEL UYGUNLUK",
+      "a": [
+        {
+          "k": "BES.6.1.1",
+          "m": "Sağlıkla ilgili fiziksel uygunluğu sağlayabilme",
+          "s": [
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini açıklar.",
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini içeren hareketleri uygular.",
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini geliştirir."
+          ]
+        },
+        {
+          "k": "BES.6.1.2",
+          "m": "Fiziksel uygunluk ve zindelik arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Fiziksel uygunluk ve zindeliğe ilişkin parçaları belirler.",
+            "Fiziksel uygunluk ve zindelik arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "BES.6.1.3",
+          "m": "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını sergileyebilme",
+          "s": [
+            "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını algılar.",
+            "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını gösterir.",
+            "Fiziksel aktivite sırasında meydana gelebilecek farklı yaralanma durumlarında temel ilk yardımı uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HEDEF OYUNLARI",
+      "a": [
+        {
+          "k": "BES.6.2.1",
+          "m": "Hedef oyunlarına ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Hedef oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Hedef oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Hedef oyunlarına ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.6.2.3",
+          "m": "Hedef oyunlarına ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "Hedef oyunlarına ilişkin verilen taktiksel problemi belirler.",
+            "Hedef oyunlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "Hedef oyunlarına ilişkin seçilen taktik ve stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPOR ENGEL TANIMAZ",
+      "a": [
+        {
+          "k": "BES.6.3.1",
+          "m": "Engelli sporlarına ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Engelli sporlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Engelli sporlarına ilişkin hareket becerileri ve hareket kavramları arasında ilişki kurar.",
+            "Engelli sporlarına ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.6.3.2",
+          "m": "Engelli sporlarına ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Engelli sporlarına ilişkin hareket becerilerini algılar.",
+            "Engelli sporlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Engelli sporlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜLTÜREL BİRİKİMLERİMİZ VE OYUN",
+      "a": [
+        {
+          "k": "BES.6.4.1",
+          "m": "Mustafa Kemal Atatürk’ün spora verdiği önemi yorumlayabilme",
+          "s": [
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi inceler.",
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi yorumlar.",
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "BES.6.4.2",
+          "m": "Seçili halk oyununa ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Seçili halk oyununa ilişkin hareket becerilerini algılar.",
+            "Seçili halk oyununa ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Seçili halk oyununa ilişkin hareket becerilerini uygular."
+          ]
+        },
+        {
+          "k": "BES.6.4.3",
+          "m": "Geleneksel oyunlara ilişkin hareket becerilerini sergileyebilme",
+          "s": [
+            "Geleneksel oyunlara ilişkin hareket becerilerini algılar.",
+            "Geleneksel oyunlara ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Geleneksel oyunlara ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HÜCUM OYUNLARI",
+      "a": [
+        {
+          "k": "BES.6.5.1",
+          "m": "Hücum oyunlarında güvenli ortam oluşturabilme",
+          "s": [
+            "Hücum oyunları oynarken oluşabilecek riskleri tanımlar.",
+            "Hücum oyunları oynarken oluşabilecek risklere ilişkin önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "BES.6.5.2",
+          "m": "Hücum oyunlarına ilişkin hareket kavramlarını uygulayabilme",
+          "s": [
+            "Hücum oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Hücum oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Hücum oyunlarına ilişkin hareket kavramına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "BES.6.5.4",
+          "m": "Hücum oyunlarına ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "Hücum oyunlarına ilişkin verilen taktiksel problemi belirler.",
+            "Hücum oyunlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "Hücum oyunlarına ilişkin seçilen taktik veya stratejiyi uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

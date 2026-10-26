@@ -1,0 +1,144 @@
+{
+  "ders": "Müziksel İşitme, Okuma ve Yazma (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİ USULLERİNİ ÖĞRENİYORUM-3",
+      "a": [
+        {
+          "k": "MİOY.6.1.1",
+          "m": "Devrihindi ve düyek usul yapılarını yazabilme",
+          "s": [
+            "Devrihindi ve düyek usullerini tanır.",
+            "Devrihindi ve düyek usullerini ayırt eder.",
+            "Devrihindi ve düyek usullerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.1.2",
+          "m": "Devrihindi ve düyek usul yapılarını okuyabilme",
+          "s": [
+            "Devrihindi ve düyek usullerini tanır.",
+            "Devrihindi ve düyek usullerini ayırt eder.",
+            "Devrihindi ve düyek usullerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.1.3",
+          "m": "Devrihindi ve düyek usul yapılarını işitebilme a)",
+          "s": [
+            "Devrihindi ve düyek usullerini tanır. b)",
+            "Devrihindi ve düyek usullerini ayırt eder. c)",
+            "Devrihindi ve düyek usullerini ifade eder."
+          ]
+        },
+        {
+          "k": "MİOY.6.1.4",
+          "m": "Devrihindi ve düyek usullerine uygun hareketleri sergileyebilme",
+          "s": [
+            "Devrihindi ve düyek usul yapısına uygun hareketler belirler.",
+            "Devrihindi ve düyek usul yapısına uygun hareketler sergiler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇARGÂH SES DİZİSİ",
+      "a": [
+        {
+          "k": "MİOY.6.2.1",
+          "m": "Türk müziğinde çargâh ses dizisini yazabilme",
+          "s": [
+            "Çargâh ses dizisini tanır.",
+            "Çargâh ses dizisini ayırt eder.",
+            "Çargâh ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.2.2",
+          "m": "Türk müziğinde çargâh ses dizisini okuyabilme",
+          "s": [
+            "Çargâh ses dizisi bileşenlerini tanır.",
+            "Çargâh ses dizisi bileşenlerini işitsel olarak ayırt eder.",
+            "Çargâh ses dizisini bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.2.3",
+          "m": "Türk müziğinde çargâh ses dizisini işitebilme",
+          "s": [
+            "Çargâh ses dizisinin bileşenlerini tanır.",
+            "Çargâh ses dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Çargâh ses dizisinin bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BUSELİK SES DİZİSİ",
+      "a": [
+        {
+          "k": "MİOY.6.3.1",
+          "m": "Türk müziğinde buselik ses dizisini yazabilme",
+          "s": [
+            "Buselik ses dizisini tanır.",
+            "Buselik ses dizisini ayırt eder.",
+            "Buselik ses dizisini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.3.2",
+          "m": "Türk müziğinde buselik ses dizisini okuyabilme",
+          "s": [
+            "Buselik ses dizisinin bileşenlerini tanır.",
+            "Buselik ses dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Buselik ses dizisinin bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.3.3",
+          "m": "Türk müziğinde buselik ses dizisini işitebilme",
+          "s": [
+            "Buselik ses dizisinin bileşenlerini tanır.",
+            "Buselik ses dizisinin bileşenlerini işitsel olarak ayırt eder.",
+            "Buselik ses dizisinin bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SOL MAJÖR VE Mİ MİNÖR",
+      "a": [
+        {
+          "k": "MİOY.6.4.1",
+          "m": "Sol majör ve mi minör dizileri yazabilme",
+          "s": [
+            "Sol majör ve mi minör dizileri kavramını tanır.",
+            "Sol majör ve mi minör dizileri ayırt eder.",
+            "Sol majör ve mi minör dizileri uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.4.2",
+          "m": "Sol majör ve mi minör dizileri okuyabilme",
+          "s": [
+            "Sol majör ve mi minör dizi bileşenlerini tanır.",
+            "Sol majör ve mi minör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Sol majör ve mi minör dizi bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "MİOY.6.4.3",
+          "m": "Sol majör ve mi minör dizileri işitebilme",
+          "s": [
+            "Sol majör ve mi minör dizi bileşenlerini tanır.",
+            "Sol majör ve mi minör dizi bileşenlerini işitsel olarak ayırt eder.",
+            "Sol majör ve mi minör dizi bileşenlerini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

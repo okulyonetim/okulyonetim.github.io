@@ -1,0 +1,254 @@
+{
+  "ders": "Seçmeli Spor Etk. (Atletizm)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAREKET YETKİNLİĞİ ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 1.3.1. Atletizm branşları ile ilgili temel stratejileri ve taktikleri açıklar.",
+          "s": [
+            "SSFE-A 1.3.1. Atletizm branşları ile ilgili temel stratejileri ve taktikleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.3.2. Atletizm branşları ile ilgili stratejileri ve taktikleri uygular.",
+          "s": [
+            "SSFE-A 1.3.2. Atletizm branşları ile ilgili stratejileri ve taktikleri uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.3.3. Atletizm branşları ile ilgili stratejiler ve taktikler geliştirir.",
+          "s": [
+            "SSFE-A 1.3.3. Atletizm branşları ile ilgili stratejiler ve taktikler geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.3.4. Atletizm branşları ile ilgili başkalarının kullandığı stratejileri ve taktikleri değerlendirir.",
+          "s": [
+            "SSFE-A 1.3.4. Atletizm branşları ile ilgili başkalarının kullandığı stratejileri ve taktikleri değerlendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.1.1. Atletizm ile ilgili hareket becerileri sergiler.",
+          "s": [
+            "SSFE-A 1.1.1. Atletizm ile ilgili hareket becerileri sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.2.2. Atletizm ile ilgili hareket becerilerinin öğrenme ilkelerini açıklar.",
+          "s": [
+            "SSFE-A 1.2.2. Atletizm ile ilgili hareket becerilerinin öğrenme ilkelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.2.1. Atletizm ile ilgili hareket kavramlarını açıklar.",
+          "s": [
+            "SSFE-A 1.2.1. Atletizm ile ilgili hareket kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 2.1.3. Atletizm ile ilgili fiziksel uygunluğunu geliştirir.",
+          "s": [
+            "SSFE-A 2.1.3. Atletizm ile ilgili fiziksel uygunluğunu geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 1.2.3. Atletizm ile ilgili becerilerin hareket evrelerini açıklar.",
+          "s": [
+            "SSFE-A 1.2.3. Atletizm ile ilgili becerilerin hareket evrelerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "HAREKET YETKİNLİĞİ ÖĞRENME ALANI 4. HAYAT BECERİLERİ ÖĞRENME",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.1. Atletizmde başkaları ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır.",
+          "s": [
+            "SSFE-A 4.2.1. Atletizmde başkaları ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.3. Atletizmde çeşitli iletişim becerileri sergiler.",
+          "s": [
+            "SSFE-A 4.2.3. Atletizmde çeşitli iletişim becerileri sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.5. Atletizm etkinliklerinde bireysel farklılıklara saygı gösterir.",
+          "s": [
+            "SSFE-A 4.2.5. Atletizm etkinliklerinde bireysel farklılıklara saygı gösterir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "HAYAT BECERİLERİ ÖĞRENME",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 4.1.4. Okul içinde/dışında atletizm branşları ile ilgili etkinliklere gönüllü olarak katılır.",
+          "s": [
+            "SSFE-A 4.1.4. Okul içinde/dışında atletizm branşları ile ilgili etkinliklere gönüllü olarak katılır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.4. Dürüst oyun davranışı sergiler.",
+          "s": [
+            "SSFE-A 4.2.4. Dürüst oyun davranışı sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.1.1. Atletizmde kendisi ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır.",
+          "s": [
+            "SSFE-A 4.1.1. Atletizmde kendisi ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.1.2. Atletizm ile ilgili aldığı sorumlulukları yerine getirir.",
+          "s": [
+            "SSFE-A 4.1.2. Atletizm ile ilgili aldığı sorumlulukları yerine getirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.2. Atletizmde takım/grup hedefleri doğrultusunda arkadaşları ile iş birliği yapar.",
+          "s": [
+            "SSFE-A 4.2.2. Atletizmde takım/grup hedefleri doğrultusunda arkadaşları ile iş birliği yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.1.5. Atletizm etkinliklerine katılırken yeterli ve dengeli beslenme alışkanlığı sergiler.",
+          "s": [
+            "SSFE-A 4.1.5. Atletizm etkinliklerine katılırken yeterli ve dengeli beslenme alışkanlığı sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.2.6. Atletizm etkinliklerinde bireysel farklılıkları olan öğrencilerle birlikte etkili çalışır.",
+          "s": [
+            "SSFE-A 4.2.6. Atletizm etkinliklerinde bireysel farklılıkları olan öğrencilerle birlikte etkili çalışır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "FİZİKSEL VE PSİKOLOJİK UYUM ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 2.1.2. Atletizm ile ilgili fiziksel uygunluk geliştirme ilkelerini açıklar.",
+          "s": [
+            "SSFE-A 2.1.2. Atletizm ile ilgili fiziksel uygunluk geliştirme ilkelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 2.1.1. Atletizm ile ilgili fiziksel uygunluk kavramlarını açıklar.",
+          "s": [
+            "SSFE-A 2.1.1. Atletizm ile ilgili fiziksel uygunluk kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 2.1.4. Atletizm ile ilgili fiziksel uygunluk gelişimini analiz eder.",
+          "s": [
+            "SSFE-A 2.1.4. Atletizm ile ilgili fiziksel uygunluk gelişimini analiz eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 2.2.1. Atletizmde etkili performans için gerekli psikolojik özellikleri sergiler.",
+          "s": [
+            "SSFE-A 2.2.1. Atletizmde etkili performans için gerekli psikolojik özellikleri sergiler."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SPOR BİLGİSİ ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 3.2.1. Atletizm branşlarında yer alan farklı rollerin sorumluluklarını açıklar.",
+          "s": [
+            "SSFE-A 3.2.1. Atletizm branşlarında yer alan farklı rollerin sorumluluklarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 3.2.2. Atletizme özgü organizasyonları inceleyerek sonuçları arkadaşları ile paylaşır.",
+          "s": [
+            "SSFE-A 3.2.2. Atletizme özgü organizasyonları inceleyerek sonuçları arkadaşları ile paylaşır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SPOR BİLGİSİ ÖĞRENME ALANI 4. HAYAT BECERİLERİ ÖĞRENME",
+      "a": [
+        {
+          "k": "",
+          "m": "SSFE-A 3.1.1. Atletizm ile ilgili oyun/yarışma kurallarını sıralar.",
+          "s": [
+            "SSFE-A 3.1.1. Atletizm ile ilgili oyun/yarışma kurallarını sıralar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "",
+          "m": "SSFE-A 4.1.3. Atletizm etkinliklerinde kişisel bakımını ve temizliğini yapmayı alışkanlık haline getirir.",
+          "s": [
+            "SSFE-A 4.1.3. Atletizm etkinliklerinde kişisel bakımını ve temizliğini yapmayı alışkanlık haline getirir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

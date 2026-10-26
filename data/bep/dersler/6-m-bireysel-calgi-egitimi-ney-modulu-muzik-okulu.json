@@ -1,0 +1,78 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NEYDE BİRİNCİ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "NEY.6.1.1",
+          "m": "Kaba kürdi ve kaba nim hicaz notalarını çalabilme",
+          "s": [
+            "Kaba kürdi ve kaba nim hicaz notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "NEY.6.1.2",
+          "m": "Kaba segâh notasını çalabilme",
+          "s": [
+            "Kaba segâh notasını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notayı yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE ÜÇÜNCÜ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "NEY.6.2.1",
+          "m": "Eviç ve nim şehnaz notalarını çalabilme",
+          "s": [
+            "Eviç ve nim şehnaz notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE DÖRDÜNCÜ KADEME SES ALANINDA ANA SESLER",
+      "a": [
+        {
+          "k": "NEY.6.3.1",
+          "m": "Tiz buselik, tiz çargâh ve tiz neva notalarını çalabilme",
+          "s": [
+            "Tiz buselik, tiz çargâh ve tiz neva notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE MAKAMLAR VE UYGULAMALARI 3",
+      "a": [
+        {
+          "k": "NEY.6.4.1",
+          "m": "Uşşak makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Uşşak makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak uşşak makamında Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

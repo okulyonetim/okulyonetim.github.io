@@ -1,0 +1,268 @@
+{
+  "ders": "Seçmeli Spor Etk. (Masa Tenisi)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "3. SPOR BİLGİSİ ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "SSFE.3.1.3",
+          "m": "Spor dalının tarihsel gelişim sürecini araştırır.",
+          "s": [
+            "Spor dalının tarihsel gelişim sürecini araştırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.3.1.4",
+          "m": "Spor dalı ile ilgili gelenekleri kavrar.",
+          "s": [
+            "Spor dalı ile ilgili gelenekleri kavrar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.3.1.1",
+          "m": "Spor dalı ile ilgili oyun/yarışma kurallarını sıralar.",
+          "s": [
+            "Spor dalı ile ilgili oyun/yarışma kurallarını sıralar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.3.1.2",
+          "m": "Spor dalında kullanılan malzemeleri sıralar.",
+          "s": [
+            "Spor dalında kullanılan malzemeleri sıralar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.3.1",
+          "m": "Spor dalı ile ilgili temel stratejileri ve taktikleri açıklar.",
+          "s": [
+            "Spor dalı ile ilgili temel stratejileri ve taktikleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.3.2.1",
+          "m": "Spor dalı içindeki farklı rollerin sorumluluklarını açıklar.",
+          "s": [
+            "Spor dalı içindeki farklı rollerin sorumluluklarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.3.2.2",
+          "m": "Spor dalına özgü organizasyonları inceleyerek sonuçlarını arkadaşları ile paylaşır.",
+          "s": [
+            "Spor dalına özgü organizasyonları inceleyerek sonuçlarını arkadaşları ile paylaşır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "1. HAREKET YETKİNLİĞİ ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "SSFE.1.1.1",
+          "m": "Spor dalı ile ilgili hareket becerileri sergiler.",
+          "s": [
+            "Spor dalı ile ilgili hareket becerileri sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.2.1",
+          "m": "Spor dalı ile ilgili hareket kavramlarını açıklar.",
+          "s": [
+            "Spor dalı ile ilgili hareket kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.2.2",
+          "m": "Spor dalı ile ilgili hareket becerilerinin öğrenme ilkelerini açıklar.",
+          "s": [
+            "Spor dalı ile ilgili hareket becerilerinin öğrenme ilkelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.2.3",
+          "m": "Spor dalı ile ilgili becerilerin hareket evrelerini açıklar.",
+          "s": [
+            "Spor dalı ile ilgili becerilerin hareket evrelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.3.2",
+          "m": "Spor dalı ile ilgili stratejileri ve taktikleri uygular.",
+          "s": [
+            "Spor dalı ile ilgili stratejileri ve taktikleri uygular."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.1.2",
+          "m": "Spor dalı ile ilgili hareket becerilerini oyun/yarışma/maç içerisinde sergiler.",
+          "s": [
+            "Spor dalı ile ilgili hareket becerilerini oyun/yarışma/maç içerisinde sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.3.1",
+          "m": "Spor dalı ile ilgili temel stratejileri ve taktikleri açıklar.",
+          "s": [
+            "Spor dalı ile ilgili temel stratejileri ve taktikleri açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.3.3",
+          "m": "Spor dalı ile ilgili stratejiler ve taktikler geliştirir.",
+          "s": [
+            "Spor dalı ile ilgili stratejiler ve taktikler geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.1.3.4",
+          "m": "Spor dalı ile ilgili başkalarının kullandığı stratejileri ve taktikleri değerlendirir.",
+          "s": [
+            "Spor dalı ile ilgili başkalarının kullandığı stratejileri ve taktikleri değerlendirir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. FİZİKSEL VE PSİKOLOJİK UYUM ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "SSFE.2.1.3",
+          "m": "Spor dalı ile ilgili fiziksel uygunluğunu geliştirir.",
+          "s": [
+            "Spor dalı ile ilgili fiziksel uygunluğunu geliştirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.2.1.1",
+          "m": "Spor dalı ile ilgili fiziksel uygunluk kavramlarını açıklar.",
+          "s": [
+            "Spor dalı ile ilgili fiziksel uygunluk kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.2.1.2",
+          "m": "Spor dalı ile ilgili fiziksel uygunluk geliştirme ilkelerini açıklar.",
+          "s": [
+            "Spor dalı ile ilgili fiziksel uygunluk geliştirme ilkelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.2.2.1",
+          "m": "Spor dalında etkili performans için gerekli psikolojik özellikleri sergiler.",
+          "s": [
+            "Spor dalında etkili performans için gerekli psikolojik özellikleri sergiler."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. HAYAT BECERİLERİ ÖĞRENME ALANI",
+      "a": [
+        {
+          "k": "SSFE.4.1.4",
+          "m": "Okul içinde/dışında sporla ilgili etkinliklere gönüllü olarak katılır.",
+          "s": [
+            "Okul içinde/dışında sporla ilgili etkinliklere gönüllü olarak katılır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.2.4",
+          "m": "Dürüst oyun davranışı sergiler.",
+          "s": [
+            "Dürüst oyun davranışı sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.2.1",
+          "m": "Başkaları ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır.",
+          "s": [
+            "Başkaları ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.1.2",
+          "m": "Spor ve fiziki etkinlikler ile ilgili aldığı sorumlulukları yerine getirir.",
+          "s": [
+            "Spor ve fiziki etkinlikler ile ilgili aldığı sorumlulukları yerine getirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.1.1",
+          "m": "Kendisi ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır.",
+          "s": [
+            "Kendisi ile ilgili riskleri azaltacak sağlık ve güvenlik önlemlerini alır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.2.2",
+          "m": "Takım/grup hedefleri doğrultusunda arkadaşları ile iş birliği yapar.",
+          "s": [
+            "Takım/grup hedefleri doğrultusunda arkadaşları ile iş birliği yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.1.3",
+          "m": "Spor ve fiziki etkinliklerde kişisel bakımını ve temizliğini yapmayı alışkanlık haline getirir.",
+          "s": [
+            "Spor ve fiziki etkinliklerde kişisel bakımını ve temizliğini yapmayı alışkanlık haline getirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.2.6",
+          "m": "Bireysel farklılıkları olan öğrenciler ile birlikte etkili çalışır.",
+          "s": [
+            "Bireysel farklılıkları olan öğrenciler ile birlikte etkili çalışır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.1.5",
+          "m": "Spor ve fiziki etkinliklere katılırken yeterli ve dengeli beslenme alışkanlığı sergiler.",
+          "s": [
+            "Spor ve fiziki etkinliklere katılırken yeterli ve dengeli beslenme alışkanlığı sergiler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "SSFE.4.2.5",
+          "m": "Spor ve fiziki etkinliklerde bireysel farklılıklara saygı gösterir.",
+          "s": [
+            "Spor ve fiziki etkinliklerde bireysel farklılıklara saygı gösterir."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

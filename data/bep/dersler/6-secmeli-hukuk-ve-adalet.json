@@ -1,0 +1,137 @@
+{
+  "ders": "Seçmeli Hukuk ve Adalet",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: TOPLUMDA HUKUK VE ADALET",
+      "a": [
+        {
+          "k": "HA.1.1",
+          "m": "Hukuk, eşitlik ve adalet kavramları arasındaki ilişkiyi çözümleyebilme",
+          "s": [
+            "Hukuk, eşitlik ve adalet kavramlarının temel özelliklerini belirler.",
+            "Hukuk, eşitlik ve adalet kavramlarının arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "HA.1.2",
+          "m": "Adaletli olmanın birey ve toplum yaşamına etkilerini tartışabilme",
+          "s": [
+            "Adaletli olmanın birey ve toplum yaşamına etkileri hakkında gerekçeler sunar.",
+            "Tartışmalar sırasında adaletli olmanın etkileriyle ilgili farklı görüşler arasındaki çelişkileri veya tutarsızlıkları belirler.",
+            "Adaletli olmanın birey ve toplum yaşamına etkileri hakkında sunulan görüşlerin doğruluğunu ya da yanlışlığını ortaya koyar."
+          ]
+        },
+        {
+          "k": "HA.1.3",
+          "m": "Hukuk kurallarının toplumsal düzen ve adaleti sağlamadaki rolüne ilişkin gözleme dayalı tahminlerde bulunabilme",
+          "s": [
+            "Hukuk kurallarının toplumsal düzen ve adaleti sağlamadaki etkisini günlük yaşamdan örneklerle ilişkilendirir.",
+            "Hukuk kurallarının toplumsal düzen ve adaletin sağlanması üzerindeki etkilerine yönelik çıkarımlarda bulunur.",
+            "Hukuk kurallarının olmadığı bir ortamda toplumsal düzen ve adaletin sağlanmasının nasıl etkileneceğine ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: HAKLAR VE SORUMLULUKLAR",
+      "a": [
+        {
+          "k": "HA.2.1",
+          "m": "Hak ve sorumluluk kavramları arasındaki ilişkinin önemini yorumlayabilme",
+          "s": [
+            "Hakların aranmasında sorumluluk üstlenmenin önemini günlük yaşamdaki örnekler üzerinden inceler.",
+            "Hakların aranmasında sorumluluk üstlenmenin önemini bağlamdan kopmadan yazılı, görsel veya dijital ürünlere dönüştürür.",
+            "Hakların aranmasında sorumluluk üstlenmenin önemini nesnel, doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "HA.2.2",
+          "m": "Haklarını hukuki yollarla aramanın gerekliliğini sorgulayabilme",
+          "s": [
+            "Haklarını hukuki yollarla aramanın neden önemli olduğu hakkında merak ettiği konuları tanımlar.",
+            "Haklarını hukuki yollarla aramanın gerekliliği ile ilgili sorular sorar.",
+            "Haklarını hukuki yollarla aramanın gerekliliği ile ilgili bilgi toplar.",
+            "Haklarını hukuki yollarla aramanın gerekliliği ile ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Topladığı bilgilerden yola çıkarak hakların hukuki yollarla aranması gerekliliği ile ilgili çıkarım yapar."
+          ]
+        },
+        {
+          "k": "HA.2.3",
+          "m": "Haklarını ararken kullanabileceği yazılı, görsel ve çevrim içi kaynaklarla ilgili oluşturduğu ürünü paylaşabilme",
+          "s": [
+            "Haklarını ararken kullanabileceği yazılı, görsel ve çevrim içi kaynaklarla ilgili çıkarımda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: HUKUKİ UYUŞMAZLIKLAR",
+      "a": [
+        {
+          "k": "HA.3.1",
+          "m": "Hukuka aykırı durumların ortaya çıkma nedenlerini yorumlayabilme",
+          "s": [
+            "Hukuka uygun ve hukuka aykırı durumları inceler.",
+            "Hukuka aykırı durumların ortaya çıkma nedenlerini yazılı, görsel veya dijital ürünlere dönüştürür.",
+            "Hukuka aykırı durumların nedenlerini kendi cümleleri ile yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "HA.3.2",
+          "m": "Gözlem ve deneyimlerine dayanarak hukuka aykırı durumların ortaya çıkmaması için yerine getirmesi gereken hukuki yükümlülükleri tahmin edebilme.",
+          "s": [
+            "Gözlem ve deneyimlerinden yola çıkarak hukuka aykırı durumlar ile hukuki yükümlülükler arasındaki ilişkiyi belirler.",
+            "Hukuki yükümlülüklerini yerine getirmemenin yol açabileceği hak ihlali veya hukuka aykırı durumlara ilişkin çıkarımda bulunur.",
+            "Hukuki yükümlülüklerini yerine getirmenin hak ihlallerini önlemedeki rolüne ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "HA.3.3",
+          "m": "Hukuka aykırı iki benzer durumun sonuçları arasında analojik akıl yürütebilme",
+          "s": [
+            "Hukuka aykırı farklı durumları gözlemler.",
+            "Hukuka aykırı durumların taraf, fiil, korunan hak ve olası yaptırım özelliklerini belirler.",
+            "Hukuka aykırı durumların benzerliklerden hareketle sonuçlarına ve yaptırımlarına ilişkin çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: HUKUKI ÇÖZÜMLER",
+      "a": [
+        {
+          "k": "HA.4.1",
+          "m": "Uyuşmazlıkların çözüm yolları ile ilgili eleştirel düşünebilme",
+          "s": [
+            "Uyuşmazlıkların çözümünde makul olma ve uzlaşı yöntemlerini sorgular.",
+            "Uyuşmazlıkların çözümünde kullanılabilecek uzlaşı yöntemleri ile ilgili akıl yürütür.",
+            "Uzlaşı yöntemlerini günlük yaşamda yansıtabileceği durumlara örnekler verir."
+          ]
+        },
+        {
+          "k": "HA.4.2",
+          "m": "Karşılaşabileceği hukuki uyuşmazlıkları ilgili kurum ve kuruluşlar aracılığıyla çözebilme",
+          "s": [
+            "Örneklerden yola çıkarak günlük yaşamda karşılaşabileceği bir hukuki uyuşmazlığı belirler.",
+            "Belirlediği hukuki uyuşmazlıkla ilgili ayrıntıları özetler.",
+            "Hukuki uyuşmazlığın çözümü için başvurabileceği kurum ve kuruluşlara yönelik mevcut bilgiye dayalı tahminde bulunur.",
+            "Hukuki uyuşmazlığın çözümünde başvurabileceği kurum ve kuruluşların görev ve yetki alanlarına ilişkin akıl yürütür.",
+            "Hukuki uyuşmazlığın çözümünde başvurabileceği en uygun kurum ve kuruluşlara karar verir."
+          ]
+        },
+        {
+          "k": "HA.4.3",
+          "m": "Yargı sistemindeki kurumlar ile meslekleri sentezleyebilme",
+          "s": [
+            "Yargı sistemi içinde yer alan kurumları ve meslekleri belirler.",
+            "Yargı sistemi içinde yer alan kurumlar ile meslekleri ilişkilendirir.",
+            "Yargı sistemi içinde yer alan kurumlar ve meslekler ile ilgili özgün bir ürün oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

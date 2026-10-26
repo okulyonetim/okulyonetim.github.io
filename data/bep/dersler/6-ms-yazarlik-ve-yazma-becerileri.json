@@ -1,0 +1,231 @@
+{
+  "ders": "Yazarlık ve Yazma Becerileri",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "YAZININ PLANLANMASI",
+      "a": [
+        {
+          "k": "YYB.1.1.1",
+          "m": "Yazma sürecini yönetebilme",
+          "s": [
+            "Yazma ortamı ve araç gerecinin seçimini yapar.",
+            "Yazmaya hazırlık ile ilgili etkinliklere katılarak yazma süreciyle olan ilişkisini sürdürür."
+          ]
+        },
+        {
+          "k": "YYB.1.1.2",
+          "m": "Yazma amacını çözümleyebilme",
+          "s": [
+            "Yazma amacına yönelik temel unsurları belirler.",
+            "Yazma amacına uygun içerik, üslup ve yapı arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "YYB.1.1.3",
+          "m": "Yazı planına yönelik çıkarım yapabilme",
+          "s": [
+            "Yazacağı metnin konu seçimine ilişkin mevcut bilgisi dâhilinde varsayımda bulunur.",
+            "Yazı planını oluşturan unsurların örüntülerini listeler.",
+            "Yazı planında oluşturduğu unsurların birbirleriyle olan uyumunu karşılaştırır.",
+            "Yazı planında yer alan unsurlardan herhangi birine yönelik önerme sunar.",
+            "Yazısının planına yönelik süreci değerlendirir."
+          ]
+        },
+        {
+          "k": "YYB.1.1.4",
+          "m": "Yazısının zaman planını yapılandırabilme",
+          "s": [
+            "Yazısının bölümlerini yazacağı metinle ilişkilendirerek ortaya koyar.",
+            "Yazısının bölümleri ile her bölüme ayıracağı süreyi ilişkilendirerek zaman planını oluşturur."
+          ]
+        },
+        {
+          "k": "YYB.1.1.5",
+          "m": "Yazısını yapılandırabilme",
+          "s": [
+            "Hazırlık aşamasını göz önünde bulundurarak yazısını mantıksal ilişkiler içerisinde ortaya koyar.",
+            "Ortaya koyduğu yazısını ön bilgilerinden hareketle inceleyerek uyumlu bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "YYB.1.1.6",
+          "m": "Yazma sürecinde kural uygulayabilme",
+          "s": [
+            "Yazısının sayfa düzeni ve okunaklılığına dair plan hazırlar.",
+            "Yazısında düşünceyi geliştirme yollarını kullanır.",
+            "Yazısında uygun söz varlığını kullanır.",
+            "Yazısında iletileri açık ve örtük biçimde ifade eder.",
+            "Yazısında dil yapılarını uygular.",
+            "Yazısında bağlama uygun bağdaşıklık ögelerini kullanır.",
+            "Yazısında yazım kurallarını uygular.",
+            "Yazısında noktalama kurallarını uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZININ GELİŞTİRİLMESİ",
+      "a": [
+        {
+          "k": "YYB.1.2.1",
+          "m": "Yazısını geliştirmek amacıyla yeniden yorumlayabilme",
+          "s": [
+            "Oluşturduğu taslak metni, hazırlık aşamasındaki kurallara göre inceler.",
+            "Yazdığı metni, uyguladığı kurallara göre bağlamdan kopmadan dönüştürür.",
+            "Yazdığı metni, metnin başlığını doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "YYB.1.2.2",
+          "m": "Türe uygun özgün bir içerik oluşturabilme",
+          "s": [
+            "Yazısında kullanacağı türe yönelik ön bilgileriyle bağlantı kurar.",
+            "Metinde boş bırakılan bölümleri bağlamdan kopmadan tahmin eder.",
+            "Yazısının bölümlerini birbirleriyle olan uyumu bakımından karşılaştırır.",
+            "Yazısında kullanacağı yapı unsurlarını sınıflandırır.",
+            "Verilen bir metni yeniden ifade eder.",
+            "Belirlediği türe uygun özgün bir içerik oluşturarak tepki verir.",
+            "Verilen görsellerden yola çıkarak anlam oluşturur.",
+            "Yazdığı metni uygun ortamda sunar."
+          ]
+        },
+        {
+          "k": "YYB.1.2.3",
+          "m": "Yazma sürecini değerlendirebilme",
+          "s": [
+            "Yazma sürecinin aşamalarına ilişkin deneyimlerini inceleyerek kendini değerlendirir.",
+            "Yazma sürecine ilişkin değerlendirmelerinden hareketle sonraki yazma çalışmalarına yönelik düzenlemeler planlayarak tepki ortaya koyar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZININ SUNUMA HAZIRLANMASI",
+      "a": [
+        {
+          "k": "YYB.1.3.1",
+          "m": "Yazısının sunum içeriğini sentezleyebilme",
+          "s": [
+            "Yazısının sunumuna ekleyeceği parçaları belirler.",
+            "Yazısının sunumunda yazısı ile belirlediği parçalar arasında ilişki kurar.",
+            "Yazısının sunumunda kullanacağı parçaları birleştirerek özgün bir bütün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZININ PLANLANMASI",
+      "a": [
+        {
+          "k": "YYB.2.1.1",
+          "m": "Yazma sürecini yapılandırabilme",
+          "s": [
+            "Yazma ortamı ve araç gerecinin seçimi ile ilgili mantıksal ilişkiler ortaya koyar.",
+            "Yazma etkinliklerine katılma ile ilgili ön bilgilerinden yararlanarak uyumlu bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "YYB.2.1.2",
+          "m": "Yazma amacını yansıtabilme",
+          "s": [
+            "Yazma amacı ile buna uygun içerik, üslup ve yapı arasındaki ilişkiye yönelik önceki deneyimlerini gözden geçirir.",
+            "Önceki deneyimlerinden hareketle yazma amacı ile içerik, üslup ve yapı arasındaki ilişkiye dair çıkarımlarda bulunur.",
+            "Ulaştığı çıkarımları, yazma amacına uygunluk açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "YYB.2.1.3",
+          "m": "Yazı planını oluşturan unsurlara yönelik gözleme dayalı tahmin edebilme",
+          "s": [
+            "Yazı planını oluşturan unsurlara yönelik deneyimlerini ilişkilendirir.",
+            "Yazı planını oluşturan unsurlara yönelik çıkarım yapar.",
+            "Yazı planını oluşturan unsurlara yönelik yargıda bulunur."
+          ]
+        },
+        {
+          "k": "YYB.2.1.4",
+          "m": "Yazısının zaman planını yapılandırabilme",
+          "s": [
+            "Yazısının bölümlerini yazacağı metinle ilişkilendirerek ortaya koyar.",
+            "Yazısının bölümlerini ve her bölüme ayıracağı süreyi uyumlu bir bütün olacak şekilde ortaya koyar."
+          ]
+        },
+        {
+          "k": "YYB.2.1.5",
+          "m": "Yazısını yapılandırabilme",
+          "s": [
+            "Hazırlık aşamasını göz önünde bulundurarak yazısını mantıksal ilişkiler içerisinde ortaya koyar.",
+            "Ortaya koyduğu yazısını ön bilgilerinden hareketle inceleyerek uyumlu bir bütün oluşturur."
+          ]
+        },
+        {
+          "k": "YYB.2.1.6",
+          "m": "Deneyimlerinden hareketle yazma sürecinde kural uygulayabilme",
+          "s": [
+            "Yazısının sayfa düzeni ve okunaklılığına ilişkin plan hazırlar.",
+            "Yazısında düşünceyi geliştirme yollarını amaç, konu ve bağlama uygun biçimde kullanır.",
+            "Yazısında bağlama ve amaca uygun söz varlığını kullanır.",
+            "Yazısında iletilerini açık ve örtük anlatımlarla ifade eder.",
+            "Yazısında dil yapılarını anlam ve anlatım bütünlüğünü destekleyecek biçimde uygular.",
+            "Yazısında metnin bütünlüğünü destekleyecek biçimde bağlama uygun bağdaşıklık ögelerini kullanır.",
+            "Yazısında doğru ve tutarlı olacak şekilde yazım kurallarını uygular.",
+            "Yazısında anlamı destekleyecek ve anlatımı güçlendirecek biçimde noktalama kurallarını uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZININ GELİŞTİRİLMESİ",
+      "a": [
+        {
+          "k": "YYB.2.2.1",
+          "m": "Yazısını geliştirmek amacıyla yeniden yorumlayabilme",
+          "s": [
+            "Yazdığı metni verilen ölçütlere göre inceler.",
+            "Verilen ölçütler aracılığıyla yaptığı tespitler doğrultusunda metni bağlamdan kopmadan dönüştürür.",
+            "Yazdığı metni veya metnin başlığını anlam bütünlüğünü koruyarak yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "YYB.2.2.2",
+          "m": "Deneyimlerinden hareketle türe uygun özgün bir içerik oluşturabilme",
+          "s": [
+            "Yazısında kullanacağı türe ilişkin ön bilgileriyle bağlantı kurar.",
+            "Metindeki boş bırakılan bölümleri bağlamdan hareketle tahmin eder.",
+            "Yazısının bölümlerini birbiriyle olan uyum ve bütünlük açısından karşılaştırır.",
+            "Yazısında kullanacağı yapı unsurlarını sınıflandırır.",
+            "Verilen bir metni anlamını koruyarak yeniden ifade eder.",
+            "Belirlediği türe uygun özgün bir içerik oluşturarak tepki verir.",
+            "Verilen görsellerden hareketle bağlama uygun anlam oluşturur.",
+            "Yazdığı metni türüne, amacına ve hedef kitlesine uygun ortamda sunar."
+          ]
+        },
+        {
+          "k": "YYB.2.2.3",
+          "m": "Yazma sürecini değerlendirebilme",
+          "s": [
+            "Yazma sürecinin aşamalarına ilişkin deneyimlerini inceleyerek kendini değerlendirir.",
+            "Yazma sürecine ilişkin değerlendirmelerinden hareketle sonraki yazma çalışmalarına yönelik düzenlemeler planlayarak tepki ortaya koyar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZININ SUNUMA HAZIRLANMASI",
+      "a": [
+        {
+          "k": "YYB.2.3.1",
+          "m": "Yazısının sunum içeriğini sentezleyebilme",
+          "s": [
+            "Yazısının sunumuna ekleyeceği parçaları belirler.",
+            "Yazısının sunumunda yazısıyla belirlediği parçalar arasında ilişki kurar.",
+            "Yazısının sunumundaki parçaları yazısıyla birleştirerek sunumunda özgün bir bütün oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

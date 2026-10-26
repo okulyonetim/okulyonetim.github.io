@@ -1,0 +1,54 @@
+{
+  "ders": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "RİTMİN SPORA AÇILAN KAPILARI",
+      "a": [
+        {
+          "k": "RİHO.6.1.1",
+          "m": "Sportif becerilere özgü ritmik hareket edebilme",
+          "s": [
+            "Sportif becerilere özgü ritmik çalışmaları algılar.",
+            "Sportif becerilere özgü ritmik çalışmalarda ritme uygun hareket eder.",
+            "Sportif becerilere özgü ritmik çalışmaları sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.6.1.2",
+          "m": "Sportif becerilere özgü ritmik çalışmalarda eşle/grupla hareket edebilme",
+          "s": [
+            "Sportif becerilere özgü ritmik çalışmalarda eşle/grupla hareket ederken rollerini tanımlar.",
+            "Sportif becerilere özgü ritmik çalışmalarda eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Sportif becerilere özgü ritmik çalışmalarda eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİRLEŞİK ÖLÇÜLÜ RİTİM EĞİTİMİ VE HALK OYUNLARIMIZ",
+      "a": [
+        {
+          "k": "RİHO.6.2.1",
+          "m": "Birleşik ölçülü ritim kalıplarıyla ritmik hareket edebilme",
+          "s": [
+            "Ritmik çalışmalarla birleşik ölçülü ritim kalıplarını algılar.",
+            "Birleşik ölçülü ritim kalıplarıyla yapılan halk oyunları çalışmalarında ritme uygun hareket eder.",
+            "Birleşik ölçülü ritim kalıpları ile seçilen halk oyunlarının adımlamalarını sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.6.2.2",
+          "m": "Birleşik ölçülü ritim kalıplarıyla seçilen halk oyunlarında koreografiye uygun eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyunlarına özgü koreografi çalışmalarında eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

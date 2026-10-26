@@ -1,0 +1,62 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMA İLE TÜRKÜ SÖYLEME TEKNİĞİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.6.1.1",
+          "m": "Bağlama ile türkü söyleyebilme",
+          "s": [
+            "Bağlama ile türkü söylemeye bedenini hazır hâle getirir.",
+            "Bağlamaya ile çalmada uygun söyleme tekniklerini kullanır.",
+            "Bağlama ile türkü söylemenin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA ÇARPMA VE ÇEKME TEKNİĞİNİ UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.6.2.1",
+          "m": "Bağlamada çarpma ve çekme tekniğini çalabilme",
+          "s": [
+            "Bağlamada çarpma ve çekme tekniklerini çözümler.",
+            "Bağlama ile çarpma ve çekme tekniklerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlama ile çarpma ve çekme tekniklerini çalmada çalgıya özgü tekniklerini kullanır.",
+            "Bağlama ile çarpma ve çekme tekniklerini müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA 7 VE 9 ZAMANLI USULLERİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "BAĞL.6.3.1",
+          "m": "Bağlamada yedi zamanlı usullerle eser çalabilme",
+          "s": [
+            "Bağlamada yedi zamanlı usulleri çözümler.",
+            "Bağlamada yedi zamanlı usulleri çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlamada yedi zamanlı usullerin çalgıya özgü tekniklerini kullanır.",
+            "Bağlamada yedi zamanlı usullerin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "BAĞL.6.3.2",
+          "m": "Bağlamada dokuz zamanlı usullerle eser çalabilme",
+          "s": [
+            "Bağlamada dokuz zamanlı usulleri çözümler.",
+            "Bağlamada dokuz zamanlı usulleri çalmada duruş ve tutuş pozisyonu alır.",
+            "Bağlamada dokuz zamanlı usullerin çalgıya özgü tekniklerini kullanır.",
+            "Bağlamada dokuz zamanlı usullerin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

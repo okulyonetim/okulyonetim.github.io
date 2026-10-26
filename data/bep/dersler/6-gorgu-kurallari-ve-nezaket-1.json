@@ -1,0 +1,100 @@
+{
+  "ders": "Görgü Kuralları ve Nezaket 1",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÖRGÜ KURALLARI VE NEZAKETİN GÜCÜ",
+      "a": [
+        {
+          "k": "GKN.1.1.1",
+          "m": "Görgü kuralları ve nezaket ile ilgili temel kavramlar hakkında bilgi toplayabilme",
+          "s": [
+            "Görgü kuralları ve nezaket ile ilgili temel kavramlar hakkında bilgi toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.1.1.2",
+          "m": "Aile, kültür, din, ahlak kaynaklarının görgü kuralları ve nezakete etkisini yorumlayabilme",
+          "s": [
+            "Aile, kültür, din, ahlak kaynaklarının görgü kuralları ve nezakete etkisini yorumlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.1.1.3",
+          "m": "Birlikte yaşama kültüründe görgü kuralları ve nezaketin yerini yorumlayabilme",
+          "s": [
+            "Birlikte yaşama kültüründe görgü kuralları ve nezaketin yerini yorumlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: ERDEMLİ İNSANDAN HUZURLU AİLEYE",
+      "a": [
+        {
+          "k": "GKN.1.2.1",
+          "m": "Görgü kuralları ve nezaketin öz bakımı etkileyen unsurlarını çözümleyebilme",
+          "s": [
+            "Görgü kuralları ve nezaketin öz bakımı etkileyen unsurlarını çözümler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.1.2.2",
+          "m": "Aile içi davranış kültürünü yorumlayabilme",
+          "s": [
+            "Aile içi davranış kültürünü yorumlar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3.TEMA: NAZİK ÖĞRENCİDEN MUTLU OKULA",
+      "a": [
+        {
+          "k": "GKN.1.3.1",
+          "m": "Okul içi iletişimde gösterilen tutum ve davranışlara ilişkin çıkarım yapabilme",
+          "s": [
+            "Okul içi iletişimde gösterilen tutum ve davranışlara ilişkin çıkarım yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.1.3.2",
+          "m": "Okul kaynaklarını verimli kullanma, temizlik ve tasarruf kültürünü hayatına yansıtabilme",
+          "s": [
+            "Okul kaynaklarını verimli kullanma, temizlik ve tasarruf kültürünü hayatına yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: BİR ARADA YAŞAMANIN İNCELİKLERİ",
+      "a": [
+        {
+          "k": "GKN.1.4.1",
+          "m": "Toplumsal yaşamda ortak alanlarda görgü kuralları ve nezaketin önemini yorumlayabilme",
+          "s": [
+            "Toplumsal yaşamda ortak alanlarda görgü kuralları ve nezaketin önemini yorumlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "GKN.1.4.2",
+          "m": "Millî ve manevi değerlerin görgü kuralları ve nezaketle ilişkisine dair unsurları çözümleyebilme",
+          "s": [
+            "Millî ve manevi değerlerin görgü kuralları ve nezaketle ilişkisine dair unsurları çözümler."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

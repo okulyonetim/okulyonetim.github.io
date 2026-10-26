@@ -1,0 +1,290 @@
+{
+  "ders": "Bilişim Teknolojileri",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "BİLİŞİM TEKNOLOJİLERİNİN HAYATIMIZDAKİ YERİ",
+      "a": [
+        {
+          "k": "BTY.6.1.1",
+          "m": "Yenilikçi bilişim teknolojilerini sınıflandırabilme",
+          "s": [
+            "Yenilikçi bilişim teknolojilerine ilişkin kavramları belirler.",
+            "Yenilikçi teknolojileri, bilişim teknolojilerinin günlük hayatı kolaylaştırmadaki rolüyle ilişkilendirir.",
+            "Yenilikçi bilişim teknolojilerini kullanım alanlarına göre gruplandırır."
+          ]
+        },
+        {
+          "k": "BTY.6.1.2",
+          "m": "Bilişim teknolojinin gelecekteki durumlarına yönelik çıkarım yapabilme",
+          "s": [
+            "Bilişim teknolojilerinin günümüze kadar olan gelişiminden yola çıkarak varsayımlarda bulunur.",
+            "Bilişim teknolojilerinin gelecekteki olası durumlarına yönelik örüntüleri listeler.",
+            "Bilişim teknolojilerinin gelecekteki olası durumlarına yönelik karşılaştırmalar yapar.",
+            "Bilişim teknolojilerinin olası gelişimlerinin toplum üzerindeki etkilerine ilişkin önermeler sunar.",
+            ". Bilişim teknolojilerinin olası gelişimlerinin toplum üzerindeki etkilerini değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DİJİTAL ÜRÜN TASARIM VE GELİŞTİRME",
+      "a": [
+        {
+          "k": "BTY.6.2.1",
+          "m": "Tablolama programlarından yararlanabilme",
+          "s": [
+            "Tablolama programlarının temel özelliklerini tanır.",
+            "Uygun tablolama programını belirler.",
+            "Belirlenen tablolama programının arayüz özelliklerini kullanır.",
+            "Kullanılan tablolama programını kullanım alanları/verimliliği açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.2",
+          "m": "Tablolama programlarının kullanımına yönelik problemleri belirleyebilme",
+          "s": [
+            "Tablolama programlarının kullanımına uygun gerçek yaşam durumunu belirler.",
+            "Bağlam içerisinde veriye dayalı cevaplanabilecek araştırma soruları oluşturur."
+          ]
+        },
+        {
+          "k": "BTY.6.2.3",
+          "m": "Tablolama dosyasında kullanılacak verileri toplayabilme ve düzenleyebilme",
+          "s": [
+            "Tablolama dosyasında kullanılacak verileri toplama süreci için plan yapar.",
+            "Tablolama dosyasında kullanılacak verileri elde eder.",
+            "Tablolama dosyasında kullanılacak verileri kullanıma hazır hâle getirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.4",
+          "m": "Tablolama programları kullanarak bulgulara ulaşabilme",
+          "s": [
+            "Bulgulara ulaşmak için uygun analiz yöntemlerini seçer.",
+            "Tablolama programları kullanarak verileri işler.",
+            "Tablolama programları kullanarak verileri analiz eder.",
+            "Tablolama programları kullanarak verileri görselleştirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.5",
+          "m": "Ses düzenleme programlarından yararlanabilme",
+          "s": [
+            "Ses düzenleme programlarının temel özelliklerini tanır.",
+            "Uygun ses düzenleme programını belirler.",
+            "Belirlenen ses düzenleme programının arayüz özelliklerini kullanır.",
+            "Kullanılan ses düzenleme programını kullanım alanları/verimliliği açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.6",
+          "m": "Ses dosyası için kurgu oluşturabilme",
+          "s": [
+            "Ses dosyası hazırlanacak gerçek hayat problemini belirler.",
+            "Ses dosyası hazırlama sürecinde kullanılacak hikâye/senaryo unsurlarını belirler.",
+            "Belirlenen unsurları kapsayan hikâye/senaryo oluşturur.",
+            "Hikâyeyi/senaryoyu bütünlük/kullanışlılık açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.7",
+          "m": "Ses dosyası geliştirebilme",
+          "s": [
+            "Tasarlanan hikâye/senaryo unsurlarından uyumlu bir ses dosyası oluşturur.",
+            "Oluşturulan sesi belirlenen ölçütler açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.8",
+          "m": "Video düzenleme programlarından yararlanabilme",
+          "s": [
+            "Video düzenleme programlarının temel özelliklerini tanır.",
+            "Uygun video düzenleme programını belirler.",
+            "Belirlenen video düzenleme programının arayüz özelliklerini kullanır.",
+            "Kullanılan video düzenleme programını kullanım alanları/verimliliği açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.2.9",
+          "m": "Video dosyası için kurgu oluşturabilme",
+          "s": [
+            "Video dosyası hazırlanacak gerçek hayat problemini belirler.",
+            "Video dosyası hazırlama sürecinde kullanılacak hikâye/senaryo unsurlarını belirler.",
+            "Belirlenen unsurları kapsayan hikâye/senaryo oluşturur.",
+            "Hikâyeyi/senaryoyu bütünlük/kullanışlılık açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DİJİTAL ÜRÜN TASARIM VE GELİŞTİRME / BİLGİSAYAR AĞLARI VE İLETİŞİM",
+      "a": [
+        {
+          "k": "BTY.6.2.10",
+          "m": "Video dosyası geliştirebilme",
+          "s": [
+            "Tasarlanan hikâye/senaryo unsurlarından uyumlu bir video dosyası oluşturur.",
+            "Oluşturulan videoyu belirlenen ölçütler açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.3.1",
+          "m": "İnternet ile amacına uygun olarak çalışabilme",
+          "s": [
+            "İleri düzey arama yapmak için kullanabileceği arama motorlarını belirler.",
+            "Belirlediği arama motorlarını kullanır.",
+            "Öğrendiği yeni internet teknolojilerini verimlilik kapsamında değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLGİSAYAR AĞLARI VE İLETİŞİM",
+      "a": [
+        {
+          "k": "BTY.6.3.1",
+          "m": "İnternet ile amacına uygun olarak çalışabilme",
+          "s": [
+            "İleri düzey arama yapmak için kullanabileceği arama motorlarını belirler.",
+            "Belirlediği arama motorlarını kullanır.",
+            "Öğrendiği yeni internet teknolojilerini verimlilik kapsamında değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.3.2",
+          "m": "İletişim teknolojilerini sınıflandırabilme",
+          "s": [
+            "Farklı ve eş zamanlı iletişim sürecinde kullanılan bileşenleri belirler.",
+            "İletişim araçlarını türlerine göre ilişkilendirir.",
+            "İletişim süreci açısından kullanılan araçları gruplandırır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLGİSAYAR AĞLARI VE İLETİŞİM / BİLİŞİM ETİĞİ VE SİBER GÜVENLİK",
+      "a": [
+        {
+          "k": "BTY.6.3.3",
+          "m": "İletişim teknolojileri ile çalışabilme",
+          "s": [
+            "Farklı ve eş zamanlı olarak kullanılan iletişim teknolojilerini amacına uygun olarak belirler.",
+            "Bir e-posta aracını amacına uygun olarak kullanır.",
+            "İletişim araçlarını kullanım amaçlarına uygunluğu açısından değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.4.1",
+          "m": "Bilişim etiği kapsamında güvenlik önlemlerini yönetebilme",
+          "s": [
+            "Bilişim etiği kapsamındaki güvenlik risklerini belirler.",
+            "Bilişim etiği kapsamındaki güvenlik risklerine karşı alınabilecek önlemleri belirler.",
+            "Bilişim suçların türlerini bilişim etiği kapsamında ayırt eder.",
+            "Karşılaşılan bilişim suçu veya bilişim etiği ihlalini güvenlik önlemleri açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİŞİM ETİĞİ VE SİBER GÜVENLİK",
+      "a": [
+        {
+          "k": "BTY.6.4.3",
+          "m": "Siber ortamda güvenlik önlemlerini yönetebilme",
+          "s": [
+            "Siber ortamda güvenlik risklerini belirler.",
+            "Siber ortamda güvenlik önlemlerini belirler.",
+            "Siber ortamda bilgi güvenliğinin temel bileşenlerini ayırt eder.",
+            "Siber ortamdaki örnek bir durumu güvenlik önlemleri açısından değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİŞİM ETİĞİ VE SİBER GÜVENLİK / YAPAY ZEKÂ",
+      "a": [
+        {
+          "k": "BTY.6.5.1",
+          "m": "Yapay zekâ girdileri hakkında bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ girdileriyle ilgili gerekli bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak yapay zekâ girdileri hakkındaki bilgileri bulur.",
+            "Yapay zekâ girdileri hakkındaki ulaşılan bilgileri doğrular.",
+            "Yapay zekâ girdileri hakkındaki ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAPAY ZEKÂ",
+      "a": [
+        {
+          "k": "BTY.6.5.1",
+          "m": "Yapay zekâ girdileri hakkında bilgi toplayabilme",
+          "s": [
+            "Yapay zekâ girdileriyle ilgili gerekli bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak yapay zekâ girdileri hakkındaki bilgileri bulur.",
+            "Yapay zekâ girdileri hakkındaki ulaşılan bilgileri doğrular.",
+            "Yapay zekâ girdileri hakkındaki ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "BTY.6.5.2",
+          "m": "Yapay zekâ araç ve teknolojileri ile çalışabilme",
+          "s": [
+            "Kullanacağı yapay zekâ aracını amacına uygun olarak belirler.",
+            "Belirlediği yapay zekâ aracını kullanır.",
+            "Kullandığı yapay zekâ aracını uygunluk/verimlilik kapsamında değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.5.3",
+          "m": "Yapay zekâ araç ve teknolojileri ile model geliştirebilme",
+          "s": [
+            "Yapay zekâ araç ve teknolojileri ile yapılacak olan modelde gerçek hayat problemini belirler.",
+            "Problemin çözümü için bir model oluşturur.",
+            "Yapay zekâ uygulamasında geliştirilen modeli uygular.",
+            "Yapay zekâ uygulamasındaki modelin süreç ve sonuçlarını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "YAZILIM TASARIMI VE PROGRAMLAMA",
+      "a": [
+        {
+          "k": "BTY.6.6.1",
+          "m": "Blok tabanlı ortamda yazılım geliştirme sürecinde kullanılan bileşenlerden yararlanabilme",
+          "s": [
+            "Blok tabanlı ortamında yazılım geliştirme süreci bileşenlerini tanır.",
+            "Blok tabanlı ortamda yazılım geliştirme süreci bileşenlerini kullanır.",
+            "Blok tabanlı ortamda yazılım geliştirme süreci bileşenlerini değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY.6.6.2",
+          "m": "Blok tabanlı ortamda yazılım geliştirme sürecini yönetebilme",
+          "s": [
+            "Blok tabanlı ortamda yazılım geliştirme sürecini planlar.",
+            "Blok tabanlı ortamda yazılımı tasarlar.",
+            "Blok tabanlı ortamda yazılımı oluşturur.",
+            "Blok tabanlı ortamda oluşturulan yazılımı değerlendirir."
+          ]
+        },
+        {
+          "k": "BTY6.6.3",
+          "m": "Blok tabanlı ortamda yapay zekâ destekli ürün ortaya koyabilme",
+          "s": [
+            "Blok tabanlı ortamda yapay zekâ destekli ürün için gereksinimleri belirler.",
+            "Blok tabanlı ortamda yapay zekâ destekli ürün için kullanılacak araç gereçleri seçer.",
+            "Blok tabanlı ortamda yapay zekâ destekli ürün oluşturur.",
+            "Blok tabanlı ortamda yapay zekâ destekli ürünü belirlenen ölçütleri karşılayacak şekilde çalışır hâle getirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

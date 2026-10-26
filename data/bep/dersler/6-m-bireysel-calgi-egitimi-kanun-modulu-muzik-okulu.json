@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KANUNDA UŞŞAK DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.6.1.1",
+          "m": "Uşşak dizisi ve özelliklerini örnek etüt ve eserlerle çalabilme",
+          "s": [
+            "Uşşak dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Uşşak dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Uşşak dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Uşşak dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA HİCAZ DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.6.2.1",
+          "m": "Hicaz dizisini ve özelliklerini örnek etüt ve eserlerle çalabilme",
+          "s": [
+            "Hicaz dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Hicaz dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Hicaz dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Hicaz dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ DİZİSİ AİLESİNDEN ZİRGÜLELİ HİCAZ DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.6.3.1",
+          "m": "Zirgüleli hicaz dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Zirgüleli hicaz dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Zirgüleli hicaz dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü duruş pozisyonu alır.",
+            "Zirgüleli hicaz dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü teknikleri kullanır.",
+            "Zirgüleli hicaz dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ DİZİSİ AİLESİNDEN UZZAL DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.6.4.1",
+          "m": "Uzzal dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Uzzal dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Uzzal dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü duruş pozisyonu alır.",
+            "Uzzal dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü teknikleri kullanır.",
+            "Uzzal dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ DİZİSİ AİLESİNDEN HÜMAYUN DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.6.5.1",
+          "m": "Hicaz hümayun dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Hicaz hümayun dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Hicaz hümayun dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü duruş pozisyonu alır.",
+            "Hicaz hümayun dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü teknikleri kullanır.",
+            "Hicaz hümayun dizisini, seslerini ve mandal sayılarını öğrenip kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

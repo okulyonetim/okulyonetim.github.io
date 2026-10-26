@@ -1,0 +1,122 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "İNSAN SESİ",
+      "a": [
+        {
+          "k": "BSE.6.1.1",
+          "m": "Ergenlik döneminde seste meydana gelen değişimi açıklayabilme",
+          "s": [
+            "Ergenlik döneminde seste meydana gelen değişimi açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.6.1.2",
+          "m": "Ergenlik dönemindeki ses sağlığının önemini açıklayabilme",
+          "s": [
+            "Ergenlik dönemindeki ses sağlığının önemini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ARTİKÜLASYON",
+      "a": [
+        {
+          "k": "BSE.6.2.1",
+          "m": "Artikülasyon kavramını tanımlayabilme",
+          "s": [
+            "Artikülasyon kavramını tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.6.2.2",
+          "m": "Artikülasyon organlarının isimlerini sırasıyla sayabilme",
+          "s": [
+            "Artikülasyon organlarının isimlerini sırasıyla sayar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.6.2.3",
+          "m": "Artikülasyon organlarını bedeninde gösterebilme",
+          "s": [
+            "Artikülasyon organlarını bedeninde gösterir."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.6.3.1",
+          "m": "Düzeyine uygun eserler seslendirebilme",
+          "s": [
+            "Düzeyine uygun eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Düzeyine uygun eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Düzeyine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.6.3.2",
+          "m": "Yurdumuza ait müzik türlerinden eserler seslendirebilme",
+          "s": [
+            "Yurdumuza ait müzik türlerinden eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yurdumuza ait müzik türlerinden eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yurdumuza ait müzik türlerinden eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.6.4.1",
+          "m": "Millî ve manevi değerlerle ilgili eserler seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.6.4.2",
+          "m": "Atatürk’ün sevdiği türküleri seslendirebilme",
+          "s": [
+            "Atatürk’ün sevdiği türküleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk’ün sevdiği türküleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk’ün sevdiği türküleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.6.4.3",
+          "m": "Belirli gün ve haftaların anlamına uygun eserler seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.6.4.4",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

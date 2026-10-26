@@ -1,0 +1,77 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KÜRDİ DİZİSİ",
+      "a": [
+        {
+          "k": "KMN.6.1.1",
+          "m": "Kürdi dizisi eserlerini akıcı ve bütünsel şekilde okuyabilme",
+          "s": [
+            "Kürdi dizisinde bona ve solfej yaparken ritmik veya ezgisel bileşenleri tanır.",
+            "Kürdi dizisinde ritmik veya ezgisel bileşenleri ayırt eder.",
+            "Kürdi dizisinde ritmik veya ezgisel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.6.1.2",
+          "m": "Kürdi dizisinde etüt ve eser çalabilme",
+          "s": [
+            "Kürdi dizisinde çalacağı eseri çözümler.",
+            "Kürdi dizisini kemanda çalarken duruş ve tutuş pozisyonu alır.",
+            "Kürdi dizisini kemanda çalarken kemana özgü teknikleri kullanır.",
+            "Kürdi dizisini kemanda çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ DİZİSİ",
+      "a": [
+        {
+          "k": "KMN.6.2.1",
+          "m": "Hicaz dizisinde etüt ve eser çalabilme",
+          "s": [
+            "Hicaz dizisinde çalınacak eser veya etüdü çözümler.",
+            "Duruş ve tutuş pozisyonu alarak hicaz dizisinde eser ve etüt çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak hicaz dizisinde etüt ve eser çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAHUR DİZİSİ",
+      "a": [
+        {
+          "k": "KMN.6.3.1",
+          "m": "Mahur dizisinde etüt ve eser çalabilme",
+          "s": [
+            "Mahur dizisinde çalınacak eseri çözümler.",
+            "Duruş ve tutuş pozisyonu alarak mahur dizisinde eser ve etütler çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak mahur dizisinde etüt ve eserler çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDİ, HİCAZ VE MAHUR DİZELERİNDE ETÜT VE ESER ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.6.4.1",
+          "m": "Kürdi, hicaz, mahur dizilerinde etüt ve eserleri çalabilme",
+          "s": [
+            "Kürdi, hicaz, mahur dizilerinde bulunan etüt ve eserleri çözümler.",
+            "Duruş ve tutuş pozisyonu alarak kürdi, hicaz, mahur dizilerinde bulunan etüt ve eserleri çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak kürdi, hicaz, mahur dizilerinde bulunan etüt ve eserleri çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

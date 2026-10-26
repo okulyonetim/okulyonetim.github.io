@@ -1,0 +1,88 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVALDA BİRİNCİ KADEME SES ALANINDA ANA SESLER",
+      "a": [
+        {
+          "k": "KVL.6.1.1",
+          "m": "Re, do, si seslerini çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "KVL.6.1.2",
+          "m": "La ve sol seslerini çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA BİRİNCİ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "KVL.6.2.1",
+          "m": "La# (si♭), do# (re♭), seslerini çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri doğru kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        },
+        {
+          "k": "KVL.6.2.2",
+          "m": "Mi♭ (re#), si♭2 seslerini çalabilme",
+          "s": [
+            "Notaları çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA ÜÇÜNCÜ KADEME SES ALANINDA ARA SESLER",
+      "a": [
+        {
+          "k": "KVL.6.3.1",
+          "m": "fa# (sol♭), sol# (la♭), si♭ (la #) seslerini çalabilme,",
+          "s": [
+            "Fa# (sol♭), sol# (la♭), si♭ (la #) notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA MAKAMLAR VE UYGULAMALARI-3.",
+      "a": [
+        {
+          "k": "KVL.6.4.1",
+          "m": "Uşşak makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Uşşak makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak uşşak makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    }
+  ]
+}

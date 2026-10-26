@@ -1,0 +1,68 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "5/8, 7/8, 9/8'LIK USULLERLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "ÇT.6.1.1",
+          "m": "5/8, 7/8, 9/8'lik usullerdeki eserleri toplu olarak birlikte çalabilme",
+          "s": [
+            "5/8, 7/8, 9/8'lik usullerdeki eserleri çözümler.",
+            "5/8, 7/8, 9/8'lik usullerdeki eserleri toplu çalmada çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "5/8, 7/8, 9/8'lik usullerdeki eserleri toplu icra ederken çalgılara özgü teknikleri kullanır.",
+            "5/8, 7/8, 9/8'lik usullerdeki eserleri toplu icra ederken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDİ MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.6.2.1",
+          "m": "Kürdi makam dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Kürdi makam dizisindeki çalınacak eseri çözümler.",
+            "Kürdi makam dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Kürdi makam dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Kürdi makam dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HİCAZ MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.6.3.1",
+          "m": "Hicaz makamı dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Hicaz makamı dizisindeki çalınacak eseri çözümler.",
+            "Hicaz makamı dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Hicaz makamı dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Hicaz makamı dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NİHAVEND MAKAMI DİZİSİYLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "ÇT.6.4.1",
+          "m": "Nihavend makamı dizisindeki eserleri toplu çalabilme",
+          "s": [
+            "Nihavend makamı dizisindeki çalınacak eserleri çözümler.",
+            "Nihavend makamı dizisindeki eserleri toplu çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Nihavend makamı dizisindeki eserleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Nihavend makamı dizisindeki eserleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

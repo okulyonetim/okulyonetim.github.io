@@ -1,0 +1,268 @@
+{
+  "ders": "Çevre Eğitimi ve İklim Değişikliği",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: İNSAN VE DOĞA",
+      "a": [
+        {
+          "k": "ÇEİD.1.1",
+          "m": "İnsan ve doğa arasındaki ilişkiyi tartışabilme",
+          "s": [
+            "İnsan ve doğa arasındaki ilişkiye yönelik görüşlerini mantıksal olarak temellendirir.",
+            "İnsan ve doğa arasındaki ilişkiye yönelik görüşleri mantıksal açıdan kıyaslayarak tutarsızlıkları tespit eder.",
+            "İnsan ve doğa arasındaki ilişki konusunda ulaştığı görüşleri çürütür veya kabul eder."
+          ]
+        },
+        {
+          "k": "ÇEİD.1.2",
+          "m": "Doğal dengeye ilişkin bilimsel çıkarım yapabilme",
+          "s": [
+            "Doğal dengeye ilişkin nitelikleri tanımlar.",
+            "Doğal dengeye ilişkin veri toplar ve kaydeder.",
+            "Doğal dengeye ilişkin topladığı verileri yorumlar ve değerlendirir."
+          ]
+        },
+        {
+          "k": "ÇEİD.1.3",
+          "m": "Doğal dengenin korunmasına yönelik bilimsel sorgulama yapabilme",
+          "s": [
+            "Doğal dengenin korunmasını olumsuz etkileyen bir soru veya problemi tanımlar.",
+            "Sorusunu/problemini cevaplamada kullanabileceği bir model geliştirir.",
+            "Ülkemizde ve dünyada yapılan çalışmaları inceleyerek probleme ilişkin araştırmasını planlar ve gerçekleştirir.",
+            "Doğal dengenin korunmasına yönelik elde ettiği verileri analiz ederek yorumlar.",
+            "Doğal dengenin korunmasına yönelik kanıta dayalı açıklama yapar ve çözüm üretir.",
+            "Doğal dengeyi korumaya yönelik bilgiyi değerlendirerek paylaşır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: DÖNGÜSEL DOĞA",
+      "a": [
+        {
+          "k": "ÇEİD.2.1",
+          "m": "Yakın çevresindeki doğal kaynaklara yönelik bilimsel gözlem yapabilme",
+          "s": [
+            "Doğal kaynaklara yönelik nitelikleri tanımlar.",
+            "Yakın çevresindeki doğal kaynaklara yönelik veri toplar ve kaydeder.",
+            "Yakın çevresindeki doğal kaynaklara yönelik ulaştığı verileri açıklar."
+          ]
+        },
+        {
+          "k": "ÇEİD.2.2",
+          "m": "Yeryüzündeki doğal kaynaklara yönelik bilgi toplayabilme",
+          "s": [
+            "Yeryüzündeki doğal kaynakları araştırmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak yeryüzündeki doğal kaynaklara ilişkin bilgileri bulur.",
+            "Yeryüzündeki doğal kaynaklara ilişkin ulaştığı bilgileri doğrular.",
+            "Yeryüzündeki doğal kaynaklara ilişkin ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "ÇEİD.2.3",
+          "m": "Doğal kaynakların sürdürülebilirliğinde etkili olan faktörlere ilişkin bilimsel çıkarım yapabilme",
+          "s": [
+            "Doğal kaynakların sürdürülebilirliğine ilişkin nitelikleri tanımlar.",
+            "Doğal kaynakların sürdürülebilirliğinde madde döngüleri ve enerji akışının önemine yönelik verileri toplar ve kaydeder.",
+            "Doğal kaynakların sürdürülebilirliğinde madde döngüleri ve enerji akışının önemine yönelik verileri yorumlar ve değerlendirir."
+          ]
+        },
+        {
+          "k": "ÇEİD.2.4",
+          "m": "Madde döngüleri ve enerji akışındaki aksamanın doğal yaşamda sebep olduğu bir problemi çözebilme",
+          "s": [
+            "Madde döngüleri ve enerji akışındaki aksamanın doğal yaşamda sebep olduğu bir problemi belirleyerek yapılandırır.",
+            "Madde döngüleri ve enerji akışındaki aksamanın doğal yaşamda sebep olduğu problemi özetler.",
+            "Belirlediği problemin çözümüne yönelik mevcut bilgiye/veriye dayalı tahminde bulunur.",
+            "Problemin çözümüne yönelik önermeler üzerinden akıl yürütür.",
+            "Problemin çözümüne yönelik değerlendirmede bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: ÜRETİM VE KAYNAK KULLANIMI DENGESİ",
+      "a": [
+        {
+          "k": "ÇEİD.3.1",
+          "m": "Günlük hayatta üretim ve kaynak kullanımı arasındaki dengenin önemine yönelik bilimsel çıkarım yapabilme",
+          "s": [
+            "Üretim ve kaynak kullanımı kavramlarına yönelik nitelikleri tanımlar.",
+            "Günlük hayatında kullandığı tüketim maddelerinin yaşam döngüsü analizlerine yönelik veri toplar ve kaydeder.",
+            "Günlük hayatındaki üretim ve kaynak kullanımı dengesine ilişkin ulaştığı verileri yorumlar ve değerlendirir."
+          ]
+        },
+        {
+          "k": "ÇEİD.3.2",
+          "m": "Atık, çöp ve kirlilik kavramlarını yapılandırabilme",
+          "s": [
+            "Atık, çöp ve kirlilik kavramları arasındaki nedensel ilişkileri ortaya koyar.",
+            "Tespit ettiği ilişkilerle ilgili ön bilgilerinden de yararlanarak bu kavramların tüketimle ilişkisini uyumlu bir bütün olarak ortaya koyar."
+          ]
+        },
+        {
+          "k": "ÇEİD.3.3",
+          "m": "Atık ve çöpün neden olduğu kirliliğe ilişkin bilgi toplayabilme",
+          "s": [
+            "Atık ve çöpün neden olduğu kirlilik türlerini belirleyebilmek için kullanacağı araçları belirler.",
+            "Atık ve çöpün neden olduğu kirlilik türleri hakkında belirlediği araçları kullanarak bilgileri bulur.",
+            "Atık ve çöpün neden olduğu kirlilik türleri hakkında ulaştığı bilgileri doğrular.",
+            "Atık ve çöpün neden olduğu kirlilik türleri hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "ÇEİD.3.4",
+          "m": "Ekolojik ayak izi kavramını yapılandırabilme",
+          "s": [
+            "Ekolojik ayak izinde etkili olan faktörler arası nedensel ilişkileri ortaya koyar.",
+            "Tespit ettiği ilişkiler ile ön bilgilerinden de yararlanarak ekolojik ayak izi ve tüketim alışkanlıklarını uyumlu bir bütün olarak ortaya koyar."
+          ]
+        },
+        {
+          "k": "ÇEİD.3.5",
+          "m": "İnsan kaynaklı çevre sorunları ve bu sorunların insan hayatı üzerindeki etkilerine yönelik bilgi toplayabilme",
+          "s": [
+            "İnsan kaynaklı çevre sorunları ve bu sorunların insan hayatı üzerindeki etkilerini araştırmak için kullanacağı araçları belirler.",
+            "İnsan kaynaklı çevre sorunları ve bu sorunların insan hayatı üzerindeki etkilerine yönelik belirlediği araçları kullanarak bilgileri bulur.",
+            "İnsan kaynaklı çevre sorunları ve bu sorunların insan hayatı üzerindeki etkilerine yönelik ulaştığı bilgileri doğrular.",
+            "İnsan kaynaklı çevre sorunları ve bu sorunların insan hayatı üzerindeki etkilerine yönelik bulduğu bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: KÜRESEL İKLİM DEĞİŞİKLİĞİ",
+      "a": [
+        {
+          "k": "ÇEİD.4.1",
+          "m": "Sera gazlarının artışına neden olan olayları sorgulayabilme",
+          "s": [
+            "Sera gazlarının artışına neden olan olaylara yönelik merak ettiği sorunu tanımlar.",
+            "Sera gazlarının artışına neden olan olaylara yönelik tanımladığı soruna ilişkin soru sorar.",
+            "Sera gazlarının artışına neden olan olaylara yönelik tanımladığı sorun hakkında bilgi toplar.",
+            "Sera gazlarının artışına neden olan olaylara yönelik topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Sera gazlarının artışı konusunda topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "ÇEİD.4.2",
+          "m": "Sera etkisinin küresel ısınmadaki rolüne yönelik tümevarımsal akıl yürütebilme",
+          "s": [
+            "Sera etkisinin küresel ısınmadaki rolüne yönelik örüntüler bulur.",
+            "Sera etkisinin küresel ısınmadaki rolüne yönelik genelleme yapar."
+          ]
+        },
+        {
+          "k": "ÇEİD.4.3",
+          "m": "Küresel ısınmanın iklim değişikliğindeki rolünü sorgulayabilme",
+          "s": [
+            "Küresel ısınmanın iklim değişikliğindeki rolüne yönelik merak ettiği sorunu tanımlar.",
+            "Küresel ısınmanın iklim değişikliğindeki rolüne yönelik tanımladığı soruna ilişkin soru sorar.",
+            "Küresel ısınmanın iklim değişikliğindeki rolüne yönelik tanımladığı sorun hakkında bilgi toplar.",
+            "Küresel ısınmanın iklim değişikliğindeki rolüne yönelik topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Küresel ısınmanın iklim değişikliğindeki rolü konusunda topladığı bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "ÇEİD.4.4",
+          "m": "Küresel iklim değişikliğinin nedenlerine yönelik eleştirel düşünebilme",
+          "s": [
+            "Küresel iklim değişikliğinin nedenlerini sorgular.",
+            "Küresel iklim değişikliğinin nedenleri hakkında akıl yürütür.",
+            "Küresel iklim değişikliğinin nedenleri hakkında akıl yürütmeyle ulaştığı çıkarımları yansıtır."
+          ]
+        },
+        {
+          "k": "ÇEİD.4.5",
+          "m": "Küresel iklim değişikliğinin doğrudan ya da dolaylı olarak neden olduğu afetler ve bu afetlerin etkilerine yönelik bilgi toplayabilme",
+          "s": [
+            "Küresel iklim değişikliğinin doğrudan ya da dolaylı olarak neden olduğu afetler ve bu afetlerin etkilerini araştırmak için kullanacağı araçları belirler.",
+            "Küresel iklim değişikliğinin doğrudan ya da dolaylı olarak neden olduğu afetler ve bu afetlerin etkilerine yönelik belirlediği araçları kullanarak bilgileri bulur.",
+            "Küresel iklim değişikliğinin doğrudan ya da dolaylı olarak neden olduğu afetler ve bu afetlerin etkilerine yönelik ulaştığı bilgileri doğrular.",
+            "Küresel iklim değişikliğinin doğrudan ya da dolaylı olarak neden olduğu afetler ve bu afetlerin etkilerine yönelik bulduğu bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. ÜNİTE: İKLİM DEĞİŞİKLİĞİ VE UYUM",
+      "a": [
+        {
+          "k": "ÇEİD.5.1",
+          "m": "İklim değişikliğinin ülkemizdeki mevcut ve olası etkilerini tartışabilme",
+          "s": [
+            "İklim değişikliğinin ülkemizdeki mevcut ve olası etkilerine yönelik mantıksal temellendirme yapar.",
+            "İklim değişikliğinin ülkemizdeki mevcut ve olası etkilerine yönelik oluşturduğu görüşlerde çelişki ve tutarsızlıkları tespit eder.",
+            "İklim değişikliğinin ülkemizdeki mevcut ve olası etkilerine yönelik oluşturduğu görüşleri çürütür veya kabul eder."
+          ]
+        },
+        {
+          "k": "ÇEİD.5.2",
+          "m": "Ülkemizdeki iklim değişikliği ile mücadele konusunda ulusal ve uluslararası çalışmalara yönelik bilgi toplayabilme",
+          "s": [
+            "Ülkemizdeki iklim değişikliği ile mücadele konusunda ulusal ve uluslararası çalışmaları araştırmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak ülkemizdeki iklim değişikliği ile mücadele konusunda ulusal ve uluslararası çalışmalar hakkında bilgileri bulur.",
+            "Ülkemizdeki iklim değişikliği ile mücadele konusunda ulusal ve uluslararası çalışmalar hakkında ulaştığı bilgileri doğrular.",
+            "Ülkemizdeki iklim değişikliği ile mücadele konusunda ulusal ve uluslararası çalışmalar hakkında ulaştığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "6. ÜNİTE: SÜRDÜRÜLEBİLİR KALKINMA VE ÇEVRE",
+      "a": [
+        {
+          "k": "ÇEİD.6.1",
+          "m": "Sürdürülebilir kalkınma açısından geri dönüşüm ve geri kazanımı karşılaştırabilme",
+          "s": [
+            "Sürdürülebilir kalkınma açısından geri dönüşüm ve geri kazanıma ilişkin özellikleri belirler.",
+            "Sürdürülebilir kalkınma açısından geri dönüşüm ve geri kazanıma ilişkin benzerlikleri listeler.",
+            "Sürdürülebilir kalkınma açısından geri dönüşüm ve geri kazanıma ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "ÇEİD.6.2",
+          "m": "Atık malzemelerden yararlanarak günlük hayatta kullanabileceği bilimsel bir ileri dönüşüm modeli oluşturabilme",
+          "s": [
+            "Atık malzemelerden yararlanarak günlük hayatta kullanabileceği ileri dönüşüm modeli önerir.",
+            "Atık malzemelerden yararlanarak günlük hayatta kullanabileceği ileri dönüşüm modelini yeni kanıtlarla geliştirir."
+          ]
+        },
+        {
+          "k": "ÇEİD.6.3",
+          "m": "Sürdürülebilir kalkınmayı destekleyen örnek uygulamalara ilişkin bilgi toplayabilme",
+          "s": [
+            "Sürdürülebilir kalkınmayı destekleyen örnek uygulamalarla ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Sürdürülebilir kalkınmayı destekleyen örnek uygulamalarla ilgili bilgileri bulur.",
+            "Sürdürülebilir kalkınmayı destekleyen örnek uygulamalara yönelik ulaşılan bilgileri doğrular.",
+            "Sürdürülebilir kalkınmayı destekleyen örnek uygulamalara yönelik ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "ÇEİD.6.4",
+          "m": "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemi çözebilme",
+          "s": [
+            "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemi yapılandırır.",
+            "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemi özetler.",
+            "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemin çözümüne yönelik gözleme dayalı tahminde bulunur.",
+            "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemin çözümüne yönelik önermeler üzerinden akıl yürütür.",
+            "Sürdürülebilir kalkınma ve çevreye yönelik günlük hayatta karşılaştığı bir problemin çözümüne yönelik değerlendirmede bulunur."
+          ]
+        },
+        {
+          "k": "ÇEİD.6.5",
+          "m": "Çevre, iklim ve sürdürülebilir kalkınma ile ilgili farklı kariyer alanlarına yönelik bilgi toplayabilme",
+          "s": [
+            "Çevre, iklim ve sürdürülebilir kalkınma ile ilgili farklı kariyer alanlarına yönelik bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Çevre, iklim ve sürdürülebilir kalkınma ile ilgili farklı kariyer alanlarıyla ilgili bilgileri bulur.",
+            "Çevre, iklim ve sürdürülebilir kalkınma ile ilgili farklı kariyer alanlarıyla ilgili bulduğu bilgileri doğrular.",
+            "Çevre, iklim ve sürdürülebilir kalkınma ile ilgili farklı kariyer alanlarıyla ilgili ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,244 @@
+{
+  "ders": "Matematik Uygulamaları",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÜNLÜK HAYATTA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.1.1.1",
+          "m": "Günlük hayatta matematiğin kullanım alanlarına yönelik bilgi toplayabilme",
+          "s": [
+            "Günlük hayatta matematiğin kullanım alanları ile ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.1.2",
+          "m": "Gerçek yaşamda doğal sayılarla dört işlem yapmayı gerektiren durumlarla ilgili problemleri çözebilme",
+          "s": [
+            "Problemin içerdiği sayı ve işlem bileşenlerini belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.1.3",
+          "m": "Yemek hazırlama ya da alışveriş gibi günlük eylemlerin matematikle ilişkisini yorumlayabilme",
+          "s": [
+            "Kesir ve ölçme birimlerinin kullanıldığı günlük eylemleri inceler.",
+            "Kesir ve ölçme birimlerinin kullanıldığı günlük eylemleri bağlamından kopmadan farklı temsillere dönüştürür.",
+            "Kesir ve ölçme birimlerinin günlük eylemlerle ilişkisini açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.1.4",
+          "m": "Günlük hayatta kullanılan mobilya, aksesuar ve araç gereçlerin yüzlerindeki çokgenleri yorumlayabilme",
+          "s": [
+            "Günlük hayatta kullanılan mobilya, aksesuar ve araç gereçlerin yüzlerini inceler.",
+            "Günlük hayatta kullanılan mobilya, aksesuar ve araç gereçlerin yüzlerindeki çokgenleri bağlamından kopmadan farklı temsillere dönüştürür.",
+            "Günlük hayatta kullanılan mobilya, aksesuar ve araç gereçlerin yüzlerinin çokgen özellikleri ile ilişkisini açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.1.5",
+          "m": "Geometrik cisimlerle ilgili deneyimlerini günlük hayatta kullanılan mobilya, aksesuar veya araç gereçlerin tasarım süreçlerine yansıtabilme",
+          "s": [
+            "Geometrik cisimlerle ilgili deneyimlerini gözden geçirir.",
+            "Tasarlama sürecinde geometrik cisimlerin kullanım amacına yönelik çıkarım yapar.",
+            "Çıkarımını farklı tasarımlar üzerinden değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: SAĞLIK VE SPORDA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.1.2.1",
+          "m": "Ölçme birimlerinin sağlık ve spor alanlarındaki kullanım alanlarıyla ilgili bilgi toplayabilme",
+          "s": [
+            "Sağlık ve spor alanlarında kullanılan ölçme birimleriyle (uzunluk, zaman ve kütle ölçme birimleri) ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.2.2",
+          "m": "Sağlık ve spor alanlarında kullanılan uzunluk, zaman ve kütle ölçme birimleri ile ilgili problemleri çözebilme",
+          "s": [
+            "Problemlerde verilenleri ve istenenleri belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.2.3",
+          "m": "Sağlıklı yaşam ve sporla ilişkili konularda veri ile çalışma ve veriye dayalı karar verebilme",
+          "s": [
+            "Sağlıklı yaşam ve spor gibi konularla ilişkili, istatistiksel araştırma gerektiren gerçek yaşam durumlarını belirler.",
+            "Sağlıklı yaşam ve spor bağlamında veriye dayalı cevaplanabilecek araştırma soruları oluşturur.",
+            "Veri toplama sürecine yönelik plan yapar.",
+            "Toplanan verileri sınıflandırarak analiz için uygun hâle getirir.",
+            "Verilerin analizinde kullanılacak yöntem ve araçları seçer.",
+            "Toplanan verileri uygun araçlarla analiz eder.",
+            "Araştırma sonuçları ile ilgili çıkarımlar sunar.",
+            "Araştırma sonuçlarını değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: SANATTA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.1.3.1",
+          "m": "Sanat eserlerindeki simetrik durumları sorgulayabilme",
+          "s": [
+            "Sanatta simetrinin kullanım alanlarına ait problemi tanımlar.",
+            "Sanat eserlerinde simetrinin kullanımına yönelik sorular sorar.",
+            "Sanat eserlerinde simetrinin kullanıldığı durumlara ilişkin bilgi toplar.",
+            "Toplanan bilgilerin doğruluğunu simetri özelliklerini kullanarak değerlendirir.",
+            "Sanat eserlerinin simetrik olup olmadığını yönelik çıkarım yapar."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.3.2",
+          "m": "Sanat eserlerinde bulunan süslemelerdeki şekil örüntülerini yapılandırabilme",
+          "s": [
+            "Sanat eserlerinde bulunan süslemelerdeki şekil örüntülerini inceleyerek örüntülerdeki ilişkileri ortaya koyar.",
+            "Tespit ettiği ilişkilerle ilgili bir şekil örüntüsü oluşturur."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.3.3",
+          "m": "Sanatta geometrik şekil ve cisimlerin kullanım alanlarına yönelik bilgi toplayabilme",
+          "s": [
+            "Sanatta geometrik şekil ve cisimlerin kullanım alanları ile ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.3.4",
+          "m": "Geometrik şekillere dayalı deneyimlerini resim, heykel, dokuma ve dijital sanatlar gibi tasarımlara yansıtabilme",
+          "s": [
+            "Geometrik şekillerle ilgili deneyimlerini gözden geçirir.",
+            "Tasarlama sürecinde geometrik şekillerin kullanımına yönelik çıkarımlar yapar.",
+            "Çıkarımlarını farklı tasarımlar üzerinden değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: DOĞADA MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.1.4.1",
+          "m": "Nokta, doğru, doğru parçası, ışın, açı ve çember modellerini doğadaki örnekler üzerinden yorumlayabilme",
+          "s": [
+            "Nokta, doğru, doğru parçası, ışın, açı ve çember modellerinin doğadaki örneklerini inceler.",
+            "İncelediği örneklerden yola çıkarak nokta, doğru, doğru parçası, ışın, açı ve çember modelleri oluşturur.",
+            "Nokta, doğru, doğru parçası, ışın, açı ve çembere ait özellikleri belirleyerek açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.4.2",
+          "m": "Kesişen iki doğru ile oluşan açı modellerini doğadaki örnekler üzerinden yorumlayabilme",
+          "s": [
+            "Kesişen iki doğru ile oluşan açı modellerinin doğadaki örneklerini inceler.",
+            "İncelediği örneklerden yola çıkarak açı modelleri oluşturur.",
+            "Oluşturduğu modellerdeki açıların özelliklerini belirleyerek açıklar."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.4.3",
+          "m": "Günlük hayat durumlarına çokgenlerin birleşiminden oluşan şekillerin alanlarını hesaplamaya yönelik matematiksel problemleri çözebilme",
+          "s": [
+            "Günlük hayat durumlarına çokgenlerin birleşiminden oluşan şekillerin alanlarını hesaplamaya yönelik problemlerdeki verilenleri ve istenenleri belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.4.4",
+          "m": "Matematik ve astronomi alanına katkı sunan bilim insanlarının çalışmaları hakkında bilgi toplayabilme",
+          "s": [
+            "Matematik ve astronomi alanına katkı sunan bilim insanlarının çalışmaları hakkında bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. TEMA: MESLEKLER VE MATEMATİK",
+      "a": [
+        {
+          "k": "MBU.MU.1.5.1",
+          "m": "Farklı medeniyetlerin sayı sistemlerine olan katkılarıyla ilgili bilgi toplayabilme",
+          "s": [
+            "Farklı medeniyetlerin sayı sistemlerine olan katkılarıyla ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.5.2",
+          "m": "Meslek gruplarında kesirlerin farklı gösterimleri (tam sayılı, ondalık, yüzde) ve ölçme türlerinin kullanımları ile ilgili bilgi toplayabilme",
+          "s": [
+            "Meslek gruplarında kesirlerin farklı gösterimleri (tam sayılı, ondalık, yüzde) ve ölçme türlerinin kullanımları ile ilgili bilgi edinme yollarını belirler.",
+            "Belirlediği yolları kullanarak konu hakkında bilgiler bulur.",
+            "Konu ile ilgili ulaşılan bilgileri doğrular.",
+            "Doğruladığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.MU.1.5.3",
+          "m": "Meslek gruplarındaki günlük uygulamalarda karşılaşılan kesirlerin farklı gösterimleri ile ilgili dört işlem gerektiren problemleri çözebilme",
+          "s": [
+            "Meslek gruplarındaki günlük uygulamalarda karşılaşılan kesirlerin farklı gösterimleri ile ilgili dört işlem gerektiren problemlerdeki verilenleri ve istenenleri belirler.",
+            "Problemde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Problemi matematiksel temsiller kullanarak kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlenen strateji veya stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

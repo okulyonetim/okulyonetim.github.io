@@ -1,0 +1,334 @@
+{
+  "ders": "Matematik",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "SAYILAR VE NİCELİKLER (1)",
+      "a": [
+        {
+          "k": "MAT.6.1.1",
+          "m": "Karşılaştığı problem durumlarında bir doğal sayının çarpan ve katlarına yönelik muhakeme yapabilme",
+          "s": [
+            "Karşılaştığı durumlarda bir doğal sayının çarpan ve katlarına yönelik varsayımlarda bulunur.",
+            "Varsayımına yönelik örnek durumların içerdiği ilişkileri inceleyerek bir doğal sayının çarpan ve katlarına ilişkin genellemeleri belirler.",
+            "Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını çeşitli modellerle gösterir.",
+            "Varsayımı ile ilgili ulaştığı sonuca yönelik doğrulayabileceği matematiksel bir önermeyi sözel ya da sembolik temsil ile sunar.",
+            "Farklı problemlerin pratik yoldan çözümüne yönelik oluşturduğu önermenin gerekçelerini sunar.",
+            "Önermenin geçerliliğini destekleyen kapsayıcı örnekler verir.",
+            "İşe koştuğu doğrulamanın benzer önermelere uygulanıp uygulanamayacağını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.1.2",
+          "m": "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilme kriterlerine ilişkin çıkarım yapabilme",
+          "s": [
+            "Bir doğal sayının katlarını veya basamak değerlerini dikkate alarak 2, 3, 4, 5, 6, 9 ve 10’a tam bölünebilme kriterleri ile ilgili varsayımlarda bulunur.",
+            "2, 3, 4, 5, 6, 9 ve 10’un katlarını ve basamak değerlerini inceleyerek genellemeleri belirler.",
+            "Elde ettiği genellemelerin, varsayımını karşılayıp karşılamadığını örnekler ile sınar.",
+            "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilmesindeki kriterlere ilişkin önerme sunar.",
+            "Bir doğal sayının 2, 3, 4, 5, 6, 9 ve 10 ile tam bölünebilmesindeki kriterlerin farklı durumlarda kullanışlılığını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.1.3",
+          "m": "Bir doğal sayının asal olma durumunu ve asal çarpanlarını çözümleyebilme",
+          "s": [
+            "Bir doğal sayının asal olup olmadığını ve asal çarpanlarını belirler.",
+            "Asal sayıların özelliklerini ve bir doğal sayı ile asal çarpanları arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "MAT.6.1.4",
+          "m": "Günlük hayat problemleri ya da matematiksel durumlar üzerinden ortak kat ve ortak böleni yorumlayabilme",
+          "s": [
+            "Problemlerde ya da matematiksel durumlarda verilen iki sayının ortak katlarını ve ortak bölenlerini inceler.",
+            "İncelediği ortak kat veya ortak bölen ilişkilerini çizim, tablo ve sayı doğrusu gibi matematiksel temsillerle ifade eder.",
+            "İki sayının ortak katlarını ve ortak bölenlerini kendi ifadelerini kullanarak açıklar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VERİDEN OLASILIĞA",
+      "a": [
+        {
+          "k": "MAT.6.6.1",
+          "m": "Bir olayın olasılığını gözleme dayalı tahmin edebilme",
+          "s": [
+            "Bir olayın olasılığı ile deneylerden elde ettiği veriyi ilişkilendirir.",
+            "Deneye ait tekrar sayısı ile deneyin çıktılarının göreli sıklıklarının ilişkisine yönelik çıkarım yapar.",
+            "Çıkarımlardan hareketle olasılık değerini belirleme için göreli sıklığın kullanımına yönelik yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VERİDEN OLASILIĞA SAYILAR VE NİCELİKLER(2)",
+      "a": [
+        {
+          "k": "MAT.6.6.1",
+          "m": "Bir olayın olasılığını gözleme dayalı tahmin edebilme",
+          "s": [
+            "Bir olayın olasılığı ile deneylerden elde ettiği veriyi ilişkilendirir.",
+            "Deneye ait tekrar sayısı ile deneyin çıktılarının göreli sıklıklarının ilişkisine yönelik çıkarım yapar.",
+            "Çıkarımlardan hareketle olasılık değerini belirleme için göreli sıklığın kullanımına yönelik yargıda bulunur."
+          ]
+        },
+        {
+          "k": "MAT.6.1.5",
+          "m": "Gerçek yaşam durumlarında ondalık gösterimlerin basamak değerlerini kesirlerden yararlanarak yorumlayabilme",
+          "s": [
+            "Ondalık gösterimlerin basamak değerlerini inceler.",
+            "Ondalık gösterimlerin basamak değerlerini paydası 10, 100 ve 1000 olan kesirlerin toplamlarını kullanarak yeniden ifade eder.",
+            "Ondalık gösterimlerin basamak değerlerini kendi cümleleriyle açıklar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SAYILAR VE NİCELİKLER (2)",
+      "a": [
+        {
+          "k": "MAT.6.1.5",
+          "m": "Gerçek yaşam durumlarında ondalık gösterimlerin basamak değerlerini kesirlerden yararlanarak yorumlayabilme",
+          "s": [
+            "Ondalık gösterimlerin basamak değerlerini inceler.",
+            "Ondalık gösterimlerin basamak değerlerini paydası 10, 100 ve 1000 olan kesirlerin toplamlarını kullanarak yeniden ifade eder.",
+            "Ondalık gösterimlerin basamak değerlerini kendi cümleleriyle açıklar."
+          ]
+        },
+        {
+          "k": "MAT.6.1.6",
+          "m": "Kesir ve bölme işlemi arasındaki ilişkiye yönelik tümevarımsal akıl yürütebilme",
+          "s": [
+            "Kâğıt-kalemle ve hesap makinesinde bölme işlemi gerçekleştirerek kesirlerin ondalık gösterimlerine ilişkin gözlem yapar.",
+            "Kesirlerin sonlu ve devirli ondalık gösterimlerine ait örüntüleri belirler.",
+            "Örüntülerde keşfedilen ilişkileri geneller."
+          ]
+        },
+        {
+          "k": "MAT.6.1.7",
+          "m": "Gerçek yaşam durumlarında karşılaşılan kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem gerektiren problemleri çözebilme \"SINAV HAFTASI (26 Ekim- 6 Kasım 2026)",
+          "s": [
+            "Kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem problemlerinde sayı ve işlem bileşenlerini belirler.",
+            "Kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem problemlerinde verilenler ile istenenlerin gerektirdiği işlemler arasındaki ilişkiyi belirler.",
+            "Kesir, ondalık ve yüzde gösterimleri ile ilgili dört işlem problemlerinde problem bağlamına uygun temsilleri (şekil, tablo, diyagram gibi) kullanır.",
+            "Kullanılan temsil üzerinden problemi kendi ifadeleri ile açıklar.",
+            "Problemlerin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Stratejileri işe koşarak problemleri çözer.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemlerin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek kısa yolları değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.1.8",
+          "m": "Karşılaştığı günlük hayat ya da matematiksel durumlarda standart uzunluk ölçme birimlerini değerlendirebilme",
+          "s": [
+            "Uzunluk ölçme birimlerinden metreyi ölçüt olarak belirler.",
+            "Standart ölçme birimlerini kullanarak ölçme yapar.",
+            "Ölçme sonuçlarını belirlediği ölçme birimleri ile karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İSTATİSTİKSEL ARAŞTIRMA SÜRECİ",
+      "a": [
+        {
+          "k": "MAT.6.5.1",
+          "m": "Kategorik veya nicel (kesikli) veri ile çalışabilme ve veriye dayalı karar verebilme",
+          "s": [
+            "Kategorik veya nicel (kesikli) veriye dayanan istatistiksel araştırma gerektiren durumları fark eder.",
+            "Kategorik veya nicel (kesikli) veriye dayanan betimleme veya karşılaştırma gerektirebilecek araştırma soruları oluşturur.",
+            "Kategorik veya nicel (kesikli) veriye ulaşmak için plan yapar.",
+            "Araştırma sorusuna uygun hazırlanan anket sorularını kullanarak veri toplar veya hazır veriye ulaşır.",
+            "Veri görselleştirme (kök-yaprak gösterimi, nokta grafiği gibi) ve özetleme (aritmetik ortalama, ortanca, tepe değer ve açıklık) araçlarını seçme gerekçelerini belirtir.",
+            "Toplanan veriyi uygun araçlarla analiz eder.",
+            "Araştırmada ulaştığı sonuçlara yönelik gerekçeler sunar.",
+            "Araştırma sonuçlarının araştırma sorusuna ne düzeyde cevap verdiğini değerlendirerek araştırma sürecine uygun olmayan adımları yeniden planlar."
+          ]
+        },
+        {
+          "k": "MAT.6.5.2",
+          "m": "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli) veriye dayalı istatistiksel sonuç veya yorumları tartışabilme",
+          "s": [
+            "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli) veriye dayalı istatistiksel sonuç veya yorumlara yönelik istatistiksel temellendirme yapar.",
+            "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli) veriye dayalı istatistiksel sonuç veya yorumlara yönelik hataları ya da yanlılıkları tespit eder.",
+            "Başkaları tarafından oluşturulan kategorik veya nicel (kesikli) veriye dayalı istatistiksel sonuç veya yorumları çürütür ya da kabul eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GEOMETRİK ŞEKİLLER",
+      "a": [
+        {
+          "k": "MAT.6.3.1",
+          "m": "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları sınıflandırabilme",
+          "s": [
+            "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları belirler.",
+            "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları ayrıştırır.",
+            "Düzlemde iki paralel doğru ve bir kesen ile oluşan açıları tasnif eder.",
+            "Bu tasnife göre açıları adlandırır."
+          ]
+        },
+        {
+          "k": "MAT.6.3.2",
+          "m": "Matematiksel araç ve teknolojiden yararlanarak iki paralel doğrunun iki kesenle oluşturduğu şekillerin özelliklerine dair çıkarım yapabilme",
+          "s": [
+            "Düzlemde iki paralel doğrunun iki kesenle oluşturduğu şekillerin özelliklerine dair varsayımda bulunur.",
+            "Oluşan şekilleri çeşitli özelliklerine göre listeler.",
+            "Oluşan şekilleri kenar ve açı özelliklerini dikkate alarak varsayımları ile karşılaştırır.",
+            "Oluşan şekillerin iç açılarının ölçüleri toplamına ve yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen, karenin ortak özelliklerine dair önermeler sunar.",
+            "Sunduğu önermelerin dörtgenlerin sınıflandırılmasına yönelik katkısını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.3.3",
+          "m": "Matematiksel araç ve teknolojiden yararlanarak birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik çıkarım yapabilme",
+          "s": [
+            "Birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik varsayımlarda bulunur.",
+            "Birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenleri oluşturur ve listeler.",
+            "Oluşturulan dörtgenleri varsayımları ile karşılaştırır.",
+            "Özelliklerine bağlı olarak birbirlerini ortalayan doğru parçalarını köşegen kabul eden dörtgenlere yönelik önermeler sunar.",
+            "Sunduğu önermelerin dörtgenlerin farklı yollardan tanımlanmasına yönelik katkısını değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.3.4",
+          "m": "Üçgen, yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen ve karenin açıları ile ilgili problemleri çözebilme",
+          "s": [
+            "Üçgen, yamuk, paralelkenar, eşkenar dörtgen, dikdörtgen ve karenin açıları ile ilgili problemlerde matematiksel bileşenleri (şekil, açı ölçüsü, kenar uzunluğu, paralellik, diklik gibi) belirler.",
+            "Matematiksel bileşenler arasındaki ilişkiyi belirler.",
+            "Problem bağlamındaki temsilleri farklı temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemin çözümü için stratejiler geliştirir.",
+            "Belirlenen stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "İŞLEMLERLE CEBİRSEL DÜŞÜNME VE DEĞİŞİMLER",
+      "a": [
+        {
+          "k": "MAT.6.2.1",
+          "m": "Gerçek yaşam durumlarında bilinen niceliklerden bilinmeyen niceliklere ilişkin muhakeme yapabilme",
+          "s": [
+            "Gerçek yaşam durumlarında nicelikleri belirler.",
+            "Nicelikler arasındaki ilişkileri tablo temsili kullanarak belirler.",
+            "Nicelikler arasındaki ilişkileri cebirsel olarak ifade eder.",
+            "Cebirsel ifadenin anlamını kendi cümleleri ile açıklar.",
+            "Yorumladığı cebirsel ifadelere karşılık gelen durumlara yönelik varsayımda bulunur.",
+            "Verilen cebirsel ifadelere yönelik varsayımda bulunduğu durumları inceleyerek değişkenlerin ve cebirsel ifadelerin anlamlarına yönelik genellemeleri belirler.",
+            "Elde ettiği genellemelerin varsayımını karşılayıp karşılamadığını farklı sözel ve cebirsel ifadeler ile sınar.",
+            "Doğrulayabileceği sözel ve cebirsel ifadeleri farklı değişken ve değerlerle sözel ve cebirsel olarak yeniden ifade eder.",
+            "Cebirsel ifadelerin matematiğin farklı alanlarında ve gerçek yaşam durumlarında kullanımına yönelik katkısını ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.6.2.2",
+          "m": "Sayı ve şekil örüntülerini yorumlayabilme \"SINAV HAFTASI (29 Mart - 9 Nisan 2027)",
+          "s": [
+            "Sayı ve şekil örüntülerindeki ilişkileri inceler.",
+            "İncelediği ilişkileri tablo, grafik ve sözel temsiller aracılığıyla ifade eder.",
+            "Farklı temsillerle gösterilen ilişkilerden yola çıkarak örüntülerdeki yapıları cebirsel olarak ifade eder."
+          ]
+        },
+        {
+          "k": "MAT.6.2.3",
+          "m": "Cebirsel ifadeler içeren durumlardaki algoritmaları yorumlayabilme",
+          "s": [
+            "Cebirsel ifadeler içeren durumlardaki algoritmik yapıyı inceler.",
+            "İncelediği durumlardaki algoritmik yapıyı tablo temsiline veya cebirsel ifadelere dönüştürür.",
+            "Dönüştürdüğü algoritmik yapının içerdiği matematiksel ilişkileri sözel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GEOMETRİK NİCELİKLER",
+      "a": [
+        {
+          "k": "MAT.6.4.1",
+          "m": "Uzunluk ve alan ölçme birimleri arasındaki ilişkilerle ilgili analojik akıl yürütebilme",
+          "s": [
+            "Uzunluk ve alan ölçme birimleri arasındaki ilişkileri gözlemler.",
+            "Uzunluk ve alan ölçme birimleri arasındaki ilişkiyi tespit eder.",
+            "Uzunluk ve alan ölçme birimleri arasında kurulan ilişkiden hareketle alan ölçme birimleri arasındaki ilişkiye dair çıkarım yapar."
+          ]
+        },
+        {
+          "k": "MAT.6.4.2",
+          "m": "Dikdörtgenin alan bağıntısına yönelik deneyimlerini paralelkenar ve üçgenin alan bağıntılarına yansıtabilme",
+          "s": [
+            "Dikdörtgenin alan bağıntısını gözden geçirir.",
+            "Dikdörtgenin alan bağıntısından yola çıkarak paralelkenar ve üçgenin alan bağıntıları hakkında çıkarım yapar.",
+            "Çıkarımını farklı örnekler üzerinden değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.4.3",
+          "m": "Geometrik şekillerin alanları ile modellenen gerçek yaşam durumlarına yönelik problem çözebilme",
+          "s": [
+            "Geometrik şekillerin alanları ile modellenen gerçek yaşam probleminde ilgili matematiksel bileşenleri (alan, şekil, uzunluk, alan ölçme birimleri gibi) belirler.",
+            "Matematiksel bileşenler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlediği stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.4.4",
+          "m": "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik çıkarım yapabilme \"SINAV HAFTASI (1 Haziran - 11 Haziran 2027)",
+          "s": [
+            "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik varsayımlarda bulunur.",
+            "Çemberlerin uzunlukları ile çap uzunlukları arasındaki ilişkileri listeler.",
+            "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiyi varsayımlarıyla karşılaştırır.",
+            "Çemberin uzunluğu ile çap uzunluğu arasındaki ilişkiye yönelik önermeler sunar.",
+            "Elde ettiği ilişkiye yönelik değerlendirmeler yapar."
+          ]
+        },
+        {
+          "k": "MAT.6.4.5",
+          "m": "Çap veya yarıçap uzunluğu verilen bir çemberin uzunluğu ile ilgili problemleri çözebilme",
+          "s": [
+            "Çap veya yarıçap uzunluğu verilen bir çemberin uzunluğu ile ilgili problemlerde ilgili matematiksel bileşenleri (çap, yarıçap, çevre uzunluğu gibi) belirler.",
+            "Matematiksel bileşenler arasındaki ilişkiyi belirler.",
+            "Problem bağlamıyla ilişkili verilenleri uygun matematiksel temsillere dönüştürür.",
+            "Matematiksel temsillere dönüştürdüğü problemi kendi ifadeleri ile açıklar.",
+            "Problemlerin sonucuna ilişkin tahminde bulunur ve işlemleri gerçekleştirmek için stratejiler geliştirir.",
+            "Belirlediği stratejileri çözüm için uygular.",
+            "Çözüm yollarını kontrol eder ve çözüme ulaştırmayan stratejiyi değiştirir.",
+            "Problemin çözümü için kullandığı veya geliştirdiği stratejileri gözden geçirerek alternatif çözüm yollarını değerlendirir.",
+            "Kullandığı strateji veya stratejileri farklı problemlerin çözümlerine geneller.",
+            "Genellemenin geçerliliğini matematiksel örneklerle değerlendirir."
+          ]
+        },
+        {
+          "k": "MAT.6.4.6",
+          "m": "Çemberde merkez açının ölçüsü ile gördüğü yayın uzunluğu arasındaki ilişkiye dair tümevarımsal akıl yürütebilme",
+          "s": [
+            "Çemberde farklı ölçülere sahip merkez açıların gördüğü yayların uzunluklarına ilişkin gözlem yapar.",
+            "Merkez açıların ölçüleri ile gördükleri yayların uzunlukları arasındaki ilişkiye dair örüntü bulur.",
+            "Merkez açının ölçüsü ile gördüğü yayın uzunluğu arasındaki ilişkiye dair genelleme yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

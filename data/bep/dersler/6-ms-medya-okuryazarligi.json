@@ -1,0 +1,129 @@
+{
+  "ders": "Medya Okuryazarlığı",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "MEDYA VE MEDYA OKURYAZARLIĞI",
+      "a": [
+        {
+          "k": "MOY.1.1",
+          "m": "Medya kavramını ve medyanın işlevlerini özetleyebilme",
+          "s": [
+            "Medya kavramını ve medyanın işlevlerini çözümler.",
+            "Medyanın işlevlerini sınıflandırır.",
+            "Medyanın yaşamımızdaki yeri ve önemini yorumlar."
+          ]
+        },
+        {
+          "k": "MOY.1.2",
+          "m": "Medyanın birey ve toplum üzerindeki etkileriyle ilgili çıkarım yapabilme",
+          "s": [
+            "Örnek olaylar üzerinden medyanın birey ve toplum üzerindeki etkileriyle ilgili varsayımda bulunur.",
+            "Medyanın birey ve toplum üzerindeki etkilerini listeler.",
+            "Medyanın birey ve toplum üzerindeki olumlu ve olumsuz etkilerini karşılaştırır.",
+            "Medyayı doğru kullanmaya yönelik önermeler sunar.",
+            "Medyayı doğru kullanmanın gerekliliğiyle ilgili önerileri değerlendirir."
+          ]
+        },
+        {
+          "k": "MOY.1.3",
+          "m": "Medya okuryazarlığının temel ilkelerini kullanarak medya içerikleri hakkında eleştirel düşünebilme",
+          "s": [
+            "Medya içeriklerini medya okuryazarlığının temel ilkelerini kullanarak sorgular.",
+            "Medya içeriklerini medya okuryazarlığının temel ilkelerine göre sorgulamanın gerekliliği ile ilgili akıl yürütür.",
+            "Günlük hayatta karşılaştığı medya içerikleri hakkında medya okuryazarı olarak akıl yürüt me yoluyla çıkarımlarını yansıtır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE MEDYAYI DOĞRU KULLANIYORUM",
+      "a": [
+        {
+          "k": "MOY.2.1",
+          "m": "Medyada ulaşılan bilgilerin güvenilirliğini sorgulayabilme",
+          "s": [
+            "Medyada elde ettiği bilgilerin doğru ya da yanlış olabileceğini örnekler üzerinden tanımlar.",
+            "Medyada doğru ve yanlış bilgiyle karşılaştığı zaman izlenecek yöntemlerin neler olabileceğiyle ilgili sorular sorar.",
+            "Medyada elde ettiği doğru ve yanlış bilgiyi ayırt edebilme yöntemleriyle ilgili bilgi toplar.",
+            "Medyada elde ettiği doğru ve yanlış bilgiyi ayırt edebilme yöntemleriyle ilgili bilgileri değerlendirir.",
+            "Medyada ulaşılan bilginin doğruluğuyla ve güvenilirliğiyle ilgili çıkarımlarda bulunur."
+          ]
+        },
+        {
+          "k": "MOY.2.2",
+          "m": "Ekran bağımlılığını fark ederek sağlıklı ekran kullanım süresini günlük yaşamına yansıtabilme",
+          "s": [
+            "Günlük yaşamından yola çıkarak ekran kullanım süresini gözden geçirir.",
+            "Ekran bağımlılığı belirtilerine dayanarak ekran bağımlılığıyla ilgili çıkarım yapar.",
+            "Ekran bağımlılığıyla ilgili yaptığı çıkarımları değerlendirir"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DİJİTAL DÜNYADA YAŞAM",
+      "a": [
+        {
+          "k": "MOY.3.1",
+          "m": "Yapay zekâ kavramının medya üzerindeki etkisini sorgulayabilme",
+          "s": [
+            "Yapay zekâ kavramının medyadaki kullanım alanlarını tanımlar.",
+            "Yapay zekâ kavramının medya içerikleri ve kullanıcıları üzerindeki etkisiyle ilgili sorular sorar.",
+            "Yapay zekâ kavramının medya içerikleri ve kullanıcıları üzerindeki etkisiyle ilgili bilgi toplar.",
+            "Topladığı bilgilerin doğruluğunu farklı kaynaklarla karşılaştırarak değerlendirir.",
+            "Yapay zekâ kavramının medya üzerindeki etkisiyle ilgili çıkarımda bulunur."
+          ]
+        },
+        {
+          "k": "MOY.3.2",
+          "m": "Dijital ayak izinin medyada nasıl kullanıldığını fark ederek günlük yaşamına yansıtabilme",
+          "s": [
+            "Günlük yaşamındaki medya kullanım deneyimlerini gözden geçirir.",
+            "Medya kullanım deneyimlerine dayanarak dijital ayak izi hakkında çıkarımda bulunur.",
+            "Dijital ayak izinin medya içeriklerinde nasıl kullanıldığına dair çıkarımlarını değerlendirir."
+          ]
+        },
+        {
+          "k": "MOY.3.3",
+          "m": "Günlük yaşamda karşılaştığı siber zorbalık problemlerini çözme",
+          "s": [
+            "Günlük yaşamda karşılaşabileceği siber zorbalık durumlarıyla ilgili örnek bir problem yapılandırır.",
+            "Yapılandırdığı siber zorbalıkla ilgili örnek problemi özetler.",
+            "Siber zorbalığa maruz kalmamak için nelere dikkat etmesi gerektiğiyle ilgili tahminlerde bulunur.",
+            "Siber zorbalığa maruz kalındığında neler yapılması gerektiğiyle ilgili akıl yürütür.",
+            "Bulduğu çözümlere yönelik değerlendirme yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MEDYA İÇERİĞİ ÜRETİMİ VE DİJİTAL VATANDAŞLIK",
+      "a": [
+        {
+          "k": "MOY.4.1",
+          "m": "Medya içeriği üretiminde tasarım araç, teknoloji ve yöntemlerinden yararlanabilme",
+          "s": [
+            "Medyada içerik oluşturma sürecinde kullanılan araç, teknoloji ve yöntemlerini tanır.",
+            "Üreteceği medya içeriğine uygun olan araç, teknoloji ve yöntemlerini belirler.",
+            "Medya içeriği üretmek için belirlediği araç, teknoloji ve yöntemleri kullanır.",
+            "Medyada içerik üretiminde araç, teknoloji ve yöntem seçiminin önemini değerlendirir."
+          ]
+        },
+        {
+          "k": "MOY.4.2",
+          "m": "Dijital vatandaşlık kavramını sorgulayabilme",
+          "s": [
+            "Dijital vatandaşlık kavramını tanımlar.",
+            "Dijital vatandaşlık kavramıyla ilgili sorular sorar.",
+            "Dijital vatandaşlık kavramı hakkında bilgi toplar.",
+            "Dijital vatandaşlık kavramıyla ilgili bilgilerin doğruluğunu değerlendirir.",
+            "Dijital vatandaşlık kavramıyla ilgili topladığı bilgilerden çıkarım yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

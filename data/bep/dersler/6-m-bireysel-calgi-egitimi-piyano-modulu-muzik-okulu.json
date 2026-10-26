@@ -1,0 +1,106 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PEDAL VE TRİLL",
+      "a": [
+        {
+          "k": "PYN.6.1.1",
+          "m": "Piyanoda pedal kullanımını tanıyabilme",
+          "s": [
+            "Piyanoda pedal kullanımını tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "PYN.6.1.2",
+          "m": "Trill tekniğini içeren etüdü çalabilme",
+          "s": [
+            "Trill tekniğini içeren etüdü çözümler.",
+            "Trill tekniğini içeren etüt için duruş ve tutuş pozisyonu alır.",
+            "Trill tekniğini içeren etüdü için çalgıya özgü teknikleri kullanır.",
+            "Trill tekniğini içeren etüdün müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TONALİTE 2",
+      "a": [
+        {
+          "k": "PYN.6.2.1",
+          "m": "Re majör ve si minör tonalitesine uygun eser çalabilme",
+          "s": [
+            "Re majör ve si minör tonalitesine uygun eseri çözümler.",
+            "Re majör ve si minör tonalitesine uygun eseri çalmada duruş ve tutuş pozisyonu alır.",
+            "Re majör ve si minör tonalitesine uygun eseri çalmada çalgıya özgü teknikleri kullanır.",
+            "Re majör ve si minör tonalitesine uygun eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.6.2.2",
+          "m": "Mi ve re minör tonalitesine uygun eseri çalabilme",
+          "s": [
+            "Mi ve re minör tonalitesine uygun eseri çözümler.",
+            "Mi ve re minör tonalitesine uygun eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Mi ve re minör tonalitesine uygun eseri çalmada çalgıya özgü teknikleri kullanır.",
+            "Mi ve re minör tonalitesine uygun eserin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "EŞLİKLEME",
+      "a": [
+        {
+          "k": "PYN.6.3.1",
+          "m": "Çocuk şarkılarına sol el ile eşlik çalabilme",
+          "s": [
+            "Çocuk şarkılarına sol el ile eşlik için eseri çözümler.",
+            "Çocuk şarkılarına sol el ile eşliği çalmada duruş ve tutuş pozisyonu alır.",
+            "Çocuk şarkılarına sol el ile eşliğin çalgıya özgü tekniklerini kullanır.",
+            "Çocuk şarkılarına sol el ile eşliğin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.6.3.2",
+          "m": "Çocuk şarkılarına iki el ile eşlik çalabilme",
+          "s": [
+            "Çocuk şarkılarına iki el ile eşlik için eseri çözümler.",
+            "Çocuk şarkılarına iki el ile eşliği çalmada duruş ve tutuş pozisyonu alır.",
+            "Çocuk şarkılarına iki el ile eşliğin çalgıya özgü tekniklerini kullanır.",
+            "Çocuk şarkılarına iki el ile eşliğin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.6.3.3",
+          "m": "Türk müziği eserini iki el ile eşlik çalabilme",
+          "s": [
+            "İki el eşlik çalabilmede Türk müziği eserini çözümler.",
+            "Türk müziği eserini iki el ile eşliği çalmada duruş ve tutuş pozisyonu alır.",
+            "Türk müziği eserini iki el ile eşliğin çalgıya özgü tekniklerini kullanır.",
+            "Türk müziği eserini iki el ile eşliğin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA KÜRDİ MAKAMI",
+      "a": [
+        {
+          "k": "PYN.6.4.1",
+          "m": "Kürdi makamına yönelik eseri çalabilme",
+          "s": [
+            "Kürdi makamına yönelik eseri çözümler.",
+            "Kürdi makamına yönelik eser çalmada duruş ve tutuş pozisyonu alır.",
+            "Kürdi makamına yönelik eser çalmada çalgıya özgü teknikleri kullanır.",
+            "Kürdi makamına yönelik eserin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

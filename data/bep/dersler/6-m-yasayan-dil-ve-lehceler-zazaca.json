@@ -1,0 +1,300 @@
+{
+  "ders": "Yaşayan Dil ve Lehçeler (Zazaca)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "YAŞAMIM",
+      "a": [
+        {
+          "k": "ZAZ.6.1.D",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.1.O",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.1.K",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.1.Y",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme- anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.1.DBS",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.1.SÖS",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.1.SES",
+          "m": "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yaşamım\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "YİYECEK VE İÇECEKLER",
+      "a": [
+        {
+          "k": "ZAZ.6.2.D",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemehazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.2.O",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme- anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.2.K",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.2.Y",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.2.DBS",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.2.SÖS",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.2.SES",
+          "m": "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Yiyecek ve İçecekler\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "İNSAN VE DOĞA",
+      "a": [
+        {
+          "k": "ZAZ.6.3.D",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.3.O",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.3.K",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.3.Y",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.3.DBS",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.3.SÖS",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.3.SES",
+          "m": "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır",
+          "s": [
+            "\"İnsan ve Doğa\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TRAFİK VE SEYAHAT",
+      "a": [
+        {
+          "k": "ZAZ.6.4.D",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadeleri dinleyebilme / izleyebilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek dinleme / izlemeye hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temayı, temel ayrıntılar ve ipuçlarından hareketle anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.4.O",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadeleri okuyabilme-anlamlandırabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek okumaya hazırlık yapar.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak bir araya getirir.",
+            "Temaya ilişkin temel bilgileri, ipucunu ve ayrıntıları dikkate alarak anlamlandırır.",
+            "Temaya ilişkin anlayışını bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.4.K",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelerle konuşabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgi ve deneyimlerini harekete geçirerek konuşmaya hazırlık yapar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını gözlemleyerek taklit eder ve tekrarlar.",
+            "Konuşma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak taklit yoluyla sözlü içerik oluşturur.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak konuşmanın içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin iletişim sürecini dikkate alarak sözlü içeriği yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin konuşma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.4.Y",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelerle yazabilme-anlatabilme",
+          "s": [
+            "Temaya ilişkin ön bilgilerini ve deneyimlerini harekete geçirerek yazmaya hazırlık yapar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını inceleyerek modelden kopyalar.",
+            "Yazma modelindeki temaya ilişkin sözcükleri, ifadeleri ve dil yapılarını kullanarak yazılı içerik oluşturur.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yapılandırır ve uygulamaya geçirir.",
+            "Temaya ilişkin yazma sürecini dikkate alarak yazma içeriğini yeniden yapılandırır ve iletişim kurar.",
+            "Temaya ilişkin yazma sürecini bireysel ve etkileşimli şekilde yansıtır."
+          ]
+        },
+        {
+          "k": "ZAZ.6.4.DBS",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanabilme Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun dil bilgisi seçebilme-kullanır Temaya uygun dil bilgisi yapılarını seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.4.SÖS",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanabilme Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sözcük seçebilme-kullanır Temaya uygun sözcükleri seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ZAZ.6.4.SES",
+          "m": "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanabilme Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır.",
+          "s": [
+            "\"Trafik ve Seyahat\" temasındaki sosyal etkileşim durumlarında temel ifadelere uygun sesletim seçebilme-kullanır Temaya uygun sesletimi seçerek doğal, otantik ve otomatik bir şekilde kullanır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}

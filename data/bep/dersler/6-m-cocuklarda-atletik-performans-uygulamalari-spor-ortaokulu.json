@@ -1,0 +1,140 @@
+{
+  "ders": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ÇABUKLUK KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.6.1.1",
+          "m": "Çabukluğun sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Çabukluğun sportif performans üzerindeki etkilerini çözümler.",
+            "Çabukluğun sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Çabukluğun sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.1.2",
+          "m": "Test sonuçlarına göre çabukluk düzeyini değerlendirebilme",
+          "s": [
+            "Çabukluğa ilişkin ölçütler belirler.",
+            "Çabukluk düzeyini ölçer.",
+            "Test sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Test sonuçlarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.1.3",
+          "m": "Çabukluk egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Çabukluk bileşenlerini açıklar.",
+            "Çabukluk bileşeni egzersizlerini uygular.",
+            "Çabukluk egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇEVİKLİK KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.6.2.1",
+          "m": "Çevikliğin sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Çevikliğin sportif performans üzerindeki etkilerini çözümler.",
+            "Çevikliğin sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Çevikliğin sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.2.2",
+          "m": "Test sonuçlarına dayalı olarak çeviklik düzeyini değerlendirebilme",
+          "s": [
+            "Çevikliğe ilişkin ölçüt belirler.",
+            "Çeviklik düzeyini ölçer.",
+            "Test sonuçlarını ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.2.3",
+          "m": "Çeviklik alıştırmaları ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Çeviklik bileşenlerini açıklar.",
+            "Çeviklik bileşeni egzersizlerini uygular.",
+            "Çeviklik egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "REAKSİYON KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.6.3.1",
+          "m": "Reaksiyonun sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Reaksiyonun sportif performans üzerindeki etkilerini çözümler.",
+            "Reaksiyonun sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Reaksiyonun sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.3.2",
+          "m": "Test sonuçlarına dayalı olarak reaksiyon düzeyini değerlendirebilme",
+          "s": [
+            "Reaksiyona ilişkin ölçüt belirler.",
+            "Reaksiyon düzeyini ölçer.",
+            "Test sonuçlarını ölçütlerle karşılaştırır.",
+            "Karşılaştırmalarına ilişkin yargıda bulur."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.3.3",
+          "m": "Reaksiyon egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Reaksiyon bileşenlerini açıklar.",
+            "Reaksiyon bileşeni egzersizlerini uygular.",
+            "Reaksiyon egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SÜRAT KAVRAM VE UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.6.4.1",
+          "m": "Süratin sportif performans üzerindeki etkilerini özetleyebilme",
+          "s": [
+            "Süratin sportif performans üzerindeki etkilerini çözümler.",
+            "Süratin sportif performans üzerindeki etkilerini sınıflandırır.",
+            "Süratin sportif performans üzerindeki etkilerini yorumlar."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.4.2",
+          "m": "Test sonuçlarına dayalı olarak sürat düzeyini değerlendirebilme",
+          "s": [
+            "Sürat testine ilişkin ölçüt belirler.",
+            "Sürat düzeyini ölçer.",
+            "Test sonuçlarını belirlediği ölçütlerle karşılaştırır.",
+            "Karşılaştırmalara ilişkin yargıda bulunur."
+          ]
+        },
+        {
+          "k": "ÇAPU.6.4.3",
+          "m": "Sürat egzersizleri ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Sürat bileşenlerini açıklar.",
+            "Sürat bileşeni egzersizlerini uygular.",
+            "Sürat egzersizleri ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "ders": "Afet Bilinci 1",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: AFET VE AFET BİLİNCİ",
+      "a": [
+        {
+          "k": "AB.1.1.1",
+          "m": "Afet ile ilgili temel kavramlar hakkında bilgi toplayabilme",
+          "s": [
+            "Afet ile ilgili temel kavramlar hakkında bilgi toplayabileceği araçları belirler.",
+            "Afet ile ilgili temel kavramlar hakkında belirlediği araçlardan bilgileri bulur.",
+            "Afet ile ilgili temel kavramlar hakkında belirlediği araçlardan ulaşılan bilgileri doğrular.",
+            "Afet ile ilgili temel kavramlar hakkında belirlediği araçlardan ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "AB.1.1.2",
+          "m": "Afetlere neden olabilecek doğa ve insan kaynaklı olayları sınıflandırabilme",
+          "s": [
+            "Afetlere neden olabilecek doğa ve insan kaynaklı olaylara ilişkin değişkenleri belirler.",
+            "Afetlere neden olabilecek doğa ve insan kaynaklı olayları ayrıştırır.",
+            "Afetlere neden olabilecek doğa ve insan kaynaklı olayları tasnif eder.",
+            "Afetlere neden olabilecek doğa ve insan kaynaklı olayları etiketler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: İNSAN KAYNAKLI AFETLER",
+      "a": [
+        {
+          "k": "AB.1.2.1",
+          "m": "İnsan kaynaklı afetler ve türleri hakkında bilgi toplayabilme",
+          "s": [
+            "İnsan kaynaklı afetler ve türleri hakkında bilgi toplayabileceği araçları belirler.",
+            "İnsan kaynaklı afetler ve türleri hakkında belirlediği araçlardan bilgileri bulur.",
+            "İnsan kaynaklı afetler ve türleri hakkında belirlediği araçlardan ulaşılan bilgileri doğrular.",
+            "İnsan kaynaklı afetler ve türleri hakkında belirlediği araçlardan ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "AB.1.2.2",
+          "m": "İnsan kaynaklı afetlerin nedenleri ve sonuçlarını sorgulayabilme",
+          "s": [
+            "İnsan kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili merak ettiği konuları tanımlar.",
+            "İnsan kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili sorular sorar.",
+            "İnsan kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili bilgi toplar.",
+            "İnsan kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "İnsan kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "AB.1.2.3",
+          "m": "İnsan kaynaklı afetlere karşı alınabilecek önlemleri yorumlayabilme",
+          "s": [
+            "İnsan kaynaklı afetlere karşı alınabilecek önlemleri inceler.",
+            "İnsan kaynaklı afetlere karşı alınabilecek önlemleri bağlamdan kopmadan dönüştürür.",
+            "İnsan kaynaklı afetlere karşı alınabilecek önlemleri nesnel, doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: DOĞA KAYNAKLI AFETLER",
+      "a": [
+        {
+          "k": "AB.1.3.1",
+          "m": "Doğa kaynaklı afetler ve türleri hakkında bilgi toplayabilme",
+          "s": [
+            "Doğa kaynaklı afetler ve türleri hakkında bilgi toplayabileceği araçları belirler.",
+            "Doğa kaynaklı afetler ve türleri hakkında belirlediği araçlardan bilgileri bulur.",
+            "Doğa kaynaklı afetler ve türleri hakkında belirlediği araçlardan ulaşılan bilgileri doğrular.",
+            "Doğa kaynaklı afetler ve türleri hakkında belirlediği araçlardan ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "AB.1.3.2",
+          "m": "Doğa kaynaklı afetlerin neden ve sonuçlarını sorgulayabilme",
+          "s": [
+            "Doğa kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili merak ettiği konuları tanımlar.",
+            "Doğa kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili sorular sorar.",
+            "Doğa kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili bilgi toplar.",
+            "Doğa kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Doğa kaynaklı afetlerin nedenleri ve sonuçlarıyla ilgili topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "AB.1.3.3",
+          "m": "Doğa kaynaklı afetlere karşı alınabilecek önlemleri yorumlayabilme",
+          "s": [
+            "Doğa kaynaklı afetlere karşı alınabilecek önlemleri inceler.",
+            "Doğa kaynaklı afetlere karşı alınabilecek önlemleri bağlamdan kopmadan dönüş türür.",
+            "Doğa kaynaklı afetlere karşı alınabilecek önlemleri nesnel, doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: KÜRESEL İKLİM DEĞİŞİKLİĞİ VE AFETLER",
+      "a": [
+        {
+          "k": "AB.1.4.1",
+          "m": "Küresel iklim değişikliği hakkında bilgi toplayabilme",
+          "s": [
+            "Küresel iklim değişikliği hakkında bilgi toplamak için kullanacağı araçları belirler.",
+            "Küresel iklim değişikliği hakkında belirlediği araçlardan bilgileri bulur.",
+            "Küresel iklim değişikliği hakkında kullanacağı araçlardan ulaşılan bilgileri doğru lar.",
+            "Küresel iklim değişikliği hakkında belirlediği araçlardan ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "AB.1.4.2",
+          "m": "Küresel iklim değişikliğinin afetlere etkisini sorgulayabilme",
+          "s": [
+            "Küresel iklim değişikliğinin afetlere etkisi ile ilgili merak ettiği konuları tanımlar.",
+            "Küresel iklim değişikliğinin afetlere etkisi ile ilgili sorular sorar.",
+            "Küresel iklim değişikliğinin afetlere etkisi ile ilgili bilgi toplar.",
+            "Küresel iklim değişikliğinin afetlere etkisi ile ilgili topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Küresel iklim değişikliğinin afetlere etkisi ile ilgili topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

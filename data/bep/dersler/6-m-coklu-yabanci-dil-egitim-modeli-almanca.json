@@ -1,0 +1,645 @@
+{
+  "ders": "Çoklu Yabancı Dil Eğitim Modeli Almanca",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "LEKTION 1: MEINE HOBBYS",
+      "a": [
+        {
+          "k": "DE.6.1.H1.1",
+          "m": "– Vorbereitung auf das Hör- und Sehverstehen Lernziel: Die Schüler können ihr Vorwissen über Freizeitaktivitäten und Hobbys aktivieren und ordnen die visuellen und sprachlichen Impulse ein. Sie können erste Vermutungen zum Material für Hör/Sehverstehen äußern. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.1.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können gezielt zuhören bzw. zusehen, um wichtige Details aus einem Text für Hör/Sehverstehen zum Thema Hobbys zu entnehmen, zu verstehen und weiterzuverarbeiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts."
+          ]
+        },
+        {
+          "k": "DE.6.1.P3.1",
+          "m": "- Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können zentrale Laute, Lautverbindungen, Betonungsmuster und Intonationsformen im Zusammenhang mit Freizeitaktivitäten und Hobbys erkennen und üben. Sie können Wörter und Sätze deutlich, rhythmisch und altersgerecht aussprechen. Prozesskomponente:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an."
+          ]
+        },
+        {
+          "k": "DE.6.1.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können ihr Vorwissen, erkennen thematische Zusammenhänge aktivieren und stellen erste Leseerwartungen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts."
+          ]
+        },
+        {
+          "k": "DE.6.1.L2.3",
+          "m": "– Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können zentrale Informationen aus Texten zum Thema Hobbys entnehmen und vergleichen diese mit ihren eigenen Vorlieben und Meinungen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.1.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können zentrale Wörter zum Thema Hobbys erkennen und verstehen und können sie aktiv in einfachen mündlichen und schriftlichen Äußerungen verwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.1.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können grundlegende grammatische Strukturen zur Beschreibung von Freizeitaktivitäten erkennen und können sie bei der Meinungsäußerung verwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.1.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können sich gezielt auf das Schreiben einfacher Texte über ihre Hobbys und Freizeitaktivitäten vorbereiten und können kurze strukturierte Texte dazu. verfassen Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.1.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich sprachlich und inhaltlich auf das Sprechen über ihre Hobbys und Freizeitaktivitäten vorbereiten und können erste gestützte Sprechaufgaben durchführen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.1.SP3.3",
+          "m": "– Inhalt für das Sprechen organisieren und anwenden Lernziel: Die Schüler können über ihre Freizeitaktivitäten sprechen, beteiligen sich an kooperativen und kreativen Sprechaufgaben und reflektieren ihre mündliche Ausdrucksfähigkeit. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEKTION 2: MEIN TAG",
+      "a": [
+        {
+          "k": "DE.6.2.H1.1",
+          "m": "– Vorbereitung auf das Hör-und Sehverstehen Lernziel: Die Schüler können ihr Vorwissen zu Tagesablauf und Uhrzeiten aktivieren, können visuelle und sprachliche Impulse ordnen und Vermutungen zum Hör-/Sehverstehen stellen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.2.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können gezielt Informationen aus Materialien von Hör/Sehverstehen zu Tagesablauf und Uhrzeiten entnehmen und können zentrale Aussagen verstehen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts"
+          ]
+        },
+        {
+          "k": "DE.6.2.P3.1",
+          "m": "– Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können zentrale phonologische Elemente erkennen und üben, die für die Kommunikation über den Tagesablauf und die Uhrzeiten wichtig sind. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an."
+          ]
+        },
+        {
+          "k": "DE.6.2.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können sich gezielt auf das Lesen von Texten über den Tagesablauf vorbereiten, aktivieren Vorwissen und entwickeln Erwartungen an den Text. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts."
+          ]
+        },
+        {
+          "k": "DE.6.2.L2.3",
+          "m": "– Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können beim Lesen die Hauptinformationen, Detailangaben zu Tagesabläufen erfassen und können persönliche Bezüge zu ihrem eigenen Alltag herstellen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.2.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können den thematischen Zielwortschatz rund um Tageszeiten, Uhrzeiten und Alltagsaktivitäten korrekt in schriftlichen und mündlichen Kontexten erkennen und verwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.2.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können zielgerichtet die grammatischen Strukturen erkennen und verwenden, um den Tagesablauf sprachlich korrekt und situationsangemessen zu beschreiben. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.2.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können einfache schriftliche Texte über ihren eigenen Tagesablauf unter Verwendung des Zielwortschatzes und der Zielgrammatik planen und verfassen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.2.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich sprachlich auf Gespräche über ihren Tagesablauf vorbereiten und können mit Unterstützung über vertraute Routinen und Uhrzeiten sprechen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.2.SP3.3",
+          "m": "– Inhalt für das Sprechen organisieren und anwenden Lernziel: Die Schüler können strukturiert über ihren Tagesablauf berichten. Sie können mit Mitschülern ihren Tagesablauf austauschen und reflektieren ihre mündliche Ausdrucksfähigkeit. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEKTION 3: DIE JAHRESZEITEN UND DAS WETTER",
+      "a": [
+        {
+          "k": "DE.6.3.H1.1",
+          "m": "– Vorbereitung auf das Hör- und Sehverstehen Lernziel: Die Schüler können ihr Vorwissen sprachlich aufwecken und können sich visuell auf das Hör/Sehverstehen zum Thema „Die Jahreszeiten und das Wetter“ vorbereiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.3.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können gezielt Informationen zu Jahreszeiten, Wetterbedingungen und Kleidung aus Materialien für Hör- oder Sehverstehen entnehmen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts"
+          ]
+        },
+        {
+          "k": "DE.6.3.P3.1",
+          "m": "– Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können zentrale phonologische Merkmale im Zusammenhang mit der Lektion „Die Jahreszeiten und das Wetter“ erkennen und üben, um ihre Aussprache und ihr Hörverstehen zu verbessern. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an."
+          ]
+        },
+        {
+          "k": "DE.6.3.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können gezielt Informationen zu den Jahreszeiten, Monaten, dem Wetter und typischer Kleidung aus kurzen Lesetexten oder Schaubildern entnehmen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts.",
+            "Die Schüler erstellen strukturierte Übersichten mit den Kategorien zur Lektion."
+          ]
+        },
+        {
+          "k": "DE.6.3.L2.3",
+          "m": "– Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können Informationen zu Wetter und Jahreszeiten strukturieren und vergleichen. Sie können eigene Gedanken und Gefühle äußern und reflektieren ihren persönlichen Bezug zum Thema. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.3.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können den thematischen Wortschatz zu den Jahreszeiten, Monaten, dem Wetter und der Kleidung erweitern und festigen. Sie können diesen Wortschatz gezielt in mündlichen und schriftlichen Situationen verwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.3.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können grundlegende grammatische Strukturen im Zusammenhang mit dem Thema „Die Jahreszeiten und das Wetter“ erkennen und verwenden. Sie können einfache Sätze zur Beschreibung von Wetter, Kleidung und Aktivitäten bilden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.3.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können sich systematisch auf das Schreiben einfacher Texte zum Thema „Die Jahreszeiten und das Wetter“ vorbereiten und können strukturierte, altersgerechte Texte verfassen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.3.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich sprachlich und inhaltlich auf Gespräche zum Thema „Die Jahreszeiten und das Wetter“ vorbereiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.3.SP3.3",
+          "m": "– Inhalt für das Sprechen organisieren und anwenden Lernziel: Die Schüler können mithilfe von Satzmustern, Bildkarten oder Dialogvorlagen über Wetter, Jahreszeiten und passende Kleidung sprechen. Die Schüler können freie Gespräche und interaktive Sprechaufgaben zu Wetter und Jahreszeiten durchführen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEKTION 4: MEIN ZUHAUSE",
+      "a": [
+        {
+          "k": "DE.6.4.H1.1",
+          "m": "– Vorbereitung auf das Hör- und Sehverstehen Lernziel: Die Schüler können ihr Vorwissen zum Thema „Mein Zuhause“ aktivieren, können bekannte Wohnräume, Möbel und Gegenstände benennen und können sich sprachlich und visuell auf Situationen für Hör- und Sehverstehen vorbereiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.4.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können aus Situationen von Hör/Sehverstehen gezielt Informationen zu Wohnräumen, Möbelstücken und Gegenständen entnehmen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts"
+          ]
+        },
+        {
+          "k": "DE.6.4.P3.1",
+          "m": "– Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können typische Lautverbindungen und Intonationsmuster im Kontext von „Mein Zuhause“ erkennen und üben. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an"
+          ]
+        },
+        {
+          "k": "DE.6.4.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können sich gezielt auf den Prozess für das Leseverstehen zum Thema „Mein Zuhause“ vorbereiten, um vertraute Redemittel und zentrale Informationen zum eigenen Zuhause zu erkennen und zu deuten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts."
+          ]
+        },
+        {
+          "k": "DE.6.4.L2.3",
+          "m": "– Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können beim Lesen gezielt Informationen zum Thema „Mein Zuhause“ und formulieren eigene Beschreibungen entnehmen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.4.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können den Zielwortschatz zum Thema „Mein Zuhause“ gezielt erkennen und situationsgerecht, spontan und angemessen in der mündlichen und schriftlichen Kommunikation anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.4.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können die grammatischen Zielstrukturen zum Thema „Mein Zuhause“ erkennen und sie situationsgerecht, spontan und angemessen in der mündlichen und schriftlichen Kommunikation anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.4.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können sich gezielt auf den Schreibprozess zum Thema „Mein Zuhause“ vorbereiten, eigene Inhalte planen und strukturierte, themenbezogene Texte verfassen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.4.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich gezielt auf den Sprechprozess zum Thema „Mein Zuhause“ vorbereiten, um vertraute Redemittel, Satzmuster und Wortschatz sicher anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.4.SP3.3",
+          "m": "– Inhalt für das Sprechen organisieren und anwenden Lernziel: Die Schüler können selbstständig und spontan über ihr Zuhause sprechen. Sie können dabei die gelernten Redemittel nutzen und flexibel in Gesprächssituationen reagieren. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEKTION 5: MEINE UMGEBUNG",
+      "a": [
+        {
+          "k": "DE.6.5.H1.1",
+          "m": "– Vorbereitung auf das Hör-und Sehverstehen Lernziel: Die Schüler können sich gezielt auf den Prozess für das Hör-/Sehverstehen zu den Themen „Die Geschäfte in der Stadt“, „Die Orientierung in der Stadt“ und „Die Wegbeschreibung“ vorbereiten, um vertraute Redemittel, Richtungsangaben, Ortsangaben und einfache Wegbeschreibungen zu erkennen und zu deuten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.5.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können beim Zuhören/Zusehen wichtige Informationen und Details zu den Themen „Die Geschäfte in der Stadt“, „Die Orientierung in der Stadt“ und „Die Wegbeschreibung“ erkennen und verstehen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts"
+          ]
+        },
+        {
+          "k": "DE.6.5.P3.1",
+          "m": "– Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können zentrale phonologische Zielstrukturen zum Thema „Meine Umgebung“ erkennen und gezielt, spontan und angemessen im mündlichen Sprachgebrauch anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an."
+          ]
+        },
+        {
+          "k": "DE.6.5.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können sich gezielt auf den Prozess für das Leseverstehen zu Texten über Geschäfte und Orte in der Stadt sowie zu einfachen Wegbeschreibungen vorbereiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts."
+          ]
+        },
+        {
+          "k": "DE.6.5.L2.3",
+          "m": "– Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können gezielt Informationen aus kurzen Texten, Stadtplänen und Schildern erfassen und deren Bedeutung im Kontext von „Meine Umgebung“ erschließen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.5.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können den thematischen Zielwortschatz zu „Meine Umgebung“ gezielt erkennen und in verschiedenen kommunikativen Kontexten mündlich und schriftlich korrekt und angemessen anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.5.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können grundlegende grammatische Strukturen zur Orientierung in der Stadt und zur Wegbeschreibung erkennen und gezielt in mündlichen und schriftlichen Kommunikationssituationen anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.5.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können kurze schriftliche Texte zu ihrer Umgebung in der Stadt verfassen und einfache Wegbeschreibungen klar und verständlich schriftlich darstellen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.5.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich gezielt auf den mündlichen Ausdruck zum Thema Meine Umgebung vorbereiten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.5.SP3.3",
+          "m": "– Inhalte für das Sprechen organisieren und anwenden Lernziel: Die Schüler können klar und verständlich über Wegbeschreibungen, Orte und Geschäfte in ihrer Umgebung sprechen und können passende Redemittel anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "LEKTION 6: DIE TIERE",
+      "a": [
+        {
+          "k": "DE.6.6.H1.1",
+          "m": "– Vorbereitung auf das Hör-und Sehverstehen Lernziel: Die Schüler können sich gezielt auf den Prozess für das Hör-/Sehverstehen zu den Themen „Die Tiere und ihre Eigenschaften“, „Die Haustiere“, „Die Bauernhoftiere“ und „Die Wildtiere“ vorbereiten, um vertraute Tiernamen, Eigenschaften, Geräusche und grundlegende Aussagen zu erkennen und zu deuten. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen einfache und konkrete Zusammenhänge zwischen ihrem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen auf Grundlage ihres Vorwissens Vermutungen über den aktuellen Inhalt."
+          ]
+        },
+        {
+          "k": "DE.6.6.H1.2",
+          "m": "– Informationen zusammenführen durch bedeutende Details Lernziel: Die Schüler können beim Zuhören/Zusehen wichtige Informationen und Details zu den Themen erkennen und verstehen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler machen Vermutungen über den Inhalt, indem sie sich auf visuelle/akustische Elemente rund um den Zielinhalt stützen.",
+            "Die Schüler erfassen das Thema des aktuellen Inhalts im Allgemeinen durch Zuhören oder Zusehen.",
+            "Die Schüler erkennen konkrete, einfache und grundlegende Details und Bestandteile des Gesamtinhalts"
+          ]
+        },
+        {
+          "k": "DE.6.6.P3.1",
+          "m": "– Phonologische Elemente erkennen und anwenden Lernziel: Die Schüler können zentrale phonetische Merkmale und Aussprachemuster zu den Themen bewusst erkennen und korrekt anwenden. Sie können Tiernamen und beschreibende Adjektive deutlich und altersgerecht aussprechen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören den Inhalt aufmerksam, wobei sie auf die zielsprachlichen Ausspracheelemente achten.",
+            "Die Schüler festigen die zielsprachlichen Ausspracheelemente durch wiederholtes Nachsprechen.",
+            "Die Schüler erkennen die zielsprachlichen Ausspracheelemente in verschiedenen Kontexten.",
+            "Die Schüler setzen die zielsprachlichen Ausspracheelemente in unterschiedlichen Kontexten spontan, richtig, authentisch und natürlich ein.",
+            "Die Schüler wenden die zielsprachlichen Ausspracheelemente auch in anderen Kommunikationssituationen korrekt, spontan, authentisch und natürlich an."
+          ]
+        },
+        {
+          "k": "DE.6.6.L2.1",
+          "m": "– Vorbereitung auf das Leseverstehen Lernziel: Die Schüler können sich gezielt auf den Prozess für das Leseverstehen zu den Themen vorbereiten und können erste inhaltliche Vorhersagen treffen. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen.",
+            "Die Schüler erkennen grundlegende Zusammenhänge zwischen dem Vorwissen und den Hinweisen im aktuellen Inhalt.",
+            "Die Schüler machen einfache Vermutungen über das Thema des aktuellen Inhalts."
+          ]
+        },
+        {
+          "k": "DE.6.6.L2.3",
+          "m": "–Bedeutung erschließen und Gedanken zum Leseprozess ausdrücken Lernziel: Die Schüler können beim Lesen gezielt Informationen und zentrale Aussagen zu Tieren und deren Eigenschaften erfassen. Sie können Bedeutungen aus dem Textzusammenhang erschließen und ihr Textverständnis reflektieren. Prozesskomponenten:",
+          "s": [
+            "Die Schüler überprüfen die Richtigkeit ihrer vorherigen Vermutungen.",
+            "Die Schüler ordnen die grundlegenden Elemente des Inhalts in einfache Kategorien ein.",
+            "Die Schüler vergleichen die grundlegenden Elemente des Inhalts auf einfache Weise.",
+            "Die Schüler erkennen horizontale und vertikale Beziehungen im Inhalt.",
+            "Die Schüler ziehen einfache und grundlegende Schlussfolgerungen aus dem Inhalt.",
+            "Die Schüler verinnerlichen den gegebenen Inhalt individuell."
+          ]
+        },
+        {
+          "k": "DE.6.6.W2.1",
+          "m": "– Zielwortschatz erkennen und anwenden Lernziel: Die Schüler können den Zielwortschatz zum Thema Tiere erkennen, verstehen und in einfachen mündlichen und schriftlichen Kommunikationssituationen situationsgerecht anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler hören oder sehen zielsprachliche Wörter ganzheitlich im aktuellen Inhalt.",
+            "Die Schüler sprechen die wiederholten Zielwörter laut nach.",
+            "Die Schüler erfassen die Verwendung der Zielwörter.",
+            "Die Schüler verknüpfen die wahrgenommenen Zielwörter gedanklich mit vorhandenen konzeptuellen Bedeutungen.",
+            "Die Schüler erfassen die Bedeutungen der wiederholten und verwendeten Zielwörter im Inhalt.",
+            "Die Schüler setzen die kontextuell verknüpften Zielwörter in verschiedenen Aktivitäten spontan, authentisch und natürlich ein.",
+            "Die Schüler verwenden Zielwörter in unterschiedlichen Kommunikationssituationen effektiv, spontan, authentisch und natürlich."
+          ]
+        },
+        {
+          "k": "DE.6.6.G1.1",
+          "m": "– Zielgrammatik erkennen und anwenden Lernziel: Die Schüler können grundlegende grammatische Strukturen im Kontext der Themen erkennen und korrekt anwenden. Prozesskomponenten:",
+          "s": [
+            "Die Schüler gewinnen durch Zuhören oder Zusehen ein allgemeines Vertrautsein mit dem Inhalt.",
+            "Die Schüler festigen ihre Vertrautheit mit dem Zielinhalt, indem sie darin enthaltene Handlungen erkennen und den Inhalt hörend oder sehend wahrnehmen.",
+            "Die Schüler hören/sehen sich Präsentationen an, in denen sprachliche Elemente mit Körpersprache und Wiederholung (mündlich/visuell) dargestellt werden.",
+            "Die Schüler erkennen durch Zuhören/Zusehen ähnliche sprachliche Strukturen mit Körpersprache und Wiederholung und entwickeln so eine auditive/visuelle Wahrnehmung.",
+            "Die Schüler wiederholen sprachliche Zielstrukturen im Inhalt mehrmals automatisch und durch Zeigen, ohne die grammatischen Regeln zu kennen.",
+            "Die Schüler wiederholen sprachliche Strukturen automatisch, natürlich, kurz, einfach und bedeutungsvoll.",
+            "Die Schüler stellen die gehörten/gesehenen sprachlichen Strukturen automatisch und körperlich dar, ohne die Regeln zu kennen.",
+            "Die Schüler wiederholen die gehörten/gesehenen sprachlichen Strukturen gleichzeitig automatisch und körperlich, ohne die Regeln zu kennen.",
+            "Die Schüler wenden ähnliche gehörte/gesehene/gelesene sprachliche Strukturen spontan, ohne bewusste Regelkenntnis, mündlich oder schriftlich in der Kommunikation an."
+          ]
+        },
+        {
+          "k": "DE.6.6.S4.1",
+          "m": "– Vorbereitung auf den Schreibprozess Lernziel: Die Schüler können im Kontext der Themen eigene schriftliche Inhalte vorbereiten und verfassen. Die Schüler können die Tiere benennen, beschreiben und kurze inhaltlich sinnvolle Texte dazu schreiben. Sie gewinnen Sicherheit im schriftlichen Ausdruck und lernen, Wortschatz und Strukturen sinnvoll im Kontext einzusetzen. Prozesskomponenten: Vorbereitung auf den Schreibprozess:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre Erfahrungen, um sie einfach mit dem aktuellen Inhalt zu verknüpfen.",
+            "Die Schüler erfassen im Allgemeinen, worin die Schreibaufgabe besteht."
+          ]
+        },
+        {
+          "k": "DE.6.6.SP3.1",
+          "m": "– Vorbereitung auf den Sprechprozess Lernziel: Die Schüler können sich gezielt auf den Sprechprozess zum Thema „Die Tiere“ vorbereiten und können Redemittel sowie Satzstrukturen für Gespräche und kurze Präsentationen aktivieren. Prozesskomponenten:",
+          "s": [
+            "Die Schüler aktivieren ihr Vorwissen und ihre bisherigen Erfahrungen und bringen sie mit dem aktuellen Inhalt in Verbindung."
+          ]
+        },
+        {
+          "k": "DE.6.6.SP3.3",
+          "m": "–Inhalte für das Sprechen organisieren und anwenden Lernziel: Die Schüler können eigene Aussagen und Gesprächsbeiträge zum Thema Tiere vorbereiten und wenden zentrale Redemittel, Satzstrukturen und Wortschatz im freien und gelenkten Sprechen situationsgerecht an. Prozesskomponenten:",
+          "s": [
+            "Die Schüler entwerfen neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen.",
+            "Die Schüler überarbeiten neue Inhalte, indem sie den Modell-/Beispielinhalt für vorbereitete oder spontane Sprechsituationen nachahmen."
+          ]
+        }
+      ]
+    }
+  ]
+}

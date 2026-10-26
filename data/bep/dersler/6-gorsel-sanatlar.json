@@ -1,0 +1,127 @@
+{
+  "ders": "Görsel Sanatlar",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "HAYAT VE SANAT",
+      "a": [
+        {
+          "k": "GS.6.1.1",
+          "m": "Doğadaki çözümlerden hareketle biyomimetik yapabilme",
+          "s": [
+            "Doğal formların nokta, çizgi, doku etkileri ve ritmik yapılarını analiz ederek biyomimetik tasarlar.",
+            "Doğal formların nokta, çizgi, doku etkileri ve ritmik yapılarından yararlanarak biyomimetik oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATIN GÖRSEL DİLİ",
+      "a": [
+        {
+          "k": "GS.6.2.1",
+          "m": "Farklı kültürlere ait günlük eşyalar, kıyafetler ve mimarideki görsel mesajları okuyabilme",
+          "s": [
+            "Farklı kültürlere ait görsel göstergelerin sembolik ve estetik özelliklerini algılar.",
+            "Farklı kültürlere ait görsel göstergelerdeki mesajları, yerel ve evrensel değerler açısından anlamlandırır."
+          ]
+        },
+        {
+          "k": "GS.6.2.2",
+          "m": "Farklı kültürlere ait estetik motiflerle ileri dönüşüm ürünü yapabilme",
+          "s": [
+            "Farklı kültürlere ait günlük eşyalar, kıyafetler ve mimarideki motifleri stilize ederek ileri dönüşüm ürünü tasarlar.",
+            "Farklı kültürlere ait günlük eşyalar, kıyafetler ve mimarideki stilize edilmiş motiflerden esinlenerek ileri dönüşüm ürünü oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SANATÇILAR VE ESERLERİ",
+      "a": [
+        {
+          "k": "GS.6.3.1",
+          "m": "Kaligrafik unsurlar içeren sanat eserini inceleyebilme",
+          "s": [
+            "Kaligrafik unsurlar içeren eseri sanatsal açıdan betimler.",
+            "Kaligrafik unsurlar içeren eseri sanatsal açıdan çözümler.",
+            "Kaligrafik unsurlar içeren eseri sanatsal açıdan yorumlar.",
+            "Kaligrafik unsurlar içeren eser hakkında sanatsal yargıda bulunur."
+          ]
+        },
+        {
+          "k": "GS.6.3.2",
+          "m": "Modern tasarım anlayışına uygun kaligrafik kompozisyon yapabilme",
+          "s": [
+            "Ritmik ilişkileri kullanarak modern tasarım anlayışına uygun kaligrafik kompozisyon tasarlar.",
+            "Ritmik ilişkileri kullanarak modern tasarım anlayışına uygun kaligrafik kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ÇİZİM VE GÖRSEL İFADE",
+      "a": [
+        {
+          "k": "GS.6.4.1",
+          "m": "Simetrik üçgen kompozisyon yapısına uygun natürmort yapabilme",
+          "s": [
+            "Simetrik üçgen kompozisyon yapısına uygun natürmort tasarlar.",
+            "Oran-orantı ve yerleştirme kurallarını kullanarak natürmort oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "RENK VE ESTETİK",
+      "a": [
+        {
+          "k": "GS.6.5.1",
+          "m": "Merkezî kompozisyon yapısına uygun portre yapabilme",
+          "s": [
+            "Merkezî kompozisyon yapısına uygun portre tasarlar.",
+            "Yüz oranlarına ve yerleştirme kurallarına uygun şekilde portre oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MİLLÎ DEĞERLER VE SANAT",
+      "a": [
+        {
+          "k": "GS.6.6.1",
+          "m": "Cumhuriyet’in özgürlük, eşitlik, adalet ve bağımsızlık değerlerini yansıtan sanatsal üretim yapabilme",
+          "s": [
+            "Cumhuriyet’in özgürlük, eşitlik, adalet ve bağımsızlık değerlerini yansıtan kompozisyon tasarlar.",
+            "Cumhuriyet’in özgürlük, eşitlik, adalet ve bağımsızlık değerlerini yansıtan kompozisyon oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MÜZE VE KÜLTÜR",
+      "a": [
+        {
+          "k": "GS.6.7.1",
+          "m": "Müze türleri ve koleksiyonları hakkında genelleme yapabilme",
+          "s": [
+            "Farklı müze türlerine ve koleksiyonlarına ilişkin bilgi toplar.",
+            "Müzelerin ortak özelliklerini belirler.",
+            "Müzelerin ortak olmayan özelliklerini belirler.",
+            "Müze türlerine ve koleksiyonlarına ilişkin önermelerde bulunur."
+          ]
+        },
+        {
+          "k": "GS.6.7.2",
+          "m": "Okulunda geri dönüşüm müzesi yapabilme",
+          "s": [
+            "Geri dönüşüm müzesi koleksiyonuna uygun malzemelerle sergilenebilir ürün tasarlar.",
+            "Geri dönüşüm müzesi koleksiyonuna uygun eserlerle müze oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "ders": "Afet Bilinci 2",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: AFET VE AFET BİLİNCİ",
+      "a": [
+        {
+          "k": "AB.2.1.1",
+          "m": "Afet ve acil durumlarda ilk yardımın öncelikli amaçlarını sorgulayabilme",
+          "s": [
+            "Afet ve acil durumlarda ilk yardımın öncelikli amaçları hakkında merak ettiği konuları tanımlar.",
+            "Afet ve acil durumlarda ilk yardımın öncelikli amaçları hakkında sorular sorar.",
+            "Afet ve acil durumlarda ilk yardımın öncelikli amaçları hakkında bilgi toplar.",
+            "Afet ve acil durumlarda ilk yardımın öncelikli amaçları hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Afet ve acil durumlarda ilk yardımın öncelikli amaçları hakkından toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        },
+        {
+          "k": "AB.2.1.3",
+          "m": "Afetlere karşı bilinçli olmanın afet ve acil durum yönetimindeki önemiyle ilgili",
+          "s": [
+            "Afetlere karşı bilinçli olmanın afet ve acil durum yönetimindeki önemiyle ilgili plan yapar.",
+            "Afetlere karşı bilinçli olmanın afet ve acil durum yönetimindeki önemiyle ilgili planı uygular.",
+            "Afetlere karşı bilinçli olmanın afet ve acil durum yönetimindeki önemiyle ilgili planı değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: İNSAN KAYNAKLI AFETLER",
+      "a": [
+        {
+          "k": "AB.2.2.1",
+          "m": "İnsan kaynaklı afet türlerinin yaşanma riskinin bulunduğu yerler hakkında haritalardan çıkarım yapabilme",
+          "s": [
+            "İnsan kaynaklı afet türlerinin yaşanma riskinin bulunduğu yerler hakkında haritalardan çıkarım yapar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "AB.2.2.2",
+          "m": "İnsan kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıta dayalı",
+          "s": [
+            "İnsan kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıta dayanarak çıkarım yapar.",
+            "İnsan kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıtlardan elde ettiği çıkarım üzerine kişisel görüşünü̈ yansıtan bir ürün oluşturur.",
+            "İnsan kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıtlardan oluşan ürünleri paylaşır"
+          ]
+        },
+        {
+          "k": "AB.2.2.3",
+          "m": "İnsan kaynaklı afet türlerinin öncesinde, sırasında ve sonrasında alınması gereken önlemlerle ilgili fikrini eyleme dönüştürebilme",
+          "s": [
+            "İnsan kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili plan yapar.",
+            "İnsan kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili planı uygular.",
+            "İnsan kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili planı değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: DOĞA KAYNAKLI AFETLER",
+      "a": [
+        {
+          "k": "AB.2.3.1",
+          "m": "Doğa kaynaklı afet riskinin yüksek olduğu yerler hakkında haritalardan çıkarım yapabilme",
+          "s": [
+            "Haritada yer alan doğa kaynaklı afet türlerinin yaşanma riskinin bulunduğu yerler ile ilgili çıkarım yapar."
+          ]
+        },
+        {
+          "k": "AB.2.3.2",
+          "m": "Doğa kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıta dayalı",
+          "s": [
+            "Doğa kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıta dayanarak çıkarım yapar.",
+            "Doğa kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili kanıtlardan elde ettiği çıkarım üzerine kişisel görüşünü̈ yansıtan bir ürün oluşturur.",
+            "Doğa kaynaklı afetlerin neden olduğu zararın boyutlarıyla ilgili oluşturduğu ürünü paylaşır"
+          ]
+        },
+        {
+          "k": "AB.2.3.3",
+          "m": "Doğa kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken",
+          "s": [
+            "Doğa kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili plan yapar.",
+            "Doğa kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili planı uygular.",
+            "Doğa kaynaklı afet türlerinin öncesi, sırası ve sonrasında alınması gereken önlemlerle ilgili planı değerlendirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: KÜRESEL İKLİM DEĞİŞİKLİĞİ VE AFETLER",
+      "a": [
+        {
+          "k": "AB.2.4.1",
+          "m": "Küresel iklim değişikliği mücadelesinde ülkemizin rolünü yorumlayabilme",
+          "s": [
+            "Küresel iklim değişikliği mücadelesinde ülkemizin rolünü inceler.",
+            "Küresel iklim değişikliği mücadelesinde ülkemizin rolünü bağlamdan kopmadan dönüştürür.",
+            "Küresel iklim değişikliği mücadelesinde ülkemizin rolünü nesnel, doğru ve anlamı değiştirmeyecek şekilde yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "AB.2.4.2",
+          "m": "Küresel iklim değişikliği mücadelesinde ulusal ve uluslararası kuruluşların faaliyetleri ile ilgili kanıta dayalı ürün oluşturabilme ve paylaşabilme",
+          "s": [
+            "Küresel iklim değişikliği mücadelesinde ulusal ve uluslararası kuruluşların faaliyetleri ile ilgili kanıta dayanarak çıkarım yapar.",
+            "Küresel iklim değişikliği mücadelesinde ulusal ve uluslararası kuruluşların faaliyetleri ile ilgili kanıtlardan elde ettiği çıkarım üzerine kişisel görüşünü̈ yansıtan bir ürün oluşturur.",
+            "Küresel iklim değişikliği mücadelesinde ulusal ve uluslararası kuruluşların faaliyetleri ile ilgili oluşturduğu ürünü paylaşır."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "ders": "Bilim Uygulamaları",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: GÜNLÜK HAYATTA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.1.1.1",
+          "m": "Evde sürdürülebilir gıda tüketimine yönelik bilimsel çıkarım yapabilme",
+          "s": [
+            "Evdeki gıda tüketiminin niteliklerini tanımlar.",
+            "Evdeki gıda tüketimine yönelik veri toplar ve kaydeder.",
+            "Evdeki gıda tüketimine ilişkin topladığı verileri yorumlar ve bu yorumları sürdürülebilirlikle ilişkilendirerek değerlendirir."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.1.2",
+          "m": "Günlük hayatta ısı alışverişine ilişkin bilimsel gözlem yapabilme",
+          "s": [
+            "Isı alışverişine ilişkin nitelikleri tanımlar.",
+            "Günlük hayatta ısı alışverişi içeren örneklere ilişkin veri toplar ve bu verileri kaydeder.",
+            "Topladığı verileri hâl değişimi ve genleşme-büzülme olaylarıyla ilişkilendirerek açıklar."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.1.3",
+          "m": "Basit elektrik devrelerinden hareketle günlük hayatta elektriğin kullanımına",
+          "s": [
+            "Basit elektrik devrelerinden hareketle günlük hayatta elektriğin kullanımına."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: SAĞLIK VE SPORDA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.1.2.1",
+          "m": "Bilimin sağlıklı yaşamla ilişkisine yönelik bilgi toplayabilme",
+          "s": [
+            "Bilimin sağlıklı yaşamla ilişkisine yönelik bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak bilim ve sağlıklı yaşam arasındaki ilişkiye yönelik bilgileri bulur.",
+            "Sağlıklı yaşam ve bilim ilişkisine yönelik bulduğu bilgileri doğrular.",
+            "Sağlıklı yaşam ve bilim ilişkisine yönelik bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.2.2",
+          "m": "Dengeli ve sağlıklı beslenmeyi olumsuz etkileyen durumları tartışabilme",
+          "s": [
+            "Dengeli ve sağlıklı beslenmeyi olumsuz etkileyen durumlara yönelik mantıksal temellendirme yapar.",
+            "Dengeli ve sağlıklı beslenmeyi olumsuz etkileyen durumlara yönelik mantıksal çelişkileri tespit eder.",
+            "Dengeli ve sağlıklı beslenmeyi olumsuz etkileyen durumlara yönelik geçerli fikirleri çürütür veya kabul eder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.2.3",
+          "m": "Bilimin spor dalları üzerindeki etkisini yapılandırabilme",
+          "s": [
+            "Bilimin spor dalları üzerindeki etkisini inceleyerek nedensel ilişkileri ortaya koyar.",
+            "Tespit ettiği ilişkilerle ilgili ön bilgilerden yararlanarak bilimin spor dalları üzerindeki etkisini uyumlu bir bütün olarak açıklar."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.2.4",
+          "m": "Bir spor dalına ait ekipman tasarımının bilimle ilişkisine yönelik bilgi",
+          "s": [
+            "Bir spor dalına ait ekipman tasarımının bilimle ilişkisine yönelik bilgi."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MBU.BU.1.2.5",
+          "m": "Özel gereksinimli bir bireyin hayatını kolaylaştırmak için empatik yaklaşımla",
+          "s": [
+            "Özel gereksinimli bir bireyin hayatını kolaylaştırmak için empatik yaklaşımla."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: SANATTA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.1.3.1",
+          "m": "Sanat dallarında bilimin kullanımına yönelik bilimsel gözlem yapabilme",
+          "s": [
+            "Sanat dallarında bilimin kullanımına yönelik nitelikleri tanımlar.",
+            "Sanat dallarında bilimin kullanımına yönelik veri toplar ve topladığı verileri kaydeder.",
+            "Sanat dallarında bilimin kullanımına yönelik topladığı verileri açıklar."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.3.2",
+          "m": "Geleneksel Türk sanatlarının oluşturulmasında bilimsel kavramların etkisine yönelik bilgi toplayabilme",
+          "s": [
+            "Geleneksel Türk sanatlarının oluşturulmasında bilimsel kavramların etkisini araştırmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak geleneksel Türk sanatlarının oluşturulmasında bilimsel kavramların etkisine ilişkin bilgileri bulur.",
+            "Geleneksel Türk sanatlarının oluşturulmasında bilimsel kavramların etkisine ilişkin ulaştığı bilgileri doğrular.",
+            "Geleneksel Türk sanatlarının oluşturulmasında bilimsel kavramların etkisine ilişkin ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.3.3",
+          "m": "Mimaride bilimin kullanımına ilişkin bilgi toplayabilme",
+          "s": [
+            "Mimaride bilimin kullanımını araştırmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak mimaride bilimin kullanımına ilişkin bilgileri bulur.",
+            "Mimaride bilimin kullanımına ilişkin bulduğu bilgileri doğrular.",
+            "Mimaride bilimin kullanımına ilişkin bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.3.4",
+          "m": "Tiyatro sahnelerinde ışık kullanım tekniklerine ilişkin bilgi toplayabilme",
+          "s": [
+            "Tiyatro sahnelerinde kullanılan ışık tekniklerini araştırmak için kullanacağı kaynakları belirler.",
+            "Belirlediği araçları kullanarak ışık tekniklerine ilişkin bilgileri bulur.",
+            "Tiyatro sahnelerinde kullanılan ışık tekniklerine ilişkin bulduğu bilgileri doğrular.",
+            "Tiyatro sahnelerinde kullanılan ışık tekniklerine ilişkin bulduğu bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: DOĞADA BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.1.4.1",
+          "m": "Doğada gerçekleşen olayların bilimle ilişkisine yönelik bilgi toplayabilme",
+          "s": [
+            "Doğada gerçekleşen olayın bilimle ilişkisini araştırmak için kullanacağı kaynakları belirler.",
+            "Belirlediği araçları kullanarak seçtiği durum veya olayın bilimle ilişkisine yönelik bilgileri bulur.",
+            "Ulaştığı bilgileri doğrular.",
+            "Doğada gerçekleşen olayın bilimle ilişkisine yönelik ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.4.2",
+          "m": "Biyomimikrinin kullanıldığı ürünlere yönelik bilgi toplayabilme",
+          "s": [
+            "Biyomimikrinin kullanıldığı ürünleri araştırmak için kullanacağı kaynakları belirler.",
+            "Belirlediği araçları kullanarak biyomimikrinin kullanıldığı ürünlere yönelik bilgileri bulur.",
+            "Bulduğu bilgileri doğrular.",
+            "Biyomimikri kullanılan ürünlere yönelik bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.4.3",
+          "m": "Teknolojide biyomimikrinin kullanımının sağladığı faydaları tartışabilme",
+          "s": [
+            "Teknolojide biyomimikrinin kullanımına ilişkin mantıksal temellendirme yapar.",
+            "Teknolojide biyomimikrinin kullanımına ilişkin görüşlerdeki mantıksal çelişki veya tutarsızlıkları tespit eder.",
+            "Teknolojide biyomimikrinin kullanımına ilişkin ulaşılan görüşleri çürütür veya kabul eder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.4.4",
+          "m": "Günlük hayatta karşılaşılan bir probleme çözüm üretmek için doğadan ilham alan inovatif bir bilimsel model oluşturabilme",
+          "s": [
+            "Belirlediği problemin çözümüne yönelik bir model önerir.",
+            "Yeni kanıtlarla modelini yeniler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. TEMA: MESLEKLERDE BİLİM",
+      "a": [
+        {
+          "k": "MBU.BU.1.5.1",
+          "m": "Günlük hayatında karşılaştığı mesleklerde bilimin yerini tartışabilme",
+          "s": [
+            "Günlük hayatında karşılaştığı mesleklerde bilimin yerine ilişkin mantıksal temellendirme yapar.",
+            "Bu konudaki mantıksal çelişkileri tespit eder.",
+            "Günlük hayatında karşılaştığı mesleklerde bilimin yerine ilişkin ulaşılan sonuçları çürütür veya kabul eder."
+          ]
+        },
+        {
+          "k": "MBU.BU.1.5.2",
+          "m": "Yeşil mesleklere yönelik bilgi toplayabilme",
+          "s": [
+            "Yeşil meslekleri araştırmak için kullanacağı kaynakları belirler.",
+            "Belirlediği araçları kullanarak yeşil mesleklere yönelik bilgileri bulur.",
+            "Yeşil mesleklere ilişkin ulaştığı bilgileri doğrular.",
+            "Yeşil mesleklere ilişkin ulaştığı bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

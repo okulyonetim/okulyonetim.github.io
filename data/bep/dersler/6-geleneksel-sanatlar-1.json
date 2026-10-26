@@ -1,0 +1,163 @@
+{
+  "ders": "Geleneksel Sanatlar 1",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. TEMA: DOKUMA SANATI",
+      "a": [
+        {
+          "k": "GS.1.1.1",
+          "m": "Dokuma sanatı hakkında bilgi toplayabilme",
+          "s": [
+            "Dokuma sanatı hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak dokuma sanatı hakkındaki bilgileri bulur.",
+            "Dokuma sanatı hakkında ulaştığı bilgileri doğrular.",
+            "Dokuma sanatı hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.1.1.2",
+          "m": "Dokumada yer alan motiflerdeki görsel mesajı algılayabilme",
+          "s": [
+            "Dokumada yer alan motiflerdeki sanatsal olguları fark eder.",
+            "Dokumada yer alan motiflerdeki sanatsal olguların nesnel özelliklerini ifade eder."
+          ]
+        },
+        {
+          "k": "GS.1.1.3",
+          "m": "Dokuma sanatında ürün tasarlayabilme",
+          "s": [
+            "Dokuma sanatına ait örnekleri inceler.",
+            "Dokuma sanatına ait örnekler bağlamında oluşturduğu imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.1.1.4",
+          "m": "Dokuma sanatı uygulamalarıyla ürün oluşturabilme",
+          "s": [
+            "Dokumanın temasına uygun görsel anlatım aracını ifade eder.",
+            "Temayı dokuma sanatı ürününe dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "2. TEMA: EBRU SANATI",
+      "a": [
+        {
+          "k": "GS.1.2.1",
+          "m": "Geçmişten günümüze gelen ebru çeşitlerini sınıflandırabilme",
+          "s": [
+            "Geçmişten günümüze gelen ebru çeşitlerine ilişkin ölçütleri belirler.",
+            "Geçmişten günümüze gelen ebru çeşitlerini belirlediği ölçütlere göre ayrıştırır.",
+            "Geçmişten günümüze gelen ebru çeşitlerini belirlediği ölçütlere göre tasnif eder.",
+            "Geçmişten günümüze gelen ebru çeşitlerini etiketler."
+          ]
+        },
+        {
+          "k": "GS.1.2.2",
+          "m": "Klasik ebru tekniklerini uygulayarak ürün oluşturabilme",
+          "s": [
+            "Ebru çeşidine uygun görsel anlatım aracını ifade eder.",
+            "Teknedeki sıvı yüzeyde oluşturduğu deseni ebru kâğıdına aktararak sanatsal ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "3. TEMA: KALEMİŞİ SANATI",
+      "a": [
+        {
+          "k": "GS.1.3.1",
+          "m": "Kalemişi sanatı hakkında bilgi toplayabilme",
+          "s": [
+            "Kalemişi sanatı hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak kalemişi sanatı hakkındaki bilgileri bulur.",
+            "Kalemişi sanatı hakkında ulaştığı bilgileri doğrular.",
+            "Kalemişi sanatı hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.1.3.2",
+          "m": "Kalemişi sanatında sanatsal ürün tasarlayabilme",
+          "s": [
+            "Kalemişi sanatı motif uygulamalarına ait örnekleri inceler.",
+            "Kalemişi sanatı motif uygulamalarına ait örnekler bağlamında oluşturduğu imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.1.3.3",
+          "m": "Kalemişi sanatı uygulamalarıyla sanatsal ürün oluşturabilme",
+          "s": [
+            "Kalemişi sanatında sanatsal ürün oluşturmak için uygun görsel anlatım araçlarını ifade eder.",
+            "Kalemişi sanatı ahşap üstü tekniğini uygulayarak tasarımını sanatsal ürüne dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "4. TEMA: ÇİNİ SANATI",
+      "a": [
+        {
+          "k": "GS.1.4.1",
+          "m": "Çini sanatının tarihsel gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Çini sanatının gelişimi hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak çini sanatının gelişimi hakkındaki bilgileri bulur.",
+            "Çini sanatı hakkında ulaştığı bilgileri doğrular.",
+            "Çini sanatı hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.1.4.2",
+          "m": "Çini desenleri tasarlayabilme",
+          "s": [
+            "Geleneksel çini desenleri ile bitki formlarını ve geometrik şekilleri inceler.",
+            "İncelediği formlar bağlamında oluşturduğu imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.1.4.3",
+          "m": "Çini sanatı desen tasarımı ürünü oluşturabilme",
+          "s": [
+            "Çini deseninin boyutuna göre deseni uygulayacağı yüzeyi ifade eder.",
+            "Çini desenini uygun yüzey üzerine aktarak kompozisyona dönüştürür."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "5. TEMA: VİTRAY SANATI",
+      "a": [
+        {
+          "k": "GS.1.5.1",
+          "m": "Vitray sanatı hakkında bilgi toplayabilme",
+          "s": [
+            "Vitray sanatı hakkındaki bilgilere ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak vitray sanatı hakkındaki bilgileri bulur.",
+            "Vitray sanatı hakkında ulaştığı bilgileri doğrular.",
+            "Vitray sanatı hakkında ulaştığı bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "GS.1.5.2",
+          "m": "Vitray sanatında ürün tasarlayabilme",
+          "s": [
+            "Vitray sanatına ait örnekleri inceler.",
+            "Vitray sanatına ait örnekler bağlamında oluşturduğu imgeleri ifade eder."
+          ]
+        },
+        {
+          "k": "GS.1.5.3",
+          "m": "Vitray sanatı uygulamalarıyla ürün oluşturabilme",
+          "s": [
+            "Vitrayın temasına uygun görsel anlatım aracını ifade eder.",
+            "Temayı vitray sanatı ürününe dönüştürür."
+          ]
+        }
+      ]
+    }
+  ]
+}

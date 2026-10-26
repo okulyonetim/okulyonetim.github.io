@@ -1,0 +1,68 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİNDE DİZİ",
+      "a": [
+        {
+          "k": "TMT.6.1.1",
+          "m": "Türk müziği ses dizilerini işitebilme",
+          "s": [
+            "Türk müziği ses dizilerinin bileşenlerini tanır.",
+            "Türk müziği ses dizilerinin bileşenlerini işitsel olarak ayırt eder.",
+            "Türk müziği ses dizilerinin bileşenlerini ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİ SES SİSTEMİ",
+      "a": [
+        {
+          "k": "TMT.6.2.1",
+          "m": "Türk müziği ses sistemini oluşturan unsurları işitebilme",
+          "s": [
+            "Türk müziği ses sistemini tanır.",
+            "Türk müziği ses sistemin bileşenlerini ayırt eder.",
+            "Türk müziği ses sistemini işitsel olarak ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE ÜÇLÜLER",
+      "a": [
+        {
+          "k": "TMT.6.3.1",
+          "m": "Türk müziğinde üçlüleri işitebilme",
+          "s": [
+            "Türk müziğinde üçlüleri tanır.",
+            "Türk müziğinde üçlüleri ayırt eder.",
+            "Türk müziğinde üçlüleri işitsel olarak ifade eder."
+          ]
+        },
+        {
+          "k": "TMT.6.3.2",
+          "m": "Türk müziğinde üçlüleri yazabilme",
+          "s": [
+            "Türk müziğinde üçlüleri yazılı olarak tanır.",
+            "Türk müziğinde üçlüleri yazılı olarak ayırt eder",
+            "Türk müziğinde üçlüleri yazarak uygular."
+          ]
+        },
+        {
+          "k": "TMT.6.3.3",
+          "m": "TTürk müziği ses dizilerinde üçlüleri okuyabilme",
+          "s": [
+            "Türk müziğinde üçlüler ile ilgili yazılan ezgileri tanır.",
+            "Türk müziğinde üçlüler ile ilgili yazılan ezgileri ayırt eder.",
+            "Türk müziğinde üçlüler ile ilgili yazılan ezgileri okur."
+          ]
+        }
+      ]
+    }
+  ]
+}

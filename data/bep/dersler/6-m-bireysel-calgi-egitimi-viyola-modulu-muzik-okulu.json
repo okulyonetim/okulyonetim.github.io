@@ -1,0 +1,53 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİNDE MAKAM KAVRAMI",
+      "a": [
+        {
+          "k": "VİY.6.1.1",
+          "m": "Makam kavramı hakkında bilgi toplayabilme",
+          "s": [
+            "Makam kavramını öğrenmek için kullanabileceği bilgi kaynaklarını belirler.",
+            "Makam kavramına ilişkin belirlediği kaynaklardan temel bilgileri toplar.",
+            "Makam kavramına ilişkin elde ettiği bilgileri doğrular.",
+            "Makam kavramına ilişkin elde ettiği bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜRDI DIZISI İLE PARÇA ÇALABILME",
+      "a": [
+        {
+          "k": "VİY.6.2.1",
+          "m": "Kürdi makam dizisi ile eserler çalabilme",
+          "s": [
+            "Kürdi makam dizisindeki eserleri çözümler.",
+            "Kürdi makam dizisiyle eserler çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Kürdi makam dizisi ile eserler çalarken viyolaya özgü teknikleri kullanır.",
+            "Kürdi makam dizisi ile eserler çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HICAZ DIZISI İLE PARÇA ÇALABILME",
+      "a": [
+        {
+          "k": "VİY.6.3.1",
+          "m": "Hicaz makam dizisi ile eserler çalabilme",
+          "s": [
+            "Hicaz makam dizisindeki eserleri çözümler.",
+            "Hicaz makam dizisi ile eserler çalabilmek için duruş tutuş pozisyonu alır.",
+            "Hicaz makam dizisi ile eserler çalarken viyolaya özgü teknikleri kullanır.",
+            "Hicaz makam dizisi ile eserler çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "ders": "Koro ve Repertuvar (Müzik Okulu)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KOROYU TANIYALIM",
+      "a": [
+        {
+          "k": "KOREP.6.1.1",
+          "m": "Türk halk müziği korolarının özelliklerini açıklayabilme",
+          "s": [
+            "Türk halk müziği korolarının özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.6.1.2",
+          "m": "Türk sanat müziği korolarının özelliklerini açıklayabilme",
+          "s": [
+            "Türk sanat müziği korolarının özelliklerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.6.1.3",
+          "m": "Çok sesli müzik korolarının özelliklerini açıklayabilme",
+          "s": [
+            "Çok sesli müzik korolarının özelliklerini açıklar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "KORO OLUŞTURALIM",
+      "a": [
+        {
+          "k": "KOREP.6.2.1",
+          "m": "Koro eserlerini anlamlarına uygun hızda söyleyebilme",
+          "s": [
+            "Koro eserlerini anlamlarına uygun hızda söylemek için hazırlanır.",
+            "Koro eserlerini anlamlarına uygun hızda söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini anlamlarına uygun hızda söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.2.2",
+          "m": "Koro eserlerini anlamlarına uygun gürlükte söyleyebilme",
+          "s": [
+            "Koro eserlerini anlamlarına uygun gürlükte söylemek için hazırlanır.",
+            "Koro eserlerini anlamlarına uygun gürlükte söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini anlamlarına uygun gürlükte söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KORODA SÖYLEYELİM",
+      "a": [
+        {
+          "k": "KOREP.6.3.1",
+          "m": "İstiklal Marşı’nın tarihsel sürecini açıklayabilme",
+          "s": [
+            "İstiklal Marşı’nın tarihsel sürecini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KOREP.6.3.2",
+          "m": "Belirli gün ve haftalarla ilgili eserler söyleyebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri söylemeye hazırlanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken uygun teknikleri kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.3.3",
+          "m": "Okul şarkıları repertuvarında bulunan eserleri söyleyebilme",
+          "s": [
+            "Okul şarkıları repertuvarında bulunan eserleri söylemeye hazırlanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken uygun teknikleri kullanır.",
+            "Okul şarkıları repertuvarında bulunan eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.3.4",
+          "m": "Marmara yöresine ait türküleri söyleyebilme",
+          "s": [
+            "Marmara yöresine ait eserleri söylemeye hazırlanır.",
+            "Marmara yöresine ait eserleri söylerken uygun teknikleri kullanır.",
+            "Marmara yöresine ait eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.3.5",
+          "m": "Rumeli yöresine ait türküleri söyleyebilme",
+          "s": [
+            "Rumeli yöresine ait eserleri söylemeye hazırlanır.",
+            "Rumeli yöresine ait eserleri söylerken uygun teknikleri kullanır.",
+            "Rumeli yöresine ait eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.3.6",
+          "m": "Akdeniz yöresine ait türküleri söyleyebilme",
+          "s": [
+            "Akdeniz yöresine ait eserleri söylemeye hazırlanır.",
+            "Akdeniz yöresine ait eserleri söylerken uygun teknikleri kullanır.",
+            "Akdeniz yöresine ait eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KOREP.6.3.7",
+          "m": "Türk sanat müziği türünde eserler söyleyebilme",
+          "s": [
+            "Türk sanat müziği türünde eserleri söylemeye hazırlanır.",
+            "Türk sanat müziği türünde eserleri söylerken uygun teknikleri kullanır.",
+            "Türk sanat müziği türünde eserleri söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KONSER ETKİNLİKLERİ",
+      "a": [
+        {
+          "k": "KOREP.6.4.1",
+          "m": "Türk müziği etkinliklerine katılmanın önemini yansıtabilme",
+          "s": [
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerini gözden geçirir.",
+            "Katıldığı Türk müziği etkinlikleri ile ilgili deneyimlerinden hareketle çıkarım yapar.",
+            "Ulaştığı çıkarımları değerlendirir."
+          ]
+        },
+        {
+          "k": "KOREP.6.4.2",
+          "m": "Koro eserlerini sınıf korosu konserinde söyleyebilme",
+          "s": [
+            "Koro eserlerini sınıf korosu konserinde söylemeye hazırlanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken uygun teknikleri kullanır.",
+            "Koro eserlerini sınıf korosu konserinde söylerken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

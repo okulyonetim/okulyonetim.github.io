@@ -1,0 +1,371 @@
+{
+  "ders": "Arapça (İHO)",
+  "grup": "6. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "plan",
+  "u": [
+    {
+      "ad": "1. ÜNİTE: AKRABALARIM",
+      "a": [
+        {
+          "k": "ARP.6.1.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.1.1.1. Geniş aile bireyleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapabilme 6.1.1.2. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.1.1.3. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.1.1.1. Geniş aile bireyleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapar 6.1.1.2. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.1.1.3. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.1.2.1. Geniş aile bireyleri ve mesleklerle ilgili okumaya hazırlık yapabilme 6.1.2.2. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.1.2.3. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.1.2.1. Geniş aile bireyleri ve mesleklerle ilgili okumaya hazırlık yapar 6.1.2.2. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.1.2.3. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.1.3.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.1.3.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.1.4.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.6.1.5.SESLETİM SEÇME-KULLANMA 6.1.5.1. Hedef harfleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.1.4.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.6.1.5.SESLETİM SEÇME-KULLANMA 6.1.5.1. Hedef harfleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.6",
+          "m": "KONUŞMA-ANLATMA 6.1.6.1. Geniş aile bireyleri ve mesleklerle ilgili konuşmaya hazırlık yapabilme 6.1.6.2. Geniş aile bireyleri ve mesleklerle ilgili konuşma modelini taklit edebilme 6.1.6.3. Geniş aile bireyleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.1.6.4.Geniş aile bireyleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirebilme 6.1.6.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.1.6.1. Geniş aile bireyleri ve mesleklerle ilgili konuşmaya hazırlık yapar 6.1.6.2. Geniş aile bireyleri ve mesleklerle ilgili konuşma modelini taklit eder 6.1.6.3. Geniş aile bireyleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.1.6.4.Geniş aile bireyleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirir 6.1.6.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.7",
+          "m": "YAZMA-ANLATMA 6.1.7.1. Geniş aile bireyleri ve mesleklerle ilgili yazmaya hazırlık yapabilme 6.1.7.2. Geniş aile bireyleri ve mesleklerle ilgili yazı modelini kopyalayabilme 6.1.7.3. Geniş aile bireyleri ve mesleklerle ilgili yazılarında içerik oluşturabilme 6.1.7.4. Geniş aile bireyleri ve mesleklerle ilgili yazılarını uygulamaya geçirebilme 6.1.7.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.1.7.1. Geniş aile bireyleri ve mesleklerle ilgili yazmaya hazırlık yapar 6.1.7.2. Geniş aile bireyleri ve mesleklerle ilgili yazı modelini kopyalar 6.1.7.3. Geniş aile bireyleri ve mesleklerle ilgili yazılarında içerik oluşturur 6.1.7.4. Geniş aile bireyleri ve mesleklerle ilgili yazılarını uygulamaya geçirir 6.1.7.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "1. ÜNİTE: AKRABALARIM 1. DÖNEM 1. SINAV",
+      "a": [
+        {
+          "k": "ARP.6.1.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.1.1.1. Geniş aile bireyleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapabilme 6.1.1.2. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.1.1.3. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.1.1.1. Geniş aile bireyleri ve mesleklerle ilgili dinlemeye/izlemeye hazırlık yapar 6.1.1.2. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.1.1.3. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.1.2.1. Geniş aile bireyleri ve mesleklerle ilgili okumaya hazırlık yapabilme 6.1.2.2. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.1.2.3. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.1.2.1. Geniş aile bireyleri ve mesleklerle ilgili okumaya hazırlık yapar 6.1.2.2. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.1.2.3. Geniş aile bireyleri ve mesleklerle ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.1.3.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.1.3.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.1.4.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme ARP.6.1.5.SESLETİM SEÇME-KULLANMA 6.1.5.1. Hedef harfleri sesletim unsurlarına uygun olarak seslendirebilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.1.4.1. Geniş aile bireyleri ve mesleklerle ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır ARP.6.1.5.SESLETİM SEÇME-KULLANMA 6.1.5.1. Hedef harfleri sesletim unsurlarına uygun olarak seslendirir."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.6",
+          "m": "KONUŞMA-ANLATMA 6.1.6.1. Geniş aile bireyleri ve mesleklerle ilgili konuşmaya hazırlık yapabilme 6.1.6.2. Geniş aile bireyleri ve mesleklerle ilgili konuşma modelini taklit edebilme 6.1.6.3. Geniş aile bireyleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.1.6.4.Geniş aile bireyleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirebilme 6.1.6.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.1.6.1. Geniş aile bireyleri ve mesleklerle ilgili konuşmaya hazırlık yapar 6.1.6.2. Geniş aile bireyleri ve mesleklerle ilgili konuşma modelini taklit eder 6.1.6.3. Geniş aile bireyleri ve mesleklerle ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.1.6.4.Geniş aile bireyleri ve mesleklerle ilgili konuşmalarını uygulamaya geçirir 6.1.6.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini kullanarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.1.7",
+          "m": "YAZMA-ANLATMA 6.1.7.1. Geniş aile bireyleri ve mesleklerle ilgili yazmaya hazırlık yapabilme 6.1.7.2. Geniş aile bireyleri ve mesleklerle ilgili yazı modelini kopyalayabilme 6.1.7.3. Geniş aile bireyleri ve mesleklerle ilgili yazılarında içerik oluşturabilme 6.1.7.4. Geniş aile bireyleri ve mesleklerle ilgili yazılarını uygulamaya geçirebilme 6.1.7.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.1.7.1. Geniş aile bireyleri ve mesleklerle ilgili yazmaya hazırlık yapar 6.1.7.2. Geniş aile bireyleri ve mesleklerle ilgili yazı modelini kopyalar 6.1.7.3. Geniş aile bireyleri ve mesleklerle ilgili yazılarında içerik oluşturur 6.1.7.4. Geniş aile bireyleri ve mesleklerle ilgili yazılarını uygulamaya geçirir 6.1.7.5. Geniş aile bireyleri ve mesleklerle ilgili bilgilerini yazılarında yeniden yapılandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: HAYDİ OKULA",
+      "a": [
+        {
+          "k": "ARP.6.2.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.2.1.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlemeye/izlemeye hazırlık yapabilme 6.2.1.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.2.1.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içeriği anlamlandırabilme 6.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.2.1.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlemeye/izlemeye hazırlık yapar 6.2.1.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.2.1.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içeriği anlamlandırır 6.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.2.2.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okumaya hazırlık yapabilme 6.2.2.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.2.2.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içeriği anlamlandırabilme 6.2.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.2.2.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okumaya hazırlık yapar 6.2.2.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.2.2.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içeriği anlamlandırır 6.2.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.2.3.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.2.3.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.2.4.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.2.4.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.5",
+          "m": "KONUŞMA-ANLATMA 6.2.5.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmaya hazırlık yapabilme 6.2.5.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşma modelini taklit edebilme 6.2.5.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.2.5.4.Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarını uygulamaya geçirebilme 6.2.5.5. Üniteyle ilgili bilgilerini kullanarak iletişim kurabilme 6.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.2.5.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmaya hazırlık yapar 6.2.5.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşma modelini taklit eder 6.2.5.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.2.5.4.Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarını uygulamaya geçirir 6.2.5.5. Üniteyle ilgili bilgilerini kullanarak iletişim kurar 6.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.6",
+          "m": "YAZMA-ANLATMA 6.2.6.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazmaya hazırlık yapabilme 6.2.6.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazı modelini kopyalayabilme 6.2.6.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarında içerik oluşturabilme çok basit, kısa ve anlamlı bir içerik oluşturur. 6.2.6.4. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarını uygulamaya geçirebilme 6.2.6.5. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili bilgilerini yazılarında yeniden yapılandırabilme 6.2.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.2.6.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazmaya hazırlık yapar 6.2.6.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazı modelini kopyalar 6.2.6.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarında içerik oluşturur çok basit, kısa ve anlamlı bir içerik oluşturur. 6.2.6.4. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarını uygulamaya geçirir 6.2.6.5. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili bilgilerini yazılarında yeniden yapılandırır 6.2.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "2. ÜNİTE: HAYDİ OKULA 1. DÖNEM 2. SINAV",
+      "a": [
+        {
+          "k": "ARP.6.2.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.2.1.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlemeye/izlemeye hazırlık yapabilme 6.2.1.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.2.1.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içeriği anlamlandırabilme 6.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.2.1.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlemeye/izlemeye hazırlık yapar 6.2.1.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.2.1.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içeriği anlamlandırır 6.2.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.2.2.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okumaya hazırlık yapabilme 6.2.2.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.2.2.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içeriği anlamlandırabilme 6.2.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.2.2.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okumaya hazırlık yapar 6.2.2.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.2.2.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili okuduğu içeriği anlamlandırır 6.2.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.2.3.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.2.3.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.2.4.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.2.4.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.5",
+          "m": "KONUŞMA-ANLATMA 6.2.5.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmaya hazırlık yapabilme 6.2.5.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşma modelini taklit edebilme 6.2.5.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.2.5.4.Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarını uygulamaya geçirebilme 6.2.5.5. Üniteyle ilgili bilgilerini kullanarak iletişim kurabilme 6.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.2.5.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmaya hazırlık yapar 6.2.5.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşma modelini taklit eder 6.2.5.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.2.5.4.Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili konuşmalarını uygulamaya geçirir 6.2.5.5. Üniteyle ilgili bilgilerini kullanarak iletişim kurar 6.2.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.2.6",
+          "m": "YAZMA-ANLATMA 6.2.6.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazmaya hazırlık yapabilme 6.2.6.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazı modelini kopyalayabilme 6.2.6.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarında içerik oluşturabilme çok basit, kısa ve anlamlı bir içerik oluşturur. 6.2.6.4. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarını uygulamaya geçirebilme 6.2.6.5. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili bilgilerini yazılarında yeniden yapılandırabilme 6.2.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.2.6.1. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazmaya hazırlık yapar 6.2.6.2. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazı modelini kopyalar 6.2.6.3. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarında içerik oluşturur çok basit, kısa ve anlamlı bir içerik oluşturur. 6.2.6.4. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili yazılarını uygulamaya geçirir 6.2.6.5. Okul, okulun bölümleri ve okulda bulunan eşyalarla ilgili bilgilerini yazılarında yeniden yapılandırır 6.2.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: VÜCUDUM",
+      "a": [
+        {
+          "k": "ARP.6.3.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.3.1.1. Organlar ve duyularla ilgili dinlemeye/izlemeye hazırlık yapabilme 6.3.1.2. Organlar ve duyularla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.3.1.3. Organlar ve duyularla ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.3.1.1. Organlar ve duyularla ilgili dinlemeye/izlemeye hazırlık yapar 6.3.1.2. Organlar ve duyularla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.3.1.3. Organlar ve duyularla ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.3.2.1. Organlar ve duyularla ilgili okumaya hazırlık yapabilme 6.3.2.2. Organlar ve duyularla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.3.2.3. Organlar ve duyularla ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.3.2.1. Organlar ve duyularla ilgili okumaya hazırlık yapar 6.3.2.2. Organlar ve duyularla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.3.2.3. Organlar ve duyularla ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.3.3.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.3.3.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.3.4.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.3.4.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.5",
+          "m": "KONUŞMA-ANLATMA 6.3.5.1. Organlar ve duyularla ilgili konuşmaya hazırlık yapabilme 6.3.5.2. Organlar ve duyularla ilgili konuşma modelini taklit edebilme 6.3.5.3. Organlar ve duyularla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.3.5.4. Organlar ve duyularla ilgili konuşmalarını uygulamaya geçirebilme 6.3.5.5. Organlar ve duyularla ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.3.5.1. Organlar ve duyularla ilgili konuşmaya hazırlık yapar 6.3.5.2. Organlar ve duyularla ilgili konuşma modelini taklit eder 6.3.5.3. Organlar ve duyularla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.3.5.4. Organlar ve duyularla ilgili konuşmalarını uygulamaya geçirir 6.3.5.5. Organlar ve duyularla ilgili bilgilerini kullanarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.6",
+          "m": "YAZMA-ANLATMA 6.3.6.1. Organlar ve duyularla ilgili yazmaya hazırlık yapabilme b) Verilen yazma görevinin ne olduğunu genel olarak anlar. 6.3.6.2. Organlar ve duyularla ilgili yazı modelini kopyalayabilme 6.3.6.3. Organlar ve duyularla ilgili yazılarında içerik oluşturabilme 6.3.6.4. Organlar ve duyularla ilgili yazılarını uygulamaya geçirebilme 6.3.6.5. Organlar ve duyularla ilgili bilgilerini yazılarında yeniden yapılandırabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.3.6.1. Organlar ve duyularla ilgili yazmaya hazırlık yapar b) Verilen yazma görevinin ne olduğunu genel olarak anlar. 6.3.6.2. Organlar ve duyularla ilgili yazı modelini kopyalar 6.3.6.3. Organlar ve duyularla ilgili yazılarında içerik oluşturur 6.3.6.4. Organlar ve duyularla ilgili yazılarını uygulamaya geçirir 6.3.6.5. Organlar ve duyularla ilgili bilgilerini yazılarında yeniden yapılandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "3. ÜNİTE: VÜCUDUM 2. DÖNEM 1. SINAV",
+      "a": [
+        {
+          "k": "ARP.6.3.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.3.1.1. Organlar ve duyularla ilgili dinlemeye/izlemeye hazırlık yapabilme 6.3.1.2. Organlar ve duyularla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.3.1.3. Organlar ve duyularla ilgili dinlediği/izlediği içeriği anlamlandırabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.3.1.1. Organlar ve duyularla ilgili dinlemeye/izlemeye hazırlık yapar 6.3.1.2. Organlar ve duyularla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.3.1.3. Organlar ve duyularla ilgili dinlediği/izlediği içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.3.2.1. Organlar ve duyularla ilgili okumaya hazırlık yapabilme 6.3.2.2. Organlar ve duyularla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.3.2.3. Organlar ve duyularla ilgili okuduğu içeriği anlamlandırabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.3.2.1. Organlar ve duyularla ilgili okumaya hazırlık yapar 6.3.2.2. Organlar ve duyularla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.3.2.3. Organlar ve duyularla ilgili okuduğu içeriği anlamlandırır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.3.3.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.3.3.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.4",
+          "m": "SÖZCÜK SEÇME-KULLANMA 6.3.4.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "SÖZCÜK SEÇME-KULLANMA 6.3.4.1. Organlar ve duyularla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.5",
+          "m": "KONUŞMA-ANLATMA 6.3.5.1. Organlar ve duyularla ilgili konuşmaya hazırlık yapabilme 6.3.5.2. Organlar ve duyularla ilgili konuşma modelini taklit edebilme 6.3.5.3. Organlar ve duyularla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.3.5.4. Organlar ve duyularla ilgili konuşmalarını uygulamaya geçirebilme 6.3.5.5. Organlar ve duyularla ilgili bilgilerini kullanarak iletişim kurabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.3.5.1. Organlar ve duyularla ilgili konuşmaya hazırlık yapar 6.3.5.2. Organlar ve duyularla ilgili konuşma modelini taklit eder 6.3.5.3. Organlar ve duyularla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.3.5.4. Organlar ve duyularla ilgili konuşmalarını uygulamaya geçirir 6.3.5.5. Organlar ve duyularla ilgili bilgilerini kullanarak iletişim kurar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.3.6",
+          "m": "YAZMA-ANLATMA 6.3.6.1. Organlar ve duyularla ilgili yazmaya hazırlık yapabilme b) Verilen yazma görevinin ne olduğunu genel olarak anlar. 6.3.6.2. Organlar ve duyularla ilgili yazı modelini kopyalayabilme 6.3.6.3. Organlar ve duyularla ilgili yazılarında içerik oluşturabilme 6.3.6.4. Organlar ve duyularla ilgili yazılarını uygulamaya geçirebilme 6.3.6.5. Organlar ve duyularla ilgili bilgilerini yazılarında yeniden yapılandırabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.3.6.1. Organlar ve duyularla ilgili yazmaya hazırlık yapar b) Verilen yazma görevinin ne olduğunu genel olarak anlar. 6.3.6.2. Organlar ve duyularla ilgili yazı modelini kopyalar 6.3.6.3. Organlar ve duyularla ilgili yazılarında içerik oluşturur 6.3.6.4. Organlar ve duyularla ilgili yazılarını uygulamaya geçirir 6.3.6.5. Organlar ve duyularla ilgili bilgilerini yazılarında yeniden yapılandırır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "4. ÜNİTE: BU HAFTA HAVA NASIL",
+      "a": [
+        {
+          "k": "ARP.6.4.1",
+          "m": "DİNLEME/İZLEME-ANLAMLANDIRMA 6.4.1.1. Hava durumlarıyla ilgili dinlemeye/izlemeye hazırlık yapabilme 6.4.1.2. Hava durumlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirebilme 6.4.1.3. Hava durumlarıyla ilgili dinlediği/izlediği içeriği anlamlandırabilme 6.4.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "DİNLEME/İZLEME-ANLAMLANDIRMA 6.4.1.1. Hava durumlarıyla ilgili dinlemeye/izlemeye hazırlık yapar 6.4.1.2. Hava durumlarıyla ilgili dinlediği/izlediği içerikte yer alan bilgileri bir araya getirir 6.4.1.3. Hava durumlarıyla ilgili dinlediği/izlediği içeriği anlamlandırır 6.4.1.4. Dönem boyunca dinleme/izleme-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.4.2",
+          "m": "OKUMA-ANLAMLANDIRMA 6.4.2.1. Hava durumlarıyla ilgili okumaya hazırlık yapabilme 6.4.2.2. Hava durumlarıyla ilgili okuduğu içerikte yer alan bilgileri bir araya getirebilme 6.4.2.3. Hava durumlarıyla ilgili okuduğu içeriği anlamlandırabilme 6.4.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "OKUMA-ANLAMLANDIRMA 6.4.2.1. Hava durumlarıyla ilgili okumaya hazırlık yapar 6.4.2.2. Hava durumlarıyla ilgili okuduğu içerikte yer alan bilgileri bir araya getirir 6.4.2.3. Hava durumlarıyla ilgili okuduğu içeriği anlamlandırır 6.4.2.4. Dönem boyunca okuma-anlamlandırma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.4.3",
+          "m": "DİL BİLGİSİ SEÇME-KULLANMA 6.4.3.1. Hava durumlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanabilme ARP. 6.4.4. SÖZCÜK SEÇME-KULLANMA 6.4.4.1. Hava durumlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanabilme",
+          "s": [
+            "DİL BİLGİSİ SEÇME-KULLANMA 6.4.3.1. Hava durumlarıyla ilgili dinlediği/izlediği içerikteki hedef dil yapılarını kullanır ARP. 6.4.4. SÖZCÜK SEÇME-KULLANMA 6.4.4.1. Hava durumlarıyla ilgili dinlediği/izlediği içerikteki hedef sözcükleri kullanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.4.5",
+          "m": "KONUŞMA-ANLATMA 6.4.5.1. Hava durumlarıyla ilgili konuşmaya hazırlık yapabilme 6.4.5.2. Hava durumlarıyla ilgili konuşma modelini taklit edebilme 6.4.5.3. Hava durumlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturabilme 6.4.5.4.Hava durumlarıyla ilgili konuşmalarını uygulamaya geçirebilme 6.4.5.5. Hava durumlarıyla ilgili bilgilerini kullanarak iletişim kurabilme 6.4.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "KONUŞMA-ANLATMA 6.4.5.1. Hava durumlarıyla ilgili konuşmaya hazırlık yapar 6.4.5.2. Hava durumlarıyla ilgili konuşma modelini taklit eder 6.4.5.3. Hava durumlarıyla ilgili konuşmalarında taklit ederek sözlü içerik oluşturur 6.4.5.4.Hava durumlarıyla ilgili konuşmalarını uygulamaya geçirir 6.4.5.5. Hava durumlarıyla ilgili bilgilerini kullanarak iletişim kurar 6.4.5.6. Dönem boyunca konuşma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "ARP.6.4.6",
+          "m": "YAZMA-ANLATMA 6.4.6.1. Hava durumlarıyla ilgili yazmaya hazırlık yapabilme 6.4.6.2. Hava durumlarıyla ilgili yazı modelini kopyalayabilme 6.4.6.3. Hava durumlarıyla ilgili yazılarında içerik oluşturabilme çok basit, kısa ve anlamlı bir içerik oluşturur. 6.4.6.4. Hava durumlarıyla ilgili yazılarını uygulamaya geçirebilme 6.4.6.5. Hava durumlarıyla ilgili bilgilerini yazılarında yeniden yapılandırabilme 6.4.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtabilme",
+          "s": [
+            "YAZMA-ANLATMA 6.4.6.1. Hava durumlarıyla ilgili yazmaya hazırlık yapar 6.4.6.2. Hava durumlarıyla ilgili yazı modelini kopyalar 6.4.6.3. Hava durumlarıyla ilgili yazılarında içerik oluşturur çok basit, kısa ve anlamlı bir içerik oluşturur. 6.4.6.4. Hava durumlarıyla ilgili yazılarını uygulamaya geçirir 6.4.6.5. Hava durumlarıyla ilgili bilgilerini yazılarında yeniden yapılandırır 6.4.6.6. Dönem içinde yazma-anlatma sürecinde edindiği bilgilerini, deneyimlerini, duygularını ve düşüncelerini bireysel ve etkileşimli olarak yansıtır."
+          ],
+          "t": 1
+        }
+      ]
+    }
+  ]
+}
