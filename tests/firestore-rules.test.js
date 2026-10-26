@@ -58,6 +58,7 @@ async function main() {
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher'), { ad:'Benim Ödev Çizelgem', sahipUid:'teacherUid', hucreler:{} });
       await setDoc(doc(db, 'oy_odevTakip', 'odev-teacher2'), { ad:'Başka Öğretmen', sahipUid:'teacher2Uid', hucreler:{} });
       await setDoc(doc(db, 'oy_notCizelgesi', 'not-cizelge-teacher'), { ad:'Benim Not Çizelgem', sahipUid:'teacherUid', hucreler:{} });
+      await setDoc(doc(db, 'oy_tymmOlcekleri', 'tymm-teacher'), { ders:'turkce', sahipUid:'teacherUid', puanlar:{} });
     });
 
     const adminDb = testEnv.authenticatedContext('adminUid').firestore();
@@ -144,6 +145,16 @@ async function main() {
     await assertSucceeds(getDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher')));
     await assertFails(getDoc(doc(teacher2Db, 'oy_notCizelgesi', 'not-cizelge-teacher')));
     await assertSucceeds(updateDoc(doc(teacherDb, 'oy_notCizelgesi', 'not-cizelge-teacher'), { ad:'Not Güncellendi' }));
+
+    await assertSucceeds(getDoc(doc(teacherDb, 'oy_tymmOlcekleri', 'tymm-teacher')));
+    await assertFails(getDoc(doc(teacher2Db, 'oy_tymmOlcekleri', 'tymm-teacher')));
+    await assertSucceeds(getDoc(doc(adminDb, 'oy_tymmOlcekleri', 'tymm-teacher')));
+    await assertSucceeds(updateDoc(doc(teacherDb, 'oy_tymmOlcekleri', 'tymm-teacher'), { puanlar:{ 'tema-1':{ o1:'3333' } } }));
+    await assertFails(updateDoc(doc(teacher2Db, 'oy_tymmOlcekleri', 'tymm-teacher'), { puanlar:{} }));
+    await assertFails(updateDoc(doc(teacherDb, 'oy_tymmOlcekleri', 'tymm-teacher'), { sahipUid:'teacher2Uid' }));
+    await assertSucceeds(setDoc(doc(teacherDb, 'oy_tymmOlcekleri', 'tymm-yeni'), { ders:'matematik', sahipUid:'teacherUid', puanlar:{} }));
+    await assertFails(setDoc(doc(teacherDb, 'oy_tymmOlcekleri', 'tymm-sahte'), { ders:'matematik', sahipUid:'teacher2Uid', puanlar:{} }));
+    await assertFails(setDoc(doc(anonDb, 'oy_tymmOlcekleri', 'tymm-anon'), { ders:'matematik', sahipUid:'x', puanlar:{} }));
 
     console.log('Firestore Rules testleri başarılı.');
   } finally {

@@ -12377,7 +12377,7 @@ html[data-theme] :is(.ka-modal__header,.detay-head,.classic-modal-head,.ka-annou
 /* ===== YAPIŞKAN ŞERİTLER — tek merkez: --ka-sticky-bg / --ka-sticky-cell-bg (TEMA MERKEZİ). Cam (blur) şeritler — uygulama başlığı, kaydet çubukları — bilerek hariç.
    Hücre kuralındaki ikinci :not(#_x), genel `table th` kabuğunu (aynı özgüllük sınıfı) geçmek içindir ===== */
 html[data-theme] :is(.ka-teacher-profile-toolbar,.ka-class-detail-topbar,.ka-announcement-detail__footer,.sbe-table-toolbar,#transportBusEditor .sbe-table-tools,#transportBusEditor .sbe-footer,.ka-rubric-settings__header,.ka-rubric-settings__footer,.ka-report-customizer__head,.ka-report-customizer__footer):not(#_x){background-color:var(--ka-sticky-bg)!important}
-html[data-theme]:not(#_x) :is(.ka-layout-section-tabs,.ka-gradebook-student,.ka-gradebook-student-head,.ka-results-student,.ka-results-table th,.ka-gradebook-table thead th,.ka-duty-grid thead th,.ka-duty-grid tbody th,.ka-teacher-list-table th,.ka-attendance-personnel-table :is(.ka-att-no,.ka-att-name,.ka-att-role)):not(#_x){background-color:var(--ka-sticky-cell-bg)!important}
+html[data-theme]:not(#_x) :is(.ka-layout-section-tabs,.ka-gradebook-student,.ka-gradebook-student-head,.ka-results-student,.ka-results-table th,.ka-gradebook-table thead th,.ka-duty-grid thead th,.ka-duty-grid tbody th,.ka-teacher-list-table th,.ka-tm-table th,.ka-attendance-personnel-table :is(.ka-att-no,.ka-att-name,.ka-att-role)):not(#_x){background-color:var(--ka-sticky-cell-bg)!important}
 
 /* ===== ANA SAYFA · HAFTALIK NÖBET GÜNLERİ — tek merkez: --ka-wd-* (TEMA MERKEZİ). Gün sırası (nth-child) pazartesiden cumaya sabittir ===== */
 html[data-theme] .kh-section[data-home-section="week-duty"] .kh-weekday:nth-child(1){--wd:var(--ka-wd-1)}
@@ -12604,6 +12604,29 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .bep-team th:nth-child(2){width:40%}
 .ka-report .bep-team th:nth-child(3){width:26%;text-align:center}
 .ka-report .bep-sign td{height:14mm;vertical-align:middle}
+
+/* ===== A4 FORM — TYMM gözlem formu (.tm-*) =====
+   js/modules/tymm-olcek-print.js çıktısı (A4 yatay); renk --ka-report-text / --ka-report-bg belirteçlerinden gelir.
+   ReportEngine'in genel .ka-report th/td kuralları !important olduğundan tablo kuralları da !important kullanır. */
+.ka-report .tm-print{box-sizing:border-box;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:9pt;line-height:1.25}
+.ka-report .tm-page{box-sizing:border-box;break-after:page;page-break-after:always}
+.ka-report .tm-page:last-child{break-after:auto;page-break-after:auto}
+.ka-report .tm-head{margin:0 0 1.5mm;text-align:center}
+.ka-report .tm-head p{margin:0;font-size:9pt;font-weight:700}
+.ka-report .tm-head .tm-class{margin-top:1mm;font-size:10pt}
+.ka-report .tm-title{margin:.8mm 0 0;font-family:inherit!important;font-size:11pt;font-weight:700}
+.ka-report .tm-legend{margin:0 0 1.5mm;text-align:center;font-size:8pt;font-style:italic}
+.ka-report .tm-tbl{table-layout:fixed}
+.ka-report .tm-tbl th{padding:.5mm .6mm!important;border:.25mm solid var(--ka-report-text)!important;background:color-mix(in srgb,var(--ka-report-text) 9%,var(--ka-report-bg))!important;color:var(--ka-report-text)!important;font-size:6.5pt!important;font-weight:700!important;line-height:1.15;overflow-wrap:break-word}
+.ka-report .tm-tbl td{height:5.2mm;padding:.3mm .6mm!important;border:.25mm solid var(--ka-report-text)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-size:8pt!important;line-height:1.15;text-align:center;vertical-align:middle}
+.ka-report .tm-tbl tbody tr:nth-child(even) td{background:var(--ka-report-bg)!important}
+.ka-report .tm-tbl tr{break-inside:avoid}
+.ka-report .tm-tbl .tm-oc{font-size:6pt!important;font-weight:400!important;text-align:left!important}
+.ka-report .tm-tbl .tm-oc span{font-weight:700;white-space:nowrap}
+.ka-report .tm-tbl .tm-grp th{font-size:7pt!important}
+.ka-report .tm-tbl td.tm-ad{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ka-report .tm-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;margin-top:3mm;break-inside:avoid}
+.ka-report .tm-sign{display:flex;flex-direction:column;align-items:center;gap:.6mm;min-width:55mm;font-size:9pt;text-align:center}
 
 /* ===== A4 FORM — Gezi planı / onayı / veli izni (.gzi-*) ===== */
 .ka-report .gzi-print{box-sizing:border-box;min-height:0;padding:0;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt}
@@ -14794,4 +14817,73 @@ html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);f
   html[data-theme] #v2ModuleRoot .ka-ip-tv-msg{padding:var(--ka-sp-14) 0;font-size:var(--ka-fs-24)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv-dots{gap:var(--ka-sp-8);padding-right:var(--ka-sp-16)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{font-size:var(--ka-fs-18)}
+}
+
+/* ===== TYMM İLKOKUL ÖLÇEKLERİ (.ka-tm-*) — js/modules/tymm-olcek.js ===== */
+html[data-theme] #v2ModuleRoot .ka-tm{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-tm-courses{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--ka-sp-120) + var(--ka-sp-30)),1fr));gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-tm-course{appearance:none;display:flex;flex-direction:column;align-items:flex-start;gap:var(--ka-sp-6);margin:0;padding:var(--ka-sp-12);border:var(--ka-card-border-w) solid var(--gl-edge);border-radius:var(--ka-card-radius);background:var(--gl-bg);box-shadow:var(--gl-shadow);color:var(--gl-fg);font:inherit;text-align:left;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-course:focus-visible{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset)}
+html[data-theme] #v2ModuleRoot .ka-tm-course strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .ka-tm-course small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-tm-bar{display:block;width:100%;height:var(--ka-sp-6);border-radius:var(--ka-r-10);background:var(--gl-edge);overflow:hidden}
+html[data-theme] #v2ModuleRoot .ka-tm-bar i{display:block;height:100%;background:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .ka-tm-info>summary{padding:var(--ka-sp-12);font-weight:var(--ka-fw-800);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-empty{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-10);margin:0;padding:var(--ka-sp-24) var(--ka-sp-16);border:var(--ka-border-w) dashed var(--gl-edge);border-radius:var(--ka-card-radius);color:var(--ka-text-muted);font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-4);text-align:center}
+html[data-theme] #v2ModuleRoot .ka-tm-empty strong{color:var(--gl-fg);font-size:var(--ka-fs-16);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-tm-empty p{margin:0}
+html[data-theme] #v2ModuleRoot .ka-tm-top{display:flex;align-items:center;flex-wrap:wrap;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-tm-top__title{flex:1 1 var(--ka-sp-120);min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-2)}
+html[data-theme] #v2ModuleRoot .ka-tm-top__title strong{font-size:var(--ka-fs-16);font-weight:var(--ka-fw-800);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-theme] #v2ModuleRoot .ka-tm-top__title span{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-tm-top__title span[data-state="dirty"]{color:var(--ka-danger)}
+html[data-theme] #v2ModuleRoot .ka-tm-formbar{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-tm-formtitle{margin:0;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700);line-height:var(--ka-lh-1-4);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .ka-tm-actions{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-tm-hint{margin:0;font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-legend>summary{padding:var(--ka-sp-12);font-weight:var(--ka-fw-800);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-legend__list{display:flex;flex-direction:column;gap:var(--ka-sp-6);margin:0;padding:0 var(--ka-sp-12) var(--ka-sp-12) var(--ka-sp-32);font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-4)}
+html[data-theme] #v2ModuleRoot .ka-tm-legend__list b{color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-legend__g{margin-left:calc(var(--ka-sp-32) * -1);list-style:none;color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-scroll{max-width:100%;max-height:75vh;overflow:auto;border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-card-radius);background:var(--gl-bg)}
+html[data-theme] #v2ModuleRoot .ka-tm-table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .ka-tm-table th,html[data-theme] #v2ModuleRoot .ka-tm-table td{padding:var(--ka-sp-4);border-right:var(--ka-border-w) solid var(--gl-edge);border-bottom:var(--ka-border-w) solid var(--gl-edge);text-align:center;vertical-align:middle}
+html[data-theme] #v2ModuleRoot .ka-tm-table thead th{position:sticky;top:0;z-index:2;font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-table .ka-tm-name{position:sticky;left:0;z-index:1;min-width:var(--ka-ic-92);max-width:var(--ka-ic-120);text-align:left}
+html[data-theme] #v2ModuleRoot .ka-tm-table thead .ka-tm-name{z-index:3}
+html[data-theme] #v2ModuleRoot .ka-tm-table thead .ka-tm-grp th{position:static}
+html[data-theme] #v2ModuleRoot .ka-tm-who,html[data-theme] #v2ModuleRoot .ka-tm-hd{appearance:none;margin:0;border:0;background:none;color:inherit;font:inherit;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-who{display:flex;align-items:center;gap:var(--ka-sp-6);width:100%;min-height:var(--ka-ic-36);padding:var(--ka-sp-2);font-size:var(--ka-fs-13);text-align:left}
+html[data-theme] #v2ModuleRoot .ka-tm-who::after,html[data-theme] #v2ModuleRoot .ka-tm-hd::after{content:"▾";margin-left:var(--ka-sp-4);color:var(--ka-text-muted);font-size:var(--ka-fs-10)}
+html[data-theme] #v2ModuleRoot .ka-tm-no{min-width:var(--ka-ic-20);color:var(--ka-text-muted);font-size:var(--ka-fs-11)}
+html[data-theme] #v2ModuleRoot .ka-tm-hd{min-width:var(--ka-ic-36);min-height:var(--ka-ic-34);padding:var(--ka-sp-2);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-tm-who:focus-visible,html[data-theme] #v2ModuleRoot .ka-tm-hd:focus-visible,html[data-theme] #v2ModuleRoot .ka-tm-cell:focus-visible{outline:var(--ka-ring-w) solid var(--ka-btn-primary-ring);outline-offset:var(--ka-ring-offset)}
+html[data-theme] #v2ModuleRoot .ka-tm-cell{appearance:none;width:var(--ka-ic-40);height:var(--ka-ic-36);margin:0;padding:0;border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-6);--ka-input-bg:var(--gl-field);color:var(--gl-fg);font:inherit;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800);text-align:center;text-align-last:center;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-cell[data-p="1"]{--ka-input-bg:color-mix(in srgb,var(--ka-danger) 24%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-cell[data-p="2"]{--ka-input-bg:color-mix(in srgb,var(--ka-warning) 26%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-cell[data-p="3"]{--ka-input-bg:color-mix(in srgb,var(--ka-info) 24%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-cell[data-p="4"]{--ka-input-bg:color-mix(in srgb,var(--ka-success) 26%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b[data-p="1"] b{background:color-mix(in srgb,var(--ka-danger) 24%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b[data-p="2"] b{background:color-mix(in srgb,var(--ka-warning) 26%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b[data-p="3"] b{background:color-mix(in srgb,var(--ka-info) 24%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b[data-p="4"] b{background:color-mix(in srgb,var(--ka-success) 26%,var(--gl-field))}
+html[data-theme] #v2ModuleRoot .ka-tm-ort{min-width:var(--ka-ic-46);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-tm-ort.is-part{color:var(--ka-text-muted);font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-tm-dz{min-width:var(--ka-ic-88);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ka-tm-dz[data-d="1"]{color:var(--ka-danger)}
+html[data-theme] #v2ModuleRoot .ka-tm-dz[data-d="4"]{color:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .ka-tm-foot th,html[data-theme] #v2ModuleRoot .ka-tm-foot td{border-bottom:0;color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu{position:fixed;z-index:60;display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:calc(var(--ka-sp-120) + var(--ka-sp-30));padding:var(--ka-sp-8);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-card-radius);background:var(--ka-sticky-bg);box-shadow:var(--gl-shadow);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu{max-width:calc(var(--ka-sp-120) * 2 + var(--ka-sp-30))}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__t{display:flex;flex-direction:column;gap:var(--ka-sp-2);padding:var(--ka-sp-2) var(--ka-sp-6);color:var(--ka-text-muted);font-size:var(--ka-fs-12);line-height:var(--ka-lh-1-4)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__t b{color:var(--gl-fg);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__t i{margin-top:var(--ka-sp-4);font-style:normal}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b{appearance:none;display:flex;align-items:center;gap:var(--ka-sp-8);min-height:var(--ka-ic-40);margin:0;padding:var(--ka-sp-4) var(--ka-sp-6);border:0;border-radius:var(--ka-r-8);background:none;color:inherit;font:inherit;font-size:var(--ka-fs-14);text-align:left;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b:hover,html[data-theme] #v2ModuleRoot .ka-tm-menu__b:focus-visible{background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__b b{display:grid;place-items:center;width:var(--ka-ic-28);height:var(--ka-ic-28);border-radius:var(--ka-r-6);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-tm-menu__c{color:var(--ka-text-muted)}
+@media(max-width:767px){
+  html[data-theme] #v2ModuleRoot .ka-tm-scroll{max-height:70vh}
+  html[data-theme] #v2ModuleRoot .ka-tm-table .ka-tm-name{min-width:var(--ka-ic-92);max-width:var(--ka-ic-92)}
 }

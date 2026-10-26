@@ -289,6 +289,19 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='tymm-olcek'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.TymmModule?.open)await global.AppLoader?.loadScript?.('js/modules/tymm-olcek.js');
+      if(!global.TymmModule?.open)throw new Error('TYMM modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('TYMM İlkokul Ölçekleri');
+      global.TymmModule.open();if(remember)rememberView({kind:'route',name,bottom,page,title:'TYMM İlkokul Ölçekleri'});
+    }catch(e){
+      console.error('[Shell/tymm]',e);global.toast?.('TYMM modülü açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='idareci-pano'){
     try{
       if(!global.IdareciPano?.open)await global.AppLoader?.loadScript?.('js/modules/idareci-pano.js');
