@@ -15,27 +15,36 @@ const nav=load('js/core/app-nav.js');
 assert(nav.AppNav,'AppNav yüklenmeli.');
 const src=fs.readFileSync('js/core/app-nav.js','utf8');
 
-/* ── idareci menüsü: 9 kategori, kartlar ve çok sayfalı araçlar ── */
-const idareciBlock=src.slice(src.indexOf("  idareci:[\n    {key:'yonetim'"),src.indexOf("const SUITES="));
-const cats=[...idareciBlock.matchAll(/\{key:'(yonetim|evrak|mali|guvenlik|sinav|ogrenci|projeler|tasima|diger)',label:'([^']+)'/g)].map(m=>m[2]);
-assert.deepStrictEqual(cats,['Genel Yönetim','Evrak - Özlük','Mali İşler','Güvenlik - Denetim','Sınav - Kurs','Öğrenci İşleri','Projeler','Taşıma - Pansiyon - Gezi','Diğer Araçlar'],'İdareci menüsü 9 kategoriye ayrılmalı.');
-assert(!/key:'personel',label:'Personel işlemleri'/.test(src)&&!/key:'rapor',label:'Raporlar ve denetim'/.test(src),'Eski 4 gruplu idareci yapısı kaldırılmalı.');
-
+/* ── menü düzeni: sekmeli/çok sayfalı araç yok; her sayfa ayrı, menüleri ve alt menüyü kullanıcı seçer ── */
+const pagesSrc=fs.readFileSync('js/core/nav-pages.js','utf8');
+const editorSrc=fs.readFileSync('js/core/nav-editor.js','utf8');
+assert(!/\bSUITES\b|suiteOf|suiteTool|renderSuiteBar|ka-suite/.test(src+pagesSrc+fs.readFileSync('css/design-system-base.css','utf8')),'Çok sayfalı (sekmeli) araç yapısı kalmamalı; her sayfa ayrı araçtır.');
+assert(!/\bGROUPS\b|\bCOMM_IDS\b|\bPROGRAM_IDS\b|key:'personel',label:'Personel işlemleri'/.test(src),'Eski sabit grup/sekme tabloları kalmamalı; menüler DEFAULT_LAYOUT ve kullanıcı düzeninden gelir.');
 const toolIds=new Set([...src.matchAll(/^ \['([a-z0-9-]+)','[^']+','[a-z]+','[a-z]+',/gm)].map(m=>m[1]));
-const suites=Object.fromEntries([...src.matchAll(/'([a-z-]+)':\{label:'[^']+',tone:'[a-z]+',sub:'[^']+',pages:\[([^\]]+)\]\}/g)].map(m=>[m[1],[...m[2].matchAll(/'([a-z0-9-]+)'/g)].map(x=>x[1])]));
-assert(Object.keys(suites).length>=6,'Çok sayfalı araçlar (SUITES) tanımlı olmalı.');
-const used=new Map();
-Object.entries(suites).forEach(([id,pages])=>{
-  assert(pages.length>=2,`${id}: çok sayfalı araç en az 2 sayfa içermeli.`);
-  pages.forEach(p=>{assert(toolIds.has(p),`${id}: sayfa "${p}" araç kataloğunda yok.`);assert(!used.has(p),`"${p}" iki araçta birden yer alıyor.`);used.set(p,id)});
-});
-const cardIds=[...idareciBlock.matchAll(/ids:\[([^\]]*)\]/g)].flatMap(m=>[...m[1].matchAll(/'([a-z0-9-]+)'/g)].map(x=>x[1]));
-assert.strictEqual(new Set(cardIds).size,cardIds.length,'İdareci menüsünde aynı kart iki kez listelenmemeli.');
-cardIds.forEach(id=>assert(toolIds.has(id)||suites[id],`Kart "${id}" ne araç ne de çok sayfalı araç.`));
-cardIds.filter(id=>toolIds.has(id)).forEach(id=>assert(!used.has(id),`"${id}" hem kart hem bir aracın sayfası olamaz.`));
+const defs={ogretmen:nav.AppNav.defaultLayout('ogretmen'),idareci:nav.AppNav.defaultLayout('idareci')};
+for(const [role,def] of Object.entries(defs)){
+  assert.strictEqual(def.bar.length,5,`${role}: alt menü 5 yuvadan oluşmalı.`);
+  assert(def.bar.includes('me'),`${role}: Ben sayfası alt menüde bulunmalı.`);
+  assert.strictEqual(new Set(def.bar).size,5,`${role}: alt menüde aynı yuva iki kez olmamalı.`);
+  const menuIds=def.menus.map(m=>m.id);
+  assert.strictEqual(new Set(menuIds).size,menuIds.length,`${role}: menü kimlikleri benzersiz olmalı.`);
+  def.bar.filter(k=>k.startsWith('menu:')).forEach(k=>assert(menuIds.includes(k.slice(5)),`${role}: alt menüdeki ${k} tanımlı bir menü olmalı.`));
+  def.menus.forEach(m=>{
+    assert(m.ad&&m.ids.length>=2,`${role}/${m.id}: menüde en az iki sayfa olmalı.`);
+    assert.strictEqual(new Set(m.ids).size,m.ids.length,`${role}/${m.id}: aynı sayfa bir menüde iki kez olmamalı.`);
+    m.ids.forEach(id=>assert(toolIds.has(id),`${role}/${m.id}: "${id}" araç kataloğunda yok.`));
+  });
+}
+const adminIds=new Set(defs.idareci.menus.flatMap(m=>m.ids)),teacherIds=new Set(defs.ogretmen.menus.flatMap(m=>m.ids));
+['monthflow','tasks','evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu','staff-leaves','puantaj','dilekce-izin','attendance','teblig','diploma-request','diploma-response','documents','pdf-images','pdf-merge','written','trial','results','plans','bep-hazirla','form-bep']
+  .forEach(id=>assert(adminIds.has(id),`İdareci varsayılan menüsünde "${id}" ayrı bir sayfa olarak yer almalı.`));
+['plans','form-maarif','bep-hazirla','form-bep','written','tutanak','student-attendance'].forEach(id=>assert(teacherIds.has(id),`Öğretmen varsayılan menüsünde "${id}" bulunmalı.`));
+assert(pagesSrc.includes('register(kind,def)')||pagesSrc.includes('const register='),'NavPages düzenleme sayfalarını register() ile almalı.');
+['menu-edit','bar-pick','menu-add'].forEach(k=>assert(editorSrc.includes(`pages().register('${k}'`),`NavEditor ${k} sayfasını kaydetmeli.`));
+['layoutRaw','saveLayout','resetLayout','defaultLayout','recent','noteOpened'].forEach(f=>assert(new RegExp(`\\b${f}\\b`).test(src.slice(src.indexOf('global.AppNav={'))),`AppNav ${f} dışa vermeli.`));
+assert(src.includes('oy_kullaniciTercihleri')&&src.includes('remoteSet'),'Menü düzeni hesaba eşitlenmeli (kullanıcı tercih belgesi).');
 
 /* ── Öğretmenden İstenecekler: üç sayfa, rota, izin ── */
-assert.deepStrictEqual(suites['ogretmenden-istenecekler'],['evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu'],'Öğretmenden İstenecekler sayfaları: çizelge + iki tebliğ yazısı.');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
 ['evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu'].forEach(p=>{
   assert(loader.includes(`registerPageRoute('${p}'`),`${p} sayfa rotası kayıtlı olmalı.`);
@@ -57,9 +66,7 @@ assert(per.donem1.find(e=>/ŞÖK/.test(e.ad)).kimden==='rehber'&&per.sonu.find(e
 assert(per.donem1.filter(e=>e.grup==='rehberlik').every(e=>e.kimden==='herkes'),'Dönem sonu rehberlik evrakları herkesten istenir.');
 
 /* ── çok sayfalı araç şeridi ── */
-const pages=fs.readFileSync('js/core/nav-pages.js','utf8');
-assert(pages.includes('renderSuiteBar')&&pages.includes("'koruk:shell-route'")&&pages.includes('replace:true'),'Sayfa şeridi rota olayına bağlı olmalı ve sayfalar arası geçişte geri yığınını şişirmemeli.');
 assert(fs.readFileSync('js/core/shell-ui.js','utf8').includes('replaceNext'),'routeModule replace seçeneğini desteklemeli.');
-assert(!/ka-nav-group\b/.test(pages),'Eski grup satırı (ka-nav-group) ana menüden kaldırılmalı.');
+assert(!/ka-nav-group\b/.test(pagesSrc),'Eski grup satırı (ka-nav-group) ana menüden kaldırılmalı.');
 assert(!/ka-nav-group\b/.test(fs.readFileSync('css/design-system-base.css','utf8')),'Eski grup satırı CSS’i kaldırılmalı.');
 console.log('idareci menü + evrak teslim testleri geçti');

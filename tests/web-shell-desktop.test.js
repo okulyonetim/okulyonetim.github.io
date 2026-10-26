@@ -151,9 +151,9 @@ assert(web.includes('[data-ka-web-profile]'),'Yan menü profil kartı (Ben sekme
 // --- 7) web-shell.js: sözdizimi, yalın veri erişimi, telefonda etkisiz
 new Function(web);
 assert(!/firebase|firestore|getDocs?\(|onSnapshot|collection\(/i.test(web),'web-shell.js Firestore/Firebase erişimi yapmamalı.');
-const lsKeys=[...web.matchAll(/(?:localStorage|sessionStorage)\.\w+\(([^,)]+)/g)].map(m=>m[1].trim());
-assert(lsKeys.length>0&&lsKeys.every(k=>k==='RECENT_KEY'),'web-shell.js yalnızca "ka-web-recent" anahtarını kullanmalı: '+lsKeys.join(','));
-assert(web.includes("const RECENT_KEY='ka-web-recent'"),'Son kullanılanlar anahtarı sabit olmalı.');
+assert(!/(?:localStorage|sessionStorage)\s*[.\[]/.test(web),'web-shell.js tarayıcı depolamasına doğrudan dokunmamalı; son açılanlar AppNav.recent() üzerinden gelir.');
+assert(web.includes('nav().recent('),'Yan menü son açılanları AppNav.recent()den okumalı.');
+assert(/function recent\(|const recent=/.test(read('js/core/app-nav.js')),'AppNav son açılanları sağlamalı.');
 assert(web.includes('const isWeb=()=>ui()?.webMode?.()===true'),'web-shell.js genişlik kararını ShellUI.webMode()den almalı.');
 assert(/routeModule/.test(web),'Menü gezinmesi mevcut ShellUI.routeModule üzerinden yürümeli.');
 assert(web.includes("addEventListener('koruk:shell-route'")&&web.includes('koruk:nav-role-changed'),'web-shell.js rota ve rol değişimi olaylarını dinlemeli (yan menü role göre yeniden kurulur).');

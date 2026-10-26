@@ -276,6 +276,19 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='bep-hazirla'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.BepModule?.open)await global.AppLoader?.loadScript?.('js/modules/bep.js');
+      if(!global.BepModule?.open)throw new Error('BEP modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('BEP Hazırla');
+      global.BepModule.open();if(remember)rememberView({kind:'route',name,bottom,page,title:'BEP Hazırla'});
+    }catch(e){
+      console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='dilekcehazirla'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
@@ -304,21 +317,6 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
-  if(name==='tools'&&page==='form-bep'){
-    if(global.PermissionService?.moduleLevel?.('tools')==='hidden'||global.RolePermissionBridge?.allowedRoute?.('tools','form-bep')===false)return false;
-    setBottomActive(bottom);global.AppLoader?.setActiveModule?.('tools');setTitle(title||'BEP Hazırlama');
-    try{
-      const pageRoot=$('#v2ModuleRoot');
-      if(!global.BepModule)await global.AppLoader?.loadScript?.('js/modules/bep.js?v=2');
-      if(!global.BepModule?.mount)throw new Error('BepModule hazır değil');
-      if(routeToken!==routeEpoch)return false;
-      pageRoot?.replaceChildren?.();
-      const ok=global.BepModule.mount(pageRoot);
-      if(ok===false)throw new Error('BepModule.mount başarısız');
-      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||'BEP Hazırlama'});
-      return true;
-    }catch(e){console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');return false}
-  }
   if(name==='committees'){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
     try{
@@ -409,7 +407,7 @@ function currentView(){return navStack[navStack.length-1]||null}
 let lastRole='';
 function renderBottomNav(){
   const bar=$('[data-ka-bottom-nav]');if(!bar||!nav())return;
-  const role=nav().role(),tabs=nav().tabs(role),signed=!!user().uid,switched=signed&&!!lastRole&&role!==lastRole,sig=`${role}|${tabs.map(t=>t.key).join()}`;
+  const role=nav().role(),tabs=nav().tabs(role),signed=!!user().uid,switched=signed&&!!lastRole&&role!==lastRole,sig=`${role}|${tabs.map(t=>`${t.key}:${t.label}:${t.icon}`).join('|')}`;
   lastRole=signed?role:'';
   if(bar.dataset.sig!==sig){
     bar.dataset.sig=sig;bar.dataset.role=role;
@@ -438,7 +436,16 @@ function openPage(id,{remember=true,fresh=false}={}){
   if(remember)rememberView(v);else syncShellBack();
   return true
 }
-const openTab=key=>key==='home'?home():openPage(key,{fresh:true});
+function openTab(key){
+  if(key==='home')return home();
+  if(String(key).startsWith('tool:')){
+    const t=nav().tool(String(key).slice(5));
+    if(!t||!nav().toolAllowed(t))return home();
+    navStack=[homeView()];
+    return routeModule(t.route,{page:t.page,title:t.label,bottom:key});
+  }
+  return openPage(key,{fresh:true});
+}
 function syncVisibilityClasses(){for(const id of ['girisEkrani','onayBekleniyorEkrani','app']){const el=document.getElementById(id);if(el)el.classList.toggle('ka-hidden',el.hidden)}}
 function observeVisibility(){if(visibilityObserver)return;syncVisibilityClasses();visibilityObserver=new MutationObserver(syncVisibilityClasses);for(const id of ['girisEkrani','onayBekleniyorEkrani','app']){const el=document.getElementById(id);if(el)visibilityObserver.observe(el,{attributes:true,attributeFilter:['hidden']})}}
 function profileName(u){return u.adSoyad||[u.ad,u.soyad].filter(Boolean).join(' ')||u.displayName||u.kullaniciAdi||'Kullanıcı'}
@@ -670,7 +677,7 @@ function bindHeader(){document.addEventListener('click',e=>{const backBtn=e.targ
 function bindBottom(){document.addEventListener('click',e=>{const btn=e.target.closest('[data-ka-tab]');if(!btn)return;e.preventDefault();openTab(btn.dataset.kaTab)})}
 function hydrateHeader(){updateNotificationBadge();syncThemeButton()}
 function onRoleChanged(){renderBottomNav()}
-function init(){installBuiltInPageRoutes();installBackNavigation();observeVisibility();takeThemeOwnership();bindHeader();bindBottom();renderBottomNav();syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});window.addEventListener('koruk:nav-role-changed',onRoleChanged);for(const ev of ['koruk:permissions-changed','koruk:app-config-changed'])window.addEventListener(ev,renderBottomNav);global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});global.AppStore?.subscribe?.('data.ogretmenler',()=>{hydrateHeader();renderBottomNav()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
+function init(){installBuiltInPageRoutes();installBackNavigation();observeVisibility();takeThemeOwnership();bindHeader();bindBottom();renderBottomNav();syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});window.addEventListener('koruk:nav-role-changed',onRoleChanged);for(const ev of ['koruk:permissions-changed','koruk:app-config-changed','koruk:nav-layout-changed'])window.addEventListener(ev,renderBottomNav);global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});global.AppStore?.subscribe?.('data.ogretmenler',()=>{hydrateHeader();renderBottomNav()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
 global.ShellUI={init,home,back,openTab,openPage,routeModule,registerPageRoute,renderProfile,renderSearch,openQuickNote,openNotifications,toggleTheme,applyTheme,syncVisibilityClasses,pageAllowed,canOpen:(name,page)=>moduleAllowed(name)&&pageAllowed(name,page||''),webMode,currentView,profileInfo};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);

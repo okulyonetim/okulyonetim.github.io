@@ -532,6 +532,13 @@ service cloud.firestore {
       allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
     }
 
+    match /oy_bepDosyalari/{id} {
+      allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+      allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);
+      allow update: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid && request.resource.data.sahipUid == request.auth.uid);
+      allow delete: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
+    }
+
     match /oy_notCizelgesi/{id} {
       allow read: if adminMi() || (girisYapmis() && resource.data.sahipUid == request.auth.uid);
       allow create: if adminMi() || (girisYapmis() && request.resource.data.sahipUid == request.auth.uid);

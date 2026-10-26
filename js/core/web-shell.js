@@ -9,7 +9,7 @@ if(global.__korukWebShell)return;global.__korukWebShell=true;
 const doc=document;
 const $=(s,r=doc)=>r.querySelector(s),$$=(s,r=doc)=>[...r.querySelectorAll(s)];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const RECENT_KEY='ka-web-recent',RECENT_MAX=3;
+const RECENT_MAX=3;
 const SVG={
   chevron:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   down:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -21,8 +21,6 @@ let model=[],openKey='',lastSig='',renderQueued=false,canBackNow=false;
 const ui=()=>global.ShellUI;
 const nav=()=>global.AppNav;
 const isWeb=()=>ui()?.webMode?.()===true;
-function safeRead(){try{const v=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]');return Array.isArray(v)?v:[]}catch(_){return[]}}
-function safeWrite(list){try{localStorage.setItem(RECENT_KEY,JSON.stringify(list))}catch(_){}}
 
 /* ── iskelet: yan menü + üst çubuk eklentileri (bir kez) ── */
 function build(){
@@ -51,7 +49,7 @@ function tabHtml(t){
   const kids=t.children||[],open=kids.length&&t.key===openKey;
   const head=`<button class="ka-web-link${kids.length?' ka-web-link--group':''}" type="button" data-ka-web-tab="${esc(t.key)}"${kids.length?` aria-expanded="${!!open}"`:''}><span class="ka-web-ico" aria-hidden="true">${nav().icon(t.icon,20)}</span><span class="ka-web-link__label">${esc(t.label)}</span>${kids.length?`<span class="ka-web-link__chev" aria-hidden="true">${SVG.chevron}</span>`:''}</button>`;
   if(!kids.length)return `<div class="ka-web-group" data-ka-web-group-wrap="${esc(t.key)}">${head}</div>`;
-  return `<div class="ka-web-group${open?' is-open':''}" data-ka-web-group-wrap="${esc(t.key)}">${head}<div class="ka-web-sub" ${open?'':'hidden'}>${kids.map(k=>`<button class="ka-web-sublink" type="button" data-ka-web-page="${esc(k.key)}" data-ka-web-title="${esc(k.label)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().glyph(k.glyph)}</span><span>${esc(k.label)}</span><span class="ka-web-count">${k.count}</span></button>`).join('')}</div></div>`;
+  return `<div class="ka-web-group${open?' is-open':''}" data-ka-web-group-wrap="${esc(t.key)}">${head}<div class="ka-web-sub" ${open?'':'hidden'}>${kids.map(k=>`<button class="ka-web-sublink" type="button" data-ka-web-page="${esc(k.key)}" data-ka-web-title="${esc(k.label)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().icon(k.icon,18)}</span><span>${esc(k.label)}</span><span class="ka-web-count">${k.count}</span></button>`).join('')}</div></div>`;
 }
 function renderMenu(){
   renderQueued=false;
@@ -71,7 +69,7 @@ function queueRender(){if(renderQueued)return;renderQueued=true;(global.requestA
 function resolveActive(view){
   if(!view||(view.kind==='route'&&view.name==='dashboard'&&!view.page))return{tab:'home',page:''};
   if(view.kind==='nav')return{tab:view.bottom,page:view.page};
-  if(view.kind==='route'){const p=nav()?.parentOf?.(view.name,view.page)||'';return{tab:view.bottom||nav()?.tabOf?.(view.name,view.page)||'',page:p.startsWith('tools:')?p:''}}
+  if(view.kind==='route'){const p=nav()?.parentOf?.(view.name,view.page)||'';return{tab:view.bottom||nav()?.tabOf?.(view.name,view.page)||'',page:p.startsWith('menu:')?p:''}}
   if(view.kind==='profile'||view.kind==='profile-detail')return{tab:'me',page:''};
   return{tab:'',page:''};
 }
@@ -92,12 +90,12 @@ function crumbOf(view){
   if(!view||(view.kind==='route'&&view.name==='dashboard'&&!view.page))return{group:'',title:t?.tab?.('home')?.label||'Ana Sayfa'};
   if(view.kind==='nav'){
     const tab=t?.tab?.(view.bottom)?.label||'';
-    return view.page.startsWith('tools:')?{group:t?.tab?.('tools')?.label||'',title:view.title}:{group:'',title:tab||view.title};
+    return view.page.startsWith('menu:')&&view.bottom==='tools'?{group:t?.tab?.('tools')?.label||'',title:view.title}:{group:'',title:tab||view.title};
   }
   if(view.kind==='route'){
     const p=t?.parentOf?.(view.name,view.page)||'';
     let group='';
-    if(p.startsWith('tools:'))group=t.group(p.slice(6))?.label||'';
+    if(p.startsWith('menu:'))group=t.menu(p.slice(5))?.ad||'';
     else if(p)group=t.tab(p)?.label||'';
     const tool=t?.findTool?.(view.name,view.page);
     return{group,title:tool?.label||view.title||$('#v2ModuleTitle')?.textContent?.trim()||''};
@@ -115,16 +113,10 @@ function renderCrumb(view){
 }
 
 /* ── son kullanılanlar ── */
-function pushRecent(view){
-  if(!view||view.kind!=='route'||view.name==='dashboard')return;
-  const tool=nav()?.findTool?.(view.name,view.page);if(!tool)return;
-  const list=safeRead().filter(x=>x.id!==tool.id);list.unshift({id:tool.id});
-  safeWrite(list.slice(0,RECENT_MAX+3));
-}
 function renderRecent(){
   const wrap=$('[data-ka-web-recent]'),list=$('[data-ka-web-recent-list]');if(!wrap||!list||!nav())return;
   const cur=ui()?.currentView?.(),curTool=cur?.kind==='route'?nav().findTool(cur.name,cur.page):null;
-  const rows=safeRead().map(x=>nav().tool(x.id)).filter(t=>t&&nav().toolAllowed(t)&&t.id!==curTool?.id).slice(0,RECENT_MAX);
+  const rows=nav().recent(RECENT_MAX+1).filter(t=>t.id!==curTool?.id).slice(0,RECENT_MAX);
   wrap.hidden=!rows.length;
   list.innerHTML=rows.map(t=>`<button class="ka-web-sublink ka-web-sublink--recent" type="button" data-ka-web-tool="${esc(t.id)}"><span class="ka-web-ico ka-web-ico--sub" aria-hidden="true">${nav().glyph(t.glyph)}</span><span>${esc(t.label)}</span></button>`).join('');nav().markGlyphs(list);
 }
@@ -286,12 +278,11 @@ function onRoute(e){
   if(view?.kind!=='search'){const i=$('[data-ka-web-search]');if(i&&i.value&&doc.activeElement!==i)i.value=''}
   const act=resolveActive(view);
   if(act.tab==='tools')openKey='tools';
-  pushRecent(view);
   applyOpen();paintActive();renderRecent();renderCrumb(view);
 }
 function wire(){
   global.addEventListener('koruk:shell-route',onRoute);
-  for(const ev of ['koruk:app-ready','koruk:app-config-changed','koruk:permissions-changed','koruk:auth-local-restored','koruk:nav-role-changed'])global.addEventListener(ev,queueRender);
+  for(const ev of ['koruk:app-ready','koruk:app-config-changed','koruk:permissions-changed','koruk:auth-local-restored','koruk:nav-role-changed','koruk:nav-layout-changed'])global.addEventListener(ev,queueRender);
   global.AppStore?.subscribe?.('session.user',queueRender);
   global.AppStore?.subscribe?.('ui.weather',renderWeather);
   for(const t of ['ogretmenler','nobetAtamalari','yemekMenuleri','belirliGunler','dersProgrami'])global.AppStore?.subscribe?.('data.'+t,()=>{if(isWeb())decorateHome()});

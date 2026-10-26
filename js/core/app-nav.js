@@ -1,11 +1,12 @@
 /* Koruk Asistan — AppNav
- * Arayüz rolü (Öğretmen / İdareci), alt sekmeler, araç kataloğu, Okul bölümleri, favoriler ve sayfa kapıları TEK burada durur.
+ * Arayüz rolü (Öğretmen / İdareci), araç kataloğu, menü düzeni (alt menü yuvaları, menüler, sık kullanılanlar) ve sayfa kapıları TEK burada durur.
  *   • Rol, Öğretmenler listesindeki unvandan seçilir ("Müdür", "Müdür Yardımcısı", "İdari Personel" → İdareci; diğer → Öğretmen).
  *     Unvanı olmayan hesapta admin / yönetici rolü İdareci, diğerleri Öğretmen sayılır. Hem yöneten hem ders veren kişi
  *     Ben sayfasından diğer arayüze geçebilir (tercih bu cihazda hatırlanır).
- *   • Rol yalnız hangi arayüzün gösterileceğini belirler. Hangi sayfaya girilebileceğini PermissionService belirler;
+ *   • Rol yalnız hangi varsayılan menü düzeninin geleceğini belirler. Hangi sayfaya girilebileceğini PermissionService belirler;
  *     burada yalnız öğretmen hesabı için gizli sayfalar (TEACHER_HIDDEN) ve yönetici-yalnız araçlar süzülür.
- *   • Katalogdaki her araç gerçek bir ShellUI rotasına (route + page) bağlıdır; ekranları nav-pages.js çizer.
+ *   • Katalogdaki her araç tek bir sayfadır ve gerçek bir ShellUI rotasına (route + page) bağlıdır; ekranları nav-pages.js çizer,
+ *     menü düzenleme ekranlarını nav-editor.js çizer. Alt menü yuvaları, menüler ve içindeki sayfaları kullanıcı seçer.
  */
 (function(global){
 'use strict';
@@ -48,6 +49,7 @@ const ICONS={
   plus:'<path d="M12 5v14M5 12h14"/>',
   chev:'<path d="m9 18 6-6-6-6"/>',
   chevd:'<path d="m6 9 6 6 6-6"/>',
+  chevu:'<path d="m18 15-6-6-6 6"/>',
   back:'<path d="M19 12H5M12 19l-7-7 7-7"/>',
   sparkle:'<path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/>',
   briefcase:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2M2 13h20"/>',
@@ -75,8 +77,7 @@ const GLYPHS={
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
-Object.assign(GLYPHS,{'aylik-yonetim':'📆','evrak-belge':'📝','ogretmenden-istenecekler':'📑','personel-isleri':'🧑‍💼','diploma-isleri':'🎓','dokumanlar':'📁','sinav-isleri':'📝'});
-const GROUP_GLYPHS={sinifim:'👥',sinav:'📝',planlar:'📅',tutanak:'✏️',veli:'💬',etkinlik:'🚌',belgeler:'📁',yonetim:'🗂️',evrak:'📁',mali:'💵',guvenlik:'🛡️',ogrenci:'🎓',projeler:'🌱',tasima:'🚌',diger:'🧩'};
+GLYPHS['bep-hazirla']='📝';
 const glyphOf=id=>GLYPHS[id]||'📌';
 function glyph(g,cls=''){return `<span class="ka-glyph${cls?' '+cls:''}" data-ka-glyph="${String(g).replace(/"/g,'&quot;')}" aria-hidden="true">${g}</span>`}
 /* Bilinen emojiye CSS bir çizgi simge (--ic) verir; maskelenebilenler .has-ic alır, bilinmeyenler emoji kalır. */
@@ -145,7 +146,8 @@ const TOOLS={};
  ['project','Proje Değerlendirme Ölçeği','ruler','violet','Proje puanlama ölçeği','tools','project'],
  ['plans','Yıllık Plan','calendar','green','Yıllık planlar ve haftalık kazanımlar','academic','plans'],
  ['form-maarif','Maarif Model','award','green','Maarif Model aylık raporları','tools','form-maarif'],
- ['form-bep','Yıllık Planlar & BEP Planları','doc','green','Yıllık ders planı ve BEP','tools','form-bep'],
+ ['form-bep','Yıllık ve BEP Plan Takibi','doc','green','Öğretmenlerin plan teslim takibi','tools','form-bep'],
+ ['bep-hazirla','BEP Hazırla','pen','green','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla'],
  ['tutanak','Tutanak Hazırla','pen','orange','Toplantı ve olay tutanakları','tutanak'],
  ['dilekce-olustur','Dilekçe Oluştur','doc','orange','Hazır dilekçe örnekleri','dilekcehazirla'],
  ['form-sok','ŞÖK','users','orange','Şube öğretmenler kurulu','tools','form-sok'],
@@ -204,177 +206,264 @@ const TOOLS={};
  ['about','Uygulama hakkında','sparkle','violet','Sürüm ve bilgiler','dashboard','about']
 ].forEach(([id,label,ic,tone,sub,route,page='',need])=>{TOOLS[id]={id,label,icon:ic,glyph:glyphOf(id),tone,sub,route,page,need}});
 
-/* ── araç grupları (Öğretmen: Araçlar · İdareci: Yönetim) ── */
-const GROUPS={
-  ogretmen:[
-    {key:'sinifim',label:'Sınıfım',icon:'users',tone:'blue',ids:['student-attendance','classes','students','student-list']},
-    {key:'sinav',label:'Sınav ve not',icon:'clip',tone:'violet',ids:['written','trial','results','grades','homework','rubric','project']},
-    {key:'planlar',label:'Planlar',icon:'calendar',tone:'green',docs:true,ids:['plans','form-maarif','form-bep']},
-    {key:'tutanak',label:'Tutanak ve dilekçe',icon:'pen',tone:'orange',docs:true,ids:['tutanak','dilekce-olustur','form-sok','form-zumre','form-diger']},
-    {key:'veli',label:'Veli ve rehberlik',icon:'users',tone:'rose',docs:true,ids:['parentmeeting','form-rehberlik']},
-    {key:'etkinlik',label:'Etkinlik ve gezi',icon:'bus',tone:'cyan',docs:true,ids:['gezi','form-kulup','form-belirli','dilimiz']},
-    {key:'belgeler',label:'Belgeler',icon:'folder',tone:'amber',docs:true,ids:['documents','pdf-images','pdf-merge','checklists','school-age-calculator']}
-  ],
-  idareci:[
-    {key:'yonetim',label:'Genel Yönetim',icon:'briefcase',tone:'blue',blurb:'Aylık yönetim akışı, yıllık planlar, raporlar, öğretmen listeleri',ids:['aylik-yonetim','plans','reports','teacher-list-builder']},
-    {key:'evrak',label:'Evrak - Özlük',icon:'inbox',tone:'amber',docs:true,blurb:'Evrak takibi, personel işleri, öğretmenden istenecekler',ids:['evrak','evrak-belge','ogretmenden-istenecekler','personel-isleri','diploma-isleri','dokumanlar','folder-spine']},
-    {key:'mali',label:'Mali İşler',icon:'wallet',tone:'green',blurb:'Maaş ve ödeme işlemleri',ids:['payroll']},
-    {key:'guvenlik',label:'Güvenlik - Denetim',icon:'shield',tone:'rose',blurb:'Denetim formları',ids:['food-audit']},
-    {key:'sinav',label:'Sınav - Kurs',icon:'clip',tone:'violet',blurb:'Yazılı, deneme ve sonuç listeleri',ids:['sinav-isleri']},
-    {key:'ogrenci',label:'Öğrenci İşleri',icon:'users',tone:'blue',blurb:'Yoklama, öğrenci listeleri, kayıt yaşı',ids:['student-attendance','student-list','school-age-calculator']},
-    {key:'projeler',label:'Projeler',icon:'star',tone:'cyan',blurb:'Okul projeleri ve çalışmaları',ids:['dilimiz']},
-    {key:'tasima',label:'Taşıma - Pansiyon - Gezi',icon:'bus',tone:'cyan',blurb:'Gezi planı ve izin belgeleri',ids:['gezi']},
-    {key:'diger',label:'Diğer Araçlar',icon:'grid',tone:'slate',blurb:'Kontrol listeleri',ids:['checklists']}
-  ]
+/* ── menü düzeni ──
+ * Alt menü (5 yuva), menüler ve sık kullanılanlar kullanıcıya aittir: varsayılan rol başına gelir, kullanıcı değiştirince
+ * kendi kopyası bu cihazda saklanır ve hesabına eşitlenir (oy_kullaniciTercihleri). Katalogdaki her araç tek bir sayfadır;
+ * çok sayfalı ya da sekmeli araç yoktur, her sayfa istenen menüye ve alt menüye ayrı eklenir. */
+const MENU_ICONS=['grid','folder','doc','pen','users','school','calendar','clip','chart','shield','bus','food','star','award','book','inbox','wallet','briefcase','message','mega','clock','map'];
+const MENU_TONES=['blue','violet','green','orange','rose','cyan','amber','indigo','slate'];
+const BAR_SLOTS=5,MENU_MAX=24,MENU_ITEMS_MAX=60,MENU_NAME_MAX=32;
+const BAR_FIXED=['home','program','tools','me'];                  /* yerleşik sayfalar; geri kalan yuvalar menü ya da tek sayfadır */
+const M=(id,ad,icon,tone,ids)=>({id,ad,icon,tone,ids});
+const DEFAULT_LAYOUT={
+  ogretmen:{
+    bar:['home','program','tools','menu:okul','me'],
+    menus:[
+      M('sinifim','Sınıfım','users','blue',['student-attendance','classes','students','student-list']),
+      M('sinav','Sınav ve not','clip','violet',['written','trial','results','grades','homework','rubric','project']),
+      M('planlar','Planlar','calendar','green',['plans','form-maarif','bep-hazirla','form-bep']),
+      M('tutanak','Tutanak ve dilekçe','pen','orange',['tutanak','dilekce-olustur','form-sok','form-zumre','form-diger']),
+      M('veli','Veli ve rehberlik','message','rose',['parentmeeting','form-rehberlik']),
+      M('etkinlik','Etkinlik ve gezi','bus','cyan',['gezi','form-kulup','form-belirli','dilimiz']),
+      M('belgeler','Belgeler','folder','amber',['documents','pdf-images','pdf-merge','checklists','school-age-calculator']),
+      M('programim','Program ve takvim','clock','green',['schedule','duty','calendar','acad-calendar','meeting-schedule','notes']),
+      M('okul','Okul','school','indigo',['messages','news','announcements','polls','teachers','food','map','bus-seats'])
+    ],
+    fav:['student-attendance','written','tutanak','plans']
+  },
+  idareci:{
+    bar:['home','menu:okul','tools','menu:iletisim','me'],
+    menus:[
+      M('okul','Okul','school','indigo',['school-info','holiday','acad-calendar','teachers','staff','students','classes']),
+      M('evrak','Evrak ve yazışma','inbox','amber',['evrak','tutanak','dilekce-olustur','form-diger','evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu','teblig']),
+      M('belgeler','Belgeler ve PDF','folder','amber',['documents','pdf-images','pdf-merge','folder-spine']),
+      M('personel','Personel ve özlük','briefcase','indigo',['staff-leaves','puantaj','dilekce-izin','attendance','payroll','diploma-request','diploma-response']),
+      M('ogrenci','Öğrenci ve sınav','users','blue',['student-attendance','student-list','school-age-calculator','written','trial','results','parentmeeting','form-rehberlik','bep-hazirla']),
+      M('plan','Plan, rapor ve denetim','chart','green',['monthflow','tasks','plans','form-bep','reports','teacher-list-builder','checklists','food-audit']),
+      M('programlar','Programlar ve kurullar','calendar','cyan',['schedule','duty','meeting-schedule','committees','form-sok','form-zumre','notes']),
+      M('etkinlik','Etkinlik ve hizmetler','bus','rose',['gezi','form-kulup','form-belirli','dilimiz','transport','bus-seats','food','map']),
+      M('iletisim','İletişim','message','rose',['messages','news','announcements','polls','calendar'])
+    ],
+    fav:[]
+  }
 };
-/* ── çok sayfalı araçlar: bir kart, kendi içinde sayfalara ayrılır; sayfalar yukarıdaki TOOLS satırlarıdır ── */
-const SUITES={
-  'aylik-yonetim':{label:'Aylık Yönetim Akışı',tone:'amber',sub:'Ay ay yapılması gereken idari işler',pages:['monthflow','tasks']},
-  'evrak-belge':{label:'Evrak - Belge Oluştur',tone:'orange',sub:'Tutanak, dilekçe ve diğer okul evrakları',pages:['tutanak','dilekce-olustur','form-diger']},
-  'ogretmenden-istenecekler':{label:'Öğretmenden İstenecekler',tone:'amber',sub:'İstenecek evraklar, imza çizelgesi ve tebliğ yazıları',pages:['evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu']},
-  'personel-isleri':{label:'Personel İşleri',tone:'indigo',sub:'İzin, puantaj, devamsızlık, dilekçe ve tebliğ',pages:['staff-leaves','puantaj','dilekce-izin','attendance','teblig']},
-  'diploma-isleri':{label:'Diploma İşlemleri',tone:'indigo',sub:'Diploma kayıt talebi ve okul cevabı',pages:['diploma-request','diploma-response']},
-  'dokumanlar':{label:'Dökümanlar ve PDF',tone:'amber',sub:'Okul dökümanları, resimden PDF, PDF birleştirme',pages:['documents','pdf-images','pdf-merge']},
-  'sinav-isleri':{label:'Sınav İşleri',tone:'violet',sub:'Yazılı sınav, deneme ve sonuç listeleri',pages:['written','trial','results']}
+/* Eski sürümde çok sayfalı araç olan kimlikler: yalnız eski sık kullanılan kayıtlarını ilk sayfaya taşımak için. */
+const LEGACY_IDS={'aylik-yonetim':'monthflow','evrak-belge':'tutanak','ogretmenden-istenecekler':'evrak-teslim','personel-isleri':'staff-leaves','diploma-isleri':'diploma-request','dokumanlar':'documents','sinav-isleri':'written'};
+/* Arama eş anlamlıları: ad ve alt yazıda geçmeyen ama insanların yazdığı sözcükler. */
+const KEYWORDS={
+  'student-attendance':'yoklama devamsızlık yok yazma','students':'öğrenci liste kayıt','student-list':'öğrenci sınıf listesi çizelge','classes':'şube sınıf rehber',
+  'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama','grades':'not karne puan','homework':'ödev','rubric':'puan katılım rubrik','project':'proje performans ölçek',
+  'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan','bep-hazirla':'bep bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci',
+  'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
+  'parentmeeting':'veli görüşme','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
+  'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',
+  'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
+  'teblig':'tebliğ tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
+  'tasks':'aylık iş görev','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste',
+  'school-info':'okul bilgi kurulum ayar müdür','holiday':'tatil','acad-calendar':'akademik takvim eğitim öğretim yılı','teachers':'öğretmen kadro','staff':'personel kadro','schedule':'ders programı','duty':'nöbet','meeting-schedule':'toplantı kurul çizelge',
+  'committees':'kurul komisyon','transport':'servis taşıma güzergah','bus-seats':'servis oturma','map':'harita','food':'yemek menü','messages':'mesaj yazışma','news':'haber','announcements':'duyuru','polls':'anket oy','calendar':'takvim hatırlatıcı','notes':'not','settings':'ayar kullanıcı hesap','guide':'yardım kılavuz','about':'sürüm'
 };
-const HUB={ogretmen:{title:'Öğretmen araçları',search:'Araç ara: plan, tutanak, dilekçe'},idareci:{title:'İdareci araçları',search:'Araç ara: izin, evrak, tebliğ, rapor'}};
-
-/* ── Okul sekmesi bölümleri ── */
-const SCHOOL={
-  ogretmen:[
-    {key:'iletisim',label:'İletişim',ids:['messages','news','announcements','polls']},
-    {key:'hayat',label:'Okul hayatı',ids:['teachers','food','map','bus-seats']}
-  ],
-  idareci:[
-    {key:'bilgi',label:'Okul bilgileri',ids:['school-info','holiday','acad-calendar']},
-    {key:'kisiler',label:'Kişiler',ids:['teachers','staff','students','classes']},
-    {key:'programlar',label:'Programlar',ids:['schedule','duty','meeting-schedule']},
-    {key:'kurullar',label:'Kurullar',ids:['committees','form-sok','form-zumre','form-kulup']},
-    {key:'hizmetler',label:'Hizmetler',ids:['transport','bus-seats','map','food']}
-  ]
-};
-const COMM_IDS=['messages','news','announcements','polls','calendar'];                 /* İdareci › İletişim */
-const PROGRAM_IDS=['schedule','duty','calendar','acad-calendar','meeting-schedule'];   /* Öğretmen › Programım (kendi programının altındaki satırlar) */
-
-/* ── sekmeler ── */
-const TABS={
-  ogretmen:[{key:'home',label:'Bugün',icon:'home'},{key:'program',label:'Programım',icon:'calendar'},{key:'tools',label:'Araçlar',icon:'grid'},{key:'school',label:'Okul',icon:'school'},{key:'me',label:'Ben',icon:'user'}],
-  idareci:[{key:'home',label:'Özet',icon:'chart'},{key:'school',label:'Okul',icon:'school'},{key:'tools',label:'Yönetim',icon:'briefcase'},{key:'comm',label:'İletişim',icon:'message'},{key:'me',label:'Ben',icon:'user'}]
-};
-const tabs=(r=role())=>TABS[r].map(t=>({...t}));
-const tab=(key,r=role())=>TABS[r].find(t=>t.key===key)||null;
-const homeTab=()=>'home';
-
-/* ── katalog okuma ── */
-function suiteTool(id){
-  const s=SUITES[id];if(!s)return null;
-  const pages=s.pages.map(x=>TOOLS[x]).filter(toolAllowed);
-  if(!pages.length)return null;
-  return{id,label:s.label,icon:pages[0].icon,glyph:glyphOf(id),tone:s.tone,sub:s.sub,route:pages[0].route,page:pages[0].page,suite:true,pages};
+const clone=v=>JSON.parse(JSON.stringify(v));
+const deviceKey=r=>`ka-nav-layout:${user().uid||'-'}:${r}`;
+const legacyFavKey=r=>`ka-nav-fav:${user().uid||'-'}:${r}`;
+let overrideCache={};
+const cacheKey=r=>`${user().uid||'-'}:${r}`;
+function readOverride(r){
+  const k=cacheKey(r);
+  if(k in overrideCache)return overrideCache[k];
+  let v=null;
+  try{const raw=store.get(deviceKey(r));if(raw){const o=JSON.parse(raw);if(o&&typeof o==='object'&&!Array.isArray(o))v=o}}catch(_){}
+  return overrideCache[k]=v;
 }
-const tool=id=>TOOLS[id]||suiteTool(id);
+function cleanIds(list){
+  const seen=new Set();
+  return (Array.isArray(list)?list:[]).map(x=>LEGACY_IDS[x]||x).filter(id=>typeof id==='string'&&TOOLS[id]&&!seen.has(id)&&seen.add(id)).slice(0,MENU_ITEMS_MAX);
+}
+function cleanMenus(list){
+  const seen=new Set(),out=[];
+  for(const m of Array.isArray(list)?list:[]){
+    const id=String(m?.id||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,32),ad=String(m?.ad||'').trim().slice(0,MENU_NAME_MAX);
+    if(!id||!ad||seen.has(id))continue;
+    seen.add(id);
+    out.push({id,ad,icon:MENU_ICONS.includes(m.icon)?m.icon:'grid',tone:MENU_TONES.includes(m.tone)?m.tone:'slate',ids:cleanIds(m.ids)});
+    if(out.length>=MENU_MAX)break;
+  }
+  return out;
+}
+const barKeyValid=(key,menus)=>typeof key==='string'&&(BAR_FIXED.includes(key)||(key.startsWith('menu:')&&menus.some(m=>m.id===key.slice(5)))||(key.startsWith('tool:')&&!!TOOLS[key.slice(5)]));
+function cleanBar(list,menus,r){
+  const seen=new Set(),out=[];
+  const add=k=>{if(out.length<BAR_SLOTS&&barKeyValid(k,menus)&&!seen.has(k)){seen.add(k);out.push(k)}};
+  (Array.isArray(list)?list:[]).forEach(add);
+  DEFAULT_LAYOUT[r].bar.forEach(add);
+  ['home','tools','me'].forEach(add);
+  if(!out.includes('me'))out[BAR_SLOTS-1]='me';
+  return out;
+}
+function legacyFav(r){
+  try{const raw=store.get(legacyFavKey(r));if(raw!==null){const v=JSON.parse(raw);if(Array.isArray(v))return cleanIds(v)}}catch(_){}
+  return null;
+}
+/* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı varsayılandan gelir. */
+function layoutRaw(r=role()){
+  const o=readOverride(r),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
+  return{bar:cleanBar(o?.bar||def.bar,menus,r),menus,fav:o?.fav?cleanIds(o.fav):(legacyFav(r)||clone(def.fav)),custom:!!(o&&(o.bar||o.menus))};
+}
+function emitLayoutChanged(r){try{global.dispatchEvent(new CustomEvent('koruk:nav-layout-changed',{detail:{role:r}}))}catch(_){}}
+let pushTimers={};
+function pushOverride(r){
+  clearTimeout(pushTimers[r]);
+  pushTimers[r]=setTimeout(()=>{const o=readOverride(r);global.KaPrefs?.remoteSet?.({[`menuDuzeni_${r}`]:o?JSON.stringify(o):'',[`menuDuzeniT_${r}`]:o?.t||Date.now()})},800);
+}
+function writeOverride(r,patch,{reset=false,silent=false}={}){
+  const k=cacheKey(r);
+  if(reset){store.del(deviceKey(r));overrideCache[k]=null;store.del(legacyFavKey(r));global.KaPrefs?.remoteSet?.({[`menuDuzeni_${r}`]:'',[`menuDuzeniT_${r}`]:Date.now()})}
+  else{
+    const cur=readOverride(r)||{},next={...cur,...patch,t:Date.now()};
+    store.set(deviceKey(r),JSON.stringify(next));overrideCache[k]=next;pushOverride(r);
+  }
+  if(!silent)emitLayoutChanged(r);
+}
+/* Düzeni kaydeder: tek yer, tüm düzenleme buradan geçer. */
+function saveLayout(next,r=role(),{silent=false}={}){
+  const menus=cleanMenus(next?.menus);
+  writeOverride(r,{menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav)},{silent});
+  return layoutRaw(r);
+}
+const resetLayout=(r=role())=>writeOverride(r,null,{reset:true});
+/* Hesaba eşitleme: başka cihazdaki daha yeni düzen bu cihaza gelir; cihazdaki daha yeniyse hesaba gider. */
+let pulledFor='';
+function pullLayouts(){
+  const uid=user().uid;
+  if(!uid||pulledFor===uid)return;
+  const g=global.KaPrefs?.remoteGet?.();
+  if(!g)return;
+  pulledFor=uid;
+  g.then(x=>{
+    if(!x)return;
+    for(const r of ['ogretmen','idareci']){
+      const rt=Number(x[`menuDuzeniT_${r}`])||0,local=readOverride(r),lt=local?.t||0;
+      if(rt>lt){
+        let rem=null;try{rem=x[`menuDuzeni_${r}`]?JSON.parse(x[`menuDuzeni_${r}`]):null}catch(_){continue}
+        if(rem&&typeof rem==='object')store.set(deviceKey(r),JSON.stringify(rem));else store.del(deviceKey(r));
+        overrideCache[cacheKey(r)]=undefined;delete overrideCache[cacheKey(r)];
+        emitLayoutChanged(r);
+      }else if(lt>rt)pushOverride(r);
+    }
+  }).catch(()=>{});
+}
+try{global.addEventListener('koruk:app-ready',pullLayouts)}catch(_){}
+
+/* ── çözülmüş düzen (yetkiye göre süzülür) ── */
+const tool=id=>TOOLS[id]||null;
 function toolAllowed(t){return!!t&&canOpen(t.route,t.page)&&(!t.need||t.need()===true)}
 const visible=ids=>ids.map(tool).filter(toolAllowed);
-function groups(r=role()){
-  return GROUPS[r].map(g=>({...g,glyph:GROUP_GLYPHS[g.key]||'📁',tools:visible(g.ids)})).filter(g=>g.tools.length);
+function menus(r=role()){
+  return layoutRaw(r).menus.map(m=>({...m,tools:visible(m.ids)})).filter(m=>m.tools.length);
 }
-function group(key,r=role()){return groups(r).find(g=>g.key===key)||null}
-function school(r=role()){
-  return SCHOOL[r].map(s=>({...s,tools:visible(s.ids)})).filter(s=>s.tools.length);
+function menu(id,r=role()){return menus(r).find(m=>m.id===id)||null}
+const TAB_LABEL={home:r=>r==='idareci'?'Özet':'Bugün',program:()=>'Programım',tools:()=>'Araçlar',me:()=>'Ben'};
+const TAB_ICON={home:'home',program:'calendar',tools:'grid',me:'user'};
+function barItem(key,r){
+  if(BAR_FIXED.includes(key))return{key,label:TAB_LABEL[key](r),icon:TAB_ICON[key],kind:'page'};
+  if(key.startsWith('menu:')){const m=menu(key.slice(5),r);return m?{key,label:m.ad,icon:m.icon,kind:'menu',tone:m.tone}:null}
+  if(key.startsWith('tool:')){const t=tool(key.slice(5));return t&&toolAllowed(t)?{key,label:t.label,icon:t.icon,kind:'tool',tone:t.tone}:null}
+  return null;
 }
-const comm=()=>visible(COMM_IDS);
-const programLinks=()=>visible(PROGRAM_IDS);
-const hub=(r=role())=>({...HUB[r]});
-function toolCount(r=role()){return groups(r).reduce((n,g)=>n+g.tools.length,0)}
+/* Alt menü: kullanıcının seçtiği 5 yuva. Yetkisiz ya da silinmiş bir yuva varsayılan değerle dolar; böylece çubuk hiç boş kalmaz. */
+function tabs(r=role()){
+  const raw=layoutRaw(r).bar,out=[],seen=new Set();
+  const take=k=>{const it=barItem(k,r);if(it&&!seen.has(it.key)){seen.add(it.key);out.push(it);return true}return false};
+  raw.forEach(take);
+  for(const k of [...DEFAULT_LAYOUT[r].bar,'home','tools','me'])if(out.length<BAR_SLOTS)take(k);
+  return out.slice(0,BAR_SLOTS);
+}
+const tab=(key,r=role())=>tabs(r).find(t=>t.key===key)||null;
+const homeTab=()=>'home';
+const hub=()=>({title:'Araçlar',search:'Sayfa ara: izin, evrak, tebliğ, BEP'});
+const toolCount=(r=role())=>new Set(menus(r).flatMap(m=>m.tools.map(t=>t.id))).size;
+function allTools(){
+  return Object.values(TOOLS).filter(toolAllowed).sort((a,b)=>a.label.localeCompare(b.label,'tr'));
+}
+const inNoMenu=(r=role())=>{const used=new Set(layoutRaw(r).menus.flatMap(m=>m.ids));return allTools().filter(t=>!used.has(t.id))};
 function findTool(route,page=''){
   route=String(route||'');page=String(page||'');
   return Object.values(TOOLS).find(t=>t.route===route&&t.page===page)||null;
 }
-function suiteOf(route,page=''){
-  const t=findTool(route,page);
-  if(!t||role()!=='idareci')return null;
-  const id=Object.keys(SUITES).find(k=>SUITES[k].pages.includes(t.id)&&GROUPS.idareci.some(g=>g.ids.includes(k)));
-  const s=id?suiteTool(id):null;
-  return s&&s.pages.length>1?s:null;
-}
-const groupOf=(r,toolId)=>GROUPS[r].find(g=>g.ids.some(id=>id===toolId||SUITES[id]?.pages.includes(toolId)))||null;
+const ME_TOOLS=new Set(['settings','guide','about','notes']);
+/* Bir sayfa hangi alt menü yuvasını aydınlatır: önce tek başına eklenmişse onu, sonra onu içeren menüyü, sonra Araçlar'ı. */
 function tabOf(route,page=''){
   route=String(route||'');page=String(page||'');
   if(route==='dashboard'&&!page)return 'home';
-  if(route==='settings'&&['school','holiday','lesson-hours'].includes(page)&&role()==='idareci')return 'school';
+  const r=role(),keys=tabs(r).map(t=>t.key),t=findTool(route,page);
+  if(t){
+    if(keys.includes(`tool:${t.id}`))return `tool:${t.id}`;
+    const m=layoutRaw(r).menus.find(x=>keys.includes(`menu:${x.id}`)&&x.ids.includes(t.id));
+    if(m)return `menu:${m.id}`;
+    if(ME_TOOLS.has(t.id))return 'me';
+  }
   if(route==='settings'||route==='dashboard')return 'me';
-  const t=findTool(route,page);
-  if(!t)return 'tools';
-  const r=role();
-  if(r==='idareci'){
-    if(SCHOOL.idareci.some(s=>s.ids.includes(t.id)))return 'school';
-    if(COMM_IDS.includes(t.id))return 'comm';
-    if(t.id==='notes')return 'me';
-    return 'tools';
-  }
-  if(PROGRAM_IDS.includes(t.id)||t.id==='notes')return 'program';
-  if(SCHOOL.ogretmen.some(s=>s.ids.includes(t.id)))return 'school';
-  return 'tools';
+  return keys.includes('tools')?'tools':'';
 }
-
-/* Bir aracın geri dönüş sayfası: aynı öncelikle tabOf gibi (Okul › İletişim/Programım › Ben › araç grubu). */
+/* Bir aracın geri dönüş sayfası: alt menüdeki menü, yoksa ilk içeren menü, yoksa Araçlar / Ben. */
 function parentOf(route,page=''){
-  const t=findTool(route,page);
+  const t=findTool(route,page),r=role();
   if(!t)return route==='settings'||route==='dashboard'?'me':'';
-  const r=role();
-  if(r==='idareci'){
-    if(SCHOOL.idareci.some(s=>s.ids.includes(t.id)))return 'school';
-    if(COMM_IDS.includes(t.id))return 'comm';
-  }else{
-    if(PROGRAM_IDS.includes(t.id))return 'program';
-    if(SCHOOL.ogretmen.some(s=>s.ids.includes(t.id)))return 'school';
-  }
-  if(['notes','settings','guide','about'].includes(t.id))return r==='ogretmen'&&t.id==='notes'?'program':'me';
-  const g=groupOf(r,t.id);
-  return g?`tools:${g.key}`:'tools';
+  const all=layoutRaw(r).menus.filter(x=>x.ids.includes(t.id)&&menu(x.id,r)),keys=tabs(r).map(x=>x.key);
+  const m=all.find(x=>keys.includes(`menu:${x.id}`))||all[0];
+  if(m)return `menu:${m.id}`;
+  return ME_TOOLS.has(t.id)?'me':'tools';
 }
-
-/* ── favoriler (cihaza özel) ── */
-const FAV_DEFAULT={ogretmen:['student-attendance','written','tutanak','plans'],idareci:[]};
-const favKey=r=>`ka-nav-fav:${user().uid||'-'}:${r}`;
-function favIds(r=role()){
-  let list=null;
-  try{const raw=store.get(favKey(r));if(raw!==null){const v=JSON.parse(raw);if(Array.isArray(v))list=v}}catch(_){}
-  const known=GROUPS[r].flatMap(g=>g.ids);
-  return (list||FAV_DEFAULT[r]).filter(id=>known.includes(id));
-}
+const menuNamesOf=(id,r)=>layoutRaw(r).menus.filter(m=>m.ids.includes(id)).map(m=>m.ad);
+/* ── sık kullanılanlar ve son açılanlar ── */
+const favIds=(r=role())=>layoutRaw(r).fav;
 function favorites(r=role()){return favIds(r).map(tool).filter(toolAllowed)}
 const isFavorite=(id,r=role())=>favIds(r).includes(id);
 function toggleFavorite(id,r=role()){
   const cur=favIds(r),next=cur.includes(id)?cur.filter(x=>x!==id):[...cur,id];
-  store.set(favKey(r),JSON.stringify(next));
+  writeOverride(r,{fav:cleanIds(next)});
   try{global.dispatchEvent(new CustomEvent('koruk:nav-favorites-changed',{detail:{id,role:r}}))}catch(_){}
   return next.includes(id);
 }
+const RECENT_KEY='ka-nav-recent',RECENT_MAX=6;
+function recentIds(){try{const v=JSON.parse(store.get(`${RECENT_KEY}:${user().uid||'-'}`)||'[]');return Array.isArray(v)?v.filter(id=>typeof id==='string'):[]}catch(_){return[]}}
+function noteOpened(route,page=''){
+  const t=findTool(route,page);if(!t||ME_TOOLS.has(t.id))return;
+  store.set(`${RECENT_KEY}:${user().uid||'-'}`,JSON.stringify([t.id,...recentIds().filter(x=>x!==t.id)].slice(0,RECENT_MAX)));
+}
+const recent=(limit=3)=>recentIds().map(tool).filter(toolAllowed).slice(0,limit);
 
-/* ── arama (üst arama kutusu ve Araçlar sayfası) ── */
+/* ── arama: tüm sayfalar, menü düzeninden bağımsız; sözcükler ad, alt yazı ve eş anlamlılarda aranır ── */
 function search(q,r=role()){
   const n=fold(q);
   if(!n)return[];
-  const seen=new Set(),out=[];
-  const add=(t,where)=>{if(!t||seen.has(t.id)||!toolAllowed(t))return;if(fold(`${t.label} ${t.sub} ${(t.pages||[]).map(p=>p.label).join(' ')}`).includes(n)){seen.add(t.id);out.push({...t,where})}};
-  GROUPS[r].forEach(g=>g.ids.forEach(id=>add(tool(id),g.label)));
-  SCHOOL[r].forEach(s=>s.ids.forEach(id=>add(tool(id),s.label)));
-  (r==='idareci'?COMM_IDS:[]).forEach(id=>add(tool(id),'İletişim'));
-  ['settings','guide','about','notes'].forEach(id=>add(tool(id),'Ben'));
-  return out;
+  const words=n.split(/\s+/).filter(Boolean),rows=[],list=Object.values(TOOLS).filter(toolAllowed);
+  /* Önce sözcük başı eşleşir ("izin" → İzin İşlemleri, Dilimizin değil); hiç sonuç yoksa sözcük içi eşleşmeye bakılır. */
+  for(const mode of ['prefix','inside']){
+    for(const t of list){
+      const hay=fold(`${t.label} ${t.sub} ${KEYWORDS[t.id]||''}`),parts=hay.split(/[^a-z0-9]+/).filter(Boolean);
+      const hit=mode==='prefix'?words.every(w=>parts.some(x=>x.startsWith(w))):words.every(w=>hay.includes(w));
+      if(!hit)continue;
+      const lab=fold(t.label);
+      rows.push({t,score:lab===n?0:lab.startsWith(n)?1:words.every(w=>lab.includes(w))?2:3});
+    }
+    if(rows.length)break;
+  }
+  rows.sort((a,b)=>a.score-b.score||a.t.label.localeCompare(b.t.label,'tr'));
+  return rows.map(({t})=>({...t,where:ME_TOOLS.has(t.id)&&!menuNamesOf(t.id,r).length?'Ben':(menuNamesOf(t.id,r).slice(0,2).join(' · ')||'Araçlar')}));
 }
 
-/* ── web yan menüsü: sekmeler; Araçlar sekmesinin altında grupları ── */
+/* ── web yan menüsü: alt menüdeki yuvalar; Araçlar'ın altında alt menüde olmayan menüler ── */
 function webMenu(){
-  const r=role();
-  return tabs(r).map(t=>({key:t.key,label:t.label,icon:t.icon,children:t.key==='tools'?groups(r).map(g=>({key:`tools:${g.key}`,label:g.label,glyph:g.glyph,count:g.tools.length})):[]}));
+  const r=role(),list=tabs(r),pinned=new Set(list.filter(t=>t.key.startsWith('menu:')).map(t=>t.key.slice(5)));
+  return list.map(t=>({key:t.key,label:t.label,icon:t.icon,children:t.key==='tools'?menus(r).filter(m=>!pinned.has(m.id)).map(m=>({key:`menu:${m.id}`,label:m.ad,icon:m.icon,count:m.tools.length})):[]}));
 }
 
 global.AppNav={
   icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
-  tabs,tab,homeTab,tabOf,parentOf,hub,groups,group,school,comm,programLinks,toolCount,tool,findTool,suiteOf,
-  favorites,isFavorite,toggleFavorite,search,webMenu,
+  tabs,tab,homeTab,tabOf,parentOf,hub,menus,menu,toolCount,tool,findTool,allTools,inNoMenu,
+  layoutRaw,saveLayout,resetLayout,defaultLayout:r=>clone(DEFAULT_LAYOUT[r]),MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,
+  favorites,isFavorite,toggleFavorite,recent,noteOpened,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN
 };
 })(window);
