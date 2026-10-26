@@ -345,7 +345,7 @@ function blankItems(){
   return Array.from({length:n},()=>({title:'',sub:'',no:'',code:'',year:String(st.year||'').trim(),school:school()}));
 }
 async function print(){
-  if(!global.ReportEngine?.previewHtml){try{await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=6')}catch(_){}}
+  if(!global.ReportEngine?.previewHtml){try{await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=7')}catch(_){}}
   const RE=global.ReportEngine;
   if(!RE?.previewHtml){global.toast?.('Yazdırma altyapısı yüklenemedi. Uygulamayı yenileyip tekrar deneyin.');return}
   let items=curItems();

@@ -86,7 +86,7 @@ function html(m){
 function print(rec,ctx={}){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const m=model(rec,{okulAdi:ctx.okulAdi||global.ReportEngine.schoolInfo?.().okulAdi||''});
- global.ReportEngine.printReport('BEP',html(m),{fileName:core().fileName(rec),yon:'yatay',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});
+ global.ReportEngine.printReport('BEP',html(m),{fileName:core().fileName(rec),yon:'yatay',akis:true,kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});
  return true;
 }
 

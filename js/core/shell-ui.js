@@ -72,7 +72,7 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     const root=ctx?.root||$('#v2ModuleRoot');
     if(!nav().tool('folder-spine')||!nav().toolAllowed(nav().tool('folder-spine'))){global.toast?.('Klasör Sırtlığı yalnızca admin ve yönetici rolündekiler içindir.');return false}
     global.DocumentsModule?.unmount?.();
-    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=6');
+    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=7');
     if(!global.FolderSpine?.open)await global.AppLoader?.loadScript?.('js/modules/folder-spine.js?v=6');
     if(!global.FolderSpine?.open)throw new Error('folder-spine-load');
     return global.FolderSpine.open(root);
@@ -585,7 +585,7 @@ function renderSearch({remember=true}={}){
     if(!rows.length){global.toast?.('Yazdırılacak arama sonucu bulunamadı.');return}
     button.disabled=true;
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=6');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=7');
       if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
       const escPrint=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const filterParts=[];
