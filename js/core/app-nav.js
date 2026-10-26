@@ -78,6 +78,7 @@ const GLYPHS={
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
 GLYPHS['bep-hazirla']='📝';
+GLYPHS['idareci-pano']='🖥️';
 const glyphOf=id=>GLYPHS[id]||'📌';
 function glyph(g,cls=''){return `<span class="ka-glyph${cls?' '+cls:''}" data-ka-glyph="${String(g).replace(/"/g,'&quot;')}" aria-hidden="true">${g}</span>`}
 /* Bilinen emojiye CSS bir çizgi simge (--ic) verir; maskelenebilenler .has-ic alır, bilinmeyenler emoji kalır. */
@@ -120,7 +121,7 @@ const roleLabel=r=>r==='idareci'?'İdareci':'Öğretmen';
 
 /* ── sayfa kapıları ── */
 /* Öğretmen hesabına (PermissionService.isTeacherAccount) kapalı sayfalar; rol arayüzünden bağımsızdır. */
-const TEACHER_HIDDEN=new Set(['committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
+const TEACHER_HIDDEN=new Set(['idareci-pano:','committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
 const isTeacherUser=()=>global.PermissionService?.isTeacherAccount?.()===true;
 const pageAllowed=(name,page='')=>!isTeacherUser()||!TEACHER_HIDDEN.has(`${name}:${page||''}`);
 function moduleAllowed(name){
@@ -148,6 +149,7 @@ const TOOLS={};
  ['form-maarif','Maarif Model','award','green','Maarif Model aylık raporları','tools','form-maarif'],
  ['form-bep','Yıllık ve BEP Plan Takibi','doc','green','Öğretmenlerin plan teslim takibi','tools','form-bep'],
  ['bep-hazirla','BEP Hazırla','pen','green','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla'],
+ ['idareci-pano','İdareci Pano','chart','indigo','Okulun anlık durumu: nöbet, izin, sınıflar, takvim','idareci-pano'],
  ['tutanak','Tutanak Hazırla','pen','orange','Toplantı ve olay tutanakları','tutanak'],
  ['dilekce-olustur','Dilekçe Oluştur','doc','orange','Hazır dilekçe örnekleri','dilekcehazirla'],
  ['form-sok','ŞÖK','users','orange','Şube öğretmenler kurulu','tools','form-sok'],
@@ -232,9 +234,9 @@ const DEFAULT_LAYOUT={
     fav:['student-attendance','written','tutanak','plans']
   },
   idareci:{
-    bar:['home','menu:okul','tools','menu:iletisim','me'],
+    bar:['home','menu:okul','tools','tool:idareci-pano','me'],
     menus:[
-      M('okul','Okul','school','indigo',['school-info','holiday','acad-calendar','teachers','staff','students','classes']),
+      M('okul','Okul','school','indigo',['idareci-pano','school-info','holiday','acad-calendar','teachers','staff','students','classes']),
       M('evrak','Evrak ve yazışma','inbox','amber',['evrak','tutanak','dilekce-olustur','form-diger','evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu','teblig']),
       M('belgeler','Belgeler ve PDF','folder','amber',['documents','pdf-images','pdf-merge','folder-spine']),
       M('personel','Personel ve özlük','briefcase','indigo',['staff-leaves','puantaj','dilekce-izin','attendance','payroll','diploma-request','diploma-response']),
@@ -253,7 +255,7 @@ const LEGACY_IDS={'aylik-yonetim':'monthflow','evrak-belge':'tutanak','ogretmend
 const KEYWORDS={
   'student-attendance':'yoklama devamsızlık yok yazma','students':'öğrenci liste kayıt','student-list':'öğrenci sınıf listesi çizelge','classes':'şube sınıf rehber',
   'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama','grades':'not karne puan','homework':'ödev','rubric':'puan katılım rubrik','project':'proje performans ölçek',
-  'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan','bep-hazirla':'bep bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci',
+  'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan','idareci-pano':'pano dijital panosu müdür idareci nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',

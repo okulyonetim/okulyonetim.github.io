@@ -14577,3 +14577,215 @@ html[data-theme] #v2ModuleRoot .ka-bep-okmsg{margin:0;padding:var(--ka-sp-10) va
   html[data-theme] #v2ModuleRoot .ka-bep-item__acts{justify-content:flex-start}
   html[data-theme] #v2ModuleRoot .ka-bep-issues li{flex-direction:column;align-items:flex-start}
 }
+
+/* ===== İDARECİ PANO — js/modules/idareci-pano.js ===== */
+html[data-theme] #v2ModuleRoot .ka-ip{display:flex;flex-direction:column;gap:var(--ka-sp-14);max-width:1360px;margin-inline:auto;width:100%}
+html[data-theme] #v2ModuleRoot .ka-ip-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--ka-sp-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-brand{display:flex;align-items:center;gap:var(--ka-sp-12);min-width:0}
+html[data-theme] #v2ModuleRoot .ka-ip-brand h1{margin:var(--ka-sp-2) 0 0;font-size:var(--ka-fs-23);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-1);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-logo{flex:none;display:flex;align-items:center;justify-content:center;width:var(--ka-ic-48);height:var(--ka-ic-48);border-radius:50%;background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);font-size:var(--ka-fs-19);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-kicker{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-12);color:var(--t-accent-ink)}
+html[data-theme] #v2ModuleRoot .ka-ip-clock{display:flex;flex-direction:column;align-items:flex-end;gap:var(--ka-sp-2);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-clock__t{display:flex;align-items:baseline;gap:var(--ka-sp-4);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-clock__t b{font-size:var(--ka-fs-44);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-02)}
+html[data-theme] #v2ModuleRoot .ka-ip-clock__t span{font-size:var(--ka-fs-20);font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-clock small{font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-acts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-acts .ka-btn svg{flex:none}
+html[data-theme] #v2ModuleRoot .ka-ip-read{margin-left:var(--ka-sp-4);font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-strip{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-pill{display:inline-flex;align-items:center;gap:var(--ka-sp-8);min-height:var(--ka-control-height-sm);padding:0 var(--ka-sp-14);border-radius:var(--ka-radius-pill);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700);color:var(--gl-fg);border:var(--ka-border-w) solid transparent}
+html[data-theme] #v2ModuleRoot .ka-ip-pill.is-blue{background:color-mix(in srgb,var(--ka-info) 18%,transparent);border-color:color-mix(in srgb,var(--ka-info) 40%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-pill.is-amber{background:color-mix(in srgb,var(--ka-warning) 20%,transparent);border-color:color-mix(in srgb,var(--ka-warning) 50%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-pill.is-red{background:color-mix(in srgb,var(--ka-danger) 16%,transparent);border-color:color-mix(in srgb,var(--ka-danger) 45%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-pill.is-plain{background:var(--gl-field);border-color:var(--gl-edge);color:var(--ka-text-muted);font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--ka-sp-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-card{min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-12);padding:var(--ka-sp-16);border:var(--ka-card-border-w) solid var(--gl-edge);border-radius:var(--ka-card-radius);background:var(--gl-bg);box-shadow:var(--gl-shadow);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-head{display:flex;align-items:center;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-head h2{flex:1;min-width:0;margin:0;font-size:var(--ka-fs-16);font-weight:var(--ka-fw-700);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-ico{flex:none;display:flex;align-items:center;justify-content:center;width:var(--ka-ic-34);height:var(--ka-ic-34);border-radius:var(--ka-r-2);background:color-mix(in srgb,var(--ka-primary) 18%,transparent);color:var(--t-accent-ink)}
+html[data-theme] #v2ModuleRoot .ka-ip-sub{display:inline-flex;align-items:center;gap:var(--ka-sp-6);font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-muted{margin:0;font-size:var(--ka-fs-13);color:var(--ka-text-muted);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-empty{margin:0;padding:var(--ka-sp-8) 0;font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-chip{display:inline-block;padding:var(--ka-sp-4) var(--ka-sp-10);border-radius:var(--ka-radius-pill);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-05);white-space:nowrap;color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-chip.is-gold{background:color-mix(in srgb,var(--ka-primary) 24%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-chip.is-blue{background:color-mix(in srgb,var(--ka-info) 22%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-chip.is-amber{background:color-mix(in srgb,var(--ka-warning) 24%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-chip.is-red{background:color-mix(in srgb,var(--ka-danger) 20%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-row{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-3);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-row__main{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-2)}
+html[data-theme] #v2ModuleRoot .ka-ip-row b,html[data-theme] #v2ModuleRoot .ka-ip-row__name{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ka-ip-row__name{flex:1;min-width:0}
+html[data-theme] #v2ModuleRoot .ka-ip-row small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-place{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-08);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-note{display:flex;align-items:flex-start;justify-content:flex-start;gap:var(--ka-sp-10);gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border-radius:var(--ka-r-3);font-size:var(--ka-fs-13);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-note svg{flex:none;margin-top:var(--ka-sp-1)}
+html[data-theme] #v2ModuleRoot .ka-ip-note.is-amber{background:color-mix(in srgb,var(--ka-warning) 20%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-note.is-blue{align-items:center;justify-content:space-between;background:color-mix(in srgb,var(--ka-info) 18%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-link{appearance:none;align-self:flex-start;min-height:var(--ka-control-height);margin:0;padding:0;border:0;background:none;color:var(--t-accent-ink);font:inherit;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-live{display:flex;flex-wrap:wrap;gap:var(--ka-sp-20);align-items:center}
+html[data-theme] #v2ModuleRoot .ka-ip-live__main{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-big{font-size:var(--ka-fs-34);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-05)}
+html[data-theme] #v2ModuleRoot .ka-ip-bar{height:var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--gl-sep);overflow:hidden}
+html[data-theme] #v2ModuleRoot .ka-ip-bar i{display:block;height:100%;border-radius:var(--ka-radius-pill);background:var(--ka-primary);transition:width var(--ka-dur-220) var(--ka-ease-1)}
+html[data-theme] #v2ModuleRoot .ka-ip-bar-l{display:flex;justify-content:space-between;gap:var(--ka-sp-8);font-size:var(--ka-fs-12);color:var(--ka-text-muted);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-bar-l b{color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-ring{position:relative;flex:none;width:var(--ka-ic-120);height:var(--ka-ic-120)}
+html[data-theme] #v2ModuleRoot .ka-ip-ring svg{display:block;width:100%;height:100%}
+html[data-theme] #v2ModuleRoot .ka-ip-ring circle{fill:none;stroke-width:10}
+html[data-theme] #v2ModuleRoot .ka-ip-ring__bg{stroke:var(--gl-sep)}
+html[data-theme] #v2ModuleRoot .ka-ip-ring__fg{stroke:var(--ka-primary);stroke-linecap:round}
+html[data-theme] #v2ModuleRoot .ka-ip-ring__t{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-ring__t b{font-size:var(--ka-fs-23);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-ring__t span{font-size:var(--ka-fs-10);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-next{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-14);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field);font-size:var(--ka-fs-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-next svg{flex:none;color:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .ka-ip-next span{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-08);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-next b{margin-left:auto;font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-tiles.is-small{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+html[data-theme] #v2ModuleRoot .ka-ip-tile{display:flex;flex-direction:column;gap:var(--ka-sp-3);min-width:0;padding:var(--ka-sp-12) var(--ka-sp-14);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile__t{display:flex;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile b{font-size:var(--ka-fs-18);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile span{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile.is-bos{border-color:var(--ka-warning);background:color-mix(in srgb,var(--ka-warning) 18%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile.is-yok,html[data-theme] #v2ModuleRoot .ka-ip-tile.is-yok b{border-style:dashed;background:transparent;color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-tile.is-yok span{font-style:italic}
+html[data-theme] #v2ModuleRoot .ka-ip-box{display:flex;flex-direction:column;gap:var(--ka-sp-4);padding:var(--ka-sp-12) var(--ka-sp-14);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-box__h{display:flex;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-box__h b{flex:1;min-width:0;font-size:var(--ka-fs-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-box small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-box p{margin:0;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-count{min-width:var(--ka-ic-26);padding:var(--ka-sp-2) var(--ka-sp-8);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-radius-pill);background:var(--gl-bg);text-align:center;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ka-ip-bar2{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-seg{display:inline-flex;padding:var(--ka-sp-4);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-3);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-seg button{appearance:none;min-height:var(--ka-control-height-sm);margin:0;padding:0 var(--ka-sp-14);border:0;border-radius:var(--ka-r-2);background:transparent;color:var(--ka-text-muted);font:inherit;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-seg button[aria-pressed="true"]{background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ka-ip-select,html[data-theme] #v2ModuleRoot .ka-ip-input{flex:1 1 200px;min-width:0;min-height:var(--ka-control-height);padding:0 var(--ka-sp-12);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-3);background:var(--gl-field);color:var(--gl-fg);font:inherit;font-size:var(--ka-fs-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-select{font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-tablewrap{overflow-x:auto}
+html[data-theme] #v2ModuleRoot .ka-ip-table{display:grid;grid-template-columns:var(--ka-sp-84) repeat(var(--ip-cols,7),minmax(var(--ka-sp-74),1fr));gap:var(--ka-sp-4);min-width:620px}
+html[data-theme] #v2ModuleRoot .ka-ip-th,html[data-theme] #v2ModuleRoot .ka-ip-gun,html[data-theme] #v2ModuleRoot .ka-ip-cell{display:flex;flex-direction:column;justify-content:center;gap:var(--ka-sp-1);min-height:var(--ka-sp-52);padding:var(--ka-sp-6) var(--ka-sp-8);border-radius:var(--ka-r-2);background:var(--gl-field);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .ka-ip-th{min-height:var(--ka-sp-46);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-th small,html[data-theme] #v2ModuleRoot .ka-ip-gun small{font-size:var(--ka-fs-11)}
+html[data-theme] #v2ModuleRoot .ka-ip-gun{background:transparent}
+html[data-theme] #v2ModuleRoot .ka-ip-gun.is-today{background:color-mix(in srgb,var(--ka-primary) 18%,transparent);color:var(--t-accent-ink)}
+html[data-theme] #v2ModuleRoot .ka-ip-cell b{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ka-ip-cell small{font-size:var(--ka-fs-11);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-cell.is-today{background:color-mix(in srgb,var(--ka-primary) 10%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-th.is-now,html[data-theme] #v2ModuleRoot .ka-ip-cell.is-now{background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink)}
+html[data-theme] #v2ModuleRoot .ka-ip-cell.is-now small,html[data-theme] #v2ModuleRoot .ka-ip-th.is-now small{color:inherit}
+html[data-theme] #v2ModuleRoot .ka-ip-month{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-nav{display:inline-flex;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ka-ip-icon{appearance:none;display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--ka-control-height);height:var(--ka-control-height);margin:0;padding:0;border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-3);background:var(--gl-field);color:var(--gl-fg);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-icon:disabled{opacity:.4;cursor:default}
+html[data-theme] #v2ModuleRoot .ka-ip-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:var(--ka-sp-4);text-align:center}
+html[data-theme] #v2ModuleRoot .ka-ip-cal__h{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-d{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--ka-sp-2);min-height:var(--ka-control-height);margin:0;padding:0;border:var(--ka-border-w) solid transparent;border-radius:var(--ka-r-2);background:var(--gl-field);color:var(--gl-fg);font:inherit;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600);font-variant-numeric:tabular-nums;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-d.is-we{color:var(--ka-danger)}
+html[data-theme] #v2ModuleRoot .ka-ip-d.is-out{background:transparent;opacity:.5}
+html[data-theme] #v2ModuleRoot .ka-ip-d.is-today{background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-d.is-sel{border-color:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .ka-ip-dot{width:var(--ka-sp-5);height:var(--ka-sp-5);border-radius:50%;background:var(--ka-info)}
+html[data-theme] #v2ModuleRoot .ka-ip-d.is-today .ka-ip-dot{background:var(--ka-btn-primary-ink)}
+html[data-theme] #v2ModuleRoot .ka-ip-day-panel{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-4);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-day-panel__h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--ka-sp-8);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev{display:flex;align-items:center;gap:var(--ka-sp-8);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev i{flex:none;width:var(--ka-sp-8);height:var(--ka-sp-8);border-radius:50%;background:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev.is-sinav i{background:var(--ka-danger)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev.is-toplanti i{background:var(--ka-info)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev.is-ozel i{background:var(--ka-warning)}
+html[data-theme] #v2ModuleRoot .ka-ip-ev__t{color:var(--ka-text-muted);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-ev__m{flex:1;min-width:0;font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-x{appearance:none;display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--ka-control-height);height:var(--ka-control-height);margin:0 calc(var(--ka-sp-12) * -1) 0 0;padding:0;border:0;background:none;color:var(--ka-text-muted);cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-note-form{display:flex;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet-wrap{position:fixed;inset:0;z-index:2000;display:flex;align-items:flex-end;justify-content:center;background:color-mix(in srgb,var(--ka-text) 55%,transparent)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet{display:flex;flex-direction:column;gap:var(--ka-sp-12);width:100%;max-width:520px;max-height:92vh;padding:var(--ka-sp-16) var(--ka-sp-20) var(--ka-sp-20);border:var(--ka-card-border-w) solid var(--gl-edge);border-radius:var(--ka-r-9) var(--ka-r-9) 0 0;background:var(--ka-bg);box-shadow:var(--gl-shadow);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__head{display:flex;align-items:flex-start;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__head>div{flex:1;min-width:0}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__head h2{margin:0;font-size:var(--ka-fs-20);font-weight:var(--ka-fw-900)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__head p{margin:var(--ka-sp-4) 0 0;font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__list{display:flex;flex-direction:column;gap:var(--ka-sp-6);overflow-y:auto;min-height:0}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__row{display:flex;align-items:center;gap:var(--ka-sp-8);padding:var(--ka-sp-4) var(--ka-sp-8);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-r-3);background:var(--gl-field)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__row.is-off .ka-ip-sheet__n{color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__n{flex:1;min-width:0;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-600)}
+html[data-theme] #v2ModuleRoot .ka-ip-mv{display:inline-flex;gap:var(--ka-sp-2)}
+html[data-theme] #v2ModuleRoot .ka-ip-mv .ka-ip-icon{border-color:transparent;background:transparent}
+html[data-theme] #v2ModuleRoot .ka-ip-switch{appearance:none;position:relative;flex:none;width:var(--ka-sp-52);height:var(--ka-control-height);margin:0;padding:0;border:0;background:none;cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-switch::before{content:"";position:absolute;left:0;right:0;top:50%;height:var(--ka-sp-24);transform:translateY(-50%);border-radius:var(--ka-radius-pill);background:var(--gl-sep);transition:background var(--ka-dur-150) var(--ka-ease-1)}
+html[data-theme] #v2ModuleRoot .ka-ip-switch i{position:absolute;top:50%;left:var(--ka-sp-3);width:var(--ka-sp-18);height:var(--ka-sp-18);transform:translateY(-50%);border-radius:50%;background:var(--ka-text-inverse);transition:left var(--ka-dur-150) var(--ka-ease-1)}
+html[data-theme] #v2ModuleRoot .ka-ip-switch[aria-checked="true"]::before{background:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .ka-ip-switch[aria-checked="true"] i{left:calc(100% - var(--ka-sp-18) - var(--ka-sp-3))}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__tv{display:flex;flex-direction:column;gap:var(--ka-sp-8);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__tv b{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);letter-spacing:var(--ka-ls-08);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__sec{display:flex;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__sec .ka-btn{flex:1}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__foot{display:flex;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-sheet__foot .ka-btn{flex:1}
+@media(min-width:640px){
+  html[data-theme] #v2ModuleRoot .ka-ip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="6"],html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="8"],html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="12"]{grid-column:1/-1}
+  html[data-theme] #v2ModuleRoot .ka-ip-sheet-wrap{align-items:center}
+  html[data-theme] #v2ModuleRoot .ka-ip-sheet{border-radius:var(--ka-r-9)}
+}
+@media(min-width:1100px){
+  html[data-theme] #v2ModuleRoot .ka-ip-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="3"]{grid-column:span 3}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="4"]{grid-column:span 4}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="6"]{grid-column:span 6}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="8"]{grid-column:span 8}
+  html[data-theme] #v2ModuleRoot .ka-ip-card[data-w="12"]{grid-column:1/-1}
+}
+html[data-theme] #v2ModuleRoot .ka-ip-tv{position:fixed;inset:0;z-index:1900;display:flex;flex-direction:column;gap:var(--ka-sp-14);padding:var(--ka-sp-16);background:var(--ka-bg);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--ka-sp-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-right{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-body{flex:1;min-height:0;overflow:auto}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-split,html[data-theme] #v2ModuleRoot .ka-ip-tv-col,html[data-theme] #v2ModuleRoot .ka-ip-tv-row,html[data-theme] #v2ModuleRoot .ka-ip-tv-flow{display:flex;flex-direction:column;gap:var(--ka-sp-14)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-link,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-note-form,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-nav,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-x,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-bar2{display:none}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-foot{display:flex;align-items:center;gap:var(--ka-sp-14);overflow:hidden;border:var(--ka-card-border-w) solid var(--gl-edge);border-radius:var(--ka-r-5);background:var(--gl-bg)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-tag{align-self:stretch;display:flex;align-items:center;padding:0 var(--ka-sp-14);background:var(--ka-btn-primary-bg);color:var(--ka-btn-primary-ink);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-08)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-msg{flex:1;min-width:0;padding:var(--ka-sp-10) 0;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-600);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-dots{display:flex;align-items:center;gap:var(--ka-sp-6);padding-right:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-dots i{width:var(--ka-sp-8);height:var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--gl-sep)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-dots i.is-on{width:var(--ka-sp-28);background:var(--ka-primary)}
+html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+@media(min-width:1000px){
+  html[data-theme] #v2ModuleRoot .ka-ip-tv{gap:var(--ka-sp-20);padding:var(--ka-sp-28) var(--ka-sp-35);font-size:var(--ka-fs-19)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-top{flex-wrap:nowrap}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-right{gap:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-brand h1{font-size:var(--ka-fs-38)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-logo{width:var(--ka-ic-72);height:var(--ka-ic-72);font-size:var(--ka-fs-28)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock__t b{font-size:var(--ka-fs-86)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock__t span{font-size:var(--ka-fs-40)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock small{font-size:var(--ka-fs-24)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-card{padding:var(--ka-sp-24);gap:var(--ka-sp-14)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-head h2{font-size:var(--ka-fs-24)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-sub{font-size:var(--ka-fs-18)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-big{font-size:var(--ka-fs-70)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-ring{width:170px;height:170px}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-ring__t b{font-size:var(--ka-fs-34)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row b,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row__name{font-size:var(--ka-fs-22)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row small,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-place,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-chip{font-size:var(--ka-fs-17)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile b{font-size:var(--ka-fs-38)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile small{font-size:var(--ka-fs-18)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile span,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-note,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-next,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-box p{font-size:var(--ka-fs-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tiles.is-small{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-split{flex-direction:row;gap:var(--ka-sp-20);min-height:100%}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-col{flex:0 0 32%;min-width:0;gap:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-col>.ka-ip-card{flex:1}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-col.is-wide{flex:1}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-row{flex-direction:row;gap:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-row>.ka-ip-card{flex:1;min-width:0}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-card[data-w]{grid-column:auto}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-flow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-20);align-items:start}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-flow[data-n="1"]{grid-template-columns:minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-flow[data-n="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-flow .ka-ip-card[data-w="8"],html[data-theme] #v2ModuleRoot .ka-ip-tv-flow .ka-ip-card[data-w="12"]{grid-column:1/-1}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-foot{gap:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-tag{padding:0 var(--ka-sp-24);font-size:var(--ka-fs-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-msg{padding:var(--ka-sp-14) 0;font-size:var(--ka-fs-24)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-dots{gap:var(--ka-sp-8);padding-right:var(--ka-sp-16)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{font-size:var(--ka-fs-18)}
+}

@@ -289,6 +289,20 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='idareci-pano'){
+    try{
+      if(!global.IdareciPano?.open)await global.AppLoader?.loadScript?.('js/modules/idareci-pano.js');
+      if(!global.IdareciPano?.open)throw new Error('İdareci Pano modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('İdareci Pano');
+      const opened=await global.IdareciPano.open();
+      if(opened===false){await routeModule('management',{bottom,remember});return true}
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'İdareci Pano'});
+    }catch(e){
+      console.error('[Shell/idareci-pano]',e);global.toast?.('İdareci Pano açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='dilekcehazirla'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
