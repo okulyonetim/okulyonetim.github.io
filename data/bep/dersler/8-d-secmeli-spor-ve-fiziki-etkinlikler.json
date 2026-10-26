@@ -1,0 +1,40 @@
+{
+  "ders": "Seçmeli Spor ve Fizikî Etkinlikler",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, temel hareket becerilerini, fiziksel gelişimini ve motor koordinasyonunu artırır.",
+          "s": [
+            "Denge, hız ve koordinasyon gerektiren temel hareketleri yönergelere uygun olarak yapar.",
+            "Yaşına uygun esneklik, kuvvet ve dayanıklılık geliştirici bireysel egzersizleri uygular.",
+            "Fiziksel etkinlikler öncesinde ısınma ve sonrasında soğuma hareketlerinin önemini uygulayarak gösterir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, bireysel ve takım sporlarında kurallara uyar, sportmenlik (fair-play) sergiler.",
+          "s": [
+            "Takım oyunlarında veya eğitsel oyunlarda kurallara ve hakem yönergelerine tam olarak uyar.",
+            "Oyun veya yarışma sırasında rakiplerine, takım arkadaşlarına saygılı ve dürüst davranır.",
+            "Kazanma ve kaybetme durumlarında duygularını kontrol ederek rakibini tebrik eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, sağlıklı yaşam ve spor ilişkisini kavrayarak kişisel gelişimini destekler.",
+          "s": [
+            "Düzenli fiziksel aktivitenin beden ve ruh sağlığına faydalarını açıklar.",
+            "Spor etkinlikleri öncesinde, sırasında ve sonrasında kişisel hijyen kurallarına dikkat eder.",
+            "Temel ilkyardım kurallarını bilir ve spor esnasında oluşabilecek basit yaralanmalarda ne yapması gerektiğini ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

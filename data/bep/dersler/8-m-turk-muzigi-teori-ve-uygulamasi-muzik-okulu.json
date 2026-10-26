@@ -1,0 +1,107 @@
+{
+  "ders": "Türk Müziği Teori ve Uygulaması (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK MÜZİĞİ KURAMCILARI",
+      "a": [
+        {
+          "k": "TMT.8.1.1",
+          "m": "Türk müziği kuramcıları hakkında bilgi toplayabilme",
+          "s": [
+            "Türk müziği ses sisteminin oluşumda kuramcıların önemi konusu hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak Türk müziği ses sisteminin oluşumda kuramcıların önemi konusu hakkında bilgileri bulur.",
+            "Türk müziği ses sisteminin oluşumda kuramcıların önemi konusu hakkında ulaşılan bilgileri doğrular.",
+            "Türk müziği ses sisteminin oluşumda kuramcıların önemi konusu hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "TMT.8.1.2",
+          "m": "Türk müziği ses sisteminin temelinin on yedili perde sistemine dayanması ile ilgili bilgi toplayabilme",
+          "s": [
+            "On yedili perde sistemi hakkında bilgi toplayabilmek için kullanacağı araçları belirler.",
+            "On yedili perde sistemi hakkındaki bilgileri bulur.",
+            "On yedili perde sistemi hakkında ulaşılan bilgileri doğrular.",
+            "On yedili perde sistemi hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "TMT.8.1.3",
+          "m": "Yirmi dörtlü perde sistemi ile ilgili bilgi toplayabilme",
+          "s": [
+            "Yirmi dörtlü perde sistemi hakkında bilgi toplayabilmek için kullanacağı araçları belirler.",
+            "Yirmi dörtlü perde sistemi hakkındaki bilgileri bulur.",
+            "Yirmi dörtlü perde sistemi hakkındaki bilgileri doğrular.",
+            "Yirmi dörtlü perde sistemi hakkında ulaşılan bilgileri kaydeder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE MAKAM",
+      "a": [
+        {
+          "k": "TMT.8.2.1",
+          "m": "Türk müziğinin makamsal yapısını oluşturan unsurları işitebilme",
+          "s": [
+            "Türk müziğinin makamsal yapısını oluşturan unsurları tanır.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları ayırt eder.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları uygular."
+          ]
+        },
+        {
+          "k": "TMT.8.2.2",
+          "m": "Türk müziğinin makamsal yapısını oluşturan unsurları okuyabilme",
+          "s": [
+            "Türk müziğinin makamsal yapısını oluşturan unsurları tanır.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları işitsel olarak ayırt eder.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları uygular."
+          ]
+        },
+        {
+          "k": "TMT.8.2.3",
+          "m": "Türk müziğinin makamsal yapısını oluşturan unsurları yazabilme",
+          "s": [
+            "Türk müziğinin makamsal yapısını oluşturan unsurları tanır.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları işitsel olarak uygular.",
+            "Türk müziğinin makamsal yapısını oluşturan unsurları ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAMLARI OLUŞTURAN UNSURLAR",
+      "a": [
+        {
+          "k": "TMT.8.3.1",
+          "m": "Türk müziğinin makamsal yapısını işitebilme",
+          "s": [
+            "Basit makamların bileşenlerini tanır.",
+            "Basit makamların bileşenlerini ayırt eder.",
+            "Basit makamların bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "TMT.8.3.2",
+          "m": "Türk müziğinin makamsal yapısını okuyabilme",
+          "s": [
+            "Basit makamların bileşenlerini tanır.",
+            "Basit makamların bileşenlerini işitsel olarak ayırt eder.",
+            "Basit makamların bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "TMT.8.3.3",
+          "m": "Türk müziğinin makamsal yapısını yazabilme",
+          "s": [
+            "Basit makamların bileşenlerini tanır.",
+            "Basit makamların bileşenlerini işitsel olarak ayırt eder.",
+            "Basit makamların bileşenlerini yazımsal olarak ifade eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

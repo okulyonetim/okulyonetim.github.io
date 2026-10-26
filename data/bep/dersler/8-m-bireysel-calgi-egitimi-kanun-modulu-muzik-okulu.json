@@ -1,0 +1,83 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kanun Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KANUNDA NİHAVENT DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.8.1.1",
+          "m": "Nihavent dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Nihavent dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Nihavent dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Nihavent dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Nihavent dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUN ÇALARKEN AKSAK SEMAÎ USULÜNÜ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.8.2.1",
+          "m": "Aksak semâi usulünü çalabilme",
+          "s": [
+            "Aksak semâi usulünü sağ ve sol dizinin üstüne vurarak çalmak için yazılmış etüt veya eserleri çözümler.",
+            "Aksak semâi usulünü sağ ve sol dizinin üstüne vurarak çalmak için duruş pozisyonu alır.",
+            "Aksak semâi usulünü sağ ve sol dizinin üstüne vurarak çalmak için usule uygun teknikleri kullanır.",
+            "Aksak semâi usulünü sağ ve sol dizinin üstüne vurarak çalmak için usulün bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUN ÇALARKEN KROMATİK TEKNİĞİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.8.3.1",
+          "m": "Kromatik tekniğini uygulayabilme",
+          "s": [
+            "Kromatik tekniği çalışmalarını çalmak için yazılmış etüt veya eserleri çözümler.",
+            "Kromatik tekniği çalışmalarını çalmak için uygun duruş ve tutuş pozisyonu alır.",
+            "Kromatik tekniği çalışmalarını çalmak için uygun teknikleri kullanır.",
+            "Kromatik tekniği çalışmalarını çalmak için uygun müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA KÜRDİLİHİCAZKÂR DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.8.4.1",
+          "m": "Kürdilihicazkâr dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Kürdilihicazkâr dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Kürdilihicazkâr dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Kürdilihicazkâr dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Kürdilihicazkâr dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KANUNDA HÜZZAM DİZİSİNİ ÖĞRENİYORUM",
+      "a": [
+        {
+          "k": "KNN.8.5.1",
+          "m": "Hüzzam dizisini ve özelliklerini örnek etüt ve eserlerle birlikte çalabilme",
+          "s": [
+            "Hüzzam dizisini, seslerini ve mandal sayılarını öğrenip çalabilmesi için yazılmış etüt veya eserleri çözümler.",
+            "Hüzzam dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü duruş pozisyonu alır.",
+            "Hüzzam dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü teknikleri kullanır.",
+            "Hüzzam dizisini, seslerini ve mandal sayılarını öğrenerek kanuna özgü müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

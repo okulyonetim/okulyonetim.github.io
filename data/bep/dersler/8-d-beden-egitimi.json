@@ -1,0 +1,301 @@
+{
+  "ders": "Beden Eğitimi",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Fiziksel aktiviteler sırasında vücudunda meydana gelen değişimleri sorgulayabilme.",
+          "s": [
+            "Fiziksel aktiviteler sırasında vücudunda meydana gelen değişimleri tanımlar.",
+            "Vücudunda meydana gelen değişimler hakkında sorular sorar.",
+            "Vücudunda meydana gelen değişimler hakkında bilgi toplar.",
+            "Topladığı bilgilerin doğruluğunu değerlendirir.",
+            "Topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel hareketsizliğin getirdiği sonuçları yorumlayabilme.",
+          "s": [
+            "Fiziksel hareketsizliğin getirdiği sonuçları inceler.",
+            "Fiziksel hareketsizliğin getirdiği sonuçları farklı örneklerle açıklar.",
+            "Fiziksel hareketsizliğin getirdiği sonuçları yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel aktivite ve zindelik ilişkisini çözümleyebilme.",
+          "s": [
+            "Fiziksel aktivite ve zindeliğe ilişkin bileşenleri belirler.",
+            "Fiziksel aktivite ve zindeliğe ilişkin bileşenler arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel uygunluk kavramını açıklayabilme.",
+          "s": [
+            "Fiziksel uygunluk kavramını açıklayabilme."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İş birlikli oyunlarda hareket kavramlarını uygulayabilme.",
+          "s": [
+            "İş birlikli oyunlarda hareket kavramlarını ayırt eder.",
+            "İş birlikli oyunlarda hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "İş birlikli oyunlarda kavramlara uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İş birlikli oyunlarda hareket becerisi sergileyebilme.",
+          "s": [
+            "İş birlikli oyunlarda hareket becerilerini algılar.",
+            "İş birlikli oyunlarda hareket becerilerinin basamaklarını gösterir.",
+            "İş birlikli oyunlarda hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İş birlikli oyunlarda taktik ve strateji geliştirebilme.",
+          "s": [
+            "İş birlikli oyunlarda taktiksel problemi belirler.",
+            "İş birlikli oyunlarda belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "İş birlikli oyunlarda seçilen taktik ve stratejiyi uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Tasarlayacakları oyunlarda güvenli ortam oluşturabilme.",
+          "s": [
+            "Tasarlayacakları oyunlarda ortaya çıkabilecek riskleri belirler.",
+            "Tasarlayacakları oyunlarda belirlenen risklere yönelik önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Oyunların farklı özelliklerinden yararlanarak özgün bir oyun sentezleyebilme.",
+          "s": [
+            "Tasarlayacağı oyunun özelliklerini belirler.",
+            "Tasarlayacağı oyunun özellikleri arasında ilişki kurar.",
+            "Özgün bir oyun oluşturur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Tasarlanan oyunlarda adil oyun anlayışına uygun davranabilme.",
+          "s": [
+            "Tasarlanan oyunlarda adil oyun anlayışını açıklar.",
+            "Tasarlanan oyunlarda adil oyun anlayışına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Jimnastiğe ilişkin hareket kavramlarını uygulayabilme.",
+          "s": [
+            "Jimnastiğe ilişkin hareket kavramlarını ayırt eder.",
+            "Jimnastiğe ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Jimnastiğe ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Jimnastiğe ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Jimnastiğe ilişkin hareket becerilerini algılar.",
+            "Jimnastiğe ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Jimnastiğe ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Müzik eşliğinde dansa özgü ritmik hareket edebilme.",
+          "s": [
+            "Harekete veya müziğe ilişkin ritmi algılar.",
+            "Verilen ritme uygun hareket eder.",
+            "Müzik eşliğinde dansa özgü ritmik hareket becerilerini sergiler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çocuk atletizmine ilişkin hareket kavramlarını uygulayabilme.",
+          "s": [
+            "Çocuk atletizmine ilişkin kavramları ayırt eder.",
+            "Çocuk atletizmine ilişkin beceriler ile kavramlar arasında ilişki kurar.",
+            "Çocuk atletizmine ilişkin kavramlara uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çocuk atletizmine ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Çocuk atletizmine ilişkin hareket becerilerini algılar.",
+            "Çocuk atletizmine ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Çocuk atletizmine ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Olimpik ve paralimpik oyunların önemini açıklayabilme.",
+          "s": [
+            "Olimpik ve paralimpik oyunların önemini açıklayabilme."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Sağlıkla ilgili fiziksel uygunluğu sağlayabilme.",
+          "s": [
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini açıklar.",
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini içeren hareketleri uygular.",
+            "Sağlıkla ilgili fiziksel uygunluk bileşenlerini geliştirir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel uygunluk ve zindelik arasındaki ilişkiyi çözümleyebilme.",
+          "s": [
+            "Fiziksel uygunluk ve zindeliğe ilişkin parçaları belirler.",
+            "Fiziksel uygunluk ve zindelik arasındaki ilişkiyi belirler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını sergileyebilme.",
+          "s": [
+            "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını algılar.",
+            "Fiziksel aktivite sırasında meydana gelebilecek yaralanmalarda temel ilk yardım uygulamalarını gösterir.",
+            "Fiziksel aktivite sırasında meydana gelebilecek farklı yaralanma durumlarında temel ilk yardımı uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Fiziksel aktiviteye katılımı destekleyen teknolojik araçları belirleyebilme.",
+          "s": [
+            "Fiziksel aktiviteye katılımı destekleyen teknolojik araçları belirleyebilme."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hedef oyunlarına ilişkin hareket kavramlarını uygulayabilme.",
+          "s": [
+            "Hedef oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Hedef oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Hedef oyunlarına ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hedef oyunlarına ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Hedef oyunlarına ilişkin hareket becerilerini algılar.",
+            "Hedef oyunlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Hedef oyunlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hedef oyunlarına ilişkin taktik ve strateji geliştirebilme.",
+          "s": [
+            "Hedef oyunlarına ilişkin verilen taktiksel problemi belirler.",
+            "Hedef oyunlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "Hedef oyunlarına ilişkin seçilen taktik ve stratejiyi uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Engelli sporlarına ilişkin hareket kavramlarını uygulayabilme.",
+          "s": [
+            "Engelli sporlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Engelli sporlarına ilişkin hareket becerileri ve hareket kavramları arasında ilişki kurar.",
+            "Engelli sporlarına ilişkin hareket kavramlarına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Engelli sporlarına ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Engelli sporlarına ilişkin hareket becerilerini algılar.",
+            "Engelli sporlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Engelli sporlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Engelli sporlarına ilişkin taktik ve strateji geliştirebilme.",
+          "s": [
+            "Engelli sporlarına ilişkin verilen taktiksel problemi belirler.",
+            "Engelli sporlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "Engelli sporlarına ilişkin seçilen taktik ve stratejiyi uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Mustafa Kemal Atatürk’ün spora verdiği önemi yorumlayabilme.",
+          "s": [
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi inceler.",
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi yorumlar.",
+            "Mustafa Kemal Atatürk’ün spora verdiği önemi yeniden ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Seçili halk oyununa ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Seçili halk oyununa ilişkin hareket becerilerini algılar.",
+            "Seçili halk oyununa ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Seçili halk oyununa ilişkin hareket becerilerini uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Geleneksel oyunlara ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Geleneksel oyunlara ilişkin hareket becerilerini algılar.",
+            "Geleneksel oyunlara ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Geleneksel oyunlara ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hücum oyunlarında güvenli ortam oluşturabilme.",
+          "s": [
+            "Hücum oyunları oynarken oluşabilecek riskleri tanımlar.",
+            "Hücum oyunları oynarken oluşabilecek risklere ilişkin önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hücum oyunlarına ilişkin hareket kavramlarını uygulayabilme.",
+          "s": [
+            "Hücum oyunlarına ilişkin hareket kavramlarını ayırt eder.",
+            "Hücum oyunlarına ilişkin hareket becerileri ile hareket kavramları arasında ilişki kurar.",
+            "Hücum oyunlarına ilişkin hareket kavramına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hücum oyunlarına ilişkin hareket becerilerini sergileyebilme.",
+          "s": [
+            "Hücum oyunlarına ilişkin hareket becerilerini algılar.",
+            "Hücum oyunlarına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Hücum oyunlarına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Hücum oyunlarına ilişkin taktik ve strateji geliştirebilme.",
+          "s": [
+            "Hücum oyunlarına ilişkin verilen taktiksel problemi belirler.",
+            "Hücum oyunlarına ilişkin verilen problemin çözümüne ilişkin öneri sunar.",
+            "Hücum oyunlarına ilişkin seçilen taktik veya stratejiyi uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

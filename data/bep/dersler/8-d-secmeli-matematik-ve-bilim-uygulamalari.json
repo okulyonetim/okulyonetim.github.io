@@ -1,0 +1,49 @@
+{
+  "ders": "Seçmeli Matematik ve Bilim Uygulamaları",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, matematik ve bilim becerilerini günlük hayattaki problemleri çözmede kullanır.",
+          "s": [
+            "Günlük yaşantısında karşılaştığı problemleri matematiksel olarak ifade eder.",
+            "Matematik ve bilimle ilgili kavramları kullanarak temel işlemleri yapar.",
+            "Basit bilimsel araştırmalar veya deneyler tasarlayarak gözlem sonuçlarını kaydeder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, analitik düşünme, veri toplama ve verileri okuma becerilerini geliştirir.",
+          "s": [
+            "Tablo, grafik ve şemalarda verilen verileri okur ve anlamlandırır.",
+            "Çevresindeki olaylarla ilgili basit veriler toplar ve bu verileri sınıflandırır.",
+            "Elde ettiği verileri kullanarak basit mantıksal çıkarımlarda bulunur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, temel ölçme ve geometri kavramlarını günlük yaşamla ilişkilendirir.",
+          "s": [
+            "Uzunluk, kütle ve sıvı ölçme birimlerini tanır ve basit ölçümler yapar.",
+            "Zaman ölçülerini (saat, gün, ay, yıl) kullanarak günlük planlamalar yapar.",
+            "Çevresindeki nesnelerin geometrik şekillerini ve özelliklerini belirtir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, fen bilimlerinin temel kavramlarını kavrayarak çevresindeki doğal olayları açıklar.",
+          "s": [
+            "Canlı ve cansız varlıkları ayırt ederek özelliklerini sınıflandırır.",
+            "Mevsimlerin oluşumu ve hava olayları hakkında temel düzeyde çıkarımlar yapar.",
+            "Geri dönüşümün önemini kavrayarak atıkları uygun şekilde sınıflandırır."
+          ]
+        }
+      ]
+    }
+  ]
+}

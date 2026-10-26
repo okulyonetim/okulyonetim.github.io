@@ -1,0 +1,97 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ney Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "NEYDE MAKAMLAR VE UYGULAMALARI 5",
+      "a": [
+        {
+          "k": "NEY.8.1.1",
+          "m": "Rast makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Rast makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak rast makamında Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "NEY.8.1.2",
+          "m": "Nihavent makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Nihavent makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak nihavent makamında Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "NEY.8.1.3",
+          "m": "Nikriz makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Nikriz makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak nikriz makamında Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE MAKAMLAR VE UYGULAMALARI 6",
+      "a": [
+        {
+          "k": "NEY.8.2.1",
+          "m": "Buselik makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Buselik makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak buselik makamında Türk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "NEY.8.2.2",
+          "m": "Karcığar makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Karcığar makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak karcığar makamında Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE MAKAMLAR VE UYGULAMALARI 7",
+      "a": [
+        {
+          "k": "NEY.8.3.1",
+          "m": "Segâh makamında Türk müziği eserlerini çalabilme",
+          "s": [
+            "Segâh makamında Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak segâh makamında Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "NEYDE AÇIŞ VE TAKSİM UYGULAMALARI 8",
+      "a": [
+        {
+          "k": "NEY.8.4.1",
+          "m": "Ney ile açış ve taksim yapabilme",
+          "s": [
+            "Ney ile açış ve taksim yapabilme amacını belirler.",
+            "Ney ile yapacağı makam dizilerini seçer.",
+            "Seçtiği makamlar ile açış ve taksim çalışmaları yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

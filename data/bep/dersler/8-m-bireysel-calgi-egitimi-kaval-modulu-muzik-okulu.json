@@ -1,0 +1,98 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Kaval Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "KAVALDA İKİNCİ VE ÜÇÜNCÜ KADEME SES ALANINDA ANA VE ARA SESLER",
+      "a": [
+        {
+          "k": "KVL.8.1.1",
+          "m": "Sol#, fa ve fa# notalarını çalabilme",
+          "s": [
+            "Sol#, fa ve fa# notalarını çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Notaları yapısına uygun olarak çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA MAKAMLAR VE UYGULAMALARI 5.",
+      "a": [
+        {
+          "k": "KVL.8.2.1",
+          "m": "Rast makamında Türk Halk Müziği eserlerini çalabilme",
+          "s": [
+            "Rast makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak rast makamında Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.8.2.2",
+          "m": "Nihavent makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Nihavent makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak nihavent makamında Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.8.2.3",
+          "m": "Nikriz makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Nikriz makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak nikriz makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA MAKAMLAR VE UYGULAMALARI-6.",
+      "a": [
+        {
+          "k": "KVL.8.3.1",
+          "m": "Buselik makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Buselik makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak buselik makamında Türk halk müziği eserlerini çalar."
+          ]
+        },
+        {
+          "k": "KVL.8.3.2",
+          "m": "Karcığar makamında Türk halk müziği eserlerini çalabilme",
+          "s": [
+            "Karcığar makamında Türk halk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alır",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak karcığar makamında Türk halk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KAVALDA AÇIŞ VE TAKSİM UYGULAMALARI",
+      "a": [
+        {
+          "k": "KVL.8.4.1",
+          "m": "Kaval ile açış ve taksim yapabilme",
+          "s": [
+            "Kaval ile açış ve taksim yapacağı makamı belirler.",
+            "Kaval ile yapacağı makam dizisine göre duruş ve tutuş pozisyonunu alır.",
+            "Seçtiği makamlar ile açış ve taksim çalışmalarında kavala özgü çalma tekniklerini kullanır.",
+            "Kaval ile yapılacak açış ve taksimlerde müziksel bileşenleri kullanır."
+          ]
+        }
+      ]
+    }
+  ]
+}

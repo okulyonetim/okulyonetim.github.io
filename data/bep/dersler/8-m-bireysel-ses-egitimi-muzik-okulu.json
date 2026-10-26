@@ -1,0 +1,139 @@
+{
+  "ders": "Bireysel Ses Eğitimi (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SES EĞİTİMİ",
+      "a": [
+        {
+          "k": "BSE.8.1.1",
+          "m": "Ses eğitiminin temel ögelerini tanımlayabilme",
+          "s": [
+            "Ses eğitiminin temel ögelerini tanımlar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.8.1.2",
+          "m": "Düzeyine uygun eserleri ses eğitiminin temel ögelerine dikkat ederek seslendirebilme",
+          "s": [
+            "Düzeyine uygun eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Düzeyine uygun eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Düzeyine uygun eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.1.3",
+          "m": "Eğitim müziğine katkı sağlamış Türk bestecileri hakkında bilgi toplayabilme",
+          "s": [
+            "Eğitim müziğine katkı sağlamış Türk bestecileri hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği aracı kullanarak bu besteciler hakkındaki bilgileri bulur.",
+            "Bu besteciler hakkında ulaştığı bilgileri doğrular.",
+            "Ulaştığı bilgileri kişisel arşivine kaydeder."
+          ]
+        },
+        {
+          "k": "BSE.8.1.4",
+          "m": "Eğitim müziğinde kullanılan şarkıları seslendirebilme",
+          "s": [
+            "Eğitim müziğinde kullanılan şarkıları seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Eğitim müziğinde kullanılan şarkıları seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Eğitim müziğinde kullanılan şarkıları seslendirirken müziksel bileşenleri uygular"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GELENEKSEL MÜZİK TÜRLERİ",
+      "a": [
+        {
+          "k": "BSE.8.2.1",
+          "m": "Türk halk müziğine ait eserleri seslendirebilme",
+          "s": [
+            "Türk halk müziğine ait eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Türk halk müziğine ait eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Türk halk müziğine ait eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.2.2",
+          "m": "Yurdumuz ozanları hakkında bilgi toplayabilme",
+          "s": [
+            "Yurdumuz ozanları hakkında bilgi toplar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BSE.8.2.3",
+          "m": "Türk sanat müziğine ait eserleri seslendirebilme",
+          "s": [
+            "Türk sanat müziğine ait eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Türk sanat müziğine ait eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Türk sanat müziğine ait eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.2.4",
+          "m": "Dinî müzik türlerine ait eserleri seslendirebilme",
+          "s": [
+            "Dinî müzik türlerine ait eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Dinî müzik türlerine ait eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Dinî müzik türlerine ait eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.2.5",
+          "m": "Askerî müziklere ait eserler seslendirebilme",
+          "s": [
+            "Askerî müzik türlerine ait eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Askerî müzik türlerine ait eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Askerî müzik türlerine ait eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "BSE.8.3.1",
+          "m": "Millî ve manevi değerlerle ilgili eserler seslendirebilme",
+          "s": [
+            "Millî ve manevi değerlerle ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Millî ve manevi değerlerle ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.3.2",
+          "m": "Atatürk’ün sevdiği türküleri seslendirebilme",
+          "s": [
+            "Atatürk’ün sevdiği türküleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Atatürk’ün sevdiği türküleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Atatürk’ün sevdiği türküleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.3.3",
+          "m": "Belirli gün ve haftaların anlamına uygun eserleri seslendirebilme",
+          "s": [
+            "Belirli gün ve haftalarla ilgili eserleri seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken uygun söyleme tekniklerini kullanır.",
+            "Belirli gün ve haftalarla ilgili eserleri seslendirirken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "BSE.8.3.4",
+          "m": "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirebilme",
+          "s": [
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekler seslendirmek için bedenini söylemeye hazır hâle getirir.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken uygun söyleme teknikleri kullanır.",
+            "Yıl boyunca geliştirdiği şarkı repertuvarından örnekleri seslendirirken müziksel bilşenleri uygular"
+          ]
+        }
+      ]
+    }
+  ]
+}

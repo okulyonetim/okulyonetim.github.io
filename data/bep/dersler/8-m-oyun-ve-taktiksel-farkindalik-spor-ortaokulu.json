@@ -1,0 +1,68 @@
+{
+  "ders": "Oyun ve Taktiksel Farkındalık (Spor Ortaokulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "FİLE VE RAKET OYUNLARI",
+      "a": [
+        {
+          "k": "OTF.8.1.1",
+          "m": "File ve raket oyunlarını çözümleyebilme",
+          "s": [
+            "File ve raket oyunlarına ilişkin özellikleri belirler.",
+            "File ve raket oyunları arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTF.8.1.2",
+          "m": "File ve raket oyunlarında adil oyun anlayışına uygun davranabilme",
+          "s": [
+            "File ve raket oyunlarında adil oyun kavramını açıklar.",
+            "File ve raket oyunlarında adil oyun kavramına uygun hareket eder."
+          ]
+        },
+        {
+          "k": "OTF.8.1.3",
+          "m": "File ve raket oyunlarında taktik ve strateji geliştirebilme",
+          "s": [
+            "File ve raket oyunları içerisindeki taktiksel problemleri belirler.",
+            "File ve raket oyunlarında belirlenen problemlerin çözümüne ilişkin öneri sunar.",
+            "File ve raket oyunlarında seçilen taktiği uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "HEDEF OYUNLARI",
+      "a": [
+        {
+          "k": "OTF.8.2.1",
+          "m": "Hedef oyunlarını çözümleyebilme",
+          "s": [
+            "Hedef oyunlarına ilişkin özellikleri belirler.",
+            "Hedef oyunları arasındaki ilişkileri belirler."
+          ]
+        },
+        {
+          "k": "OTF.8.2.2",
+          "m": "Hedef oyunlarında güvenli ortam oluşturabilme",
+          "s": [
+            "Hedef oyunlarında riskleri belirler.",
+            "Hedef oyunlarında belirlediği risklere yönelik tedbirler alır."
+          ]
+        },
+        {
+          "k": "OTF.8.2.3",
+          "m": "Hedef oyunlarında taktik ve strateji geliştirebilme",
+          "s": [
+            "Hedef oyunlarında taktiksel problemi belirler.",
+            "Hedef oyunlarında belirlenen problemin çözümüne ilişkin öneri sunar.",
+            "Hedef oyunlarında seçilen taktiği uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

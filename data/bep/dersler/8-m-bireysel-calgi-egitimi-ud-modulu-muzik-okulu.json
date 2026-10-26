@@ -1,0 +1,37 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Ud Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SABA DİZİSİNDE ETÜT VE ESER UYGULAMALARI",
+      "a": [
+        {
+          "k": "UD.8.1.1",
+          "m": "Saba makamında etütleri ve Türk müziği eserlerini çalabilme",
+          "s": [
+            "Saba makamındaki etüt ve Türk müziği eserlerini çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak saba makamında etütleri ve Türk müziği eserlerini çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak saba makamında etütleri ve Türk müziği eserlerini çalar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TAKSİM ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "UD.8.2.1",
+          "m": "Öğrendiği makamları kullanarak ud ile taksim yapabilme",
+          "s": [
+            "Ud ile açış ve taksim yapabilme amacını belirler.",
+            "Ud ile yapacağı makam dizilerini seçer.",
+            "Seçtiği makam dizileri ile taksim çalışmaları yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

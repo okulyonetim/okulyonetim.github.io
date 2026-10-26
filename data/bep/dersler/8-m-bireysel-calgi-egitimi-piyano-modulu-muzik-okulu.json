@@ -1,0 +1,88 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Piyano Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "PİYANODA TEKNİK 4",
+      "a": [
+        {
+          "k": "PYN.8.1.1",
+          "m": "7/8‘lik ve 8/8‘lik ölçü birimlerinde eser çalabilme",
+          "s": [
+            "7/8‘lik ve 8/8‘lik ölçü birimlerinde eseri çözümler.",
+            "7/8‘lik ve 8/8‘lik ölçü birimlerinde eser çalmada duruş ve tutuş pozisyonu alır.",
+            "7/8‘lik ve 8/8‘lik ölçü birimlerinde eser çalmada çalgıya özgü teknikleri kullanır.",
+            "7/8‘lik ve 8/8‘lik ölçü birimlerindeki eserin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.8.1.2",
+          "m": "Seslendirme becerilerini etüt veya eserlerde çalabilme",
+          "s": [
+            "Seslendirme becerilerinin yer aldığı etüt veya eseri çözümler.",
+            "Seslendirme becerilerini çalmada duruş ve tutuş pozisyonu alır.",
+            "Seslendirme becerilerini çalmada çalgıya özgü teknikleri kullanır.",
+            "Seslendirme becerilerin müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.8.1.3",
+          "m": "Geniş aralıklarda çift sesli etütleri çalabilme",
+          "s": [
+            "Geniş aralıklarda çift sesli etütleri çözümler.",
+            "Geniş aralıklarda çift sesli etütlere yönelik duruş ve tutuş pozisyonu alır.",
+            "Geniş aralıklarda çift sesli etütlerin çalgıya özgü tekniklerini kullanır.",
+            "Geniş aralıklarda çift sesli etütlerin müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PİYANODA TONALİTE 4",
+      "a": [
+        {
+          "k": "PYN.8.2.1",
+          "m": "La majör tonalitesinde eser veya etüt çalabilme",
+          "s": [
+            "La majör tonalitesinde eser veya etüdü çözümler.",
+            "La majör tonalitesinde çalmada duruş ve tutuş pozisyonu alır.",
+            "La majör tonalitesinde çalmada çalgıya özgü teknikleri kullanır.",
+            "La majör tonalitesinde müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.8.2.2",
+          "m": "Fa diyez minör tonalitesinde eser veya etüt çalabilme",
+          "s": [
+            "Fa diyez minör tonalitesinde eser veya etüdü çözümler.",
+            "Fa diyez minör tonalitesinde çalmada duruş ve tutuş pozisyonu alır.",
+            "Fa diyez minör tonalitesinde çalmada çalgıya özgü teknikleri kullanır.",
+            "Fa diyez minör tonalitesinde müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.8.2.3",
+          "m": "Mi bemol majör tonalitesinde eser veya etüt çalabilme",
+          "s": [
+            "Mi bemol majör tonalitesinde eser veya etüdü çözümler.",
+            "Mi bemol majör tonalitesinde çalmada duruş ve tutuş pozisyonu alır.",
+            "Mi bemol majör tonalitesinde çalmada çalgıya özgü teknikleri kullanır.",
+            "Mi bemol majör tonalitesinde müziksel bileşenlerini uygular."
+          ]
+        },
+        {
+          "k": "PYN.8.2.4",
+          "m": "Do minör tonalitesinde eser veya etüt çalabilme",
+          "s": [
+            "Do minör tonalitesinde eser veya etüdü çözümler.",
+            "Do minör tonalitesinde çalmada duruş ve tutuş pozisyonu alır.",
+            "Do minör tonalitesinde çalmada çalgıya özgü teknikleri kullanır.",
+            "Do minör tonalitesinde müziksel bileşenlerini uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

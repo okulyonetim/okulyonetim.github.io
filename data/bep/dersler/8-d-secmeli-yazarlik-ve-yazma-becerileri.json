@@ -1,0 +1,40 @@
+{
+  "ders": "Seçmeli Yazarlık ve Yazma Becerileri",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, yazma sürecinin aşamalarını uygulayarak amacına uygun metinler oluşturur.",
+          "s": [
+            "Yazacağı metin için konu belirler, planlama ve taslak oluşturma çalışmaları yapar.",
+            "Duygu, düşünce ve hayallerini ifade eden öyküleyici metinler yazar.",
+            "Bilgi verici veya açıklayıcı metinleri yapı özelliklerine uygun olarak yazar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, oluşturduğu metinlerde dil bilgisi, yazım ve noktalama kurallarını doğru bir şekilde uygular.",
+          "s": [
+            "Cümlelerde anlam bütünlüğünü bozan anlatım bozukluklarını fark eder ve düzeltir.",
+            "Noktalama işaretlerini metnin anlamına uygun olarak yerinde ve doğru kullanır.",
+            "Yazdığı metinleri söz dizimi ve kelime hazinesi açısından gözden geçirip düzenler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, yaratıcı ve eleştirel düşünme becerilerini kullanarak farklı türlerde metinler yazar.",
+          "s": [
+            "Verilen bir görselden veya yarım bırakılmış bir hikayeden yola çıkarak metni tamamlar.",
+            "Günlük hayatla ilgili konularda dilekçe, e-posta veya kısa mesaj metinleri oluşturur.",
+            "Okuduğu bir kitap veya izlediği bir film hakkında kişisel görüşlerini içeren kısa değerlendirme yazıları yazar."
+          ]
+        }
+      ]
+    }
+  ]
+}

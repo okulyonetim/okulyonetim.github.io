@@ -1,0 +1,209 @@
+{
+  "ders": "Müzik Tarihi (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE NEOKLASİK DÖNEM",
+      "a": [
+        {
+          "k": "MT.8.1.1",
+          "m": "Türk sanat müziğinin Neoklasik Dönem’deki gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Neoklasik Dönem'de Türk sanat müziğiyle ilgili kaynakları belirler.",
+            "Kaynaklardan Neoklasik Dönem'de Türk sanat müziğiyle ilgili gelişmeleri içeren bilgileri bulur.",
+            "Neoklasik Dönem'de Türk sanat müziğiyle ilgili gelişmeleri içeren bilgileri doğrular.",
+            "Neoklasik Dönem'de Türk sanat müziğiyle ilgili bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.8.1.2",
+          "m": "Neoklasik Dönem bestecilerinin isimlerini kronolojik olarak sıralayabilme",
+          "s": [
+            "Neoklasik Dönem bestecilerinin isimlerini kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "MT.8.1.3",
+          "m": "Neoklasik Dönem eserlerini çözümleyebilme",
+          "s": [
+            "Dinlediği eserle ilgili ipuçlarını belirler.",
+            "Dinlediği eserin Neoklasik Dönem müzik özellikleriyle ilişkisini belirler."
+          ]
+        },
+        {
+          "k": "MT.8.1.4",
+          "m": "Klasik ve Neoklasik Dönem Türk sanat müziği eserlerini karşılaştırabilme",
+          "s": [
+            "Klasik Dönem eserleriyle Neoklasik Dönem eserlerine ilişkin özellikleri belirler.",
+            "Belirlenen özelliklere ilişkin benzerlikleri listeler.",
+            "Belirlenen özelliklere ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "MT.8.1.5",
+          "m": "Mehterhane-i Hümâyun'un Türk müzik tarihi açısından önemini açıklayabilme",
+          "s": [
+            "Mehterhane-i Hümâyun'un Türk müzik tarihi açısından önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.8.1.6",
+          "m": "Muzika-yi Hümâyun’un Türk sanat müziği açısından önemini açıklayabilme",
+          "s": [
+            "Muzika-yi Hümâyun’un Türk sanat müziği açısından önemini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "MT.8.1.7",
+          "m": "Muzika-yi Hümâyun’daki geleneksel gösteri sanatlarının müzikle ilişkisini yorumlayabilme",
+          "s": [
+            "Muzika-yi Hümâyun’daki geleneksel gösteri sanatlarının müzikle ilişkisini inceler.",
+            "Muzika-yi Hümâyun’daki geleneksel gösteri sanatlarının müzikle ilişkisini örneklerle açıklar.",
+            "Muzika-yi Hümâyun’daki geleneksel gösteri sanatlarının müzikle ilişkisine dair düşüncelerini nesnel, doğru ve anlamı değiştirmeyecek şekilde ifade eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE ROMANTİK DÖNEM",
+      "a": [
+        {
+          "k": "MT.8.2.1",
+          "m": "Türk sanat müziğinin Romantik Dönem’deki gelişimi hakkında bilgi toplayabilme",
+          "s": [
+            "Romantik Dönem ile ilgili kaynakları belirler.",
+            "Kaynaklardan Romantik Dönem'de müzikle ilgili gelişmeleri içeren bilgileri bulur.",
+            "Romantik Dönem'de müzikle ilgili gelişmeleri içeren bilgileri doğrular",
+            "Romantik Dönem ile ilgili bulduğu bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.8.2.2",
+          "m": "Romantik Dönem'deki Türk sanat müziği bestecilerinin isimlerini kronolojik olarak sıralayabilme",
+          "s": [
+            "Romantik Dönem'deki Türk sanat müziği bestecilerinin isimlerini kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "MT.8.2.3",
+          "m": "Romantik Dönem Türk sanat müziği eserlerini çözümleyebilme",
+          "s": [
+            "Dinlediği Romantik Dönem eseriyle ilgili ipuçlarını belirler.",
+            "Dinlediği eserin Romantik Dönem müzik özellikleri ile ilişkisini belirler."
+          ]
+        },
+        {
+          "k": "MT.8.2.4",
+          "m": "Romantik Dönem ve Neoklasik Dönem Türk sanat müziği eserlerini karşılaştırabilme",
+          "s": [
+            "Dinlediği Romantik Dönem eserleriyle Neoklasik Dönem eserlerine ilişkin özellikleri belirler.",
+            "Belirlenen özelliklere ilişkin benzerlikleri listeler.",
+            "Belirlenen özelliklere ilişkin farklılıkları listeler."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK SANAT MÜZİĞİNDE REFORM DÖNEMİ",
+      "a": [
+        {
+          "k": "MT.8.3.1",
+          "m": "Reform Dönemi'nden günümüze kadar Türk sanat müziği alanındaki gelişmelerle ilgili bilgi toplayabilme",
+          "s": [
+            "Reform Dönemi'yle ilgili kaynakları belirler.",
+            "Kaynaklardan Reform Dönemi'nde Türk sanat müziğindeki gelişmeleri içeren bilgiler bulur.",
+            "Reform Dönemi'nde Türk sanat müziğindeki gelişmeleri içeren bilgileri doğrular.",
+            "Reform Dönemi'nde Türk sanat müziğindeki gelişmelerle ilgili bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.8.3.2",
+          "m": "Reform Dönemi eserlerini çözümleyebilme",
+          "s": [
+            "Dinlediği eserle ilgili ipuçlarını belirler.",
+            "Dinlediği eserin Reform Dönemi müzik özellikleriyle ilişkisini belirler."
+          ]
+        },
+        {
+          "k": "MT.8.3.3",
+          "m": "Reform Dönemi eserleriyle Romantik Dönem eserlerini karşılaştırabilme",
+          "s": [
+            "Dinlediği Reform Dönemi’nde Türk sanat müziği ile Romantik Dönem eserlerine ilişkin özellikleri belirler.",
+            "Belirlenen özelliklere ilişkin benzerlikleri listeler.",
+            "Belirlenen özelliklere ilişkin farklılıkları listeler."
+          ]
+        },
+        {
+          "k": "MT.8.3.4",
+          "m": "Reform Dönemi bestecilerinin isimlerini kronolojik olarak sıralayabilme",
+          "s": [
+            "Reform Dönemi bestecilerinin isimlerini kronolojik olarak sıralar."
+          ]
+        },
+        {
+          "k": "MT.8.3.5",
+          "m": "Reform Dönemi’ndeki Türk sanat müziği eğitimi veren kurumlar hakkında sunum yapabilme",
+          "s": [
+            "Reform Dönemi’ndeki Türk sanat müziği eğitimi veren kurumlar hakkında sunum yapar."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "TÜRK MÜZİĞİNDE YENİ TÜRLER",
+      "a": [
+        {
+          "k": "MT.8.4.1",
+          "m": "Türk tango ve valslerini çözümleyebilme",
+          "s": [
+            "Türk tango ve valslerinin müzikal unsurlarını belirler.",
+            "Türk tango ve valslerinin belirlenen unsurları arasındaki ilişkileri analiz eder."
+          ]
+        },
+        {
+          "k": "MT.8.4.2",
+          "m": "Türkçe sözlü hafif Batı müziği hakkında bilgi toplayabilme",
+          "s": [
+            "Türkçe sözlü hafif Batı müziği hakkında bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Türkçe sözlü hafif Batı müziğinin tarihsel gelişimi, önemli sanatçıları ve eserleri hakkında bilgi toplar.",
+            "Türkçe sözlü hafif Batı müziği hakkında ulaşılan bilgileri doğrular.",
+            "Türkçe sözlü hafif Batı müziği hakkında ulaşılan bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.8.4.3",
+          "m": "Türk pop müziğinin tarihsel gelişimi ile ilgili bilgi toplayabilme",
+          "s": [
+            "Konu ile ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak konu ile ilgili bilgileri bulur.",
+            "Konu ile ilgili bilgileri doğrular.",
+            "Konu ile ilgili bilgileri kaydeder."
+          ]
+        },
+        {
+          "k": "MT.8.4.4",
+          "m": "Anadolu rock müziğini çözümleyebilme",
+          "s": [
+            "Anadolu rock müziği eserlerinde kullanılan müzikal unsurları belirler.",
+            "Anadolu rock müziği eserlerinde Türk halk müziği ile Batı müziği unsurlarının bir araya gelmesinin etkilerini analiz eder."
+          ]
+        },
+        {
+          "k": "MT.8.4.5",
+          "m": "Arabesk müziğin gelişimi ile ilgili bilgi toplayabilme",
+          "s": [
+            "Konu ile ilgili bilgiye ulaşmak için kullanacağı araçları belirler.",
+            "Belirlediği araçları kullanarak konu ile ilgili bilgileri bulur.",
+            "Konu ile ilgili bilgileri doğrular.",
+            "Konu ile ilgili bilgileri kaydeder."
+          ]
+        }
+      ]
+    }
+  ]
+}

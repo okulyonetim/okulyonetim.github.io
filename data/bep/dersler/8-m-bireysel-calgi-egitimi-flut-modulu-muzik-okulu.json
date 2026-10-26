@@ -1,0 +1,128 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Flüt Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SÜSLEME ÇEŞİTLERİ",
+      "a": [
+        {
+          "k": "FLT.8.1.1",
+          "m": "Çarpma süslemesiyle çalabilme",
+          "s": [
+            "Çarpma süslemesi içeren etüt, egzersiz ve eserleri çözümler.",
+            "Çarpma süslemesi içeren etüt, egzersiz ve eserleri çalabilmek için doğru duruş ve tutuş pozisyonu alır.",
+            "Çarpma süslemesi içeren etüt, egzersiz ve eserleri çalarken flüte özgü teknikleri kullanır.",
+            "Çarpma süslemesi içeren etüt, egzersiz ve eserlerde müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.1.2",
+          "m": "Trill süslemesiyle çalabilme",
+          "s": [
+            "Trill süslemesi içeren etüt, egzersiz ve eserleri çözümler.",
+            "Trill süslemesi içeren etüt, egzersiz ve eserleri çalabilmek için doğru duruş ve tutuş pozisyonu alır.",
+            "Trill süslemesi içeren etüt, egzersiz ve eserleri çalarken flüte özgü teknikleri kullanır.",
+            "Trill süslemesi içeren etüt, egzersiz ve eserlerde müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE 3. OKTAV SESLER-1",
+      "a": [
+        {
+          "k": "FLT.8.2.1",
+          "m": "Flütte “3. oktav do diyez, 3. oktav re“ seslerini çalabilme",
+          "s": [
+            "3. oktav do diyez, 3. oktav re seslerini çözümler.",
+            "3. oktav do diyez, 3. oktav re seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav do diyez, 3. oktav re seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.2.2",
+          "m": "Flütte “3. oktav mi, 3. oktav mi bemol“ seslerini çalabilme",
+          "s": [
+            "3. oktav mi, 3. oktav mi bemol seslerini çözümler.",
+            "3. oktav mi, 3. oktav mi bemol seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav mi, 3. oktav mi bemol seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.2.3",
+          "m": "Flütte “3. oktav fa, 3. oktav fa diyez“ seslerini çalabilme",
+          "s": [
+            "3. oktav fa, 3. oktav fa diyez seslerini çözümler.",
+            "3. oktav fa, 3. oktav fa diyez seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav fa, 3. oktav fa diyez seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.2.4",
+          "m": "Flütte “3. oktav sol“ seslerini çalabilme",
+          "s": [
+            "3. oktav sol sesini çözümler.",
+            "3. oktav sol sesini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav sol sesini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GAMLAR VE ARPEJLER",
+      "a": [
+        {
+          "k": "FLT.8.3.1",
+          "m": "Dört diyez ve dört bemole kadar alan gam ve arpejleri çalabilme",
+          "s": [
+            "Dört diyez ve dört bemole kadar alan gam ve arpejleri çözümler.",
+            "Dört diyez ve dört bemole kadar alan gam ve arpejleri çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "Dört diyez ve dört bemole kadar alan gam ve arpejleri çalarken flüte özgü teknikleri kullanır.",
+            "Dört diyez ve dört bemole kadar alan gam ve arpejleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "FLÜTTE 3. OKTAV SESLER-2",
+      "a": [
+        {
+          "k": "FLT.8.4.1",
+          "m": "Flütte “3. oktav sol diyez/la bemol“ sesini çalabilme",
+          "s": [
+            "3. oktav sol diyez/la bemol sesini çözümler.",
+            "3. oktav sol diyez/la bemol sesini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav sol diyez/la bemol sesini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.4.2",
+          "m": "Flütte “3. oktav la, 3. oktav la diyez/si bemol“ seslerini çalabilme",
+          "s": [
+            "3. oktav la, 3. oktav la diyez/si bemol seslerini çözümler.",
+            "3. oktav la, 3. oktav la diyez/si bemol seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav la, 3. oktav la diyez/si bemol seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "FLT.8.4.3",
+          "m": "Flütte “3. oktav si ve 3. oktav do“ seslerini çalabilme",
+          "s": [
+            "3. oktav si ve 3. oktav do seslerini çözümler.",
+            "3. oktav si ve 3. oktav do seslerini çalabilmek için duruş ve tutuş pozisyonu alır.",
+            "3. oktav si ve 3. oktav do seslerini çalabilmek için flüte özgü teknikleri kullanır.",
+            "Etüt, egzersiz ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "ders": "Seçmeli Müzik",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, sesini ve temel çalgıları doğru kullanarak müziksel ifade becerilerini geliştirir.",
+          "s": [
+            "Yaşına uygun şarkıları ve marşları doğru ses, ritim ve nefes tekniğiyle söyler.",
+            "Basit ritim çalgılarını (tef, marakas, ritim çubuğu vb.) kullanarak duyduğu ritmik yapıları tekrar eder.",
+            "Bireysel veya koro eşliğinde müzik yapma etkinliklerine katılım gösterir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, müzik kültürü edinir ve farklı müzik türleri ile çalgıları tanır.",
+          "s": [
+            "Dinlediği bir müzik eserinin türünü, ritmini ve duygusal özelliğini basit ifadelerle açıklar.",
+            "Geleneksel Türk müziği ve evrensel müzik çalgılarını görsel/işitsel olarak tanır ve ayırt eder.",
+            "İstiklal Marşı'mızı anlamına uygun, doğru bir duruş ve gür bir sesle söyler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, müziksel yaratıcılığını geliştirir ve müziği diğer disiplinlerle ilişkilendirir.",
+          "s": [
+            "Beden perküsyonu veya çevresindeki nesneleri kullanarak basit ritim kompozisyonları oluşturur.",
+            "Dinlediği bir müziğin hissettirdiği duyguları resim veya dans yoluyla ifade eder.",
+            "Belirli bir temaya (doğa, sevgi, vatan vb.) uygun şarkılar seçerek bir dinleti listesi hazırlar."
+          ]
+        }
+      ]
+    }
+  ]
+}

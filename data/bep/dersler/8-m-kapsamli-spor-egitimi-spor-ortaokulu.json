@@ -1,0 +1,132 @@
+{
+  "ders": "Kapsamlı Spor Eğitimi (Spor Ortaokulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TAKIM SPORLARI (VOLEYBOL)",
+      "a": [
+        {
+          "k": "KSE.2.1",
+          "m": "Takım sporlarında seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklayabilme",
+          "s": [
+            "Takım sporlarında seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.2.2",
+          "m": "Takım sporlarında seçilen spor branşının oyun kurallarını ifade edebilme",
+          "s": [
+            "Takım sporlarında seçilen spor branşının oyun kurallarını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.2.3",
+          "m": "Takım sporlarında seçilen spor branşına ilişkin hareket becerileri sergileyebilme",
+          "s": [
+            "Seçilen spor branşına ilişkin hareket becerilerini algılar.",
+            "Seçilen spor branşına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Seçilen spor branşına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "KSE.2.4",
+          "m": "Takım sporlarında grupla hareket edebilme",
+          "s": [
+            "Takım sporlarında grupla hareket ederken rollerini tanımlar.",
+            "Takım sporlarında grupla hareket ederken rollerini yerine getirir. c ) Takım sporlarında grupla uyumlu hareket eder."
+          ]
+        },
+        {
+          "k": "KSE.2.5",
+          "m": "Grup liderliği sergileme",
+          "s": [
+            "Takım sporlarında grup liderliği özelliklerini tanır.",
+            "Takım sporlarında grup liderliği özelliklerini gösterir."
+          ]
+        },
+        {
+          "k": "KSE.2.6",
+          "m": "Takım sporlarında seçilen branşlara ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "Seçilen branşlara ilişkin taktiksel problemi belirler.",
+            "Seçilen branşlara ilişkin taktiksel problemin çözümüne yönelik öneri sunar.",
+            "Seçilen branşlara ilişkin belirlenen taktik ve stratejiyi uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KIŞ SPORLARI",
+      "a": [
+        {
+          "k": "KSE.5.1",
+          "m": "Kış sporlarının tarihsel gelişimini ve genel kavramlarını açıklayabilme",
+          "s": [
+            "Kış sporlarının tarihsel gelişimini ve genel kavramlarını açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.5.2",
+          "m": "Seçilen kış sporlarında güvenli ortam oluşturabilme",
+          "s": [
+            "Seçilen kış sporlarına yönelik riskleri tanımlar.",
+            "Seçilen kış sporlarına yönelik önleyici tedbirler alır."
+          ]
+        },
+        {
+          "k": "KSE.5.3",
+          "m": "Seçilen kış sporlarına özgü hareketleri sergileyebilme",
+          "s": [
+            "Seçilen kış sporlarına özgü hareket becerilerini algılar.",
+            "Seçilen kış sporlarına özgü hareket becerilerinin basamaklarını gösterir.",
+            "Seçilen kış sporlarına özgü hareket becerilerini farklı ortamlarda uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİREYSEL SPORLAR (SEÇMELİ 8)",
+      "a": [
+        {
+          "k": "KSE.1.1",
+          "m": "Bireysel sporlarda seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklayabilme",
+          "s": [
+            "Bireysel sporlarda seçilen spor branşının geçmişten günümüze gelişimini ve tarihçesini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.1.2",
+          "m": "Bireysel sporlarda seçilen spor branşının oyun kurallarını ifade edebilme",
+          "s": [
+            "Bireysel sporlarda seçilen spor branşının oyun kurallarını ifade eder."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KSE.1.3",
+          "m": "Seçilen spor branşına ilişkin hareket becerileri sergileyebilme",
+          "s": [
+            "Seçilen spor branşına ilişkin hareket becerilerini algılar.",
+            "Seçilen spor branşına ilişkin hareket becerilerinin basamaklarını gösterir.",
+            "Seçilen spor branşına ilişkin hareket becerilerini farklı ortamlarda uygular."
+          ]
+        },
+        {
+          "k": "KSE.1.4",
+          "m": "Bireysel sporlarda seçilen spor branşına ilişkin taktik ve strateji geliştirebilme",
+          "s": [
+            "Bireysel sporlarda seçilen spor branşına ilişkin taktiksel problemi belirler.",
+            "Bireysel sporlarda seçilen spor branşına ilişkin taktiksel problemin çözümüne yönelik öneri sunar.",
+            "Bireysel sporlarda seçilen spor branşına ilişkin taktik ve stratejileri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

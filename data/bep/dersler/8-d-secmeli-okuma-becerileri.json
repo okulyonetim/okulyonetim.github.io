@@ -1,0 +1,40 @@
+{
+  "ders": "Seçmeli Okuma Becerileri",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, farklı metin türlerini akıcı, doğru ve anlamına uygun olarak okur.",
+          "s": [
+            "Yaşına ve seviyesine uygun metinleri sesli ve sessiz okuma kurallarına uygun olarak okur.",
+            "Okuduğu metindeki duygu durumuna göre vurgu ve tonlamalara dikkat eder.",
+            "Okuma hızı ve akıcılığını metnin türüne (şiir, düz yazı) göre ayarlar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, okuduğu metnin içeriğini anlar, yorumlar ve kendi cümleleriyle ifade eder.",
+          "s": [
+            "Metindeki ana fikri ve yardımcı düşünceleri tespit eder.",
+            "Okuduğu metinle ilgili sorulan 5N1K sorularına doğru cevaplar verir.",
+            "Metinde geçen bilmediği kelimelerin anlamını bağlamdan hareketle tahmin eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, okuma stratejilerini aktif olarak kullanarak okuma alışkanlığını geliştirir.",
+          "s": [
+            "Görsellerden ve başlıktan yola çıkarak metnin içeriği hakkında tahminde bulunur.",
+            "Okuma sırasında önemli bulduğu yerlerin altını çizer veya notlar alır.",
+            "Okuma sonrasında metnin özetini kendi cümleleriyle ana hatlarıyla çıkarır."
+          ]
+        }
+      ]
+    }
+  ]
+}

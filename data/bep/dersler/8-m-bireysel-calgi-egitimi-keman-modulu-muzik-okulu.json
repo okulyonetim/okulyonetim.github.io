@@ -1,0 +1,92 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Keman Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "POZİSYON ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.8.1.1",
+          "m": "Kemanda 2. pozisyon kullanarak etüt çalabilme",
+          "s": [
+            "Kemanda 2. pozisyonda çalınacak eseri çözümler.",
+            "Kemanda 2. pozisyonda duruş ve tutuş pozisyonu alır.",
+            "Kemanda 2. pozisyonda çalgıya özgü teknikleri kullanır.",
+            "Kemanda 2. pozisyonda çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "KMN.8.1.2",
+          "m": "Kemanda 3. pozisyon kullanarak etüt çalabilme",
+          "s": [
+            "Kemanda 3. pozisyonda çalınacak eserleri çözümler.",
+            "Kemanda 3. pozisyonda duruş ve tutuş pozisyonu alır.",
+            "Kemanda 3. pozisyonda çalgıya özgü teknikleri kullanır.",
+            "Kemanda 3. pozisyonda çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "VİBRATO TEKNİĞİ İLE ESER ÇALIŞMALARI",
+      "a": [
+        {
+          "k": "KMN.8.2.1",
+          "m": "Vibrato tekniğini kullanarak etüt ve eser çalabilme",
+          "s": [
+            "Vibrato tekniğinde çalınacak eseri çözümler.",
+            "Vibrato tekniğine göre duruş ve tutuş pozisyonu alır.",
+            "Vibrato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Vibrato tekniğiyle etüt ve eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BİLİNEN ÜNLÜ VIRTÜÖZLERI TANIMA",
+      "a": [
+        {
+          "k": "KMN.8.3.1",
+          "m": "Keman virtüözlerini tanıyabilme",
+          "s": [
+            "Keman virtüözlerini tanır."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.8.3.2",
+          "m": "Keman virtüözlerini teknik kullanırken gözlemleyebilme",
+          "s": [
+            "Keman virtüözlerini teknik kullanırken gözlemler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "KMN.8.3.3",
+          "m": "Keman virtüözleri ile ilgili bölgesel farklılıkları tanıyabilme",
+          "s": [
+            "Keman virtüözleri ile ilgili bölgesel farklılıkları tanır."
+          ],
+          "t": 1
+        }
+      ]
+    },
+    {
+      "ad": "ÖĞRENİLEN BİLGİLERLE İLGİLİ ESERLER ÇALMA",
+      "a": [
+        {
+          "k": "KMN.8.4.1",
+          "m": "Kemanda düzeyine uygun etüt ve eserleri çalabilme",
+          "s": [
+            "Kemanda uygun, belirlenen eseri çözümler.",
+            "Doğru duruş ve tutuş pozisyonu alarak belirlenen eseri çalar.",
+            "Çalgıya özgü teknikleri kullanır.",
+            "Ezgisel yapıya uygun olarak belirlenen eseri çalar"
+          ]
+        }
+      ]
+    }
+  ]
+}

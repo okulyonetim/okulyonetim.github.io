@@ -1,0 +1,61 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Bağlama Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "BAĞLAMADA ANKARA TAVRINI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.8.1.1",
+          "m": "Bağlamada Ankara tavrını çalabilme",
+          "s": [
+            "Bağlamada Ankara tavrını çözümler.",
+            "Bağlamada Ankara tavrını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Bağlamada Ankara tavrını, çalgıya özgü teknikleri kullanır.",
+            "Bağlamada Ankara tavır tekniği ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "BAĞLAMADA TEKE TAVRINI UYGULUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.8.2.1",
+          "m": "Bağlamada teke tavrını çalabilme",
+          "s": [
+            "Bağlamada teke tavrını çözümler.",
+            "Bağlamada teke tavrını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Bağlamada teke tavrını, çalgıya özgü teknikleri kullanır.",
+            "Bağlamada teke tavır tekniği ile müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "REPERTUVAR OLUŞTURUYORUM",
+      "a": [
+        {
+          "k": "BAĞL.8.3.1",
+          "m": "Repertuvarını belirleyebilme",
+          "s": [
+            "Repertuvarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BAĞL.8.3.2",
+          "m": "Repertuvarını çalabilme",
+          "s": [
+            "Repertuvarındaki çalınacak eserleri çözümler.",
+            "Repertuvarını çalarken duruş ve tutuş pozisyonu alır.",
+            "Repertuvarını çalarken çalgıya özgü teknikleri kullanır.",
+            "Repertuvarını çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

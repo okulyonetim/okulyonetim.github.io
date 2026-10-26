@@ -1,0 +1,412 @@
+{
+  "ders": "Matematik",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Verilen pozitif tam sayıların pozitif tam sayı çarpanlarını bulur, pozitif tam sayıların pozitif tam sayı çarpanlarını üslü ifadelerin çarpımı şeklinde yazar.",
+          "s": [
+            "Bir pozitif tam sayının asal çarpanlarını bulmaya yönelik çalışmalara da yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "İki doğal sayının en büyük ortak bölenini (EBOB) ve en küçük ortak katını (EKOK) hesaplar, ilgili problemleri çözer.",
+          "s": [
+            "Alan ve hacim hesaplamayı gerektiren problemlere girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Verilen iki doğal sayının aralarında asal olup olmadığını belirler.",
+          "s": [
+            "Verilen iki doğal sayının aralarında asal olup olmadığını belirler."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Tam sayıların, tam sayı kuvvetlerini hesaplar.",
+          "s": [
+            "Tam sayıların, tam sayı kuvvetlerini hesaplar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur.",
+          "s": [
+            "Üslü ifadelerle ilgili temel kuralları anlar, birbirine denk ifadeler oluşturur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Sayıların ondalık gösterimlerini 10’un tam sayı kuvvetlerini kullanarak çözümler.",
+          "s": [
+            "Örneğin 82,53 = 8.10¹ + 2.10⁰ + 5.10⁻¹ + 3.10⁻²."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Verilen bir sayıyı 10’un farklı tam sayı kuvvetlerini kullanarak ifade eder.",
+          "s": [
+            "Verilen bir sayıyı 10’un farklı tam sayı kuvvetlerini kullanarak ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır.",
+          "s": [
+            "Çok büyük ve çok küçük sayıları bilimsel gösterimle ifade eder ve karşılaştırır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Tamkare pozitif tam sayılarla bu sayıların karekökleri arasındaki ilişkiyi belirler.",
+          "s": [
+            "Kare modelleri kullanılarak alanla kenar arasındaki ilişkiden yararlanılarak bir sayıyla karekökü arasındaki ilişki ele alınabilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Tam kare olmayan kareköklü bir sayının hangi iki doğal sayı arasında olduğunu belirler.",
+          "s": [
+            "Örneğin √31 sayısının 5 ile 6 sayıları arasında bulunduğunu ve 6’ya daha yakın olduğunu belirlemeye yönelik çalışmalar yapılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kareköklü bir ifadeyi a√b şeklinde yazar ve a√b şeklindeki ifadede katsayıyı kök içine alır.",
+          "s": [
+            "Kareköklü bir ifadeyi a√b şeklinde yazar ve a√b şeklindeki ifadede katsayıyı kök içine alır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kareköklü ifadelerde çarpma ve bölme işlemlerini yapar.",
+          "s": [
+            "Kareköklü ifadelerde çarpma ve bölme işlemlerini yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kareköklü ifadelerde toplama ve çıkarma işlemlerini yapar.",
+          "s": [
+            "Kareköklü ifadelerde toplama ve çıkarma işlemlerini yapar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Kareköklü bir ifade ile çarpıldığında, sonucu bir doğal sayı yapan çarpanlara örnek verir.",
+          "s": [
+            "Kareköklü bir ifade ile çarpıldığında, sonucu bir doğal sayı yapan çarpanlara örnek verir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Ondalık ifadelerin kareköklerini belirler.",
+          "s": [
+            "Kesir olarak ifade edildiğinde payı ve paydası tam kare olan ondalık gösterimlerin kareköklerini bulmaya yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Gerçek sayıları tanır, rasyonel ve irrasyonel sayılarla ilişkilendirir.",
+          "s": [
+            "Tam kare olmayan sayıların kareköklerinin rasyonel sayı olarak belirtilemediğine (iki tam sayının oranı şeklinde yazılamadığına) dikkat çekilir. π sayısı bir irrasyonel sayı olarak tanıtılır. İrrasyonel sayı olmasına rağmen işlemlerde kolaylık sağlaması açısından π sayısı yerine 3; 3,14 veya 22/7 de alınabileceği vurgulanır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "En fazla üç veri grubuna ait çizgi ve sütun grafiklerini yorumlar.",
+          "s": [
+            "En fazla üç veri grubuna ait çizgi ve sütun grafiklerini yorumlar."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Verileri sütun, daire veya çizgi grafiği ile gösterir ve bu gösterimler arasında uygun olan dönüşümleri yapar.",
+          "s": [
+            "Farklı gösterimlerin birbirlerine göre üstün ve zayıf yönleri üzerinde durulur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Bir olaya ait olası durumları belirler.",
+          "s": [
+            "Örneğin 3 kırmızı, 5 mavi renkli topun bulunduğu bir torbadan top çekilmesi olayı ile ilgili olası durumların sayısının 8 olduğu ifade edilir. Birden fazla olayın olası durumları ele alınmaz."
+          ]
+        },
+        {
+          "k": "",
+          "m": "“Daha fazla”, “eşit”, “daha az” olasılıklı olayları ayırt eder, örnek verir.",
+          "s": [
+            "Olasılığı hesaplamayı gerektirmeyen sezgisel durumlar ele alınır. Örneğin bir okuldaki tüm öğretmen ve öğrencilerin isimlerinin yazılı olduğu bir listeden rastgele çekilen bir ismin öğrenciye ait olma olasılığının daha fazla olduğu, 15’i erkek öğrenci ve 15’i kız öğrenci olan bir sınıftan rastgele seçilen birinin kız öğrenci olma olasılığı ile erkek öğrenci olma olasılığının eşit olduğunu belirten çalışmalar yapılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Eşit şansa sahip olan olaylarda her bir çıktının olasılık değerinin eşit olduğunu ve bu değerin 1/n olduğunu açıklar.",
+          "s": [
+            "Kazanım ifadesindeki n, olası durum sayısını temsil etmektedir.",
+            "Eşit şansa sahip olan ve olmayan olayları ayırt etmeye yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Olasılık değerinin 0 ile 1 arasında (0 ve 1 dâhil) olduğunu anlar.",
+          "s": [
+            "Olasılığın bir olayın olma şansına (olabilirliğine) ilişkin bir ölçüm olduğu vurgulanır.",
+            "İmkânsız olay ve kesin olayın olasılık değerleri vurgulanır.",
+            "Bir olayın olma olasılığı ile olmama olasılığının toplamının 1 olduğu fark ettirilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Basit bir olayın olma olasılığını hesaplar.",
+          "s": [
+            "Zar atıldığında tek sayı gelmesi gibi örnekler verilir.",
+            "Ayrık olan ve olmayan, bağımlı ve bağımsız olayların olasılığına girilmez. Birden fazla olayın olma olasılığı ele alınmaz."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Basit cebirsel ifadeleri anlar ve farklı biçimlerde yazar.",
+          "s": [
+            "Terim, katsayı ve değişkenin anlamları üzerinde durulur. Sabit terimin de bir katsayı olduğu vurgulanır.",
+            "X+5, 3x, x², 6y², a².b, 2a+2b gibi temel cebirsel ifadeler üzerinde durulur."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Cebirsel ifadelerin çarpımını yapar.",
+          "s": [
+            "Y(3y2), (2x+3)(5x1) gibi işlemler üzerinde durulur.",
+            "Cebirsel ifadelerdeki katsayılar tamsayılardan seçilir.",
+            "Cebirsel ifadelerle çarpma işlemini modellerle yapmaya yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Özdeşlikleri modellerle açıklar.",
+          "s": [
+            "(a ± b)² = a² ± 2ab + b² ve a² b² = (ab)(a+b) özdeşlikleriyle sınırlı kalınır.",
+            "Özdeşliklerdeki katsayılar tam sayılardan seçilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Cebirsel ifadeleri çarpanlara ayırır.",
+          "s": [
+            "Ortak çarpan parantezine alma ile iki kare farkı ve a² ± 2ab + b² biçimindeki tam kare ifadelerin çarpanlara ayırma işlemleri ele alınır.",
+            "Cebirsel ifadelerdeki katsayılar ve kökleri tam sayılar içinde kalacak biçimde seçilir.",
+            "Gruplandırarak çarpanlarına ayırma yöntemine girilmez.",
+            "Tam kare olmayan ikinci dereceden ifadelerin çarpanlara ayrılma işlemlerine girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Birinci dereceden bir bilinmeyenli denklemleri çözer.",
+          "s": [
+            "Bu sınıf düzeyinde katsayıları rasyonel sayı olan denklemlere yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Koordinat sistemini özellikleriyle tanır ve sıralı ikilileri gösterir.",
+          "s": [
+            "Koordinat sistemi üzerinde yer belirlemeyle gerçek hayat durumlarını ilişkilendirmeye yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Aralarında doğrusal ilişki bulunan iki değişkenden birinin diğerine bağlı olarak nasıl değiştiğini tablo ve denklem ile ifade eder.",
+          "s": [
+            "Tablo ile yapılan gösterimlerde sıralı ikililer biçiminde ifadelere de yer verilir.",
+            "İki değişkenden birinin değerinin, diğer değişkenin aldığı değere göre nasıl değiştiği ve bu durumda hangisinin bağımlı hangisinin bağımsız değişken olduğu incelenir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Doğrusal denklemlerin grafiğini çizer.",
+          "s": [
+            "Doğrunun eksenleri hangi noktalarda kestiği, eksenlere paralelliği, orijinden geçip geçmediği durumlar ele alınır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Doğrusal ilişki içeren gerçek hayat durumlarına ait denklem, tablo ve grafiği oluşturur ve yorumlar.",
+          "s": [
+            "Doğrunun grafiği yorumlanırken doğru üzerindeki noktaların x ve y koordinatları arasındaki ilişki, eksenleri hangi noktalarda kestiği, orijinden geçip geçmediği, eksenlere paralelliği durumları ele alınır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Doğrunun eğimini modellerle açıklar, doğrusal denklemleri ve grafiklerini eğimle ilişkilendirir.",
+          "s": [
+            "Eğimin işaretinin ve büyüklüğünün anlamı üzerinde durulur.",
+            "Günlük hayatla ilişkili modellemelerde eğimin dikey uzunluğun yatay uzunluğa oranı olduğu dikkate alınarak işareti üzerinde durulmaz.",
+            "Gerektiğinde uygun bilgi ve iletişim teknolojilerinden yararlanılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Birinci dereceden bir bilinmeyenli eşitsizlik içeren günlük hayat durumlarına uygun matematik cümleleri yazar.",
+          "s": [
+            "Örneğin “Anaokuluna en az 3 yaşında olan çocuklar kabul ediliyor.” ifadesinde çocukların yaşı x ile temsil edildiğinde, eşitsizlik x ≥ 3 olarak belirtilebilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Birinci dereceden bir bilinmeyenli eşitsizlikleri sayı doğrusunda gösterir.",
+          "s": [
+            "X ≥ 1, 3 ≤ t < 7, a < 1 gibi durumlar inceletilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Birinci dereceden bir bilinmeyenli eşitsizlikleri çözer.",
+          "s": [
+            "En çok iki işlem gerektiren eşitsizlikler seçilir.",
+            "Eşitsizliğin her iki tarafı negatif bir sayı ile çarpılır veya bölünürse eşitsizliğin yön değiştireceğinin fark edilmesine yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Üçgende kenarortay, açıortay ve yüksekliği inşa eder.",
+          "s": [
+            "Kâğıtları katlayarak, keserek veya kareli kâğıt üzerinde çizim yaparak üçgenin elemanlarını oluşturmaya yönelik çalışmalara yer verilir.",
+            "Eşkenar, ikizkenar ve dik üçgen gibi özel üçgenlerde kenarortay, açıortay ve yüksekliğin özelliklerini belirlemeye yönelik çalışmalara da yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Üçgenin iki kenar uzunluğunun toplamı veya farkı ile üçüncü kenarının uzunluğunu ilişkilendirir.",
+          "s": [
+            "Somut modeller kullanılarak yapılacak etkinliklere yer verilebilir.",
+            "Uygun bilgisayar yazılımları ile üçgen eşitsizliğini anlamaya yönelik çalışmalara yer verilebilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Üçgenin kenar uzunlukları ile bu kenarların karşısındaki açıların ölçülerini ilişkilendirir.",
+          "s": [
+            "Üçgenin kenar uzunlukları ile bu kenarların karşısındaki açıların ölçülerini ilişkilendirir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Yeterli sayıda elemanının ölçüleri verilen bir üçgeni çizer.",
+          "s": [
+            "(1) Üç kenarının uzunluğu, (2) bir kenarının uzunluğu ile iki açısının ölçüsü, (3) iki kenar uzunluğu ile bu kenarların arasındaki açının ölçüsü verilen üçgenlerin uygun araçlar kullanılarak çizilmesi sağlanır.",
+            "Dinamik geometri yazılımları ile yapılacak çalışmalara yer verilebilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Pisagor bağıntısını oluşturur, ilgili problemleri çözer.",
+          "s": [
+            "Pisagor bağıntısının gerçek hayat uygulamalarına yönelik çalışmalara yer verilir.",
+            "Koordinat düzlemi üzerinde verilen iki nokta arasındaki uzaklığı Pisagor bağıntısını kullanarak bulma çalışmalarına yer verilir. İki nokta arasındaki uzaklık formülü verilmez.",
+            "Kenar uzunlukları verilen bir üçgenin dik üçgen olup olmadığına Pisagor bağıntısını kullanarak karar vermeye yönelik çalışmalar yapılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Eşlik ve benzerliği ilişkilendirir, eş ve benzer şekillerin kenar ve açı ilişkilerini belirler.",
+          "s": [
+            "Düzlemsel şekilleri karşılaştırarak eş olup olmadıklarını belirlemeye yönelik etkinliklere yer verilir.",
+            "Eş çokgenlerde karşılıklı kenar uzunluklarının ve açı ölçülerinin eşit, benzer çokgenlerde ise karşılık gelen açı ölçülerinin eşit fakat kenar uzunluklarının orantılı olduğu vurgulanır. Eş çokgenlerin benzer olduğu ancak benzer çokgenlerin eş olmalarının gerekmediği vurgulanır. KKK, AKA gibi üçgenlerde eşlik ve benzerlik kuralları özel olarak verilmez.",
+            "Somut modellerle, kareli kâğıtla veya kâğıtları katlayarak yapılacak çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Benzer çokgenlerin benzerlik oranını belirler, bir çokgene eş ve benzer çokgenler oluşturur.",
+          "s": [
+            "Gerektiğinde uygun bilgi ve iletişim teknolojilerinden yararlanılır.",
+            "Çokgenlerde benzerlik problemlerine girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Nokta, doğru parçası ve diğer şekillerin öteleme sonucundaki görüntülerini çizer.",
+          "s": [
+            "Kareli veya noktalı kâğıt, koordinat sistemi üzerinde çalışmalar yapılır.",
+            "Dinamik geometri yazılımları ile yapılacak çalışmalara da yer verilebilir.",
+            "Ötelemede şekil üzerindeki her bir noktanın aynı yönde hareket ettiği ve şekil ile görüntüsünün eş olduğu fark ettirilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Nokta, doğru parçası ve diğer şekillerin yansıma sonucu oluşan görüntüsünü oluşturur.",
+          "s": [
+            "Kareli veya noktalı kâğıt, koordinat sistemi üzerinde çalışmalar yapılır.",
+            "Dinamik geometri yazılımları ile yapılacak çalışmalara da yer verilebilir.",
+            "Yansımada şekil ile görüntüsü üzerinde birbirlerine karşılık gelen noktaların simetri doğrusuna dik ve aralarındaki uzaklıkların eşit olduğu bu nedenle şekil ile görüntüsünün eş olduğu fark ettirilir.",
+            "Simetri doğrularının üzerinde olan şekillerle de çalışmalar yapılır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Çokgenlerin öteleme ve yansımalar sonucunda ortaya çıkan görüntüsünü oluşturur.",
+          "s": [
+            "En çok iki ardışık öteleme veya yansımaya yer verilir.",
+            "Desen, motif ve benzeri görsellerde öteleme veya yansıma dönüşümlerini belirlemeye yönelik çalışmalara yer verilir.",
+            "Geleneksel sanatlarımızdan (çini, seramik, dokuma vb.) örnekler de dikkate alınır."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik prizmaları tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+          "s": [
+            "Somut modellerle çalışmalara yer verilir.",
+            "Bilgi ve iletişim teknolojilerinden yararlanılabilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik dairesel silindirin temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+          "s": [
+            "Dik dairesel silindirin temel elemanlarını belirler, inşa eder ve açınımını çizer."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik dairesel silindirin yüzey alanı bağıntısını oluşturur, ilgili problemleri çözer.",
+          "s": [
+            "Somut modellerle çalışmalara yer verilir.",
+            "Bilgi ve iletişim teknolojilerinden yararlanılabilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik dairesel silindirin hacim bağıntısını oluşturur; ilgili problemleri çözer.",
+          "s": [
+            "Dik dairesel silindirin hacmini tahmin etmeye yönelik çalışmalara yer verilir.",
+            "Dik dairesel silindirin hacim bağıntısını dik prizmanın hacim bağıntısı ile ilişkilendirmeye yönelik çalışmalara yer verilir."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik piramidi tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+          "s": [
+            "Somut modellerle çalışmalara yer verilir.",
+            "Bilgi ve iletişim teknolojilerinden yararlanılabilir.",
+            "Alan ve hacim problemlerine girilmez."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Dik koniyi tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer.",
+          "s": [
+            "Dik koniyi tanır, temel elemanlarını belirler, inşa eder ve açınımını çizer."
+          ]
+        }
+      ]
+    }
+  ]
+}

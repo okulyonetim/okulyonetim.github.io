@@ -1,0 +1,40 @@
+{
+  "ders": "Seçmeli Temel Dini Bilgiler",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "hazir",
+  "u": [
+    {
+      "ad": "—",
+      "a": [
+        {
+          "k": "",
+          "m": "Öğrenci, İslam dininin temel inanç ve ibadet esaslarını kavrar.",
+          "s": [
+            "İslam'ın inanç esaslarını (imanın şartlarını) sayar ve kısaca açıklar.",
+            "Günlük temel ibadetlerin (namaz, oruç vb.) neler olduğunu ve nasıl yapıldığını açıklar.",
+            "Dini gün ve gecelerin anlam ve önemini ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, İslami ahlak ve değerleri günlük yaşantısında doğru bir şekilde uygular.",
+          "s": [
+            "Temizlik (taharet) ve ibadet ilişkisini kavrayarak kişisel ve çevre temizliğine özen gösterir.",
+            "Günlük hayatında helal ve haram kavramlarını örneklerle açıklar.",
+            "İyilik yapmanın, yardımlaşmanın ve dürüst olmanın dini açıdan önemini ifade eder."
+          ]
+        },
+        {
+          "k": "",
+          "m": "Öğrenci, İslam'ın temel ahlaki değerlerini kavrar ve benimser.",
+          "s": [
+            "Doğruluk, emanete sahip çıkma ve adalet kavramlarının önemini açıklar.",
+            "İsrafın ne anlama geldiğini bilir ve günlük hayatında tutumlu olmaya özen gösterir.",
+            "Kul hakkı kavramını kavrayarak başkalarının haklarına saygı gösterir."
+          ]
+        }
+      ]
+    }
+  ]
+}

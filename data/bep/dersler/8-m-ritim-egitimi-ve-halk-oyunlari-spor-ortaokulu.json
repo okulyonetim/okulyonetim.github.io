@@ -1,0 +1,63 @@
+{
+  "ders": "Ritim Eğitimi ve Halk Oyunları (Spor Ortaokulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "HALK OYUNLARINDA SAHNELEME",
+      "a": [
+        {
+          "k": "RİHO.8.1.1",
+          "m": "Seçilen halk oyunlarına ait hikâyeleri ve kullanılan malzemeleri yorumlayabilme",
+          "s": [
+            "Seçilen halk oyunlarının hikâyesi ile halk oyunlarına özgü kıyafet ve malzemeleri inceler.",
+            "Seçilen halk oyunlarının hikâyesi ile halk oyunlarına özgü kıyafet ve malzemeleri içeren bilgileri yazılı, görsel veya dijital ürünlere dönüştürür.",
+            "Seçilen halk oyunlarının hikâyesi ile halk oyunlarına özgü kıyafet ve malzemeleri ifade eder."
+          ]
+        },
+        {
+          "k": "RİHO.8.1.2",
+          "m": "Seçilen halk oyunları dalında (geleneksel, stilize vb.) koreografiye uygun ritmik hareket edebilme",
+          "s": [
+            "Seçilen halk oyunları çalışmalarında kullanılan ritim kalıplarını algılar.",
+            "Seçilen halk oyunları çalışmalarında ritme uygun hareket eder.",
+            "Seçilen halk oyunları çalışmalarında koreografiye uygun ritmik hareket becerileri sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.8.1.3",
+          "m": "Seçilen halk oyunlarını sahneleme çalışmalarında (geleneksel, stilize vb) eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen halk oyunlarına özgü sahneleme çalışmalarında eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen halk oyunlarına özgü sahneleme çalışmalarında eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen halk oyunlarına özgü sahneleme çalışmalarında eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "DANSIN EVRENSEL DİLİ",
+      "a": [
+        {
+          "k": "RİHO.8.2.1",
+          "m": "Seçilen danslara özgü ritmik hareket edebilme",
+          "s": [
+            "Seçilen danslara özgü ritim ve hareketleri algılar.",
+            "Seçilen danslara özgü ritim ve müziğe uygun hareket eder.",
+            "Seçilen danslara özgü performansı ders ortamında sergiler."
+          ]
+        },
+        {
+          "k": "RİHO.8.2.2",
+          "m": "Seçilen danslara özgü koreografi çalışmalarında eşle/grupla hareket edebilme",
+          "s": [
+            "Seçilen danslara özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini tanımlar.",
+            "Seçilen danslara özgü koreografi çalışmalarında eşle/grupla hareket ederken rollerini yerine getirir.",
+            "Seçilen danslara özgü koreografi çalışmalarında eşle/grupla uyumlu hareket eder."
+          ]
+        }
+      ]
+    }
+  ]
+}

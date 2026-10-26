@@ -1,0 +1,84 @@
+{
+  "ders": "Çalgı Toplulukları (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "TOPLU İCRA (ALTILI GRUP)",
+      "a": [
+        {
+          "k": "ÇT.8.1.1",
+          "m": "Altılı grup eserleri dinleyebilme",
+          "s": [
+            "Dinlediği altılı eserlerin müziksel bileşenlerini fark eder.",
+            "Dinlediği altılı eserlerin müziksel bileşenlerini ayırt eder.",
+            "Dinlediği altılı eserin müziksel bileşenlerini açıklar."
+          ]
+        },
+        {
+          "k": "ÇT.8.1.2",
+          "m": "Altılı şarkıları toplu çalabilme",
+          "s": [
+            "Altılı çalınacak eserleri çözümler.",
+            "Altılı şarkılar çalarken çalgıya özgü duruş ve tutuş pozisyonu alır.",
+            "Altılı şarkılar çalarken çalgıya özgü teknikleri kullanır.",
+            "Altılı şarkılar çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "GÜNCEL VE POPÜLER MÜZİKLERLE TOPLU İCRA",
+      "a": [
+        {
+          "k": "Ç.T.8.1.2",
+          "m": "Popüler ve güncel müzikleri toplu çalabilme",
+          "s": [
+            "Popüler ve güncel müzikleri toplu eserleri çözümler.",
+            "Popüler ve güncel müzikleri toplu çalarken duruş ve tutuş pozisyonu alır.",
+            "Popüler ve güncel müzikleri toplu çalarken çalgıya özgü teknikleri kullanır.",
+            "Popüler ve güncel müzikleri toplu çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "REPERTUVAR OLUŞTURUYORUM",
+      "a": [
+        {
+          "k": "Ç.T.8.3.1",
+          "m": "Repertuvarını belirleyebilme",
+          "s": [
+            "Repertuvarını belirler."
+          ],
+          "t": 1
+        },
+        {
+          "k": "Ç.T.8.3.2",
+          "m": "Repertuvarını çalabilme",
+          "s": [
+            "Repertuvarındaki çalınacak eserleri çözümler.",
+            "Repertuvarını çalarken duruş ve tutuş pozisyonu alır.",
+            "Repertuvarını çalarken çalgıya özgü teknikleri kullanır.",
+            "Repertuvarını çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "PROJEMİ SESLENDİRİYORUM",
+      "a": [
+        {
+          "k": "Ç.T.8.4.1",
+          "m": "Çalgı toplulukları dersinde müziksel yaratıcılık becerisini gösterebilme",
+          "s": [
+            "Çalgı topluluklarında oluşturacağı ürünün amacını belirler.",
+            "Çalgı topluluklarında ürün oluşturmak için gerekli ögeleri seçer.",
+            "Çalgı topluluklarında seçtiği ögelerle ürün oluşturur."
+          ]
+        }
+      ]
+    }
+  ]
+}

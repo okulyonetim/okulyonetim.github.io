@@ -1,0 +1,89 @@
+{
+  "ders": "Beden Eğitimi ve Sporun Temelleri (Spor Ortaokulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "ANTRENMAN BİLGİSİ",
+      "a": [
+        {
+          "k": "BEST.8.1.1",
+          "m": "Antrenman değişkenlerini (bileşenlerini) ve ilkelerini açıklayabilme",
+          "s": [
+            "Antrenman değişkenlerini (bileşenlerini) ve ilkelerini açıklar."
+          ],
+          "t": 1
+        },
+        {
+          "k": "BEST.8.1.2",
+          "m": "Antrenmanda yüklenme ve toparlanma ilişkisini sorgulayabilme",
+          "s": [
+            "Antrenmanda yüklenme ve toparlanma kavramlarını tanımlar.",
+            "Antrenmanda yüklenme ve toparlanma ilişkisi ile ilgili sorular sorar.",
+            "Antrenmanda yüklenme ve toparlanma ilişkisi hakkında bilgi toplar.",
+            "Antrenmanda yüklenme ve toparlanma ilişkisi ile ilgili toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Antrenmanda yüklenme ve toparlanma ilişkisi ile ilgili topladığı bilgiler üzerinde çıkarım yapar."
+          ]
+        },
+        {
+          "k": "BEST.8.1.3",
+          "m": "Antrenman programını sentezleyebilme",
+          "s": [
+            "Antrenman programının parçalarını belirler.",
+            "Antrenman programının parçaları arasında ilişki kurar.",
+            "Antrenman programının parçalarını birleştirerek özgün bir bütün oluşturur."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPORDA YÖNETİM",
+      "a": [
+        {
+          "k": "BEST.8.2.1",
+          "m": "Spor yönetimi kavramını sorgulayabilme",
+          "s": [
+            "Spor yönetimi kavramını tanımlar.",
+            "Spor yönetimi kavramı hakkında sorular sorar.",
+            "Spor yönetimi kavramı hakkında istenilen bilgileri toplar.",
+            "Spor yönetimi kavramı hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Spor yönetimi kavramı hakkında toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPOR EKONOMİSİ",
+      "a": [
+        {
+          "k": "BEST.8.3.1",
+          "m": "Spor ekonomisini sorgulayabilme",
+          "s": [
+            "Spor ekonomisini tanımlar.",
+            "Spor ekonomisi hakkında sorular sorar.",
+            "Spor ekonomisi hakkında bilgi toplar.",
+            "Spor ekonomisi hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Spor ekonomisi hakkında toplanan bilgiler üzerinde çıkarım yapar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SPORDA İŞ GÜVENLİ, ÇALIŞAN SAĞLIĞI VE SOSYAL GÜVENLİK",
+      "a": [
+        {
+          "k": "BEST.8.4.1",
+          "m": "Sporda iş güvenliği ve çalışan sağlığının önemini sorgulayabilme",
+          "s": [
+            "Sporda iş güvenliği ve çalışan sağlığını tanımlar.",
+            "Sporda iş güvenliği ve çalışan sağlığının önemi hakkında sorular sorar.",
+            "Sporda iş güvenliği ve çalışan sağlığının önemi hakkında bilgi toplar.",
+            "Sporda iş güvenliği ve çalışan sağlığının önemi hakkında toplanan bilgilerin doğruluğunu değerlendirir.",
+            "Sporda iş güvenliği ve çalışan sağlığının önemi hakkında toplanan bilgiler üzerinden çıkarım yapar."
+          ]
+        }
+      ]
+    }
+  ]
+}

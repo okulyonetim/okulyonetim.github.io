@@ -1,0 +1,76 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyola Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "SEGAH DİZİSİ",
+      "a": [
+        {
+          "k": "VİY.8.1.1",
+          "m": "Segâh makamı dizisi ile eser çalabilme",
+          "s": [
+            "Segâh makamı dizisinin kullanıldığı eseri çözümler.",
+            "Segâh makamı dizisini çalarken duruş ve tutuş pozisyonunu alır.",
+            "Segâh makamı dizisini çalarken viyolaya özgü teknikleri kullanır.",
+            "Segâh makamı dizisini çalarken müziksel bileşenleri uygular"
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "MAKAM DİZİLERİ İLE ETÜTLER-2",
+      "a": [
+        {
+          "k": "VİY.8.2.1",
+          "m": "Makam dizilerinde etüt çalışmaları yapabilme",
+          "s": [
+            "Çargâh, buselik, kürdi, hicaz ve segâh makam dizilerine uygun etütleri çözümler.",
+            "Makam dizilerine uygun etütleri çalarken doğru duruş ve tutuş pozisyonlarını alır.",
+            "Makam dizilerine uygun etütleri çalarken viyolaya özgü teknikleri kullanır.",
+            "Makam dizilerine uygun etütleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "REPERTUVAR ÇALIŞMASI",
+      "a": [
+        {
+          "k": "VİY.8.3.1",
+          "m": "Kendi repertuvarını oluşturabilme",
+          "s": [
+            "Kendi repertuvarını oluşturur."
+          ],
+          "t": 1
+        },
+        {
+          "k": "VİY.8.3.2",
+          "m": "Repertuvarındaki eserleri çalabilme",
+          "s": [
+            "Repertuvarındaki eserlerin teknik ve müzikal özelliklerini çözümler.",
+            "Repertuvarındaki eserleri çalarken duruş ve tutuş pozisyonlarını alır.",
+            "Repertuvarındaki eserleri çalarken viyolaya özgü teknikleri uygular.",
+            "Repertuvarındaki eserleri çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ESER YORUMLAMA ÇALIŞMASI",
+      "a": [
+        {
+          "k": "VİY.8.4.1",
+          "m": "Eseri yorumlayıp çalabilme",
+          "s": [
+            "Eserin teknik ve müzikal özelliklerini çözümler.",
+            "Eseri yorumlarken duruş ve tutuş pozisyonlarını alır.",
+            "Eseri yorumlarken viyolaya özgü teknikleri kullanır.",
+            "Eseri yorumlarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}

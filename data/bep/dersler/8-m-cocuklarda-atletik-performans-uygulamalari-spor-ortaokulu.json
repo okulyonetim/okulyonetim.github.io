@@ -1,0 +1,50 @@
+{
+  "ders": "Çocuklarda Atletik Performans Uygulamaları (Spor Ortaokulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "DAYANIKLILIK KAVRAMLARI",
+      "a": [
+        {
+          "k": "ÇAPU.8.1.1",
+          "m": "Dayanıklılık kavramı ve sportif performans üzerindeki etkilerini özetleyebilme.",
+          "s": [
+            "Dayanıklılık kavramını çözümler.",
+            "Dayanıklılık türlerini sınıflandırır.",
+            "Dayanıklılığın spor performansı üzerindeki etkilerini kendi cümleleriyle yorumlar."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "AEROBİK DAYANIKLILIK UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.8.2.1",
+          "m": "Aerobik egzersizler ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Aerobik egzersiz bileşenlerini açıklar.",
+            "Aerobik egzersiz bileşenini uygular.",
+            "Aerobik egzersizler ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "ANAEROBİK DAYANIKLILIK UYGULAMALARI",
+      "a": [
+        {
+          "k": "ÇAPU.8.3.1",
+          "m": "Anaerobik egzersizler ile fiziksel uygunluğunu sağlayabilme",
+          "s": [
+            "Anaerobik egzersiz bileşenlerini açıklar.",
+            "Anaerobik egzersiz bileşenini uygular.",
+            "Anaerobik egzersizler ile fiziksel uygunluğunu geliştirir."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "ders": "Bireysel Çalgı Eğitimi-Viyolonsel Modülü (Müzik Okulu)",
+  "grup": "8. Sınıf",
+  "kademe": "Ortaokul",
+  "kaynak": "meb",
+  "u": [
+    {
+      "ad": "DİZİ VE ETÜT UYGULAMALARI-4",
+      "a": [
+        {
+          "k": "VLS.8.1.1",
+          "m": "Hicaz makamında etüt çalabilme",
+          "s": [
+            "Hicaz makamı dizisinin kullanıldığı etüdü çözümler.",
+            "Hicaz makamını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Hicaz makamını çalarken viyolonsele özgü teknikleri kullanır.",
+            "Hicaz makamını çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.8.1.2",
+          "m": "Nikriz makamında etüt çalabilme",
+          "s": [
+            "Nikriz makamı dizisinin kullanıldığı etüdü çözümler.",
+            "Nikriz makamını çalarken duruş ve tutuş pozisyonunu alır.",
+            "Nikriz makamını çalarken viyolonsele özgü teknikleri kullanır.",
+            "Nikriz makamını çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "KÜÇÜK USULLERLE ESER UYGULAMALARI-3",
+      "a": [
+        {
+          "k": "VLS.8.2.1",
+          "m": "Düyek usulünde Türk müziği eserlerini çalabilme",
+          "s": [
+            "Düyek usulünün kullanıldığı eseri çözümler.",
+            "Düyek usulünde eser çalarken duruş ve tutuş pozisyonlarını alır.",
+            "Düyek usulünde eser çalarken çalgıya özgü teknikleri kullanır.",
+            "Düyek usulünde eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.8.2.2",
+          "m": "Aksak usulünde Türk müziği eserlerini çalabilme",
+          "s": [
+            "Aksak usulünün kullanıldığı eseri çözümler.",
+            "Aksak usulünde eser çalarken duruş ve tutuş pozisyonlarını alır.",
+            "Aksak usulünde eser çalarken çalgıya özgü teknikleri kullanır.",
+            "Aksak usulünde eser çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.8.2.3",
+          "m": "Aksak semai usulünde Türk müziği eserlerini çalabilme",
+          "s": [
+            "Aksak usulünün kullanıldığı eseri çözümler.",
+            "Aksak semai usulünde eser çalarken duruş ve tutuş pozisyonlarını alır.",
+            "Aksak semai usulünde eser çalarken çalgıya özgü teknikleri kullanır.",
+            "Aksak semai usulünde eser çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "SESLENDİRME VE YORUMLAMA TEKNİKLERİ",
+      "a": [
+        {
+          "k": "VLS.8.3.1",
+          "m": "Flageolet tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Flageolet tekniğinin kullanıldığı etüdü çözümler.",
+            "Flageolet tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Flageolet tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Flageolet tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        },
+        {
+          "k": "VLS.8.3.2",
+          "m": "Vibrato tekniğini kullanarak etüt çalabilme",
+          "s": [
+            "Vibrato tekniğinin kullanıldığı etüdü çözümler.",
+            "Vibrato tekniğine yönelik duruş ve tutuş pozisyonunu alır.",
+            "Vibrato tekniğini çalgıya özgü tekniklerle kullanır.",
+            "Vibrato tekniğini kullanarak etüt çalarken müziksel bileşenleri uygular."
+          ]
+        }
+      ]
+    }
+  ]
+}
