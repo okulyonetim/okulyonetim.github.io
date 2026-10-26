@@ -306,9 +306,27 @@ function legacyFav(r){
   try{const raw=store.get(legacyFavKey(r));if(raw!==null){const v=JSON.parse(raw);if(Array.isArray(v))return cleanIds(v)}}catch(_){}
   return null;
 }
+/* Alt menüye sonradan eklenen varsayılan yuvalar: kayıtlı (özelleştirilmiş) çubuğa bir kez, son değiştirilebilir yuvanın yerine konur.
+ * Ana sayfa, Araçlar ve Ben yerinde kalır; kullanıcı sonra menü düzenlemeden dilediğini değiştirebilir (sunulan kayıt tekrar eklemeyi önler). */
+const BAR_YENI=[{id:'idareci-pano',rol:'idareci',key:'tool:idareci-pano'}];
+const barSunulan=(r,extra=[])=>[...new Set([...extra,...BAR_YENI.filter(x=>x.rol===r).map(x=>x.id)])];
+function migrateBar(r,o){
+  if(!o?.bar)return o;
+  const done=Array.isArray(o.sunulan)?o.sunulan:[],todo=BAR_YENI.filter(x=>x.rol===r&&!done.includes(x.id));
+  if(!todo.length)return o;
+  const bar=cleanBar(o.bar,o.menus?cleanMenus(o.menus):DEFAULT_LAYOUT[r].menus,r);
+  for(const x of todo){
+    if(bar.includes(x.key)||!TOOLS[x.id])continue;
+    let i=-1;
+    for(let j=bar.length-1;j>=0;j--)if(!['home','tools','me'].includes(bar[j])){i=j;break}
+    if(i>=0)bar[i]=x.key;
+  }
+  writeOverride(r,{bar,sunulan:barSunulan(r,done)},{silent:true});
+  return readOverride(r);
+}
 /* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı varsayılandan gelir. */
 function layoutRaw(r=role()){
-  const o=readOverride(r),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
+  const o=migrateBar(r,readOverride(r)),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
   return{bar:cleanBar(o?.bar||def.bar,menus,r),menus,fav:o?.fav?cleanIds(o.fav):(legacyFav(r)||clone(def.fav)),custom:!!(o&&(o.bar||o.menus))};
 }
 function emitLayoutChanged(r){try{global.dispatchEvent(new CustomEvent('koruk:nav-layout-changed',{detail:{role:r}}))}catch(_){}}
@@ -329,7 +347,7 @@ function writeOverride(r,patch,{reset=false,silent=false}={}){
 /* Düzeni kaydeder: tek yer, tüm düzenleme buradan geçer. */
 function saveLayout(next,r=role(),{silent=false}={}){
   const menus=cleanMenus(next?.menus);
-  writeOverride(r,{menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav)},{silent});
+  writeOverride(r,{menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav),sunulan:barSunulan(r,readOverride(r)?.sunulan)},{silent});
   return layoutRaw(r);
 }
 const resetLayout=(r=role())=>writeOverride(r,null,{reset:true});

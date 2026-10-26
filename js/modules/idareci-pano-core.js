@@ -277,6 +277,54 @@ function rehberler(data){
  });
 }
 
+/* ── Dilimizin Zenginlikleri (MEB proje eylem planı: dilimiz.js PLANLAR) ── */
+const KISA_AY={Eki:9,Kas:10,Ara:11,Oca:0,Şub:1,Mar:2,Nis:3,May:4,Haz:5};
+const DZ_KADEME={ilkokul:'İlkokul',ortaokul:'Ortaokul'};
+/* "5–9 Eki" · "12 Eki – 6 Kas" · "29 Ara" → eğitim yılı (Eylül'de başlar) içinde ISO aralığı; tarih değilse null */
+function adimAraligi(txt,yil){
+ const t=String(txt||'').trim(),L='([A-Za-zÇĞİÖŞÜçğıöşü]{3})';
+ let m=new RegExp(`^(\\d{1,2})\\s*[–-]\\s*(\\d{1,2})\\s+${L}$`).exec(t),a,b;
+ if(m)a=[+m[1],m[3]],b=[+m[2],m[3]];
+ else if((m=new RegExp(`^(\\d{1,2})\\s+${L}\\s*[–-]\\s*(\\d{1,2})\\s+${L}$`).exec(t)))a=[+m[1],m[2]],b=[+m[3],m[4]];
+ else if((m=new RegExp(`^(\\d{1,2})\\s+${L}$`).exec(t)))a=[+m[1],m[2]],b=a;
+ else return null;
+ if(!(a[1] in KISA_AY)||!(b[1] in KISA_AY))return null;
+ const iso=([d,k])=>{const ay=KISA_AY[k];return `${ay>=8?yil:yil+1}-${pad(ay+1)}-${pad(d)}`};
+ return{bas:iso(a),bit:iso(b)};
+}
+/* Okulun kademeleri sınıf listesinden bulunur (1–4 ilkokul, 5–8 ortaokul); hiç sınıf yoksa ikisi de gösterilir. */
+function dilimizKademeleri(data){
+ const set=new Set();
+ arr(data?.siniflar).forEach(c=>{const n=Number(String(c?.seviye||c?.ad||'').match(/\d+/)?.[0])||0;if(n>=1&&n<=4)set.add('ilkokul');else if(n>=5&&n<=8)set.add('ortaokul')});
+ return set.size?['ilkokul','ortaokul'].filter(k=>set.has(k)):['ilkokul','ortaokul'];
+}
+const kisalt=(t,max=110)=>{const x=String(t||'').replace(/\s+/g,' ').trim(),c=x.search(/[.!?](\s|$)/),y=c>=0&&c<x.length-1?x.slice(0,c+1):x;return y.length>max?y.slice(0,max-1).trimEnd()+'…':y};
+/* Her kademe için şu an süren adımlar ve yaklaşan (gün içinde) adımlar; hiçbiri yoksa sıradaki adım. Okul girdisi (sorumlu öğretmen, aylık not) girdi(kademe,no)'dan gelir. */
+function dilimiz(planlar,girdi,kademeler,todayIso,gun=14,maxFaaliyet=2,maxAdim=2){
+ const d=parseIso(todayIso);if(!d)return[];
+ const yil=d.getMonth()>=8?d.getFullYear():d.getFullYear()-1;
+ return arr(kademeler).filter(k=>DZ_KADEME[k]&&arr(planlar?.[k]).length).map(k=>{
+  const adimlar=[];
+  arr(planlar[k]).forEach(a=>arr(a[5]).forEach(st=>{
+   const r=adimAraligi(st[2],yil);if(!r)return;
+   adimlar.push({no:a[1],ad:a[2],adim:st[0],metin:kisalt(st[1]),bas:r.bas,bit:r.bit,sure:r.bas<=todayIso&&r.bit>=todayIso});
+  }));
+  let sec=adimlar.filter(x=>x.sure||(x.bas>todayIso&&dayDiff(x.bas,todayIso)<=gun));
+  if(!sec.length){const n=adimlar.filter(x=>x.bas>todayIso).sort((a,b)=>a.bas.localeCompare(b.bas))[0];if(n)sec=[n]}
+  sec.sort((a,b)=>(b.sure-a.sure)||a.bas.localeCompare(b.bas)||String(a.adim).localeCompare(String(b.adim),'tr',{numeric:true}));
+  const by=new Map();
+  sec.forEach(x=>{
+   if(!by.has(x.no))by.set(x.no,{no:x.no,ad:x.ad,adimlar:[]});
+   by.get(x.no).adimlar.push({adim:x.adim,metin:x.metin,tarih:rangeText(x.bas,x.bit),durum:x.sure?'suruyor':'yakin',kalan:x.sure?'Sürüyor':kalanText(dayDiff(x.bas,todayIso))});
+  });
+  const faaliyetler=[...by.values()].slice(0,maxFaaliyet).map(f=>{
+   const e=girdi?.(k,f.no)||{};
+   return{...f,adimlar:f.adimlar.slice(0,maxAdim),fazla:Math.max(0,f.adimlar.length-maxAdim),sorumlu:arr(e.ogretmenler).map(o=>String(o?.ad||'').trim()).filter(Boolean),not:String(e.not||'').trim(),okulTarih:String(e.tarih||'').trim()};
+  });
+  return{kademe:k,ad:DZ_KADEME[k],faaliyetler};
+ }).filter(x=>x.faaliyetler.length);
+}
+
 /* ── paylaşım özeti (düz metin) ── */
 function ozetMetni(model,okul=''){
  const L=[`${okul?okul+' — ':''}İdareci Pano`,model.tarih.uzun];
@@ -291,6 +339,6 @@ function ozetMetni(model,okul=''){
 g.IdareciPanoCore={
  GUNLER,AYLAR,isoOf,parseIso,dayDiff,rangeText,kalanText,hmSec,teacherName,fold,
  periodInfo,liveView,snapshot,programSecenekleri,programTablosu,terfiler,ozelGunler,olaylar,yaklasanlar,geriSayim,
- ayTakvimi,gunOlaylari,rehberler,ozetMetni,activeLeaves,isDutyChief
+ ayTakvimi,gunOlaylari,rehberler,dilimiz,dilimizKademeleri,adimAraligi,ozetMetni,activeLeaves,isDutyChief
 };
 })(typeof window!=='undefined'?window:globalThis);

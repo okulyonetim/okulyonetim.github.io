@@ -14656,6 +14656,10 @@ html[data-theme] #v2ModuleRoot .ka-ip-box{display:flex;flex-direction:column;gap
 html[data-theme] #v2ModuleRoot .ka-ip-box__h{display:flex;align-items:center;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .ka-ip-box__h b{flex:1;min-width:0;font-size:var(--ka-fs-14)}
 html[data-theme] #v2ModuleRoot .ka-ip-box small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-dz{gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ka-ip-dz .ka-ip-row{padding:var(--ka-sp-8) 0;border:0;border-top:var(--ka-border-w) solid var(--gl-edge);border-radius:0;background:none}
+html[data-theme] #v2ModuleRoot .ka-ip-dz .ka-ip-box__h+.ka-ip-row{border-top:0}
+html[data-theme] #v2ModuleRoot .ka-ip-dz .ka-ip-note{margin-top:var(--ka-sp-4)}
 html[data-theme] #v2ModuleRoot .ka-ip-box p{margin:0;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600)}
 html[data-theme] #v2ModuleRoot .ka-ip-count{min-width:var(--ka-ic-26);padding:var(--ka-sp-2) var(--ka-sp-8);border:var(--ka-border-w) solid var(--gl-edge);border-radius:var(--ka-radius-pill);background:var(--gl-bg);text-align:center;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800)}
 html[data-theme] #v2ModuleRoot .ka-ip-bar2{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-10)}
@@ -14767,6 +14771,8 @@ html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);f
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-ring__t b{font-size:var(--ka-fs-34)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row b,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row__name{font-size:var(--ka-fs-22)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-row small,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-place,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-chip{font-size:var(--ka-fs-17)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-box__h b{font-size:var(--ka-fs-22)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-box small,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-count{font-size:var(--ka-fs-17)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile b{font-size:var(--ka-fs-38)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile small{font-size:var(--ka-fs-18)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-tile span,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-note,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-next,html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-box p{font-size:var(--ka-fs-20)}

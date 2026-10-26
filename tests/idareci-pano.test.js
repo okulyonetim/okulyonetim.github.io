@@ -10,7 +10,7 @@ function load(files){
   return win;
 }
 const eq=(a,b,m)=>assert.strictEqual(JSON.stringify(a),JSON.stringify(b),m);
-const w=load(['js/modules/terfi-core.js','js/modules/idareci-pano-core.js']);
+const w=load(['js/modules/dilimiz.js','js/modules/terfi-core.js','js/modules/idareci-pano-core.js']);
 const C=w.IdareciPanoCore;
 assert(C,'IdareciPanoCore yüklenmeli.');
 
@@ -173,6 +173,36 @@ eq(TC.etiket(sn(5,3,'2025-09-01')),'Derece 5 · Kademe 3 → Derece 4 · Kademe 
 eq(TC.etiket(sn(5,2,'2025-09-01')),'Derece 5 · Kademe 2 → 3');
 eq(TC.etiket(sn(1,4,'2025-09-01')),'');
 
+/* ── Dilimizin Zenginlikleri (eylem planı: dilimiz.js) ── */
+const PL=w.DilimizModule.PLANLAR;
+eq(C.adimAraligi('5–9 Eki',2026),{bas:'2026-10-05',bit:'2026-10-09'},'Aynı ay aralığı.');
+eq(C.adimAraligi('12 Eki – 6 Kas',2026),{bas:'2026-10-12',bit:'2026-11-06'},'Aylar arası aralık.');
+eq(C.adimAraligi('29 Ara – 12 Oca',2026),{bas:'2026-12-29',bit:'2027-01-12'},'Yıl sonu geçişi: Ocak ertesi takvim yılına düşer.');
+eq(C.adimAraligi('15 Oca',2026),{bas:'2027-01-15',bit:'2027-01-15'},'Tek gün.');
+eq(C.adimAraligi('İl Yürütme Komisyonunca belirlenecektir',2026),null,'Tarih olmayan adım atlanır.');
+eq(C.dilimizKademeleri({siniflar:[{ad:'1/A',seviye:1},{ad:'3/B',seviye:3}]}),['ilkokul']);
+eq(C.dilimizKademeleri({siniflar:[{ad:'7/A',seviye:7}]}),['ortaokul']);
+eq(C.dilimizKademeleri(data),['ilkokul','ortaokul'],'Hem ilk hem ortaokul sınıfı varsa ikisi de.');
+eq(C.dilimizKademeleri({siniflar:[]}),['ilkokul','ortaokul'],'Sınıf yoksa ikisi de gösterilir.');
+const girdi=(k,no)=>k==='ilkokul'&&no===3?{ogretmenler:[{id:'t2',ad:'Uygar Halisdemir'}],not:'Bilen Oturur yarışması',tarih:'28–30 Ekim'}:{ogretmenler:[],not:'',tarih:''};
+const dz=C.dilimiz(PL,girdi,['ilkokul','ortaokul'],TODAY,14);
+eq(dz.map(k=>k.kademe),['ilkokul','ortaokul']);
+eq(dz[0].faaliyetler.map(f=>f.no),[3],'26 Ekim’de yalnız 3. faaliyet sürüyor.');
+eq(dz[0].faaliyetler[0].adimlar.map(a=>[a.adim,a.durum,a.kalan,a.tarih]),[['3.3','suruyor','Sürüyor','12 Ekim – 6 Kasım']],'Süren adım; biten 3.2 listelenmez.');
+eq([dz[0].faaliyetler[0].sorumlu,dz[0].faaliyetler[0].not,dz[0].faaliyetler[0].okulTarih],[['Uygar Halisdemir'],'Bilen Oturur yarışması','28–30 Ekim'],'Okulun girdileri karta gelir.');
+eq(dz[1].faaliyetler[0].sorumlu,[],'Atama yoksa sorumlu boş.');
+assert.strictEqual(dz[0].faaliyetler[0].ad,'Resimli Sözlük Okumaları: Klasik Eser Okumaları');
+assert.strictEqual(dz[1].faaliyetler[0].ad,'Sözlük Okuma: Klasik Eser Okumaları','Kademeye göre ayrı plan kullanılır.');
+const dzK=C.dilimiz(PL,girdi,['ilkokul'],'2026-11-17',14);
+eq(dzK[0].faaliyetler[0].adimlar.map(a=>[a.adim,a.durum,a.kalan]),[['4.1','yakin','6 gün'],['4.2','yakin','6 gün']],'14 gün içindeki yaklaşan adımlar (en çok 2).');
+eq(dzK[0].faaliyetler[0].fazla,1,'Kalan adım sayısı bildirilir.');
+const dzG=C.dilimiz(PL,girdi,['ilkokul'],'2026-10-27',14);
+assert(dzG[0].faaliyetler[0].adimlar.every(a=>a.durum==='suruyor'||a.durum==='yakin'));
+const dzS=C.dilimiz(PL,girdi,['ilkokul'],'2026-11-07',14);
+eq(dzS[0].faaliyetler[0].adimlar[0].adim,'4.1','Süren adım yoksa yakın adım gelir.');
+eq(C.dilimiz(PL,girdi,['ilkokul'],'2027-06-20',14),[],'Plan bitince kart boş kalır.');
+eq(C.dilimiz(null,girdi,['ilkokul'],TODAY),[],'Plan yoksa boş.');
+
 /* ── belirli günler ── */
 const gunler=[
   {ad:'Cumhuriyet Bayramı',tarihBaslangic:'2026-10-29',tarihBitis:'2026-10-29',resmi:true},
@@ -235,9 +265,41 @@ const loader=fs.readFileSync('js/app-loader.js','utf8');
 assert(loader.indexOf('js/modules/terfi-core.js')>-1&&loader.indexOf('js/modules/terfi-core.js')<loader.indexOf('js/modules/people-directory.js'),'terfi-core.js people grubunda people-directory.js’ten önce yüklenmeli.');
 const sw=fs.readFileSync('service-worker.js','utf8');
 for(const f of ['terfi-core','idareci-pano-core','idareci-pano'])assert(sw.includes(`'./js/modules/${f}.js'`),f+' çevrimdışı önbellekte olmalı.');
+const ipSrc=fs.readFileSync('js/modules/idareci-pano.js','utf8');
+assert(/\{id:'dilimiz',ad:'Dilimizin Zenginlikleri'/.test(ipSrc)&&/dilimiz:dilimizHtml/.test(ipSrc),'Panoda Dilimizin Zenginlikleri kartı olmalı.');
+assert(/\['ogretmenler','dilimiz','rehber'\]/.test(ipSrc),'Dilimizin Zenginlikleri tam ekran sunumda yer almalı.');
+assert(/loadScript\?\.\('js\/modules\/dilimiz\.js'\)/.test(ipSrc),'Eylem planı verisi dilimiz.js’den yüklenmeli (yeni veri kaynağı açılmaz).');
+assert(/route\('documents','dilimiz'/.test(ipSrc),'Karttan eylem planı sayfasına gidilebilmeli.');
 const css=fs.readFileSync('css/design-system-base.css','utf8');
 assert(css.includes('/* ===== İDARECİ PANO'),'İdareci Pano stil bloğu olmalı.');
 const ui=fs.readFileSync('js/modules/idareci-pano.js','utf8');
 assert(!/localStorage\.setItem/.test(ui),'Modül doğrudan localStorage yazmamalı (KaPrefs kullanılır).');
 
+/* ── alt menü: kayıtlı düzene Pano bir kez eklenir ── */
+function navWith(initial){
+  const ls=new Map(Object.entries(initial||{}));
+  const win={console,setTimeout:()=>0,clearTimeout(){},localStorage:{getItem:k=>ls.has(k)?ls.get(k):null,setItem:(k,v)=>ls.set(k,String(v)),removeItem:k=>ls.delete(k)},
+    AppStore:{get:k=>k==='session.user'?{uid:'u1',admin:true}:undefined,data:()=>[],subscribe:()=>()=>{}},
+    addEventListener(){},dispatchEvent(){},CustomEvent:function(n,o){this.detail=o&&o.detail},document:{addEventListener(){},querySelectorAll:()=>[],getElementById:()=>null}};
+  win.window=win;win.globalThis=win;vm.createContext(win);
+  vm.runInContext(nav,win,{filename:'app-nav.js'});
+  return{N:win.AppNav,ls};
+}
+const NK='ka-nav-layout:u1:idareci';
+{
+  let {N,ls}=navWith({[NK]:JSON.stringify({bar:['home','menu:okul','tools','menu:evrak','me'],t:1})});
+  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Kayıtlı alt menüde son değiştirilebilir yuva yerine Pano gelir.');
+  eq(JSON.parse(ls.get(NK)).sunulan,['idareci-pano'],'Eklendiği kayıt altına alınır.');
+  const raw=N.layoutRaw('idareci');
+  N.saveLayout({...raw,bar:['home','menu:okul','tools','menu:evrak','me']},'idareci');
+  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','menu:evrak','me'],'Kullanıcı Panoyu çıkarırsa geri eklenmez.');
+  ({N,ls}=navWith({}));
+  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Varsayılan düzende Pano zaten alt menüde.');
+  assert.strictEqual(ls.size,0,'Özelleştirilmemiş düzene yazılmaz.');
+  ({N,ls}=navWith({[NK]:JSON.stringify({bar:['home','tool:idareci-pano','tools','menu:okul','me'],t:1})}));
+  eq(N.layoutRaw('idareci').bar,['home','tool:idareci-pano','tools','menu:okul','me'],'Pano zaten barda ise sıra bozulmaz.');
+  ({N,ls}=navWith({[NK]:JSON.stringify({bar:['home','program','tools','me','menu:okul'],t:1})}));
+  eq(N.layoutRaw('idareci').bar.filter(k=>['home','tools','me'].includes(k)).length,3,'Ana sayfa, Araçlar ve Ben yerinde kalır.');
+  assert(N.layoutRaw('idareci').bar.includes('tool:idareci-pano'));
+}
 console.log('İdareci Pano çekirdek testi geçti.');

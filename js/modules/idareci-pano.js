@@ -1,6 +1,6 @@
 /* Koruk Asistan — İdareci Pano (ekran)
  * Okulun anlık durumunu tek sayfada toplar: şu an, nöbetçiler, gelmeyenler, sınıflar, öğretmenler, ders programları, takvim,
- * terfi, belirli günler, yaklaşanlar, rehber öğretmenler. Veri yeni bir kayıt açmadan uygulamadaki koleksiyonlardan okunur;
+ * terfi, belirli günler, Dilimizin Zenginlikleri eylem planı, yaklaşanlar, rehber öğretmenler. Veri yeni bir kayıt açmadan uygulamadaki koleksiyonlardan okunur;
  * mantık idareci-pano-core.js içindedir. Kart seçimi/sırası/TV süresi ve takvim notları KaPrefs ile (cihaz + hesap) saklanır.
  */
 (function(global){
@@ -28,13 +28,14 @@ const KARTLAR=[
  {id:'takvim',ad:'Takvim',w:4,ico:'cal'},
  {id:'terfi',ad:'Terfisi yaklaşan personel',w:4,ico:'trend'},
  {id:'gunler',ad:'Belirli gün ve haftalar',w:4,ico:'flag'},
+ {id:'dilimiz',ad:'Dilimizin Zenginlikleri',w:6,ico:'book'},
  {id:'yaklasan',ad:'Yaklaşanlar',w:4,ico:'bell'},
  {id:'rehber',ad:'Sınıf rehber öğretmenleri',w:12,ico:'users'}
 ];
 const KIDS=KARTLAR.map(k=>k.id);
 const KMAP=Object.fromEntries(KARTLAR.map(k=>[k.id,k]));
 const SURELER=[10,20,30,60];
-const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi'],['ogretmenler','rehber']];
+const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi'],['ogretmenler','dilimiz','rehber']];
 
 const P='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
 const svg=(d,s=18)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" ${P}>${d}</svg>`;
@@ -47,6 +48,7 @@ const ICON={
  cal:svg('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>'),
  trend:svg('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>'),
  flag:svg('<path d="M5 21V4m0 0h12l-2 4 2 4H5"/>'),
+ book:svg('<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M9 8h6M9 12h6"/>'),
  bell:svg('<path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/>'),
  warn:svg('<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',16),
  cup:svg('<path d="M4 8h12v5a5 5 0 01-5 5H9a5 5 0 01-5-5z"/><path d="M16 9h2a2 2 0 010 4h-2M7 3v2M11 3v2"/>'),
@@ -211,6 +213,14 @@ function terfiHtml(){
  const body=l.length?l.map(t=>row(t.ad,[t.det,t.tarih].filter(Boolean).join(' · '),chip(t.kalan,'blue'))).join(''):empty(any?'30 gün içinde terfisi yaklaşan personel yok.':'Öğretmen detayına derece, kademe ve son terfi tarihi girilince burada görünür.');
  return card('terfi',body,{right:'30 gün'});
 }
+/* Kaynak: Dilimizin Zenginlikleri eylem planı (dilimiz.js) ve okulun girdileri (sorumlu öğretmen, aylık faaliyet notu). */
+function dilimizHtml(){
+ const D=global.DilimizModule,l=D?C().dilimiz(D.PLANLAR,D.entry,C().dilimizKademeleri(M.data),M.today,14):[],cok=l.length>1;
+ const adim=a=>row(a.metin,`${a.adim} · ${a.tarih}`,chip(a.kalan,a.durum==='suruyor'?'gold':'blue'));
+ const fa=(k,f)=>`<div class="ka-ip-box ka-ip-dz"><div class="ka-ip-box__h"><b>${esc(f.no)} · ${esc(f.ad)}</b>${cok?`<span class="ka-ip-count">${esc(k.ad)}</span>`:''}</div>${f.adimlar.map(adim).join('')}${f.fazla?`<small>+${f.fazla} adım daha</small>`:''}<small>${f.sorumlu.length?`Sorumlu öğretmen: ${esc(f.sorumlu.join(', '))}`:'Sorumlu öğretmen atanmadı'}</small>${f.not?note(`<span>Okulumuzda: ${esc(f.not)}</span>${f.okulTarih?`<b>${esc(f.okulTarih)}</b>`:''}`,'blue'):''}</div>`;
+ const body=l.length?l.flatMap(k=>k.faaliyetler.map(f=>fa(k,f))).join(''):empty(D?'Bu eğitim öğretim yılında eylem planında kalan adım yok.':'Eylem planı yüklenemedi.');
+ return card('dilimiz',`${body}<button type="button" class="ka-ip-link" ${route('documents','dilimiz','Dilimizin Zenginlikleri')}>Eylem planı ›</button>`,{right:'MEB projesi'});
+}
 function gunlerHtml(){
  const l=C().ozelGunler(M.ozel,M.today,14,4);
  return card('gunler',l.length?l.map(g=>row(g.ad,g.tarih,chip(g.kalan,'amber'))).join(''):empty('Önümüzdeki 14 günde belirli gün veya hafta yok.'),{right:'bugün + 14 gün'});
@@ -230,7 +240,7 @@ function rehberHtml(){
  const seg=[['tum','Tümü'],['ilk','İlkokul'],['orta','Ortaokul']].map(([k,l])=>`<button type="button" data-ip-act="rehber-kademe" data-k="${k}" aria-pressed="${S.rehberK===k}">${l}</button>`).join('');
  return card('rehber',`<div class="ka-ip-bar2"><div class="ka-ip-seg" role="group" aria-label="Kademe">${seg}</div><input type="search" class="ka-ip-input" data-ip-rehber-q aria-label="Sınıf ya da öğretmen ara" placeholder="Sınıf ya da öğretmen ara… (ör. 7/B)" value="${esc(S.rehberQ)}"></div><div class="ka-ip-tiles is-small" data-ip-rehber-grid>${rehberKartlari()}</div>`,{right:`${all.length} şube${bos?` · ${bos} boş`:''}`});
 }
-const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,yaklasan:yaklasanHtml,rehber:rehberHtml};
+const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,rehber:rehberHtml};
 
 /* ── sayfa ── */
 function strip(){
@@ -430,6 +440,7 @@ async function ensureDeps(){
  const L=global.AppLoader;
  if(!global.TerfiCore)await L?.loadScript?.('js/modules/terfi-core.js');
  if(!global.IdareciPanoCore)await L?.loadScript?.('js/modules/idareci-pano-core.js');
+ if(!global.DilimizModule)try{await L?.loadScript?.('js/modules/dilimiz.js')}catch(_){}
  if(!global.BelirliGunlerCatalog)try{await L?.loadScript?.('js/modules/belirli-gunler-catalog.js')}catch(_){}
  if(!global.IdareciPanoCore||!global.TerfiCore)throw new Error('İdareci Pano bileşenleri yüklenemedi.');
 }
