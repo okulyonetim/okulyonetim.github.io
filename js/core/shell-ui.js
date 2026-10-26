@@ -135,21 +135,6 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);
     return true;
   }
-  if(name==='tools'&&page==='form-bep'){
-    if(global.PermissionService?.moduleLevel?.('tools')==='hidden'||global.RolePermissionBridge?.allowedRoute?.('tools','form-bep')===false)return false;
-    setBottomActive(bottom);global.AppLoader?.setActiveModule?.('tools');setTitle(title||'BEP Hazırlama');
-    try{
-      const pageRoot=$('#v2ModuleRoot');
-      if(!global.BepModule)await global.AppLoader?.loadScript?.('js/modules/bep.js?v=2');
-      if(!global.BepModule?.mount)throw new Error('BepModule hazır değil');
-      if(routeToken!==routeEpoch)return false;
-      pageRoot?.replaceChildren?.();
-      const ok=global.BepModule.mount(pageRoot);
-      if(ok===false)throw new Error('BepModule.mount başarısız');
-      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||'BEP Hazırlama'});
-      return true;
-    }catch(e){console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');return false}
-  }
   if(name==='tools'&&FORM_PAGES[page])return applyFormPage(root,page,title);
   if(name==='documents'&&page==='evrak'&&global.EvrakTakipPage?.open){
     global.DocumentsModule?.unmount?.();
@@ -319,6 +304,21 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
+  if(name==='tools'&&page==='form-bep'){
+    if(global.PermissionService?.moduleLevel?.('tools')==='hidden'||global.RolePermissionBridge?.allowedRoute?.('tools','form-bep')===false)return false;
+    setBottomActive(bottom);global.AppLoader?.setActiveModule?.('tools');setTitle(title||'BEP Hazırlama');
+    try{
+      const pageRoot=$('#v2ModuleRoot');
+      if(!global.BepModule)await global.AppLoader?.loadScript?.('js/modules/bep.js?v=2');
+      if(!global.BepModule?.mount)throw new Error('BepModule hazır değil');
+      if(routeToken!==routeEpoch)return false;
+      pageRoot?.replaceChildren?.();
+      const ok=global.BepModule.mount(pageRoot);
+      if(ok===false)throw new Error('BepModule.mount başarısız');
+      if(remember)rememberView({kind:'route',name,bottom,page:page||'home',title:title||'BEP Hazırlama'});
+      return true;
+    }catch(e){console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');return false}
+  }
   if(name==='committees'){
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
     try{
