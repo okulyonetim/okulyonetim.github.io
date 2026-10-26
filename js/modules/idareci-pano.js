@@ -207,8 +207,8 @@ function takvimHtml(){
 }
 function terfiHtml(){
  const l=C().terfiler(M.data,M.today,30);
- const any=M.data.ogretmenler.some(t=>t&&t.aktif!==false&&t.sonrakiTerfiTarihi);
- const body=l.length?l.map(t=>row(t.ad,[t.det,t.tarih].filter(Boolean).join(' · '),chip(t.kalan,'blue'))).join(''):empty(any?'30 gün içinde terfisi yaklaşan personel yok.':'Öğretmen kaydındaki “Sonraki terfi tarihi” alanı doldurulunca burada görünür.');
+ const any=M.data.ogretmenler.some(t=>t&&t.aktif!==false&&t.sonTerfiTarihi);
+ const body=l.length?l.map(t=>row(t.ad,[t.det,t.tarih].filter(Boolean).join(' · '),chip(t.kalan,'blue'))).join(''):empty(any?'30 gün içinde terfisi yaklaşan personel yok.':'Öğretmen detayına derece, kademe ve son terfi tarihi girilince burada görünür.');
  return card('terfi',body,{right:'30 gün'});
 }
 function gunlerHtml(){
@@ -428,9 +428,10 @@ function onFs(){if(S.tv&&S.tvFs&&!document.fullscreenElement){S.tvFs=false;tvClo
 /* ── açılış ── */
 async function ensureDeps(){
  const L=global.AppLoader;
+ if(!global.TerfiCore)await L?.loadScript?.('js/modules/terfi-core.js');
  if(!global.IdareciPanoCore)await L?.loadScript?.('js/modules/idareci-pano-core.js');
  if(!global.BelirliGunlerCatalog)try{await L?.loadScript?.('js/modules/belirli-gunler-catalog.js')}catch(_){}
- if(!global.IdareciPanoCore)throw new Error('İdareci Pano bileşenleri yüklenemedi.');
+ if(!global.IdareciPanoCore||!global.TerfiCore)throw new Error('İdareci Pano bileşenleri yüklenemedi.');
 }
 async function open(){
  try{await ensureDeps()}catch(e){console.error('[İdareci Pano]',e);toast('İdareci Pano açılamadı.');return false}

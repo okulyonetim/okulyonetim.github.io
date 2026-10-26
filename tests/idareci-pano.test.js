@@ -10,7 +10,7 @@ function load(files){
   return win;
 }
 const eq=(a,b,m)=>assert.strictEqual(JSON.stringify(a),JSON.stringify(b),m);
-const w=load(['js/modules/idareci-pano-core.js']);
+const w=load(['js/modules/terfi-core.js','js/modules/idareci-pano-core.js']);
 const C=w.IdareciPanoCore;
 assert(C,'IdareciPanoCore yüklenmeli.');
 
@@ -19,12 +19,12 @@ const NOW=new Date(2026,9,26,10,48,12),TODAY='2026-10-26';
 const data={
   ogretmenler:[
     {id:'t1',adSoyad:'Çilem Aydın',aktif:true},
-    {id:'t2',adSoyad:'Uygar Halisdemir',aktif:true,derece:3,kademeNo:2,sonrakiTerfiTarihi:'2026-11-05'},
-    {id:'t3',adSoyad:'Fatma Şenocak',aktif:true,derece:4,kademeNo:1,sonrakiTerfiTarihi:'2026-10-26'},
-    {id:'t4',adSoyad:'Ece Küçük Müldür',aktif:true,sonrakiTerfiTarihi:'2027-03-01'},
+    {id:'t2',adSoyad:'Uygar Halisdemir',aktif:true,derece:3,kademeNo:2,sonTerfiTarihi:'2025-11-05'},
+    {id:'t3',adSoyad:'Fatma Şenocak',aktif:true,derece:4,kademeNo:3,sonTerfiTarihi:'2025-10-26'},
+    {id:'t4',adSoyad:'Ece Küçük Müldür',aktif:true,derece:2,kademeNo:1,sonTerfiTarihi:'2026-03-01'},
     {id:'t5',adSoyad:'Ayşe Boş',aktif:true},
     {id:'t6',adSoyad:'Mehmet Erken',aktif:true},
-    {id:'t7',adSoyad:'Pasif Kişi',aktif:false,sonrakiTerfiTarihi:'2026-10-30'}
+    {id:'t7',adSoyad:'Pasif Kişi',aktif:false,derece:5,kademeNo:1,sonTerfiTarihi:'2025-10-30'}
   ],
   siniflar:[{id:'c1',ad:'1/A',seviye:1,sinifOgretmeniId:'t1'},{id:'c2',ad:'4/A',seviye:4,sinifOgretmeniId:'t2'},{id:'c3',ad:'2/A',seviye:2},{id:'c4',ad:'5/A',seviye:5,sinifOgretmeniId:'t4'}],
   dersProgrami:[
@@ -141,9 +141,37 @@ eq(noSeg.saatler.map(s=>s.n),[1,2,3,4,5]);
 /* ── terfi ── */
 const tf=C.terfiler(data,TODAY,30);
 eq(tf.map(x=>x.ad),['Fatma Şenocak','Uygar Halisdemir'],'Yalnız 30 gün içindeki aktif personel, yakından uzağa.');
-eq(tf[0],{ad:'Fatma Şenocak',det:'Derece 4 · Kademe 1',tarih:'26 Ekim',kalan:'Bugün',gun:0});
-assert.strictEqual(tf[1].kalan,'10 gün');
-eq(C.terfiler({ogretmenler:[{id:'x',adSoyad:'A',sonrakiTerfiTarihi:'2026-10-20'}]},TODAY),[],'Geçmiş tarih listelenmez.');
+eq(tf[0],{ad:'Fatma Şenocak',det:'Derece 4 · Kademe 3 → Derece 3 · Kademe 1',tarih:'26 Ekim',kalan:'Bugün',gun:0},'Kademe 3 sonrası derece ilerler.');
+eq(tf[1],{ad:'Uygar Halisdemir',det:'Derece 3 · Kademe 2 → 3',tarih:'5 Kasım',kalan:'10 gün',gun:10});
+const tfx=(o)=>C.terfiler({ogretmenler:[{id:'x',adSoyad:'A',aktif:true,...o}]},TODAY);
+eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-10-20'}),[],'Geçmiş tarih listelenmez.');
+eq(tfx({derece:1,kademeNo:4,sonTerfiTarihi:'2025-10-28'}),[],'1. derece 4. kademe terfi almaz.');
+eq(tfx({derece:4,kademeNo:1}),[],'Son terfi tarihi yoksa listelenmez.');
+eq(tfx({sonTerfiTarihi:'2025-10-28'}),[],'Derece/kademe yoksa listelenmez.');
+eq(tfx({derece:1,kademeNo:3,sonTerfiTarihi:'2025-10-28'}).map(x=>x.det),['Derece 1 · Kademe 3 → 4'],'1. derecede kademe 4’e çıkılır.');
+
+/* ── TerfiCore: kaynak öğretmen detayı (derece, kademe, son terfi tarihi) ── */
+const TC=w.TerfiCore;
+assert(TC,'TerfiCore yüklenmeli.');
+const sn=(derece,kademeNo,sonTerfiTarihi)=>TC.sonraki({derece,kademeNo,sonTerfiTarihi});
+eq(TC.birYilSonra('2024-02-29'),'2025-02-28','29 Şubat artık olmayan yılda 28 Şubat olur.');
+eq(TC.birYilSonra('2026-10-26'),'2027-10-26','Sonraki terfi 1 yıl sonradır.');
+eq(TC.birYilSonra(''),'');
+let r=sn(5,2,'2025-09-01');
+eq([r.durum,r.tarih,r.sonra,r.dereceDegisir],['var','2026-09-01',{derece:5,kademe:3},false],'Kademe her yıl 1 artar.');
+r=sn(5,3,'2025-09-01');
+eq([r.sonra,r.dereceDegisir],[{derece:4,kademe:1},true],'3. kademeden sonra derece ilerler, kademe 1 olur.');
+r=sn(1,3,'2025-09-01');
+eq([r.sonra,r.dereceDegisir],[{derece:1,kademe:4},false],'1. derecede kademe 4’e kadar çıkar.');
+r=sn(1,4,'2025-09-01');
+eq([r.durum,r.sonra],['bitti',undefined],'1. derece 4. kademede terfi biter.');
+eq(sn(3,2,'')['durum'],'tarih-yok','Son terfi tarihi yoksa tarih hesaplanmaz.');
+eq(sn(3,2,'bozuk')['durum'],'tarih-yok');
+eq(sn('','', '2025-09-01').durum,'eksik','Derece ve kademe yoksa hesaplanmaz.');
+eq(TC.sonraki({derece:'3. derece',kademeDerece:'2',sonTerfiTarihi:'2025-09-01'}).sonra,{derece:3,kademe:3},'Eski kademeDerece alanı ve metinli derece okunur.');
+eq(TC.etiket(sn(5,3,'2025-09-01')),'Derece 5 · Kademe 3 → Derece 4 · Kademe 1');
+eq(TC.etiket(sn(5,2,'2025-09-01')),'Derece 5 · Kademe 2 → 3');
+eq(TC.etiket(sn(1,4,'2025-09-01')),'');
 
 /* ── belirli günler ── */
 const gunler=[
@@ -200,7 +228,13 @@ assert(/TEACHER_HIDDEN=new Set\(\['idareci-pano:'/.test(nav),'Öğretmen hesabı
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 assert(/name==='idareci-pano'[\s\S]{0,400}IdareciPano\.open\(\)/.test(shell),'Kabukta idareci-pano rotası modülü açmalı.');
 const people=fs.readFileSync('js/modules/people-directory.js','utf8');
-assert(/name="sonrakiTerfiTarihi"/.test(people)&&/sonrakiTerfiTarihi:str\(fd,'sonrakiTerfiTarihi'\)/.test(people),'Öğretmen formunda “Sonraki terfi tarihi” alanı kaydedilmeli.');
+assert(/name="sonTerfiTarihi"/.test(people)&&/sonTerfiTarihi:str\(fd,'sonTerfiTarihi'\)/.test(people),'Öğretmen formunda “Son terfi tarihi” alanı kaydedilmeli.');
+assert(!/sonrakiTerfiTarihi/.test(people+fs.readFileSync('js/modules/idareci-pano.js','utf8')+fs.readFileSync('js/modules/idareci-pano-core.js','utf8')),'Eski “sonrakiTerfiTarihi” alanı kalmamalı; sonraki terfi hesaplanır.');
+assert(/terfiRows\(o\)/.test(people)&&/TerfiCore/.test(people),'Öğretmen detayında sonraki terfi TerfiCore ile hesaplanmalı.');
+const loader=fs.readFileSync('js/app-loader.js','utf8');
+assert(loader.indexOf('js/modules/terfi-core.js')>-1&&loader.indexOf('js/modules/terfi-core.js')<loader.indexOf('js/modules/people-directory.js'),'terfi-core.js people grubunda people-directory.js’ten önce yüklenmeli.');
+const sw=fs.readFileSync('service-worker.js','utf8');
+for(const f of ['terfi-core','idareci-pano-core','idareci-pano'])assert(sw.includes(`'./js/modules/${f}.js'`),f+' çevrimdışı önbellekte olmalı.');
 const css=fs.readFileSync('css/design-system-base.css','utf8');
 assert(css.includes('/* ===== İDARECİ PANO'),'İdareci Pano stil bloğu olmalı.');
 const ui=fs.readFileSync('js/modules/idareci-pano.js','utf8');

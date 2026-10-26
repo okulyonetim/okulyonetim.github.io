@@ -186,17 +186,16 @@ function programTablosu(data,live,{tur='ogretmen',id=''}={},now=new Date()){
 }
 
 /* ── terfisi yaklaşanlar ── */
+/* Kaynak öğretmen detayıdır: derece, kademe ve son terfi tarihi. Sonraki terfi (1 yıl sonra) ve yeni derece/kademe TerfiCore'dan gelir. */
 function terfiler(data,todayIso,gun=30){
+ const T=g.TerfiCore;if(!T)return[];
  return activeTeachers(data)
-  .map(t=>({t,tarih:String(t.sonrakiTerfiTarihi||'').slice(0,10)}))
-  .filter(x=>ISO.test(x.tarih))
-  .map(x=>({...x,d:dayDiff(x.tarih,todayIso)}))
+  .map(t=>({t,r:T.sonraki(t)}))
+  .filter(x=>x.r.durum==='var')
+  .map(x=>({...x,d:dayDiff(x.r.tarih,todayIso)}))
   .filter(x=>x.d>=0&&x.d<=gun)
   .sort((a,b)=>a.d-b.d||teacherName(a.t).localeCompare(teacherName(b.t),'tr'))
-  .map(({t,tarih,d})=>{
-   const kademe=t.kademeNo||t.kademeDerece;
-   return{ad:teacherName(t),det:[t.derece?`Derece ${t.derece}`:'',kademe?`Kademe ${kademe}`:''].filter(Boolean).join(' · '),tarih:dm(tarih),kalan:kalanText(d),gun:d};
-  });
+  .map(({t,r,d})=>({ad:teacherName(t),det:T.etiket(r),tarih:dm(r.tarih),kalan:kalanText(d),gun:d}));
 }
 
 /* ── belirli gün ve haftalar: liste [{ad,tarihBaslangic,tarihBitis,resmi}] ── */
