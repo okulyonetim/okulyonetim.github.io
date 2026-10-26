@@ -408,14 +408,12 @@ function currentView(){return navStack[navStack.length-1]||null}
 /* ── alt sekmeler: sekme kümesini rol (AppNav) belirler; ortadaki sekme yükseltilmiş Araçlar / Yönetim düğmesidir ── */
 let lastRole='';
 function renderBottomNav(){
-  const bar=$('[data-ka-bottom-nav]'),api=nav();if(!bar)return;
-  if(!api||typeof api.tabs!=='function'||typeof api.role!=='function'){bar.innerHTML='';bar.hidden=true;return;}
-  const role=api.role(),tabs=api.tabs(role)||[],signed=!!user().uid,switched=signed&&!!lastRole&&role!==lastRole,sig=`${role}|${tabs.map(t=>t.key).join()}`;
-  bar.hidden=false;bar.style.display='flex';bar.setAttribute('aria-hidden','false');
+  const bar=$('[data-ka-bottom-nav]');if(!bar||!nav())return;
+  const role=nav().role(),tabs=nav().tabs(role),signed=!!user().uid,switched=signed&&!!lastRole&&role!==lastRole,sig=`${role}|${tabs.map(t=>t.key).join()}`;
   lastRole=signed?role:'';
-  if(bar.dataset.sig!==sig||!bar.children.length){
+  if(bar.dataset.sig!==sig){
     bar.dataset.sig=sig;bar.dataset.role=role;
-    bar.innerHTML=tabs.map((t,i)=>i===2?`<button class="ka-bottom-item ka-bottom-menu" type="button" data-ka-tab="${t.key}"><span class="ka-bottom-menu-icon">${api.icon(t.icon,24,2.2)}</span><span>${esc(t.label)}</span></button>`:`<button class="ka-bottom-item" type="button" data-ka-tab="${t.key}"><span class="ka-bottom-icon">${api.icon(t.icon,22,2)}</span><span>${esc(t.label)}</span></button>`).join('');
+    bar.innerHTML=tabs.map((t,i)=>i===2?`<button class="ka-bottom-item ka-bottom-menu" type="button" data-ka-tab="${t.key}"><span class="ka-bottom-menu-icon">${nav().icon(t.icon,24,2.2)}</span><span>${esc(t.label)}</span></button>`:`<button class="ka-bottom-item" type="button" data-ka-tab="${t.key}"><span class="ka-bottom-icon">${nav().icon(t.icon,22,2)}</span><span>${esc(t.label)}</span></button>`).join('');
   }
   if(switched){navStack=[homeView()];home()}else setBottomActive(activeAction)
 }
@@ -672,7 +670,7 @@ function bindHeader(){document.addEventListener('click',e=>{const backBtn=e.targ
 function bindBottom(){document.addEventListener('click',e=>{const btn=e.target.closest('[data-ka-tab]');if(!btn)return;e.preventDefault();openTab(btn.dataset.kaTab)})}
 function hydrateHeader(){updateNotificationBadge();syncThemeButton()}
 function onRoleChanged(){renderBottomNav()}
-function init(){installBuiltInPageRoutes();installBackNavigation();observeVisibility();takeThemeOwnership();bindHeader();bindBottom();renderBottomNav();setTimeout(renderBottomNav,250);setTimeout(renderBottomNav,1000);syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});window.addEventListener('koruk:nav-role-changed',onRoleChanged);for(const ev of ['koruk:permissions-changed','koruk:app-config-changed'])window.addEventListener(ev,renderBottomNav);global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});global.AppStore?.subscribe?.('data.ogretmenler',()=>{hydrateHeader();renderBottomNav()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
+function init(){installBuiltInPageRoutes();installBackNavigation();observeVisibility();takeThemeOwnership();bindHeader();bindBottom();renderBottomNav();syncShellBack();hydrateHeader();hydrateTheme();window.addEventListener('koruk:app-ready',()=>{installBackNavigation();takeThemeOwnership();syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});window.addEventListener('koruk:nav-role-changed',onRoleChanged);for(const ev of ['koruk:permissions-changed','koruk:app-config-changed'])window.addEventListener(ev,renderBottomNav);global.AppStore?.subscribe?.('session.user',()=>{syncVisibilityClasses();hydrateHeader();hydrateTheme();renderBottomNav()});global.AppStore?.subscribe?.('data.ogretmenler',()=>{hydrateHeader();renderBottomNav()});for(const type of ['hatirlaticilar','sinavlar','denemeSinavlari','gorevler','konusmalar','duyurular'])global.AppStore?.subscribe?.('data.'+type,hydrateHeader)}
 global.ShellUI={init,home,back,openTab,openPage,routeModule,registerPageRoute,renderProfile,renderSearch,openQuickNote,openNotifications,toggleTheme,applyTheme,syncVisibilityClasses,pageAllowed,canOpen:(name,page)=>moduleAllowed(name)&&pageAllowed(name,page||''),webMode,currentView,profileInfo};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })(window);
