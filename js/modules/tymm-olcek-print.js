@@ -23,7 +23,7 @@ function sinifYazisi(c){
 
 function ustYazi(c,f){
  const donem=`${esc(c.yil)} EĞİTİM ÖĞRETİM YILI ${c.donem}. DÖNEM`;
- return`<header class="tm-head"><p>T.C.</p><p>${esc(up(c.ilce)||DOT)} KAYMAKAMLIĞI</p><p>${esc(up(c.okul)||DOT)} MÜDÜRLÜĞÜ</p><p>${donem}</p><p class="tm-class">${esc(sinifYazisi(c))} ${esc(up(c.ders))} DERSİ</p><h1 class="tm-title">${esc(core().printTitle(f))}</h1></header><p class="tm-legend">${esc(ACIKLAMA)}</p>`;
+ return`<header class="tm-head"><p>T.C.</p><p>${esc(up(c.makamAd)||DOT)} ${c.makamTur==='valilik'?'VALİLİĞİ':'KAYMAKAMLIĞI'}</p><p>${esc(up(c.okul)||DOT)} MÜDÜRLÜĞÜ</p><p>${donem}</p><p class="tm-class">${esc(sinifYazisi(c))} ${esc(up(c.ders))} DERSİ</p><h1 class="tm-title">${esc(core().printTitle(f))}</h1></header><p class="tm-legend">${esc(ACIKLAMA)}</p>`;
 }
 function tabloBasi(f){
  const n=f.olcutler.length,kolon=(GENISLIK.yazi-GENISLIK.sabit)/n;

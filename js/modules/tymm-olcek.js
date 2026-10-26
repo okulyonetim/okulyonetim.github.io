@@ -125,7 +125,9 @@ async function save({silent=false}={}){
  }
 }
 
-/* ── baskı bilgileri (okul adı, ilçe, müdür, öğretmen) ── */
+/* ── baskı bilgileri (okul adı, üst makam, müdür, öğretmen) ── */
+/* Üst makam: il merkezinde (ilçe boş ya da “Merkez”) Valilik, diğer ilçelerde Kaymakamlık; yazdırma bilgilerinden elle değiştirilir. */
+const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
 function readPref(){try{const o=JSON.parse(global.KaPrefs?.get?.(PREF,'')||'{}');return o&&typeof o==='object'?o:{}}catch{return{}}}
 function writePref(o){
  const txt=JSON.stringify(o);
@@ -133,11 +135,13 @@ function writePref(o){
 }
 function printInfo(){
  const o=okulB(),p=readPref(),cls=curClass();
+ const tur=p.makamTur==='valilik'||p.makamTur==='kaymakamlik'?p.makamTur:makamOto(o.il,o.ilce);
  const mudur=personName(rows('ogretmenler').find(t=>t.id===(o.mudurId||o.mudirId)))||String(o.mudurAdSoyad||o.mudurAdi||'').trim();
  const ogretmen=personName(rows('ogretmenler').find(t=>t.id===(cls?.sinifOgretmeniId||teacherId())));
  return{
   okul:p.okul||String(o.okulAdi||o.ad||'').trim(),
-  ilce:p.ilce||String(o.ilce||'').trim(),
+  makamTur:tur,
+  makamAd:p.makamAd||String((tur==='valilik'?o.il:o.ilce)||'').trim(),
   mudur:p.mudur||mudur,
   ogretmen:p.ogretmen||ogretmen
  };
@@ -164,7 +168,7 @@ function viewHome(list){
   body=`<div class="ka-tm-courses">${cards}</div>`;
  }
  const pi=printInfo();
- const info=`<details class="ka-card ka-tm-info"><summary>Yazdırma bilgileri</summary><div class="ka-card__body ka-stack"><p class="ka-muted">Gözlem formunun üst yazısı ve imza bölümü için. Boş bırakılanlar okul ayarlarından alınır.</p><div class="ka-grid">${[['okul','Okul adı'],['ilce','İlçe (… Kaymakamlığı)'],['mudur','Okul müdürü'],['ogretmen','Sınıf öğretmeni']].map(([k,l])=>`<label class="ka-field"><span class="ka-field__label">${l}</span><input class="ka-input" type="text" value="${esc(readPref()[k]||'')}" placeholder="${esc(pi[k]||'')}" data-tm-pref="${k}" autocomplete="off"></label>`).join('')}</div></div></details>`;
+ const info=`<details class="ka-card ka-tm-info"><summary>Yazdırma bilgileri</summary><div class="ka-card__body ka-stack"><p class="ka-muted">Gözlem formunun üst yazısı ve imza bölümü için. Boş bırakılanlar okul ayarlarından alınır.</p><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Okul adı</span><input class="ka-input" type="text" value="${esc(readPref().okul||'')}" placeholder="${esc(pi.okul)}" data-tm-pref="okul" autocomplete="off"></label><label class="ka-field"><span class="ka-field__label">Üst makam</span><select class="ka-input" data-tm-pref="makamTur"><option value="valilik" ${pi.makamTur==='valilik'?'selected':''}>Valilik</option><option value="kaymakamlik" ${pi.makamTur==='kaymakamlik'?'selected':''}>Kaymakamlık</option></select></label><label class="ka-field"><span class="ka-field__label">Makam adı (il veya ilçe)</span><input class="ka-input" type="text" value="${esc(readPref().makamAd||'')}" placeholder="${esc(pi.makamAd)}" data-tm-pref="makamAd" autocomplete="off"></label>${[['mudur','Okul müdürü'],['ogretmen','Sınıf öğretmeni']].map(([k,l])=>`<label class="ka-field"><span class="ka-field__label">${l}</span><input class="ka-input" type="text" value="${esc(readPref()[k]||'')}" placeholder="${esc(pi[k]||'')}" data-tm-pref="${k}" autocomplete="off"></label>`).join('')}</div></div></details>`;
  return head+filters+body+info;
 }
 function formOptions(course){
@@ -296,6 +300,7 @@ function onInput(e){
  const p=readPref(),k=el.dataset.tmPref,v=el.value.trim();
  if(v)p[k]=v;else delete p[k];
  writePref(p);
+ if(k==='makamTur'){const ad=mounted?.querySelector('[data-tm-pref="makamAd"]');if(ad)ad.placeholder=printInfo().makamAd}
 }
 function onChange(e){
  if(!inPage(e))return;
@@ -341,7 +346,7 @@ async function printForms(all){
   const info=printInfo(),cls=curClass(),cat=curCatalog();
   global.TymmPrint.print({
    formlar:all?co.formlar:[f],doc:S.doc,ogrenciler:students(),
-   okul:info.okul,ilce:info.ilce,mudur:info.mudur,ogretmen:info.ogretmen,
+   okul:info.okul,makamTur:info.makamTur,makamAd:info.makamAd,mudur:info.mudur,ogretmen:info.ogretmen,
    yil:cat?.yil||C().schoolYear(),donem:S.donem,sinifAd:C().classLabel(cls),sinif:curGrade(),sube:C().branchOf(C().classLabel(cls)),ders:co.ad
   });
  }catch(e){console.warn('[TYMM yazdır]',e);toast('Yazdırma hazırlanamadı: '+(e?.message||e))}

@@ -164,10 +164,11 @@ const ogrenciler=Array.from({length:3},(_,i)=>({id:'o'+i,ogrenciAdi:'Öğrenci '
 const printForm=K.courseOf(cat[4],1,'turkce').formlar[0];
 const printDoc=K.blank({sahipUid:'u1',sinifId:'c4a',sinifAd:'4-A',sinif:4,sube:'A',yil:'2026-2027',donem:1,ders:'turkce'});
 K.fillRow(printDoc,printForm,'o0',3);K.setScore(printDoc,printForm,'o0',0,4);
-const pc={formlar:[printForm,K.courseOf(cat[4],1,'turkce').formlar[1]],doc:printDoc,ogrenciler,okul:'Örnek İlkokulu',ilce:'Merkez',mudur:'Ali Veli',ogretmen:'Ayşe Öğretmen',yil:'2026-2027',donem:1,sinifAd:'4-A',sinif:4,sube:'A',ders:'Türkçe'};
+const pc={formlar:[printForm,K.courseOf(cat[4],1,'turkce').formlar[1]],doc:printDoc,ogrenciler,okul:'Örnek İlkokulu',makamTur:'valilik',makamAd:'Ankara',mudur:'Ali Veli',ogretmen:'Ayşe Öğretmen',yil:'2026-2027',donem:1,sinifAd:'4-A',sinif:4,sube:'A',ders:'Türkçe'};
 const ph=P.html(pc);
 assert.strictEqual((ph.match(/<section class="tm-page">/g)||[]).length,2,'Her form ayrı sayfada başlar.');
-assert(ph.includes('MERKEZ KAYMAKAMLIĞI')&&ph.includes('ÖRNEK İLKOKULU MÜDÜRLÜĞÜ'),'Üst yazı ilçe ve okul adını büyük harfle yazar.');
+assert(ph.includes('ANKARA VALİLİĞİ')&&!ph.includes('KAYMAKAMLIĞI')&&ph.includes('ÖRNEK İLKOKULU MÜDÜRLÜĞÜ'),'Üst yazı valilik ve okul adını büyük harfle yazar.');
+assert(P.html({...pc,makamTur:'kaymakamlik',makamAd:'Çankaya'}).includes('ÇANKAYA KAYMAKAMLIĞI'),'Kaymakamlık seçilince ilçe kaymakamlığı yazılır.');
 assert(ph.includes('2026-2027 EĞİTİM ÖĞRETİM YILI 1. DÖNEM')&&ph.includes('4/A SINIFI TÜRKÇE DERSİ'),'Dönem ve sınıf satırları.');
 assert(ph.includes('1. TEMA “OKUMA KÜLTÜRÜ” – GÖZLEM FORMU'),'Form başlığı MEB yazımıyla.');
 assert(ph.includes('Ortalamanın ondalığı 0,5 ve üstüyse üst düzey'),'Açıklama satırı.');
@@ -176,8 +177,8 @@ assert(ph.includes('<th colspan="3">DİNLEME/İZLEME</th>'),'Türkçe grup başl
 assert(ph.includes('<td class="tm-ad">Öğrenci 1</td>'),'Öğrenci adı satırda.');
 assert(/<td class="tm-p">3,08<\/td><td class="tm-p">İyi<\/td>/.test(ph),'Ortalama ve düzey satırda: (4 + 3×11) / 12 = 3,08 → İyi.');
 assert(ph.includes('Ayşe Öğretmen')&&ph.includes('Ali Veli')&&ph.includes('UYGUNDUR'),'İmza bölümü öğretmen ve müdürü yazar.');
-const bos=P.html({...pc,okul:'',ilce:'',mudur:'',ogretmen:'',formlar:[printForm]});
-assert(bos.includes('…… KAYMAKAMLIĞI')||bos.includes('…………………… KAYMAKAMLIĞI'),'İlçe boşsa noktalı yer tutucu.');
+const bos=P.html({...pc,okul:'',makamAd:'',mudur:'',ogretmen:'',formlar:[printForm]});
+assert(bos.includes('…………………… VALİLİĞİ')&&bos.includes('…………………… MÜDÜRLÜĞÜ'),'Makam ve okul adı boşsa noktalı yer tutucu.');
 assert(!/>undefined<|>null</.test(bos),'Boş bilgilerde undefined/null yazılmaz.');
 assert.strictEqual(P.dosyaAdi(pc),'TYMM_4-A_Türkçe_1_Donem','Dosya adı.');
 const xss=P.html({...pc,okul:'<img src=x onerror=1>',formlar:[printForm],ogrenciler:[{id:'x',ogrenciAdi:'<b>Ad</b>',ogrenciNo:'1'}]});
@@ -198,6 +199,8 @@ assert(/name==='tymm-olcek'/.test(shell)&&/js\/modules\/tymm-olcek\.js/.test(she
 const sw=rd('service-worker.js');
 for(const f of ['tymm-olcek.js','tymm-olcek-core.js','tymm-olcek-print.js','data/tymm/1.json','data/tymm/2.json','data/tymm/3.json','data/tymm/4.json'])assert(sw.includes("'./"+(f.startsWith('data')?f:'js/modules/'+f)+"'"),'Çevrimdışı önbellekte: '+f);
 const mod=rd('js/modules/tymm-olcek.js');
+assert(/makamOto=\(il,ilce\)=>\(!String\(ilce\|\|''\)\.trim\(\)\|\|\/merkez\/i\.test\(ilce\)\)&&String\(il\|\|''\)\.trim\(\)\?'valilik':'kaymakamlik'/.test(mod),'İl merkezinde varsayılan Valilik, diğer ilçelerde Kaymakamlık.');
+assert(/data-tm-pref="makamTur"/.test(mod)&&/<option value="valilik"/.test(mod)&&/<option value="kaymakamlik"/.test(mod),'Üst makam yazdırma bilgilerinden elle seçilir.');
 assert(!/localStorage\.setItem/.test(mod),'Modül doğrudan localStorage yazmaz (KaPrefs kullanır).');
 assert(/SE\.register\(T,col,\{query:q=>!u\.uid\?q:q\.where\('sahipUid','==',u\.uid\)\}\)/.test(mod),'Eşitleme yalnız kullanıcının kendi belgelerini çeker.');
 
