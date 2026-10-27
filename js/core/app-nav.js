@@ -401,26 +401,25 @@ function placeOrphans(r=role()){
   if(n)saveLayout({...L,menus},r);
   return n;
 }
-/* Hesaba eşitleme: başka cihazdaki daha yeni düzen bu cihaza gelir; cihazdaki daha yeniyse hesaba gider. */
+/* Hesaba eşitleme: hesap belgesi canlı dinlenir; başka cihazdaki daha yeni düzen bu cihaza hemen gelir, cihazdaki daha yeniyse hesaba gider. */
+function applyRemoteLayouts(x){
+  if(!x)return;
+  for(const r of ['ogretmen','idareci']){
+    const rt=Number(x[`menuDuzeniT_${r}`])||0,local=readOverride(r),lt=local?.t||0;
+    if(rt>lt){
+      let rem=null;try{rem=x[`menuDuzeni_${r}`]?JSON.parse(x[`menuDuzeni_${r}`]):null}catch(_){continue}
+      if(rem&&typeof rem==='object')store.set(deviceKey(r),JSON.stringify(rem));else store.del(deviceKey(r));
+      overrideCache[cacheKey(r)]=undefined;delete overrideCache[cacheKey(r)];
+      emitLayoutChanged(r);
+    }else if(lt>rt)pushOverride(r);
+  }
+}
 let pulledFor='';
 function pullLayouts(){
   const uid=user().uid;
   if(!uid||pulledFor===uid)return;
-  const g=global.KaPrefs?.remoteGet?.();
-  if(!g)return;
+  if(!global.KaPrefs?.remoteListen?.(applyRemoteLayouts))return;
   pulledFor=uid;
-  g.then(x=>{
-    if(!x)return;
-    for(const r of ['ogretmen','idareci']){
-      const rt=Number(x[`menuDuzeniT_${r}`])||0,local=readOverride(r),lt=local?.t||0;
-      if(rt>lt){
-        let rem=null;try{rem=x[`menuDuzeni_${r}`]?JSON.parse(x[`menuDuzeni_${r}`]):null}catch(_){continue}
-        if(rem&&typeof rem==='object')store.set(deviceKey(r),JSON.stringify(rem));else store.del(deviceKey(r));
-        overrideCache[cacheKey(r)]=undefined;delete overrideCache[cacheKey(r)];
-        emitLayoutChanged(r);
-      }else if(lt>rt)pushOverride(r);
-    }
-  }).catch(()=>{});
 }
 try{global.addEventListener('koruk:app-ready',pullLayouts)}catch(_){}
 

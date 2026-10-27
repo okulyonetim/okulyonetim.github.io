@@ -22,8 +22,9 @@ assert(core.includes('for(let i=0;i<names.length;i+=REMOTE_BATCH_SIZE)'),'Tam se
 assert(!core.includes('for(const name of names){const def=registered.get(name);if(!def)continue;try{fetched[name]=await fetchCollection(def)}'),'Firestore koleksiyonları seri bekletilmemeli.');
 assert(core.includes('dataRevision(name)!==started[name]||deviceWriteActive(name)'),'Remote veri aktif/bekleyen local değişikliğin üstüne yazmamalı.');
 assert(core.includes('accepted.forEach(markDataRevision)'),'Remote uygulama revizyonu işaretlenmeli; eşzamanlı eski local hydrate remote veriyi geri almamalı.');
-assert(core.includes("const CORE_REALTIME_TYPES=['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular']"),'Kritik küçük veri kümeleri realtime senkrona bağlı olmalı.');
-assert(core.includes('if(snap.metadata?.fromCache)return'),'Firestore kendi eski cache snapshotı local-first veriyi ezmemeli.');
+assert(core.includes("const SIGNAL_COL='oy_senkron',SIGNAL_ID='degisim'")&&core.includes('startSignal:signalStart'),'Cihazlar arası anlık eşitleme tek küçük değişim belgesine bağlı olmalı.');
+assert(!core.includes('CORE_REALTIME_TYPES')&&!core.includes('startRealtime'),'Koleksiyon bazlı ölü gerçek zamanlı dinleyici kodu kalmamalı.');
+assert(core.includes('if(snap.metadata?.fromCache||snap.metadata?.hasPendingWrites'),'Firestore kendi eski cache snapshotı local-first veriyi ezmemeli.');
 assert(core.includes('const localPromise=localHydrate(CORE_TYPES),remotePromise=navigator.onLine?Promise.resolve().then(()=>pull(CORE_TYPES))'),'İlk local hydrate ve uzak senkron birbirini bloklamadan paralel başlamalı.');
 assert(core.includes('await localPromise;AppStore.set(\'session.ready\',true)'),'İlk kullanılabilir ekran yalnız local hydrateı beklemeli.');
 assert(cacheVersion(sw)>=872,'Runtime cache v869 olmalı.');

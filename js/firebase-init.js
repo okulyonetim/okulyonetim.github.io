@@ -129,7 +129,7 @@ function firebaseyiBaslat(){
 /* report-customizer.js artık app-loader.js bağımlılık zincirinde yükleniyor (report-engine.js öncesinde).
    firebase-init.js'den dinamik enjeksiyon kaldırıldı — race condition önleme. */
 
-/* Firestore read guard: local-first açılış + realtime korunur; tekrar eden tam pull'lar 5 dk bastırılır. */
+/* Firestore read guard: local-first açılış; tekrar eden tam pull'lar 5 dk bastırılır. Cihazlar arası anlık eşitleme core.js'teki değişim işaretindedir (koruk:app-ready ile başlar). */
 (function installFirestoreReadGuard(){
   const TTL=5*60*1000,KEY='ka:firestore-read-sync:v2:',CRITICAL_TYPES=['ogretmenler','siniflar','veliler'];let installed=false;
   const uid=()=>String(window.AKTIF_KULLANICI?.uid||window.AppStore?.get?.('session.user')?.uid||'');
@@ -156,7 +156,6 @@ function firebaseyiBaslat(){
         window.AppStore.set('session.user',window.AKTIF_KULLANICI);window.AppStore.set('session.role',window.AKTIF_ROL||null);
         await window.SyncEngine.localHydrate(types);window.AppStore.set('session.ready',true);window.AppStore.set('meta.hydrated',true);
         window.dispatchEvent(new CustomEvent('koruk:app-ready',{detail:{source:'device-cache'}}));
-        window.SyncEngine.startRealtime?.(['dersProgrami','nobetAtamalari','nobetYerleri','hatirlaticilar','gorevler','duyurular']);
         window.AppStore.set('meta.booted',true);return true;
       }catch(error){console.warn('[FirestoreReadGuard] local bootstrap failed, using normal bootstrap:',error?.message||error);return originalStart()}
     };
@@ -168,7 +167,7 @@ function firebaseyiBaslat(){
 (function readOptimizedSyncFeatureLoad(){
   if(document.querySelector('script[data-read-optimized-sync]'))return;
   const script=document.createElement('script');
-  script.src='js/core/read-optimized-sync.js?v=1107';
+  script.src='js/core/read-optimized-sync.js?v=1108';
   script.async=false;
   script.dataset.readOptimizedSync='';
   document.head.appendChild(script);

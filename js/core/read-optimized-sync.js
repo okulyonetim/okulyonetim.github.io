@@ -2,7 +2,8 @@
  *
  * Local-first mimaride IndexedDB ilk açılış kaynağıdır; ancak yeni cihaz/tarayıcı
  * veya boş yerel önbellekte Firestore'dan ilk veri çekiminin mutlaka yapılmasını sağlar.
- * Remote-sync kararlarının sahibi core.js'tir. Bu dosya ikinci bir sync motoru oluşturmaz.
+ * Remote-sync kararlarının sahibi core.js'tir (cihazlar arası anlık eşitleme de oradaki değişim işaretidir).
+ * Bu dosya ikinci bir sync motoru oluşturmaz.
  */
 (function(global){
 'use strict';
@@ -50,7 +51,8 @@ function status(){
   const ttl=Number(global.SyncEngine?.remoteTTL||24*60*60*1000);
   return Promise.resolve({
     localFirst:true,
-    realtime:false,
+    realtime:global.SyncEngine?.signalState?.()==='acik',
+    signal:global.SyncEngine?.signalState?.()||'kapali',
     remoteTTL:ttl,
     periodicSyncMs:null,
     policyOwner:'core.js',

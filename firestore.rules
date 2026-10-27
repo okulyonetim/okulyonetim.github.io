@@ -606,5 +606,14 @@ service cloud.firestore {
       allow read: if girisYapmis();
       allow create, update, delete: if moduluGorebilir('testSonuclari');
     }
+
+    // Cihazlar arası değişim işareti (js/core/core.js "DEĞİŞİM İŞARETİ"): okul genelinde tek belge.
+    // r: tip başına revizyon sayacı, d: son silinen belge kimlikleri, s: son yazan örnek. Başka alan yazılamaz, silinemez.
+    match /oy_senkron/{docId} {
+      allow read: if girisYapmis();
+      allow create, update: if kendiBelgemVarMi() && docId == 'degisim'
+        && request.resource.data.keys().hasOnly(['r', 's', 'd']);
+      allow delete: if false;
+    }
   }
 }

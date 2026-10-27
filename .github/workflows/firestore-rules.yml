@@ -40,6 +40,7 @@ on:
       - 'tests/devamsizlik-role-rules.test.js'
       - 'tests/legacy-koleksiyonlar-rules.test.js'
       - 'tests/kullanici-tercihleri-owner-rules.test.js'
+      - 'tests/senkron-signal-rules.test.js'
       - 'tests/ogretmen-liste-owner-rules.test.js'
       - 'tests/storage-rules.test.js'
       - '.github/workflows/firestore-rules.yml'
@@ -80,6 +81,7 @@ on:
       - 'tests/devamsizlik-role-rules.test.js'
       - 'tests/legacy-koleksiyonlar-rules.test.js'
       - 'tests/kullanici-tercihleri-owner-rules.test.js'
+      - 'tests/senkron-signal-rules.test.js'
       - 'tests/ogretmen-liste-owner-rules.test.js'
       - 'tests/storage-rules.test.js'
       - '.github/workflows/firestore-rules.yml'
@@ -141,5 +143,6 @@ jobs:
           node tests/devamsizlik-role-rules.test.js &&
           node tests/legacy-koleksiyonlar-rules.test.js &&
           node tests/kullanici-tercihleri-owner-rules.test.js &&
+          node tests/senkron-signal-rules.test.js &&
           node tests/ogretmen-liste-owner-rules.test.js &&
           node tests/storage-rules.test.js"
