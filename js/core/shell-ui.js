@@ -289,6 +289,21 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='veli-toplantisi'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=1');
+      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=1');
+      if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Veli Toplantısı');
+      if(!global.VeliToplantisiModule.open())throw new Error('Veli Toplantısı açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Veli Toplantısı'});
+    }catch(e){
+      console.error('[Shell/veli-toplantisi]',e);global.toast?.('Veli Toplantısı açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='ogretmen-dosyasi'){
     try{
       if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=2');

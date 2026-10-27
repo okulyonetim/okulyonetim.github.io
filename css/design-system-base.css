@@ -14970,3 +14970,55 @@ html[data-theme] #v2ModuleRoot .ka-od-add .ka-field{flex:1 1 var(--ka-sp-120);mi
   html[data-theme] #v2ModuleRoot .ka-od-actions{grid-column:1 / -1;flex-direction:row;flex-wrap:wrap;min-width:0}
   html[data-theme] #v2ModuleRoot .ka-od-actions .ka-btn{width:auto;flex:1 1 auto}
 }
+
+/* ===== A4 — Veli Toplantısı (.vtp-*) =====
+   js/modules/veli-toplantisi.js çıktısının kâğıt stili (dilekçe, tutanak, imza sirküsü, davet pusulası);
+   renk --ka-report-text / --ka-report-bg / --ka-report-border belirteçlerinden gelir. */
+.ka-report .vtp-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt;line-height:1.4}
+.ka-report .vtp-ust{margin:0 0 4mm;text-align:center;font-family:inherit;font-size:12pt;font-weight:700;letter-spacing:0}
+.ka-report .vtp-govde{margin:0 0 2mm;text-indent:10mm;text-align:justify}
+.ka-report .vtp-baslik{margin:5mm 0 2mm;padding-bottom:1mm;border-bottom:.3mm solid var(--ka-report-border);font-family:inherit;font-size:11pt;font-weight:700;letter-spacing:0;break-after:avoid;page-break-after:avoid}
+.ka-report .vtp-liste{margin:0;padding-left:8mm}
+.ka-report .vtp-liste li{margin:0 0 1mm;padding-left:1mm}
+.ka-report .vtp-alt{margin:3mm 0 1mm;font-family:inherit;font-size:10.5pt;font-weight:700;letter-spacing:0;break-after:avoid;page-break-after:avoid}
+.ka-report .vtp-madde{break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-madde p{margin:0 0 1.5mm;text-indent:8mm;text-align:justify;font-size:10.5pt}
+.ka-report .vtp-imzalar{display:flex;justify-content:space-around;gap:8mm;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-imzalar--alt{flex-direction:column;align-items:center;gap:8mm}
+.ka-report .vtp-imzalar--sag{justify-content:flex-end;padding-right:10mm}
+.ka-report .vtp-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:55mm;text-align:center}
+.ka-report .vtp-kutu{display:flex;flex-direction:column;align-items:center;gap:1mm;margin:0 0 4mm;padding:2.5mm;border:.4mm solid var(--ka-report-border);text-align:center}
+.ka-report .vtp-kutu__yil{font-size:9.5pt}
+.ka-report .vtp-kutu__sinif{font-size:13pt}
+.ka-report .vtp-bilgi{width:100%;margin:0 0 3mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .vtp-bilgi th,.ka-report .vtp-bilgi td,.ka-report .vtp-tablo th,.ka-report .vtp-tablo td{border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;overflow-wrap:anywhere}
+.ka-report .vtp-bilgi th,.ka-report .vtp-bilgi td{padding:1.2mm 2mm;text-align:center;font-size:9.5pt}
+.ka-report .vtp-bilgi th{font-weight:700}
+.ka-report .vtp-tablo{width:100%;border-collapse:collapse;table-layout:fixed}
+.ka-report .vtp-tablo th,.ka-report .vtp-tablo td{padding:1mm 2mm;text-align:left;font-size:10pt}
+.ka-report .vtp-tablo th{font-weight:700;text-align:center}
+.ka-report .vtp-tablo td{height:6.8mm}
+.ka-report .vtp-tablo .vtp-no{text-align:center}
+.ka-report .vtp-c-no{width:9mm}
+.ka-report .vtp-c-yak{width:26mm}
+.ka-report .vtp-c-imza{width:34mm}
+.ka-report .vtp-pusulalar{display:flex;flex-direction:column;gap:3mm}
+.ka-report .vtp-pusula{box-sizing:border-box;display:flex;flex-direction:column;gap:1mm;min-height:40mm;padding:2.5mm 4mm;border:.3mm dashed var(--ka-report-border);break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-pusula p{margin:0;text-indent:6mm;text-align:justify;font-size:10.5pt}
+.ka-report .vtp-pusula small{font-size:9.5pt}
+.ka-report .vtp-pusula .vtp-imza{align-self:flex-end;min-width:50mm;margin-top:auto}
+
+/* ===== VELİ TOPLANTISI (vtp-*) — sınıf seç, belgeyi yazdır sayfası ===== */
+html[data-theme] #v2ModuleRoot .vtp-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .vtp-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .vtp-head p{margin:0}
+html[data-theme] #v2ModuleRoot .vtp-belgeler{display:flex;flex-direction:column;gap:var(--ka-sp-8);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .vtp-belge{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--ka-sp-10) var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-left:var(--ka-sp-4) solid var(--ka-border-strong);border-radius:var(--ka-card-radius);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .vtp-belge__ad{display:flex;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+html[data-theme] #v2ModuleRoot .vtp-sec{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--ka-sp-10) var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .vtp-sec .ka-field{min-width:0;flex:0 1 auto}
+html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var(--ka-sp-8);min-height:var(--ka-control-height)}
+@media(max-width:767px){
+  html[data-theme] #v2ModuleRoot .vtp-belge{grid-template-columns:minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .vtp-belge .ka-btn{width:100%}
+}

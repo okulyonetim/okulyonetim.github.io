@@ -72,7 +72,7 @@ function icon(name,size=20,sw=2){
 /* ── araç simgeleri: eski menüdeki emoji; bilinenler CSS maskesiyle çizgi simgeye çevrilir (css: [data-ka-glyph]), bilinmeyenler emoji kalır ── */
 const GLYPHS={
   'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
-  'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','form-rehberlik':'🧭',
+  'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','veli-toplantisi':'👨‍👩‍👧','form-rehberlik':'🧭',
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
   'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
@@ -154,6 +154,7 @@ const KATALOG=[
   ['student-list','Öğrenci Listesi Oluşturucu','doc','Sınıf ve öğrenci listesi hazırla','tools','student-list'],
   ['school-age-calculator','İlkokula Başlama Yaşı','calendar','Kayıt yaşı durumunu hesapla','documents','school-age-calculator'],
   ['parentmeeting','Veli Görüşme Formu','users','Veli görüşmesini kaydet ve yazdır','parentmeeting'],
+  ['veli-toplantisi','Veli Toplantısı','users','Dilekçe, tutanak, imza sirküsü ve davet pusulası','veli-toplantisi'],
   ['form-rehberlik','Rehberlik Raporları','shield','Rehberlik çalışma raporları','tools','form-rehberlik'],
   ['bep-hazirla','BEP Dosyası Hazırla','pen','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla']
  ]],
@@ -294,7 +295,7 @@ const KEYWORDS={
   'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan yıllık ve bep plan takibi','idareci-pano':'idareci pano dijital panosu müdür nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep hazırla bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
   'ogretmen-dosyasi':'öğretmen dosyası kapak evrak form kontrol listesi teslim dosya hazırlık',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
-  'parentmeeting':'veli görüşme','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
+  'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',
   'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
