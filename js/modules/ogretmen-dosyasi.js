@@ -32,6 +32,9 @@ let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,hazirlandi=false;
 
 /* ── hesap ve okul bilgisi: formlara yazılacak değerler ── */
 function okul(){const l=arr('okulBilgileri');return l.find(x=>x.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}}
+/* Ders Giriş-Çıkış Saatleri formu: satırlar uygulamadaki Ders Saatleri ayarından gelir. */
+const saatSatirlari=()=>{const l=arr('dersSaatleri');return C().dersSaatSatirlari(l.find(x=>x.id==='ayarlar')||l[0]||{})};
+const SATIR_KAYNAKLARI={saatler:saatSatirlari};
 function bilgi(){
  const u=user(),o=okul(),ogr=arr('ogretmenler'),id=u.bagliOgretmenId||u.ogretmenId||'';
  const t=ogr.find(x=>String(x.id)===String(id))||ogr.find(x=>u.uid&&(x.uid===u.uid||x.hesapUid===u.uid))||null;
@@ -46,7 +49,7 @@ function bilgi(){
 /* ── liste: sekme → maddeler ── */
 function maddeler(k){
  const s=SEKMELER.find(x=>x.k===k);if(!s)return[];
- if(k==='diger')return C().ozeller(S.durum).map(o=>({id:o.id,ad:o.ad,ozel:true,formlar:[],arac:'',grup:'ozel'}));
+ if(k==='diger')return C().ozeller(S.durum).map(o=>({id:o.id,ad:o.ad,ozel:true,formlar:[],araclar:[],grup:'ozel'}));
  return K().KATALOG.filter(e=>e.donem===s.donem&&(!s.grup||e.grup===s.grup));
 }
 const tumIdler=()=>[...K().KATALOG.map(e=>e.id),...C().ozeller(S.durum).map(o=>o.id)];
@@ -81,6 +84,8 @@ async function dosyaKaydet(blob,ad,tur){
 }
 async function formIndir(key,tur){
  const f=K().FORMLAR[key];if(!f)return;
+ const satirlar=f.satir?SATIR_KAYNAKLARI[f.satir]():null;
+ if(satirlar&&!satirlar.length)return toast('Ders saatleri tanımlı değil. Ayarlar › Ders Saatleri bölümünden ekleyin.');
  const kimlik=`form:${key}:${tur}`;
  if(S.mesgul.has(kimlik))return;
  S.mesgul.add(kimlik);render();
@@ -90,7 +95,7 @@ async function formIndir(key,tur){
   if(!r.ok)throw new Error(`Form dosyası alınamadı (${r.status}).`);
   const ad=C().imzaAd(bilgi().ad);
   if(tur==='docx'){
-   const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(bilgi()));
+   const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(bilgi()),satirlar);
    await dosyaKaydet(blob,C().dosyaAdi(f.ad,ad,'docx'),C().DOCX_TURU);
   }else{
    await dosyaKaydet(await r.blob(),C().dosyaAdi(f.ad,'','pdf'),C().PDF_TURU);
@@ -174,11 +179,11 @@ function dosyaChip(d){
 }
 function satirHtml(m,no){
  const s=C().isaret(S.durum,m.id),formlar=m.ozel?[]:K().formlar(m,S.yil);
- const arac=m.arac&&global.AppNav?.tool?.(m.arac),aracVar=!!(arac&&global.AppNav?.toolAllowed?.(arac));
+ const araclar=(m.araclar||[]).map(id=>global.AppNav?.tool?.(id)).filter(t=>t&&global.AppNav?.toolAllowed?.(t)),aracVar=araclar.length>0;
  const dosyalar=C().dosyalar(S.durum,m.id),yukluyor=S.mesgul.has(`yukle:${m.id}`);
  const yakinda=!m.ozel&&m.donem==='basi'&&!formlar.length&&!aracVar;
  const eylem=[
-  aracVar?`<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-od-act="ac" data-od-arac="${esc(m.arac)}">${esc(arac.label)} ›</button>`:'',
+  ...araclar.map(t=>`<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-od-act="ac" data-od-arac="${esc(t.id)}">${esc(t.label)} ›</button>`),
   `<button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-od-act="yukle" data-od-madde="${esc(m.id)}" ${yukluyor?'disabled':''}>${yukluyor?`Yükleniyor <span data-od-prog="${esc(m.id)}"></span>`:'Dosya yükle'}</button>`,
   `<button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-od-act="gerekmez" data-od-madde="${esc(m.id)}" aria-pressed="${s==='g'}">${s==='g'?'Gerekli say':'Bende gerekmez'}</button>`,
   m.ozel?`<button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-od-act="ozel-sil" data-od-madde="${esc(m.id)}">Kaldır</button>`:''
@@ -203,11 +208,11 @@ function ekleHtml(){
  return`<form class="ka-od-add" data-od-add><label class="ka-field"><span class="ka-field__label">Yeni madde</span><input class="ka-input" name="ad" maxlength="120" placeholder="Örn. Kitap okuma kulübü raporu" autocomplete="off" required></label><button type="submit" class="ka-btn">Ekle</button></form>`;
 }
 function bilgiHtml(){
- const b=bilgi(),v=C().degerler(b),eksik=[];
- if(!b.okul)eksik.push('okul adı');if(!b.ad)eksik.push('adınız');if(!b.mudur)eksik.push('okul müdürü');
+ const b=bilgi(),v=C().degerler(b),eksik=[],saat=saatSatirlari().filter(x=>x.tur==='SAAT'),saatOzet=saat.length?`${saat.length} ders · ${saat[0].GIRIS}–${saat.at(-1).CIKIS}`:'';
+ if(!b.okul)eksik.push('okul adı');if(!b.ad)eksik.push('adınız');if(!b.mudur)eksik.push('okul müdürü');if(!saat.length)eksik.push('ders saatleri');
  const satir=(e,d)=>`<div><dt>${e}</dt><dd>${d?esc(d):'<i>boş kalır</i>'}</dd></div>`;
  return`<details class="ka-od-info"><summary>Formlara yazılacak bilgiler${eksik.length?` <span class="ka-od-warn">${eksik.length} eksik</span>`:''}</summary>
-<dl>${satir('Okul',b.okul)}${satir('Ad soyad',C().imzaAd(b.ad))}${satir('Branş / görev',C().bransMetni(b.unvan,b.brans))}${satir('Okul müdürü',C().imzaAd(b.mudur))}${satir('Eğitim yılı',v.YIL)}</dl>
+<dl>${satir('Okul',b.okul)}${satir('Ad soyad',C().imzaAd(b.ad))}${satir('Branş / görev',C().bransMetni(b.unvan,b.brans))}${satir('Okul müdürü',C().imzaAd(b.mudur))}${satir('Ders saatleri',saatOzet)}${satir('Eğitim yılı',v.YIL)}</dl>
 <p>Bilgiler hesabınızdan ve okul ayarlarından alınır; eksik olanlar formda noktalı kalır. T.C. kimlik numarası kişisel veri olduğu için hiçbir forma otomatik yazılmaz.</p></details>`;
 }
 function viewHtml(){
@@ -276,15 +281,15 @@ function baglan(){
 /* ── hazırlık ve açılış ── */
 async function ensureDeps(){
  const L=global.AppLoader;
- if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=1');
- if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=1');
+ if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=2');
+ if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=2');
  if(!K()||!C())throw new Error('Öğretmen Dosyası bileşenleri yüklenemedi.');
 }
 async function prepare(){
  const SE=global.SyncEngine,col=global.COL;if(!SE||!col||hazirlandi)return;
  hazirlandi=true;
  const tipler=[];
- for(const [t,c] of Object.entries({ogretmenler:col.ogretmenler,okulBilgileri:col.okulBilgileri}))if(c){SE.register(t,c);tipler.push(t)}
+ for(const [t,c] of Object.entries({ogretmenler:col.ogretmenler,okulBilgileri:col.okulBilgileri,dersSaatleri:col.dersSaatleri}))if(c){SE.register(t,c);tipler.push(t)}
  await SE.localHydrate(tipler);SE.schedule?.(100);
 }
 async function open(){
@@ -294,7 +299,7 @@ async function open(){
  if(!render())return false;
  mounted=true;
  offPrefs=global.KaPrefs?.remoteListen?.(uzakGeldi)||null;
- ['data.okulBilgileri','data.ogretmenler'].forEach(p=>{const u=global.AppStore?.subscribe?.(p,()=>{if(!document.querySelector('[data-od-page]'))return temizle();render()});if(u)unsubs.push(u)});
+ ['data.okulBilgileri','data.ogretmenler','data.dersSaatleri'].forEach(p=>{const u=global.AppStore?.subscribe?.(p,()=>{if(!document.querySelector('[data-od-page]'))return temizle();render()});if(u)unsubs.push(u)});
  prepare().catch(e=>console.warn('[Öğretmen Dosyası]',e?.message||e));
  return true;
 }

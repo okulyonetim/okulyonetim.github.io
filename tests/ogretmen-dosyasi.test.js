@@ -34,8 +34,15 @@ const navWin=load(['js/core/app-nav.js'],{addEventListener(){},dispatchEvent(){r
 const araclar=new Set(navWin.AppNav.catalog().map(t=>t.id));
 K.KATALOG.forEach(e=>{
   e.formlar.forEach(k=>assert(K.FORMLAR[k],`${e.id}: "${k}" formu tanımsız.`));
-  if(e.arac)assert(araclar.has(e.arac),`${e.id}: "${e.arac}" menüde yok.`);
+  e.araclar.forEach(a=>assert(araclar.has(a),`${e.id}: "${a}" menüde yok.`));
 });
+/* uygulamadan gelen maddeler: ders saatleri formu ve sınıf oturma planı bağlantıları */
+const madde=ad=>K.KATALOG.filter(e=>e.ad===ad);
+assert(madde('Ders Giriş-Çıkış Saatleri').every(e=>e.formlar.includes('ders-saatleri')),'Ders Giriş-Çıkış Saatleri maddesi formuna bağlı olmalı.');
+assert(K.FORMLAR['ders-saatleri'].satir==='saatler','Ders saatleri formu satırlarını uygulamadan alır.');
+assert(madde('Sınıf Oturma Planı').length&&madde('Sınıf Oturma Planı').every(e=>e.araclar.includes('class-seats')),'Sınıf Oturma Planı maddesi uygulamadaki oturma planına bağlı olmalı.');
+assert(madde('Sınıf Oturma Planı ve Ödev Çizelgesi').every(e=>e.araclar.includes('class-seats')&&e.araclar.includes('homework')),'Oturma planı + ödev çizelgesi iki araca da bağlı olmalı.');
+assert(navWin.AppNav.tool('class-seats')?.route==='transport'&&navWin.AppNav.tool('class-seats')?.page==='classSeats','class-seats menü aracı Sınıf Oturma sayfasını açmalı.');
 const kullanilan=new Set(K.KATALOG.flatMap(e=>e.formlar));
 Object.keys(K.FORMLAR).forEach(k=>assert(kullanilan.has(k),`${k} formu hiçbir maddeye bağlı değil.`));
 const b07=K.KATALOG.find(e=>/İş Takvimi/.test(e.ad));
@@ -56,7 +63,17 @@ assert(bos.AD_SOYAD.includes('…')&&bos.OKUL.includes('…')&&bos.MUDUR.include
 assert.strictEqual(C.xmlDoldur('<w:t>{{OKUL}} {{YOK}} {{AD_SOYAD}}</w:t>',v),'<w:t>Koruk &amp; Oğul İlkokulu  Ali VELİ</w:t>','Değerler XML kaçışlı yazılır, bilinmeyen alan boş kalır.');
 
 /* ── şablonlar: tüm alanlar tanımlı, doldurunca alan ve marka izi kalmaz ── */
-const bilinen=new Set(Object.keys(v));
+/* ders saatleri: tablo satırları uygulamadaki ayardan (ders + teneffüs + öğle arası) */
+const saatAyar={donemler:[['08:30','09:10'],['09:20','10:00'],['10:10','10:50'],['11:00','11:40'],['12:30','13:10']].map((x,i)=>({saat:i+1,baslangic:x[0],bitis:x[1]})),ogleArasiVarMi:true,ogleArasi:{sonrakiDers:4,baslangic:'11:40',bitis:'12:30'}};
+const saatSatir=C.dersSaatSatirlari(saatAyar);
+assert.deepStrictEqual(Array.from(saatSatir,x=>`${x.AD} ${x.GIRIS}-${x.CIKIS} ${x.SURE}`),['1. Ders 08:30-09:10 40 dk','Teneffüs 09:10-09:20 10 dk','2. Ders 09:20-10:00 40 dk','Teneffüs 10:00-10:10 10 dk','3. Ders 10:10-10:50 40 dk','Teneffüs 10:50-11:00 10 dk','4. Ders 11:00-11:40 40 dk','Öğle Arası 11:40-12:30 50 dk','5. Ders 12:30-13:10 40 dk'],'Ders, teneffüs ve öğle arası sırayla gelir.');
+assert.strictEqual(C.dersSaatSatirlari({donemler:saatAyar.donemler,ogleArasiVarMi:false}).filter(x=>x.AD==='Öğle Arası').length,0,'Öğle arası kapalıysa satır yazılmaz.');
+assert.strictEqual(C.dersSaatSatirlari({}).length+C.dersSaatSatirlari(null).length,0,'Ayar yoksa satır da yoktur.');
+assert.strictEqual(C.dersSaatSatirlari({dersler:[{saat:1,baslangic:'09:00',bitis:'09:40'}]}).length,1,'Eski kayıtlardaki "dersler" listesi de okunur.');
+const satirXml='<w:tbl><w:tr><w:trPr/><w:tc><w:t>Ders</w:t></w:tc></w:tr><w:tr><w:tc><w:t>{{SAAT_AD}}</w:t></w:tc><w:tc><w:t>{{SAAT_GIRIS}}</w:t></w:tc></w:tr><w:tr><w:tc><w:t>{{ARA_AD}}</w:t></w:tc><w:tc><w:t>{{ARA_GIRIS}}</w:t></w:tc></w:tr></w:tbl>';
+assert.strictEqual(C.xmlDoldur(satirXml,v,saatSatir.slice(0,2)).replace(/<[^>]+>/g,'|').replace(/\|+/g,'|'),'|Ders|1. Ders|08:30|Teneffüs|09:10|','Örnek satırlar listedeki sırayla çoğalır.');
+assert.strictEqual(C.xmlDoldur(satirXml,v,[]).replace(/<[^>]+>/g,''),'Ders','Liste boşsa örnek satırlar silinir, alan kalmaz.');
+const bilinen=new Set([...Object.keys(v),...['AD','GIRIS','CIKIS','SURE'].flatMap(k=>[`SAAT_${k}`,`ARA_${k}`])]);
 (async()=>{
   for(const [k,f] of Object.entries(K.FORMLAR)){
     if(!f.docx)continue;
@@ -71,7 +88,7 @@ const bilinen=new Set(Object.keys(v));
     }
     const core=kaynak.file('docProps/core.xml');
     if(core)assert(!/evrakburada|seferzengin|hakan|BTA/i.test(await core.async('string')),`${f.docx}: dosya bilgisinde eski yazar izi var.`);
-    const blob=await C.docxDoldur(buf,v);
+    const blob=await C.docxDoldur(buf,v,f.satir?saatSatir:undefined);
     assert.strictEqual(blob.type,C.DOCX_TURU);
     const dolu=await JSZip.loadAsync(Buffer.from(await blob.arrayBuffer()));
     const xml=await dolu.file('word/document.xml').async('string');
@@ -86,6 +103,11 @@ const bilinen=new Set(Object.keys(v));
   const tutanak=await JSZip.loadAsync(Buffer.from(await (await C.docxDoldur(fs.readFileSync(DIR+K.FORMLAR['yazili-teslim'].docx),v)).arrayBuffer()));
   const tx=(await tutanak.file('word/document.xml').async('string')).replace(/<[^>]+>/g,' ');
   assert(tx.includes('27.10.2026')&&tx.includes('Fen Bilimleri Öğretmeni')&&tx.includes('Ali VELİ'),'Tutanakta tarih, görev ve ad yazılmalı.');
+  /* ders saatleri formu: ayardaki her ders, teneffüs ve öğle arası tabloya yazılır */
+  const saatler=await JSZip.loadAsync(Buffer.from(await (await C.docxDoldur(fs.readFileSync(DIR+K.FORMLAR['ders-saatleri'].docx),v,saatSatir)).arrayBuffer()));
+  const sx=(await saatler.file('word/document.xml').async('string')).replace(/<[^>]+>/g,'|').replace(/\|+/g,'|');
+  ['KORUK & OĞUL İLKOKULU MÜDÜRLÜĞÜ'.replace('&','&amp;'),'|1. Ders|08:30|09:10|40 dk|','|Öğle Arası|11:40|12:30|50 dk|','|5. Ders|12:30|13:10|40 dk|','Ali VELİ','Mehmet DEMİR'].forEach(s=>assert(sx.includes(s),`Ders saatleri formunda "${s}" yok.`));
+  assert.strictEqual((sx.match(/Teneffüs/g)||[]).length,3,'Üç teneffüs satırı olmalı.');
   /* PDF'lerde üçüncü taraf izi ve indirme numarası kalmamalı */
   for(const f of fs.readdirSync(DIR).filter(x=>x.endsWith('.pdf'))){
     const ham=fs.readFileSync(DIR+f).toString('latin1');
@@ -119,7 +141,7 @@ const bilinen=new Set(Object.keys(v));
   assert(/\['evrak','Tutanak ve Evrak'[^\n]*\n\s*\['ogretmen-dosyasi','Öğretmen Dosyası'/.test(nav),'Öğretmen Dosyası, Tutanak ve Evrak menüsünün ilk sayfası olmalı.');
   assert(!nav.includes("'management:ogretmen-dosyasi'")&&![...navWin.AppNav.TEACHER_HIDDEN].some(x=>x.startsWith('ogretmen-dosyasi')),'Sayfa öğretmen hesabına da açık olmalı.');
   assert(shell.includes("name==='ogretmen-dosyasi'")&&shell.includes('OgretmenDosyasi.open'),'Kabukta rota tanımlı olmalı.');
-  ['evrak-katalog.js?v=1','ogretmen-dosyasi-core.js?v=1','ogretmen-dosyasi.js?v=1'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
+  ['evrak-katalog.js?v=2','ogretmen-dosyasi-core.js?v=2','ogretmen-dosyasi.js?v=2'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
   Object.values(K.FORMLAR).filter(f=>f.docx).forEach(f=>assert(sw.includes(`./${DIR}${f.docx}`),`${f.docx} çevrimdışı çalışsın diye önbelleğe alınmalı.`));
   assert(!/localStorage\s*\.\s*setItem/.test(ui)&&ui.includes('KaPrefs'),'Modül tarayıcı depolamasına doğrudan yazmamalı; KaPrefs kullanmalı.');
   assert(ui.includes('remoteListen')&&ui.includes('remoteSet'),'İlerleme hesap tercih belgesine eşitlenmeli.');

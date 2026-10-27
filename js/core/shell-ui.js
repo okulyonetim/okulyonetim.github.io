@@ -291,7 +291,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ogretmen-dosyasi'){
     try{
-      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=1');
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=2');
       if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Öğretmen Dosyası');
       if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');

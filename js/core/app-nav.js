@@ -76,7 +76,7 @@ const GLYPHS={
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
   'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
-  'committees':'🏛️','transport':'🚌','bus-seats':'💺','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
+  'committees':'🏛️','transport':'🚌','bus-seats':'💺','class-seats':'🪑','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
 GLYPHS['bep-hazirla']='📝';
 GLYPHS['idareci-pano']='🖥️';
@@ -148,6 +148,7 @@ const adminOrManager=()=>user().admin===true||global.PermissionService?.isManage
 const KATALOG=[
  ['ogrenci','Öğrenciler','users','blue',[
   ['classes','Sınıflar','school','Sınıflar ve sınıf öğretmenleri','people','classes'],
+  ['class-seats','Sınıf Oturma Planı','school','Sınıf oturma planını hazırla ve yazdır','transport','classSeats'],
   ['students','Öğrenciler','users','Öğrenci listesi ve bilgileri','people','students'],
   ['student-attendance','Öğrenci Yoklama','clip','Sınıf yoklamasını al ve kaydet','tools','student-attendance'],
   ['student-list','Öğrenci Listesi Oluşturucu','doc','Sınıf ve öğrenci listesi hazırla','tools','student-list'],
@@ -299,7 +300,7 @@ const KEYWORDS={
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
   'tasks':'aylık iş işler görev periyodik','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste oluşturucu',
   'school-info':'okul bilgi kurulum ayar müdür','holiday':'tatil günleri','acad-calendar':'akademik takvim eğitim öğretim yılı','teachers':'öğretmen kadro','staff':'personel kadro','schedule':'ders programı','duty':'nöbet','meeting-schedule':'toplantı kurul çizelge',
-  'committees':'kurul komisyon','transport':'servis taşıma işlemleri güzergah','bus-seats':'servis oturma','map':'harita','food':'yemek menü','messages':'mesaj yazışma','news':'haber','announcements':'duyuru','polls':'anket oy','calendar':'takvim hatırlatıcı','notes':'not','settings':'ayar kullanıcı hesap','guide':'yardım kılavuz kullanım kılavuzu','about':'sürüm uygulama hakkında'
+  'committees':'kurul komisyon','transport':'servis taşıma işlemleri güzergah','bus-seats':'servis oturma','class-seats':'sınıf oturma sıra yerleşim','map':'harita','food':'yemek menü','messages':'mesaj yazışma','news':'haber','announcements':'duyuru','polls':'anket oy','calendar':'takvim hatırlatıcı','notes':'not','settings':'ayar kullanıcı hesap','guide':'yardım kılavuz kullanım kılavuzu','about':'sürüm uygulama hakkında'
 };
 const clone=v=>JSON.parse(JSON.stringify(v));
 const deviceKey=r=>`ka-nav-layout:${user().uid||'-'}:${r}`;

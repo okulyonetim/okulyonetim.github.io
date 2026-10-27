@@ -54,8 +54,43 @@ function degerler(k={}){
   MUDUR:mudur||NOKTA,YIL:yil,TARIH:k.tarih||tarihMetni(),TC:''
  };
 }
+/* Uygulamadaki Ders Saatleri ayarından tablo satırları: ders, teneffüs ve öğle arası sırayla (Okul Raporları › Ders Giriş-Çıkış Saatleri ile aynı hesap).
+ * cfg = { donemler|dersler: [{saat,baslangic,bitis}], ogleArasiVarMi, ogleArasi: {sonrakiDers,baslangic,bitis} } → [{tur:'SAAT'|'ARA', AD, GIRIS, CIKIS, SURE}] */
+const dakika=s=>{const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||'').trim());return m?Number(m[1])*60+Number(m[2]):NaN};
+const sureMetni=(a,b)=>{const d=dakika(b)-dakika(a);return Number.isFinite(d)&&d>0?`${d} dk`:''};
+function dersSaatSatirlari(cfg){
+ const kaynak=Array.isArray(cfg?.donemler)&&cfg.donemler.length?cfg.donemler:Array.isArray(cfg?.dersler)?cfg.dersler:[];
+ const dersler=kaynak.map((r,i)=>({saat:Number(r.saat)||i+1,bas:String(r.baslangic||'').trim(),bit:String(r.bitis||'').trim()})).filter(r=>r.bas&&r.bit);
+ const satirlar=[];
+ dersler.forEach((r,i)=>{
+  satirlar.push({tur:'SAAT',AD:`${r.saat}. Ders`,GIRIS:r.bas,CIKIS:r.bit,SURE:sureMetni(r.bas,r.bit)});
+  const s=dersler[i+1];if(!s)return;
+  const ogle=cfg.ogleArasiVarMi!==false&&Number(cfg.ogleArasi?.sonrakiDers||0)===i+1;
+  const a=ogle?(cfg.ogleArasi?.baslangic||r.bit):r.bit,b=ogle?(cfg.ogleArasi?.bitis||s.bas):s.bas;
+  if(Number.isFinite(dakika(a))&&Number.isFinite(dakika(b))&&dakika(b)>dakika(a))satirlar.push({tur:'ARA',AD:ogle?'Öğle Arası':'Teneffüs',GIRIS:a,CIKIS:b,SURE:sureMetni(a,b)});
+ });
+ return satirlar;
+}
+
+/* Tekrarlanan tablo satırları: şablonda {{SAAT_AD}} … içeren satır ders için, {{ARA_AD}} … içeren satır teneffüs için örnektir.
+ * Örnek satırlar listedeki sırayla çoğaltılır (ilk örneğin yerine), diğer örnek satırlar silinir. */
+const XML_SATIR=/<w:tr[ >](?:(?!<w:tr[ >])[\s\S])*?<\/w:tr>/g;
+const SATIR_ALANI=/\{\{(SAAT|ARA)_[A-Z_]+\}\}/;
+const satirTuru=tr=>(SATIR_ALANI.exec(tr)||[])[1];
+function satirCogalt(xml,satirlar){
+ const sablon={};
+ for(const tr of String(xml).match(XML_SATIR)||[]){const t=satirTuru(tr);if(t&&!sablon[t])sablon[t]=tr}
+ let yazildi=false;
+ return String(xml).replace(XML_SATIR,tr=>{
+  if(!satirTuru(tr))return tr;
+  if(yazildi)return'';
+  yazildi=true;
+  return(satirlar||[]).map(s=>(sablon[s.tur]||'').replace(/\{\{[A-Z]+_([A-Z_]+)\}\}/g,(_,k)=>xmlKac(s[k]??''))).join('');
+ });
+}
+
 /* {{ALAN}} → değer (XML'e uygun kaçışla). Bilinmeyen alan boş bırakılır; ekranda "{{…}}" görünmez. */
-const xmlDoldur=(xml,v)=>String(xml).replace(/\{\{([A-Z_]+)\}\}/g,(_,k)=>xmlKac(v[k]??''));
+const xmlDoldur=(xml,v,satirlar)=>satirCogalt(xml,satirlar).replace(/\{\{([A-Z_]+)\}\}/g,(_,k)=>xmlKac(v[k]??''));
 const DOLDURULAN=/^word\/(document|header\d*|footer\d*)\.xml$/;
 
 function betikYukle(src,hazir){
@@ -64,13 +99,13 @@ function betikYukle(src,hazir){
  if(!global.AppLoader?.loadScript)return Promise.reject(hata());
  return global.AppLoader.loadScript(src).then(()=>{if(!hazir())throw hata()});
 }
-/* .docx şablon baytları + alanlar → doldurulmuş .docx Blob. */
-async function docxDoldur(tampon,v){
+/* .docx şablon baytları + alanlar (+ tekrarlanan satırlar) → doldurulmuş .docx Blob. */
+async function docxDoldur(tampon,v,satirlar){
  await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
  let paket;try{paket=await global.JSZip.loadAsync(tampon)}catch(_){throw new Error('Şablon geçerli bir Word (.docx) belgesi değil.')}
  for(const ad of Object.keys(paket.files)){
   if(!DOLDURULAN.test(ad))continue;
-  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),v));
+  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),v,satirlar));
  }
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
 }
@@ -127,6 +162,6 @@ function ilerleme(maddeIdleri,d){
 }
 const durumAnahtari=yil=>`ogretmenDosyasi_${String(yil||'').replace(/[^0-9]+/g,'_')}`;
 
-global.OgretmenDosyasiCore={DOCX_TURU,PDF_TURU,upper,imzaAd,ustMakam,okulMudurlugu,bransMetni,gorevMetni,tarihMetni,degerler,xmlDoldur,docxDoldur,dosyaAdi,
+global.OgretmenDosyasiCore={DOCX_TURU,PDF_TURU,upper,imzaAd,ustMakam,okulMudurlugu,bransMetni,gorevMetni,tarihMetni,degerler,dersSaatSatirlari,satirCogalt,xmlDoldur,docxDoldur,dosyaAdi,
  bosDurum,durumTemizle,durumBirlestir,durumAyni,isaret,isaretle,dosyalar,dosyaEkle,dosyaSil,ozeller,ozelEkle,ozelSil,ilerleme,durumAnahtari};
 })(window);

@@ -11,7 +11,7 @@ const DONEMLER=[['basi','Sene Başı'],['donem1','1. Dönem Sonu'],['sonu','Sene
 const KIMDEN=[['herkes','Herkes'],['rehber','Sınıf rehber öğretmenleri'],['zumre','Zümre başkanları'],['kulup','Kulüp danışman öğretmenler'],['belirli','Belirli gün/hafta görevlileri']];
 const GRUPLAR={idari:'Genel (İdari) Evraklar',rehberlik:'Rehberlik Dosyası',kulup:'Kulüp Dosyası',ozel:'Eklediğiniz Maddeler'};
 /* Her dönemin evrak listesi ayrıdır. Satır: [grup, ad (çizelge sütunu), yazı metni (tebliğ yazısındaki madde), varsayılan kimden, ek]
- * ek: { f: hazır form anahtarları (FORMLAR), a: uygulama içindeki ilgili sayfanın kimliği (AppNav) }; sıra, çıktıdaki sütun sırasıdır. */
+ * ek: { f: hazır form anahtarları (FORMLAR), a: uygulama içindeki ilgili sayfaların kimliği (AppNav; tek kimlik ya da liste) }; sıra, çıktıdaki sütun sırasıdır. */
 const BASI=[
  ["idari","Öğretmen Dosyası Kapağı",null,null,{f:["kapak"]}],
  ["idari","Atatürk Portresi",null,null,{f:["ataturk"]}],
@@ -20,7 +20,7 @@ const BASI=[
  ["idari","Gençliğe Hitabe",null,null,{f:["hitabe"]}],
  ["idari","Öğretmen Öz Geçmiş (CV / Tanıtım Formu)"],
  ["idari","Yıllık İş Günü / Eğitim-Öğretim İş Takvimi",null,null,{f:["is-takvimi","takvim"]}],
- ["idari","Ders Giriş-Çıkış Saatleri"],
+ ["idari","Ders Giriş-Çıkış Saatleri",null,null,{f:["ders-saatleri"]}],
  ["idari","Ünitelendirilmiş Yıllık Plan",null,null,{a:"plans"}],
  ["idari","Maarif Aylık Raporları (Öğrenme Çıktıları)",null,null,{a:"form-maarif"}],
  ["idari","Günlük Planlar"],
@@ -34,7 +34,7 @@ const BASI=[
  ["idari","Proje / Performans / Ders İçi Katılım Değerlendirme Ölçeği",null,null,{f:["proje-degerlendirme"],a:"project"}],
  ["idari","Proje Ödevleri Dağıtım Listesi",null,null,{f:["proje-dagitim","proje-secim"]}],
  ["idari","Gezi İzin Belgesi ve Gezi Planı",null,null,{a:"gezi"}],
- ["idari","Sınıf Oturma Planı ve Ödev Çizelgesi",null,null,{a:"homework"}],
+ ["idari","Sınıf Oturma Planı ve Ödev Çizelgesi",null,null,{a:["class-seats","homework"]}],
  ["idari","Sosyal Kulüp Dosyası (danışman öğretmenler)",null,"kulup",{a:"form-kulup"}],
  ["idari","Sınıf Rehber Öğretmeni Dosyası",null,"rehber",{a:"form-rehberlik"}],
  ["idari","Ders Dışı Egzersiz ve Sosyal Etkinlik Belgeleri"],
@@ -46,7 +46,7 @@ const BASI=[
  ["idari","Aday Öğretmen Çalışmaları / Performans Değerlendirme Formları"],
  ["idari","Belirli Gün ve Haftalar Çizelgesi / Program Akışları",null,"belirli",{a:"form-belirli"}],
  ["rehberlik","Sınıf Öğrenci Listesi",null,null,{a:"student-list"}],
- ["rehberlik","Sınıf Oturma Planı"],
+ ["rehberlik","Sınıf Oturma Planı",null,null,{a:"class-seats"}],
  ["rehberlik","Rehberlik Raporları",null,null,{a:"form-rehberlik"}],
  ["rehberlik","Devamsızlık Çizelgesi / Mektupları"],
  ["rehberlik","Veli İletişim Bilgileri"],
@@ -106,7 +106,7 @@ const DONEM1=[
  ["idari","Dönem içinde yapılan gezilerin evrakını dosyala","Dönem içinde yapılan gezilere ait evrakın dosyalanması",null,{a:"gezi"}],
  ["idari","Kurul, komisyon ve belirli gün-hafta işlerini tamamla","Kurul, komisyon ve belirli gün ve haftalara ilişkin görevlerin tamamlanması","belirli",{a:"form-belirli"}],
  ["idari","Anasınıfı gelişim / beceri edinme formlarını doldur","Anasınıfı gelişim ve beceri edinme formlarının doldurulması"],
- ["idari","İkinci dönem için oturma planını ve ödev çizelgesini yenile","İkinci dönem için oturma planı ile ödev çizelgesinin yenilenmesi",null,{a:"homework"}],
+ ["idari","İkinci dönem için oturma planını ve ödev çizelgesini yenile","İkinci dönem için oturma planı ile ödev çizelgesinin yenilenmesi",null,{a:["class-seats","homework"]}],
  ["idari","Gerekirse tutanak tut, dilekçe yaz","Gerekli durumlarda tutanak tutulması ve dilekçe yazılması",null,{a:"tutanak"}],
  ["idari","Yarıyıl tatili izin işlemlerini kontrol et","Yarıyıl tatiline ilişkin izin işlemlerinin kontrol edilmesi"],
  ["idari","Öğretmen dosyasını idareye teslim et","Öğretmen dosyasının okul idaresine teslim edilmesi"]
@@ -141,11 +141,11 @@ const SONU=[
 ];
 
 /* Sene başında rehberlik evrakı sınıf rehber öğretmenlerinden, dönem ve yıl sonunda herkesten istenir. */
-const katalogYap=(donem,onek,rows,rehberVarsayilan)=>rows.map((x,i)=>({id:onek+String(i+1).padStart(2,'0'),donem,grup:x[0],ad:x[1],yazi:x[2]||x[1],kimden:x[3]||(x[0]==='kulup'?'kulup':x[0]==='rehberlik'&&rehberVarsayilan?'rehber':'herkes'),formlar:x[4]?.f||[],arac:x[4]?.a||''}));
+const katalogYap=(donem,onek,rows,rehberVarsayilan)=>rows.map((x,i)=>({id:onek+String(i+1).padStart(2,'0'),donem,grup:x[0],ad:x[1],yazi:x[2]||x[1],kimden:x[3]||(x[0]==='kulup'?'kulup':x[0]==='rehberlik'&&rehberVarsayilan?'rehber':'herkes'),formlar:x[4]?.f||[],araclar:[].concat(x[4]?.a||[])}));
 const KATALOG=[...katalogYap('basi','b',BASI,true),...katalogYap('donem1','d',DONEM1,false),...katalogYap('sonu','s',SONU,false)];
 
 /* Hazır form dosyaları (assets/ogretmen-dosyasi/). docx = alanları doldurulup indirilen Word şablonu ({{OKUL}}, {{AD_SOYAD}} …),
- * pdf = olduğu gibi indirilen belge, yil = yalnız o eğitim-öğretim yılında geçerli (tarihleri yıla özgü formlar). */
+ * pdf = olduğu gibi indirilen belge, satir = şablondaki tekrarlanan satırların uygulamadaki kaynağı (saatler = Ayarlar › Ders Saatleri), yil = yalnız o eğitim-öğretim yılında geçerli (tarihleri yıla özgü formlar). */
 const DOSYA_KOKU='assets/ogretmen-dosyasi/';
 const FORMLAR={
  kapak:{ad:'Öğretmen Dosyası Kapağı',docx:'ogretmen-dosya-kapagi.docx'},
@@ -155,6 +155,7 @@ const FORMLAR={
  hitabe:{ad:'Gençliğe Hitabe',pdf:'genclige-hitabe.pdf'},
  'is-takvimi':{ad:'Eğitim ve Öğretim Yılı Çalışma Takvimi (iş günleri)',pdf:'calisma-takvimi-2026-2027.pdf',yil:'2026-2027'},
  takvim:{ad:'Kurul ve Zümre Toplantıları Takvimi',docx:'kurul-zumre-takvimi-2026-2027.docx',yil:'2026-2027'},
+ 'ders-saatleri':{ad:'Ders Giriş-Çıkış Saatleri',docx:'ders-giris-cikis-saatleri.docx',satir:'saatler'},
  'proje-secim':{ad:'Proje Ödevi Seçim Formu',docx:'proje-odevi-secim-formu.docx'},
  'proje-dagitim':{ad:'Proje Ödevleri Dağıtım Listesi',docx:'proje-dagitim-listesi.docx'},
  'proje-degerlendirme':{ad:'Proje Ödev Değerlendirme ve Takip Formu',docx:'proje-odev-degerlendirme-formu.docx'},
