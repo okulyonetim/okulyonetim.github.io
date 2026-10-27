@@ -120,10 +120,9 @@ function riskBelgesi(t,c,{yonerge=true}={}){
  const toplam=`<tr class="rhb-toplam"><th colspan="4">TOPLAM</th>${t.toplamlar.map(n=>`<td class="rhb-x">${n||''}</td>`).join('')}</tr>`;
  const yon=yonerge?`<article class="rhb-paper rhb-yonerge"><h1 class="rhb-ust">SINIF RİSK HARİTASI<br>YÖNERGE</h1><h2 class="rhb-yon-ust">DİKKAT EDİLECEK HUSUSLAR;</h2>${V.riskYonerge.map(([b,m])=>`<h3 class="rhb-yon-baslik">${esc(b)}</h3><p class="rhb-yon-metin">${esc(m)}</p>`).join('')}</article>`:'';
  return`<article class="rhb-paper rhb-risk">${baslikBlok(c,`${sinifBasligi(c.sinif)} SINIF RİSK HARİTASI`)}
-<p class="rhb-risk-tarih">Tarih: ${esc(tarih(c.tarih))}</p>
+<p class="rhb-risk-ust"><b class="rhb-formkodu">S.İ.4.a · ÖZEL EĞİTİM VE REHBERLİK HİZMETLERİ GENEL MÜDÜRLÜĞÜ</b><span>Tarih: ${esc(tarih(c.tarih))}</span></p>
 <table class="rhb-tablo rhb-risktablo"><colgroup><col class="rhb-c-rsira"><col class="rhb-c-rsube"><col class="rhb-c-rno"><col class="rhb-c-rad">${cols36}</colgroup><thead><tr>${baslik}</tr></thead><tbody>${govde}${toplam}</tbody></table>
-<div class="rhb-imzalar">${ogretmenImza(c,'Sınıf Rehber Öğretmeni')}${mudurImza(c)}</div>
-<p class="rhb-formkodu">S.İ.4.a · ÖZEL EĞİTİM VE REHBERLİK HİZMETLERİ GENEL MÜDÜRLÜĞÜ</p></article>${yon}`;
+<div class="rhb-imzalar">${ogretmenImza(c,'Sınıf Rehber Öğretmeni')}${mudurImza(c)}</div></article>${yon}`;
 }
 
 global.RehberlikBelge={esc,mudurluk,sinifBasligi,doldur,NOKTA,planBelgesi,aylikBelge,donemBelgesi,yilSonuBelgesi,kazanimBelgesi,riskBelgesi,RISK_EN_AZ_SATIR};

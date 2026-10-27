@@ -368,10 +368,63 @@ function cardOptionsEditor(cfg){const cards=window.AppConfig.DASHBOARD_CARDS;ret
 /* 3 · Sınavlar: her sınav ayrı satır (ad, tarih, saat, Göster) */
 function examRow(x={}){return `<div class="ka-stack ka-exam-row" data-exam-row><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Sınav adı</span><input data-exam-name list="examNameHints" value="${esc(x.ad||'')}" maxlength="40" placeholder="Sınav adı"></label><label class="ka-field"><span class="ka-field__label">Tarih</span><input type="date" data-exam-date value="${esc(String(x.tarih||'').slice(0,10))}"></label><label class="ka-field"><span class="ka-field__label">Saat</span><input type="time" data-exam-time value="${esc(x.saat||'')}"></label></div><div class="ka-row ka-row--between"><label class="ka-check"><input type="checkbox" data-exam-show ${x.goster!==false?'checked':''}> Ana sayfada göster</label><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-exam-remove>Kaldır</button></div></div>`}
 function examCountdownEditor(list){return `<div class="ka-stack" id="examCountdownEditor">${list.map(examRow).join('')}</div><datalist id="examNameHints">${EXAM_HINTS.map(h=>`<option value="${esc(h)}"></option>`).join('')}</datalist><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-exam-add>＋ Sınav ekle</button></div>`}
-/* 4 · Haftalık söz havuzu */
-function sozRow(x={}){return `<div class="ka-stack ka-soz-row" data-soz-row><label class="ka-field"><span class="ka-field__label">Söz</span><textarea data-soz-text maxlength="300" rows="2">${esc(x.metin||'')}</textarea></label><div class="ka-row"><label class="ka-field ka-grow"><span class="ka-field__label">Kaynak</span><input data-soz-src maxlength="80" value="${esc(x.kaynak||'')}"></label><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-remove>Kaldır</button></div></div>`}
-function sozPanel(t,saved){const H=window.HaftaSozleri,a=H.ayar(saved,t.key),kapali=new Set(a.kapali),hazir=H.hazir(t.key),now=H.buHafta(t.key,saved);return `<div class="ka-stack ka-soz" data-soz-panel="${t.key}" ${sozTab===t.key?'':'hidden'}><p class="ka-muted">${esc(t.aciklama)}</p><p class="ka-soz-now"><strong>Bu hafta:</strong> ${now?`${esc(now.metin)}${now.kaynak?` — ${esc(now.kaynak)}`:''}`:'Havuz boş olduğu için bu tür ana sayfada gösterilmez.'}</p><details class="ka-soz-details"><summary>Hazır havuz · ${hazir.length-kapali.size} / ${hazir.length} söz açık</summary><div class="ka-soz-list">${hazir.map(x=>`<label class="ka-check ka-soz-item"><input type="checkbox" data-soz-hazir="${esc(x.id)}" ${kapali.has(x.id)?'':'checked'}><span><b>${esc(x.metin)}</b><small>${esc(x.kaynak)}</small></span></label>`).join('')}</div></details><strong>Eklediğiniz sözler</strong><div class="ka-stack" data-soz-ozel="${t.key}">${a.ozel.map(sozRow).join('')}</div><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-add="${t.key}">＋ Söz ekle</button></div></div>`}
-function sozEditor(cfg){const H=window.HaftaSozleri;if(!H)return'';return `<nav class="ka-tabs" role="tablist" aria-label="Söz türü">${H.TURLER.map(t=>`<button type="button" role="tab" class="ka-tab${sozTab===t.key?' active':''}" aria-selected="${sozTab===t.key}" data-soz-tab="${t.key}">${esc(t.kisa)}</button>`).join('')}</nav>${H.TURLER.map(t=>sozPanel(t,cfg.sozHavuzu)).join('')}`}
+/* 4 · Günün söz havuzu: her tür için hazır sözler (metin/kaynak düzenlenir, havuzdan çıkarılır) + eklenen sözler. Liste yalnız açılan sekmede çizilir; çizilmeyen sekme kayıtlı hâliyle korunur. */
+const SOZ_FILTRELER=[['hepsi','Tümü'],['acik','Havuzda olanlar'],['kapali','Kapalı olanlar'],['duzenlenen','Düzenlenenler'],['ozel','Eklediklerim']];
+const sozNorm=v=>String(v??'').replace(/\s+/g,' ').trim();
+const sozAnahtar=v=>sozNorm(v).toLocaleLowerCase('tr');
+function sozSatir(x={},bugun=false){
+  const hazir=x.hazir===true,orj=hazir?` data-soz-id="${esc(x.id)}" data-soz-orj-metin="${esc(x.orjMetin)}" data-soz-orj-kaynak="${esc(x.orjKaynak)}"`:'';
+  return `<div class="ka-stack ka-soz-item" data-soz-item="${hazir?'hazir':'ozel'}"${orj}><div class="ka-row ka-row--between ka-soz-ust"><div class="ka-row">${hazir?`<label class="ka-check"><input type="checkbox" data-soz-acik ${x.kapali?'':'checked'}> Havuzda</label>`:'<span class="ka-badge">Eklediğiniz söz</span>'}<span class="ka-badge" data-soz-bugun ${bugun?'':'hidden'}>Bugün</span><span class="ka-badge" data-soz-duz ${x.duzenlendi?'':'hidden'}>Düzenlendi</span></div>${hazir?`<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-geri ${x.duzenlendi?'':'hidden'}>Hazır haline dön</button>`:'<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-remove>Kaldır</button>'}</div><label class="ka-field"><span class="ka-field__label">Söz</span><textarea data-soz-text maxlength="${window.GununSozleri.SINIR.metin}" rows="3">${esc(x.metin||'')}</textarea></label><label class="ka-field"><span class="ka-field__label">Kaynak</span><input data-soz-src maxlength="${window.GununSozleri.SINIR.kaynak}" value="${esc(x.kaynak||'')}"></label></div>`;
+}
+function sozListe(t,saved){
+  const G=window.GununSozleri,orj=new Map(G.hazir(t.key).map(x=>[x.id,x])),bugun=G.bugun(t.key,saved)?.id;
+  return G.tumu(t.key,saved).map(x=>sozSatir(x.hazir?{...x,orjMetin:orj.get(x.id).metin,orjKaynak:orj.get(x.id).kaynak}:x,x.id===bugun)).join('');
+}
+const sozSayacMetni=(toplam,acik,gor)=>`${toplam} söz · ${acik} tanesi havuzda${gor!==toplam?` · ${gor} gösteriliyor`:''}`;
+function sozPanel(t,saved){
+  const G=window.GununSozleri,now=G.bugun(t.key,saved),tum=G.tumu(t.key,saved),yuklu=sozTab===t.key;
+  return `<div class="ka-stack ka-soz" data-soz-panel="${t.key}" data-soz-yuklu="${yuklu?'1':''}" ${yuklu?'':'hidden'}><p class="ka-muted">${esc(t.aciklama)}</p><p class="ka-soz-now"><strong>Bugün:</strong> ${now?`${esc(now.metin)}${now.kaynak?` — ${esc(now.kaynak)}`:''}`:'Havuz boş olduğu için bu tür ana sayfada gösterilmez.'}</p><div class="ka-row ka-soz-arac"><label class="ka-field ka-grow"><span class="ka-field__label">Ara</span><input type="search" data-soz-ara placeholder="Sözde veya kaynakta ara" autocomplete="off"></label><label class="ka-field"><span class="ka-field__label">Göster</span><select data-soz-filtre>${SOZ_FILTRELER.map(([k,l])=>`<option value="${k}">${esc(l)}</option>`).join('')}</select></label></div><div class="ka-row ka-row--between ka-soz-arac"><span class="ka-muted" data-soz-sayac>${sozSayacMetni(tum.length,tum.filter(x=>!x.kapali).length,tum.length)}</span><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-add="${t.key}">＋ Söz ekle</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-soz-sifirla="${t.key}">Hazırları sıfırla</button></div></div><div class="ka-stack ka-soz-liste" data-soz-liste="${t.key}">${yuklu?sozListe(t,saved):''}</div></div>`;
+}
+function sozEditor(cfg){const G=window.GununSozleri;if(!G)return'';return `<nav class="ka-tabs" role="tablist" aria-label="Söz türü">${G.TURLER.map(t=>`<button type="button" role="tab" class="ka-tab${sozTab===t.key?' active':''}" aria-selected="${sozTab===t.key}" data-soz-tab="${t.key}">${esc(t.kisa)}</button>`).join('')}</nav>${G.TURLER.map(t=>sozPanel(t,cfg.sozHavuzu)).join('')}`}
+/* Satırın ekrandaki durumu (kapalı / düzenlenmiş) ve rozetleri. Hazır sözün düzenlenmesi, ilk hâlinden farklı olmasıdır. */
+function sozDurum(row){
+  const hazir=row.dataset.sozItem==='hazir',metin=row.querySelector('[data-soz-text]').value,kaynak=row.querySelector('[data-soz-src]').value;
+  return{hazir,kapali:hazir&&!row.querySelector('[data-soz-acik]').checked,duz:hazir&&(sozNorm(metin)!==sozNorm(row.dataset.sozOrjMetin)||sozNorm(kaynak)!==sozNorm(row.dataset.sozOrjKaynak)),bos:!sozNorm(metin)};
+}
+function sozSatirGuncelle(row){const d=sozDurum(row);if(!d.hazir)return;row.querySelector('[data-soz-duz]').hidden=!d.duz;row.querySelector('[data-soz-geri]').hidden=!d.duz}
+function sozSayac(panel){
+  const rows=[...panel.querySelectorAll('[data-soz-item]')],el=panel.querySelector('[data-soz-sayac]');if(!el||!rows.length)return;
+  el.textContent=sozSayacMetni(rows.length,rows.filter(r=>{const d=sozDurum(r);return d.hazir?!d.kapali:!d.bos}).length,rows.filter(r=>!r.hidden).length);
+}
+/* Arama + süzgeç yalnız görünümü değiştirir; kaydedilecek veriye ve "değişti" durumuna dokunmaz. */
+function sozFiltrele(panel){
+  const q=sozAnahtar(panel.querySelector('[data-soz-ara]')?.value),f=panel.querySelector('[data-soz-filtre]')?.value||'hepsi';
+  panel.querySelectorAll('[data-soz-item]').forEach(r=>{
+    const d=sozDurum(r),uygun=f==='acik'?(d.hazir?!d.kapali:true):f==='kapali'?d.kapali:f==='duzenlenen'?d.duz:f==='ozel'?!d.hazir:true;
+    r.hidden=!(uygun&&(!q||sozAnahtar(`${r.querySelector('[data-soz-text]').value} ${r.querySelector('[data-soz-src]').value}`).includes(q)));
+  });
+  sozSayac(panel);
+}
+function sozSekmeAc(out,tur){
+  sozTab=tur;
+  out.querySelectorAll('[data-soz-tab]').forEach(b=>{const on=b.dataset.sozTab===tur;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
+  out.querySelectorAll('[data-soz-panel]').forEach(x=>{x.hidden=x.dataset.sozPanel!==tur});
+  const panel=out.querySelector(`[data-soz-panel="${tur}"]`),t=window.GununSozleri.TURLER.find(x=>x.key===tur);
+  if(panel&&t&&!panel.dataset.sozYuklu){panel.querySelector('[data-soz-liste]').innerHTML=sozListe(t,window.AppConfig.get().sozHavuzu);panel.dataset.sozYuklu='1';sozSayac(panel)}
+}
+function sozEkle(out,tur){
+  const panel=out.querySelector(`[data-soz-panel="${tur}"]`),box=panel?.querySelector('[data-soz-liste]');if(!box)return;
+  if(box.querySelectorAll('[data-soz-item="ozel"]').length>=window.GununSozleri.SINIR.ozel){toast?.(`En fazla ${window.GununSozleri.SINIR.ozel} söz eklenebilir.`);return}
+  const ara=panel.querySelector('[data-soz-ara]'),fil=panel.querySelector('[data-soz-filtre]');if(ara)ara.value='';if(fil)fil.value='hepsi';
+  box.insertAdjacentHTML('beforeend',sozSatir({hazir:false}));sozFiltrele(panel);
+  const satir=box.lastElementChild;satir.scrollIntoView?.({block:'center'});satir.querySelector('[data-soz-text]')?.focus();
+}
+function sozSifirla(out,tur){
+  const panel=out.querySelector(`[data-soz-panel="${tur}"]`),t=window.GununSozleri.TURLER.find(x=>x.key===tur);if(!panel||!t)return false;
+  if(!confirm(`${t.kisa} havuzunda hazır sözlere yaptığınız düzenlemeler ve kapatmalar geri alınsın mı? (Eklediğiniz sözler korunur.)`))return false;
+  panel.querySelectorAll('[data-soz-item="hazir"]').forEach(r=>{r.querySelector('[data-soz-text]').value=r.dataset.sozOrjMetin;r.querySelector('[data-soz-src]').value=r.dataset.sozOrjKaynak;r.querySelector('[data-soz-acik]').checked=true;sozSatirGuncelle(r)});
+  sozFiltrele(panel);return true;
+}
 /* 5 · Onur panosu */
 const ONUR_PRESETS=[['⭐','Haftanın Öğrencisi'],['🏅','Ayın Öğrencisi'],['🧹','En Temiz Sınıf'],['','Kendi başlığım']];
 function onurPersonRow(k={}){return `<div class="ka-grid" data-onur-person><label class="ka-field"><span class="ka-field__label">Ad veya sınıf</span><input data-onur-ad maxlength="60" value="${esc(k.ad||'')}" placeholder="Ayşe Yılmaz ya da 6/C"></label><div class="ka-row"><label class="ka-field ka-grow"><span class="ka-field__label">Açıklama (isteğe bağlı)</span><input data-onur-aciklama maxlength="80" value="${esc(k.aciklama||'')}"></label><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-onur-person-remove aria-label="Adı kaldır">✕</button></div></div>`}
@@ -406,7 +459,7 @@ function appLayout(){
   +card(1,'Hangi kartlar görünsün?','Her rolün ana sayfası ayrı bir listeden gelir. Kartı kapatabilir, yukarı veya aşağı taşıyabilirsiniz.',`<nav class="ka-tabs" role="tablist" aria-label="Rol">${LAYOUT_ROLES.map(([k,l])=>`<button type="button" role="tab" class="ka-tab${layoutRole===k?' active':''}" aria-selected="${layoutRole===k}" data-layout-role="${k}">${l}</button>`).join('')}</nav>${LAYOUT_ROLES.map(([k])=>`<div class="ka-stack" data-dashboard-card-list="${k}" ${layoutRole===k?'':'hidden'}>${cfg.dashboardCards[k].map(dashboardEditorRow).join('')}</div>`).join('')}`)
   +`<article class="ka-card"><div class="ka-card__body ka-stack">${appSection(2,'Kart seçenekleri','Seçenekler iki rol için de geçerlidir.')}</div></article>${cardOptionsEditor(cfg)}`
   +card(3,'Sınav geri sayımı','Her sınav ayrı bir satırdır: ana sayfada göstermek için işaretleyin, istemediğinizi kapatın veya kaldırın. LGS tarihi MEB tarafından henüz açıklanmadı; 13 Haziran 2027 saat 09:30 tahminidir, resmî tarih çıkınca düzeltin. Saat girmezseniz sınav günü bitene dek sayar; tarihi geçen sınav kendiliğinden gizlenir.',examCountdownEditor(cfg.examCountdowns))
-  +card(4,'Haftalık sözler','Ayet, hadis ve özlü söz ana sayfada tek kartta sırayla gösterilir; her biri haftada bir kendi havuzundan kendiliğinden değişir. Hazır sözleri tek tek kapatabilir, kendi sözlerinizi ekleyebilirsiniz. Hangi türlerin görüneceğini 2. bölümden seçersiniz.',sozEditor(cfg))
+  +card(4,'Günlük sözler','Ayet, hadis ve özlü söz ana sayfada tek kartta sırayla gösterilir; her tür kendi havuzundan her gün bir söz seçer ve o gün herkes aynı sözü görür. Hazır sözlerin metnini ve kaynağını düzenleyebilir, istemediğinizi havuzdan çıkarabilir, kendi sözlerinizi ekleyebilirsiniz. Hangi türlerin görüneceğini 2. bölümden seçersiniz.',sozEditor(cfg))
   +card(5,'Onur panosu','Ayın öğrencisi, en temiz sınıf gibi bölümler oluşturun; altına birden çok ad ekleyebilirsiniz. Hiç ad eklemezseniz kart ana sayfada görünmez.',onurEditor(cfg))
   +card(6,'Slayt resimleri',`En çok ${SLAYT_MAX} resim; ana sayfada sırayla gösterilir, süreyi 2. bölümden seçersiniz. Resimler küçültülerek cihaz verisine kaydedilir.`,slaytEditor())
   +`<article class="ka-card"><div class="ka-card__body">${appSection(7,'Modül erişimi','Kapattığınız modül hiçbir kullanıcının menüsünde ve aramasında görünmez. Menü yapısı unvana göre otomatik gelir.')}</div></article><div id="appModuleEditor" class="ka-stack">${cfg.modules.map(moduleEditorRow).join('')}</div><div class="ka-row"><button class="ka-btn ka-btn--secondary" type="button" data-app-reset data-ka-permission="settings.app.edit" data-ka-write="settings.app.edit">Varsayılana Dön</button><button class="ka-btn" type="button" data-app-save data-ka-permission="settings.app.edit" data-ka-write="settings.app.edit">Kaydet</button></div></section>`;
@@ -418,7 +471,21 @@ function readCardOptions(root){
   return out;
 }
 function readOnurPanosu(root){return[...root.querySelectorAll('[data-onur-part]')].map(p=>({baslik:p.querySelector('[data-onur-baslik]')?.value.trim()||'',ikon:p.querySelector('[data-onur-ikon]')?.value.trim()||'',kisiler:[...p.querySelectorAll('[data-onur-person]')].map(r=>({ad:r.querySelector('[data-onur-ad]')?.value.trim()||'',aciklama:r.querySelector('[data-onur-aciklama]')?.value.trim()||''})).filter(k=>k.ad)})).filter(b=>b.baslik)}
-function readSozHavuzu(root,fallback){const H=window.HaftaSozleri;if(!H)return fallback||{};return Object.fromEntries(H.TURLER.map(t=>[t.key,{kapali:[...root.querySelectorAll(`[data-soz-panel="${t.key}"] [data-soz-hazir]`)].filter(b=>!b.checked).map(b=>b.dataset.sozHazir),ozel:[...root.querySelectorAll(`[data-soz-ozel="${t.key}"] [data-soz-row]`)].map(r=>({metin:r.querySelector('[data-soz-text]')?.value.trim()||'',kaynak:r.querySelector('[data-soz-src]')?.value.trim()||''})).filter(x=>x.metin)}]))}
+/* Ekrandan okur; hazır sözlerde yalnız kapatılanlar ve ilk hâlinden farklı olanlar kaydedilir. Çizilmemiş sekme kayıtlı hâliyle korunur. */
+function readSozHavuzu(root,fallback){
+  const G=window.GununSozleri;if(!G)return fallback||{};
+  return Object.fromEntries(G.TURLER.map(t=>{
+    const panel=root.querySelector(`[data-soz-panel="${t.key}"]`);
+    if(!panel?.dataset.sozYuklu)return[t.key,G.ayar(fallback,t.key)];
+    const kapali=[],duzenle={},ozel=[];
+    panel.querySelectorAll('[data-soz-item]').forEach(r=>{
+      const d=sozDurum(r),metin=r.querySelector('[data-soz-text]').value,kaynak=r.querySelector('[data-soz-src]').value;
+      if(!d.hazir){ozel.push({metin,kaynak});return}
+      const id=r.dataset.sozId;if(d.kapali)kapali.push(id);if(d.duz&&!d.bos)duzenle[id]={metin,kaynak};
+    });
+    return[t.key,G.ayar({[t.key]:{kapali,duzenle,ozel}},t.key)];
+  }));
+}
 function readAppConfigFromDom(){const current=window.AppConfig.get(),root=document;return{modules:current.modules.map(m=>{const box=root.querySelector(`[data-app-module-row="${m.key}"] [data-app-visible]`);return{key:m.key,label:m.label,icon:m.icon||'',order:m.order,visible:box?!!box.checked:m.visible!==false}}),dashboardCards:Object.fromEntries(LAYOUT_ROLES.map(([role])=>[role,[...root.querySelectorAll(`[data-dashboard-card-list="${role}"] [data-dashboard-card-row]`)].map((row,i)=>({key:row.dataset.dashboardCardRow,visible:!!row.querySelector('[data-card-visible]')?.checked,order:(i+1)*10}))])),cardOptions:readCardOptions(root),examCountdowns:[...root.querySelectorAll('[data-exam-row]')].map(r=>({ad:r.querySelector('[data-exam-name]')?.value.trim()||'',tarih:r.querySelector('[data-exam-date]')?.value||'',saat:r.querySelector('[data-exam-time]')?.value||'',goster:!!r.querySelector('[data-exam-show]')?.checked})).filter(x=>x.ad),onurPanosu:readOnurPanosu(root),sozHavuzu:readSozHavuzu(root,current.sozHavuzu)}}
 async function saveAppLayout(){try{window.PermissionService?.require?.('settings.app.edit','edit');await window.AppConfig.save(readAppConfigFromDom());appDirty=false;toast?.('Ana sayfa ve modül ayarları cihazda kaydedildi.');render()}catch(e){toast?.('Ayarlar kaydedilemedi: '+(e?.message||e))}}
 async function resetAppLayout(){if(!confirm('Kart listesi, kart seçenekleri, sınav listesi ve modüller varsayılana dönsün mü? (Söz havuzu, onur panosu ve slayt resimleri korunur.)'))return;try{window.PermissionService?.require?.('settings.app.edit','edit');await window.AppConfig.reset();appDirty=false;toast?.('Varsayılan ayarlar geri yüklendi.');render()}catch(e){toast?.('Ayarlar sıfırlanamadı: '+(e?.message||e))}}
@@ -427,23 +494,27 @@ function selectLayoutRole(out,role){layoutRole=role;out.querySelectorAll('[data-
 function bindAppEditor(out){
   if(out.dataset.appEditorBound)return;out.dataset.appEditorBound='1';
   const mark=()=>{if(active==='app')appDirty=true};
-  out.addEventListener('input',e=>{if(e.target.closest?.('[data-app-modules]')&&!e.target.matches('[data-slayt-file]'))mark()});
-  out.addEventListener('change',e=>{if(e.target.matches?.('[data-slayt-file]')){const fs=[...e.target.files];e.target.value='';slaytAdd(fs);return}if(e.target.closest?.('[data-app-modules]'))mark()});
+  /* Söz listesinde arama / süzgeç yalnız görünümdür (değişti sayılmaz); söz satırı düzenlemesi rozetleri ve sayacı canlı günceller. */
+  const sozGorunum=t=>{const panel=t.closest?.('[data-soz-panel]');if(!panel)return false;if(t.matches('[data-soz-ara],[data-soz-filtre]')){sozFiltrele(panel);return true}const satir=t.closest('[data-soz-item]');if(satir){sozSatirGuncelle(satir);sozSayac(panel)}return false};
+  out.addEventListener('input',e=>{if(sozGorunum(e.target))return;if(e.target.closest?.('[data-app-modules]')&&!e.target.matches('[data-slayt-file]'))mark()});
+  out.addEventListener('change',e=>{if(e.target.matches?.('[data-slayt-file]')){const fs=[...e.target.files];e.target.value='';slaytAdd(fs);return}if(sozGorunum(e.target))return;if(e.target.closest?.('[data-app-modules]'))mark()});
   out.addEventListener('click',e=>{
-    const t=e.target.closest('[data-move-up],[data-move-down],[data-layout-role],[data-app-save],[data-app-reset],[data-exam-add],[data-exam-remove],[data-soz-add],[data-soz-remove],[data-soz-tab],[data-onur-add],[data-onur-part-remove],[data-onur-person-add],[data-onur-person-remove],[data-slayt-remove]');
+    const t=e.target.closest('[data-move-up],[data-move-down],[data-layout-role],[data-app-save],[data-app-reset],[data-exam-add],[data-exam-remove],[data-soz-add],[data-soz-remove],[data-soz-tab],[data-soz-geri],[data-soz-sifirla],[data-onur-add],[data-onur-part-remove],[data-onur-person-add],[data-onur-person-remove],[data-slayt-remove]');
     if(!t||!out.contains(t))return;
     if(t.matches('[data-app-save]'))return void saveAppLayout();
     if(t.matches('[data-app-reset]'))return void resetAppLayout();
     if(t.matches('[data-slayt-remove]'))return void slaytRemove(t.dataset.slaytRemove);
     if(t.matches('[data-layout-role]'))return void selectLayoutRole(out,t.dataset.layoutRole);
-    if(t.matches('[data-soz-tab]')){sozTab=t.dataset.sozTab;out.querySelectorAll('[data-soz-tab]').forEach(b=>{const on=b.dataset.sozTab===sozTab;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});out.querySelectorAll('[data-soz-panel]').forEach(x=>{x.hidden=x.dataset.sozPanel!==sozTab});return}
+    if(t.matches('[data-soz-tab]'))return void sozSekmeAc(out,t.dataset.sozTab);
+    if(t.matches('[data-soz-sifirla]')){if(sozSifirla(out,t.dataset.sozSifirla))mark();return}
     mark();
     if(t.matches('[data-move-up]'))moveRow(t,-1);
     else if(t.matches('[data-move-down]'))moveRow(t,1);
     else if(t.matches('[data-exam-add]')){const box=out.querySelector('#examCountdownEditor');if(!box)return;if(box.querySelectorAll('[data-exam-row]').length>=EXAM_MAX){toast?.(`En fazla ${EXAM_MAX} sınav eklenebilir.`);return}box.insertAdjacentHTML('beforeend',examRow({goster:true}));box.lastElementChild.querySelector('[data-exam-name]')?.focus()}
     else if(t.matches('[data-exam-remove]'))t.closest('[data-exam-row]')?.remove();
-    else if(t.matches('[data-soz-add]')){const box=out.querySelector(`[data-soz-ozel="${t.dataset.sozAdd}"]`);if(!box)return;box.insertAdjacentHTML('beforeend',sozRow());box.lastElementChild.querySelector('[data-soz-text]')?.focus()}
-    else if(t.matches('[data-soz-remove]'))t.closest('[data-soz-row]')?.remove();
+    else if(t.matches('[data-soz-add]'))sozEkle(out,t.dataset.sozAdd);
+    else if(t.matches('[data-soz-remove]')){const panel=t.closest('[data-soz-panel]');t.closest('[data-soz-item]')?.remove();if(panel)sozSayac(panel)}
+    else if(t.matches('[data-soz-geri]')){const r=t.closest('[data-soz-item]');if(r){r.querySelector('[data-soz-text]').value=r.dataset.sozOrjMetin;r.querySelector('[data-soz-src]').value=r.dataset.sozOrjKaynak;sozSatirGuncelle(r)}}
     else if(t.matches('[data-onur-add]')){const box=out.querySelector('#onurEditor');if(!box)return;if(box.querySelectorAll('[data-onur-part]').length>=8){toast?.('En fazla 8 bölüm eklenebilir.');return}box.insertAdjacentHTML('beforeend',onurPartRow({ikon:t.dataset.onurIkonNew,baslik:t.dataset.onurBaslikNew}));box.lastElementChild.querySelector(t.dataset.onurBaslikNew?'[data-onur-ad]':'[data-onur-baslik]')?.focus()}
     else if(t.matches('[data-onur-part-remove]'))t.closest('[data-onur-part]')?.remove();
     else if(t.matches('[data-onur-person-add]')){const box=t.closest('[data-onur-part]')?.querySelector('[data-onur-people]');if(!box)return;if(box.querySelectorAll('[data-onur-person]').length>=12){toast?.('Bir bölümde en fazla 12 ad olabilir.');return}box.insertAdjacentHTML('beforeend',onurPersonRow());box.lastElementChild.querySelector('[data-onur-ad]')?.focus()}

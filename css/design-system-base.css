@@ -14496,19 +14496,15 @@ html .ka-evrak .ev-l-foot{display:grid;gap:var(--ka-sp-2);margin-top:var(--ka-sp
 /* Kâğıt önizlemesi her temada beyaz zemin üstünde siyah yazıdır; koyu temadaki .ka-card p ve table td !important kurallarını geçmek için aynı ağırlıkta tanımlanır. */
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-evrak .ka-evrak-paper :is(div,p,span,b,table,thead,tbody,tr,th,td){color:var(--ka-report-text)!important}
 html[data-theme] #v2ModuleRoot:not(#_x) .ka-evrak .ka-evrak-paper :is(th,td){border-color:var(--ka-report-border)!important}
-/* — AYARLAR > ANA SAYFA: sınav satırları + haftalık söz havuzu (yalnız ladder token) — */
+/* — AYARLAR > ANA SAYFA: sınav satırları + günlük söz havuzu (yalnız ladder token) — */
 html #v2ModuleRoot .ka-exam-row,
-html #v2ModuleRoot .ka-soz-row,
 html #v2ModuleRoot .ka-onur-part{padding-bottom:var(--ka-sp-12);border-bottom:var(--ka-border-w) solid var(--ka-border)}
 html #v2ModuleRoot .ka-soz-now{margin:0;padding:var(--ka-sp-10) var(--ka-sp-12);border-radius:var(--ka-r-4);background:var(--ka-surface-2);border:var(--ka-border-w) solid var(--ka-border);font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-45)}
-html #v2ModuleRoot .ka-soz-details{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-4);background:var(--ka-card-bg)}
-html #v2ModuleRoot .ka-soz-details>summary{cursor:pointer;padding:var(--ka-sp-10) var(--ka-sp-12);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800)}
-html #v2ModuleRoot .ka-soz-list{display:grid;gap:var(--ka-sp-2);padding:0 var(--ka-sp-12) var(--ka-sp-8)}
-html #v2ModuleRoot .ka-soz-item{display:flex;align-items:flex-start;gap:var(--ka-sp-10);padding:var(--ka-sp-8) 0;border-top:var(--ka-border-w) solid var(--ka-border)}
-html #v2ModuleRoot .ka-soz-item input{flex:none;margin-top:var(--ka-sp-2)}
-html #v2ModuleRoot .ka-soz-item span{display:grid;gap:var(--ka-sp-2);min-width:0}
-html #v2ModuleRoot .ka-soz-item b{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-45)}
-html #v2ModuleRoot .ka-soz-item small{font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html #v2ModuleRoot .ka-soz-arac{align-items:flex-end;flex-wrap:wrap}
+html #v2ModuleRoot .ka-soz-liste{max-height:70dvh;overflow:auto;overscroll-behavior:contain;padding-right:var(--ka-sp-4)}
+html #v2ModuleRoot .ka-soz-item{padding:var(--ka-sp-10) var(--ka-sp-12);border-radius:var(--ka-r-4);background:var(--ka-card-bg);border:var(--ka-border-w) solid var(--ka-border)}
+html #v2ModuleRoot .ka-soz-ust{flex-wrap:wrap;gap:var(--ka-sp-8)}
+html #v2ModuleRoot .ka-soz-item textarea{width:100%;resize:vertical}
 html #v2ModuleRoot .ka-opt-choices{flex-wrap:wrap}
 html #v2ModuleRoot .ka-slayt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--ka-sp-120),1fr));gap:var(--ka-sp-8)}
 html #v2ModuleRoot .ka-slayt-thumb{position:relative;margin:0;border-radius:var(--ka-r-4);overflow:hidden;border:var(--ka-border-w) solid var(--ka-border)}
@@ -15121,7 +15117,7 @@ html[data-theme] #v2ModuleRoot .vtp-ed__metin{line-height:var(--ka-lh-1-45)}
 .ka-report .rhb-kaztablo th,.ka-report .rhb-kaztablo td{font-size:8.5pt!important}
 .ka-report .rhb-kaztablo td.rhb-sira{white-space:nowrap}
 /* sınıf risk haritası (S.İ.4.a, yatay): 4 kimlik sütunu + 36 dar risk sütunu; başlıklar dikey */
-.ka-report .rhb-risk-tarih{margin:0 0 1mm;text-align:right;font-size:9pt}
+.ka-report .rhb-risk-ust{display:flex;justify-content:space-between;align-items:baseline;gap:6mm;margin:0 0 1mm;font-size:9pt}
 .ka-report .rhb-risktablo{margin:0}
 .ka-report .rhb-risktablo th,.ka-report .rhb-risktablo td{padding:0 .4mm!important;font-size:7.5pt!important;line-height:1.15}
 .ka-report .rhb-risktablo tr{break-inside:avoid;page-break-inside:avoid}
@@ -15138,7 +15134,8 @@ html[data-theme] #v2ModuleRoot .vtp-ed__metin{line-height:var(--ka-lh-1-45)}
 .ka-report .rhb-c-rno{width:11mm}
 .ka-report .rhb-risktablo .rhb-c-rad{width:44mm}
 .ka-report .rhb-c-risk{width:5.4mm}
-.ka-report .rhb-formkodu{margin:3mm 0 0;font-size:8pt;font-weight:700;color:var(--ka-report-text)}
+.ka-report .rhb-formkodu{font-size:8pt;font-weight:700;color:var(--ka-report-text)}
+.ka-report .rhb-risk .rhb-imza{align-items:center;text-align:center}
 .ka-report .rhb-yonerge{break-before:page;page-break-before:always}
 .ka-report .rhb-yonerge .rhb-ust{margin-bottom:6mm;font-size:13pt;line-height:1.35}
 .ka-report .rhb-yon-ust{margin:0 0 4mm;font-family:inherit;font-size:11pt;font-weight:700;letter-spacing:0}

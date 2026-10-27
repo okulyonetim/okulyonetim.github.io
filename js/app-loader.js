@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1073','js/modules/hafta-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/dashboard.js?v=1108']);
+define('dashboard',['js/modules/school-live-status.js?v=1073','js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/dashboard.js?v=1109']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/terfi-core.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/yillik-plan-word.js?v=2','js/modules/yillik-plan-excel.js?v=1','js/modules/yillik-plan-dialog.js?v=1','js/modules/yillik-plan-ui.js?v=2','js/modules/academic.js?v=895']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/management.js?v=898']);
@@ -31,7 +31,7 @@ define('food',['js/core/report-customizer.js?v=1004','js/modules/report-engine.j
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/reports.js?v=22']);
 define('tools',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/tools.js?v=9','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
-define('settings',['js/modules/hafta-sozleri.js?v=1','js/modules/settings.js?v=898']);
+define('settings',['js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/settings.js?v=899']);
 define('committees',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=8','js/modules/committees.js?v=6']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
@@ -55,7 +55,7 @@ const DASHBOARD_CARDS=[
  {key:'upcoming',label:'Yaklaşanlar',desc:'Yaklaşan sınav, görev, toplantı ve hatırlatıcılar.'},
  {key:'specialDays',label:'Belirli gün ve haftalar',desc:'Okulunuzun seçtiği gün ve haftalar; resmî bayram ve anma günleri.'},
  {key:'examCountdown',label:'Sınav geri sayımı',desc:'LGS gibi sınavlara kalan süre; her sınav ayrı seçilir.'},
- {key:'sozler',label:'Haftanın ayeti · hadisi · özlü sözü',desc:'Tek kartta sırayla; her tür kendi havuzundan haftada bir değişir.'},
+ {key:'sozler',label:'Günün ayeti · hadisi · özlü sözü',desc:'Tek kartta sırayla; her tür kendi havuzundan her gün değişir.'},
  {key:'onurPanosu',label:'Onur panosu',desc:'Ayın öğrencisi, en temiz sınıf gibi bölümler.'},
  {key:'quick',label:'Hızlı işlemler',desc:'Sık kullanılan işlem kısayolları.'},
  {key:'todayLessons',label:'Bugünkü derslerim',desc:'Öğretmenin bugünkü dersleri.',role:'ogretmen'},

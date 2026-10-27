@@ -381,14 +381,14 @@ function scheduleCarousel(name){
 const startCarousels=()=>Object.keys(carousels).forEach(scheduleCarousel);
 const stopCarousels=()=>Object.values(carousels).forEach(st=>{clearTimeout(st.timer);st.timer=0});
 const dotsHtml=(items,at,label)=>items.length>1?`<div class="kh-dots" role="tablist" aria-label="${esc(label)}">${items.map((x,i)=>`<button type="button" role="tab" class="kh-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x)}" data-slide-dot="${i}"></button>`).join('')}</div>`:'';
-/* Haftanın ayeti / hadisi / özlü sözü: tek kart; her tür kendi havuzundan (HaftaSozleri) hafta numarasına göre değişir.
+/* Günün ayeti / hadisi / özlü sözü: tek kart; her tür kendi havuzundan (GununSozleri) takvim gününe göre değişir.
    Kartın seçeneklerinden kapatılan türler ve havuzu boş olan türler atlanır. */
-function sayingSlides(){const H=window.HaftaSozleri,pool=window.AppConfig?.get?.()?.sozHavuzu;return(H?.TURLER||[]).filter(t=>opt('sozler',t.key)!==false).map(t=>({t,pick:H.buHafta(t.key,pool)})).filter(x=>x.pick)}
-function weeklySayingsSection(){
+function sayingSlides(){const G=window.GununSozleri,pool=window.AppConfig?.get?.()?.sozHavuzu;return(G?.TURLER||[]).filter(t=>opt('sozler',t.key)!==false).map(t=>({t,pick:G.bugun(t.key,pool)})).filter(x=>x.pick)}
+function dailySayingsSection(){
   const slides=sayingSlides();
   if(!slides.length)return'';
   const at=carousels.saying.at%slides.length;
-  return `<section class="kh-section" data-home-section="sozler"><div class="kh-card kh-saying-card" data-carousel="saying" data-slide-active="${slides[at].t.key}" role="group" aria-roledescription="carousel" aria-label="Haftanın sözleri"><div class="kh-saying-stage">${slides.map((x,i)=>`<figure class="kh-saying${i===at?' is-active':''}" data-slide data-slide-kind="${x.t.key}" ${i===at?'':'aria-hidden="true"'}><figcaption class="kh-saying-label">${esc(x.t.baslik)}</figcaption><blockquote>${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="kh-saying-src">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('')}</div>${dotsHtml(slides.map(x=>x.t.baslik),at,'Söz türü')}</div></section>`;
+  return `<section class="kh-section" data-home-section="sozler"><div class="kh-card kh-saying-card" data-carousel="saying" data-slide-active="${slides[at].t.key}" role="group" aria-roledescription="carousel" aria-label="Günün sözleri"><div class="kh-saying-stage">${slides.map((x,i)=>`<figure class="kh-saying${i===at?' is-active':''}" data-slide data-slide-kind="${x.t.key}" ${i===at?'':'aria-hidden="true"'}><figcaption class="kh-saying-label">${esc(x.t.baslik)}</figcaption><blockquote>${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="kh-saying-src">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('')}</div>${dotsHtml(slides.map(x=>x.t.baslik),at,'Söz türü')}</div></section>`;
 }
 /* Slayt resimleri: Ayarlar > Ana Sayfa'dan yüklenen resimler (appConfig türünde 'slayt-N' belgeleri) sırayla gösterilir. */
 const slaytImages=()=>arr('appConfig').filter(x=>/^slayt-\d+$/.test(String(x?.id||''))&&/^data:image\//.test(String(x?.veri||''))).sort((a,b)=>Number(a.sira||0)-Number(b.sira||0));
@@ -404,7 +404,7 @@ function onurPanosuSection(){
   if(!parts.length)return'';
   return `<section class="kh-section" data-home-section="onur-panosu"><div class="kh-section-head"><div class="kh-section-title"><span class="kh-section-art" aria-hidden="true">${sectionArt('onur-panosu','')}</span><span>Onur Panosu</span></div></div><div class="kh-card kh-onur">${parts.map(b=>`<div class="kh-onur-part"><div class="kh-onur-title">${b.ikon?`<span aria-hidden="true">${esc(b.ikon)}</span>`:''}<b>${esc(b.baslik)}</b></div><ul>${b.kisiler.map(k=>`<li><strong>${esc(k.ad)}</strong>${k.aciklama?`<small>${esc(k.aciklama)}</small>`:''}</li>`).join('')}</ul></div>`).join('')}</div></section>`;
 }
-const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,sozler:weeklySayingsSection,onurPanosu:onurPanosuSection,slayt:slaytSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
+const CARD_RENDERERS={welcome:()=>hero(),news:newsSection,food:foodMenuSection,duty:dutySection,whereNow:whereNowSection,absences:absencesSection,announcements:announcementSection,polls:pollSection,trial:trialCounterSection,stats:statsSection,upcoming:upcomingSection,specialDays:specialDaysSection,examCountdown:examCountdownSection,sozler:dailySayingsSection,onurPanosu:onurPanosuSection,slayt:slaytSection,quick:quickSection,todayLessons:todayMyLessonsSection,teacherFocus:teacherFocusSection,exams:examsSection,calendar:calendarSection,notes:notesSection,weekDuty:weekDutySection,todayDuty:allTodayDutySection,social:socialSection};
 function shell(){const list=cards(),signature=list.map(x=>x.key).join('|');return`<section class="ka-home" data-dashboard-module data-dashboard-role="${roleKey()}" data-card-signature="${esc(signature)}">${list.map(c=>CARD_RENDERERS[c.key]?safeSection(CARD_RENDERERS[c.key],c.key):'').join('')}</section><button type="button" class="kh-backtop" data-dash-backtop aria-label="Yukarı dön">↑</button>`}
 function bindPresentation(root){
   bindCarousels(root);

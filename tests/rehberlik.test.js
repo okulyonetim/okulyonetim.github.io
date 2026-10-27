@@ -182,6 +182,9 @@ assert(duz(B.aylikBelge({...ay,diger:[{metin:'<script>x</script>',tarih:''}]},ct
   assert(duz(h).includes('YÖNERGE')&&duz(h).includes('KULLANIM AMACI')&&duz(h).includes('Bir örneği rehberlik servisine iletilir.'),'Yönerge sayfası eklenir.');
   assert(!duz(hy).includes('YÖNERGE')&&hy.length<h.length,'Yönerge kapatılınca çıkmaz.');
   assert(h.indexOf('Ayşe KAYA')<h.indexOf('rhb-imza--olur'),'Öğretmen solda, müdür sağda.');
+  const riskMak=h.slice(0,h.indexOf('rhb-yonerge'));
+  assert(/<p class="rhb-risk-ust"><b class="rhb-formkodu">S\.İ\.4\.a[^<]*<\/b><span>Tarih: 27\.10\.2026<\/span><\/p>/.test(riskMak),'Form kodu ve tarih üst satırda yan yana.');
+  assert(riskMak.lastIndexOf('rhb-imzalar')>riskMak.lastIndexOf('</table>')&&!/<\/div>\s*<p/.test(riskMak),'Risk sayfası imzalarla biter (altında taşan satır yok; boş 2. sayfa oluşmaz).');
   assert(!/\{\{|undefined|NaN|\[object/.test(h),'Risk çıktısında artık işaret yok.');
   assert(!B.riskBelgesi(BC.riskTablosu([{id:'x',no:'1',ad:'<img src=x>',cinsiyet:''}],BC.bosDurum()),ctx).includes('<img'),'Öğrenci adı kaçışlanır.');
 }
@@ -326,8 +329,8 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(/\['sinif-rehberlik','Sınıf Rehberlik'[^\n]*'sinif-rehberlik'\]/.test(nav),'Menüde Sınıf Rehberlik aracı olmalı.');
   {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['sinif-rehberlik'"),'Sınıf Rehberlik "Tutanak ve Evrak" grubunda olmalı.');}
   assert(shell.includes("name==='sinif-rehberlik'")&&shell.includes('RehberlikModule.open'),'Kabukta rota tanımlı olmalı.');
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=3','rehberlik.js?v=4','rehberlik-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=3','rehberlik.js?v=4'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=4','rehberlik-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=4'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
   assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=4'),'İndirme bileşeni ilk indirmede yüklenir.');
   ['aylik','donem','yilsonu'].forEach(f=>assert(sw.includes(`./assets/rehberlik/${f}.docx`),`${f}.docx çevrimdışı için önbelleğe alınmalı.`));
   [39,50,66,67,103,129].forEach(no=>assert(new RegExp(`\\{a:"sinif-rehberlik"\\}`).test(kat),`Öğretmen Dosyası maddeleri modüle bağlı olmalı (${no}).`));
@@ -337,7 +340,9 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
     assert(!/localStorage\s*\.\s*setItem/.test(k)&&!/<style|createElement\('style'\)/.test(k),`${f}.js depolamaya yazmaz, stil gömmez.`);
   }
   assert(css.includes('.ka-report .rhb-paper')&&css.includes('#v2ModuleRoot .rhb-'),'Stiller tasarım sistemi CSS dosyasında olmalı.');
-  const a4=css.slice(css.indexOf('/* ===== A4 — Sınıf Rehberlik'),css.indexOf('/* ===== SINIF REHBERLİK (rhb-*)'));
+  const a4Tum=css.slice(css.indexOf('/* ===== A4 — Sınıf Rehberlik'),css.indexOf('/* ===== SINIF REHBERLİK (rhb-*)'));
+  assert(/\.rhb-risk \.rhb-imza\{[^}]*align-items:center[^}]*text-align:center/.test(a4Tum),'Risk haritasında imza blokları kendi içinde ortalanır (konumları aynı).');
+  const a4=a4Tum.replace(/\.ka-report \.rhb-risk \.rhb-imza\{[^}]*\}/,'');
   assert(/\.rhb-imza\{[^}]*align-items:flex-start[^}]*text-align:left/.test(a4)&&/\.rhb-imzalar\{[^}]*justify-content:flex-start/.test(a4)&&!/\.rhb-imza[^{]*\{[^}]*(?:text-align:center|align-self:flex-end|justify-content:(?:center|flex-end|space-))/.test(a4),'Öğretmen imzaları solda hizalanır.');
   assert(/\.rhb-imza--olur\{[^}]*margin-left:auto/.test(a4),'Müdür bloğu sağ kenara yaslanır.');
   assert(!/\d(?:\.\d+)?px/.test(css.slice(css.indexOf('/* ===== A4 — Sınıf Rehberlik')).replace(/@media\([^)]*\)/g,'').replace(/@media [^{]*\{/g,'')),'Yeni stillerde sabit px olmamalı (ekran kesme noktası hariç); belirteç ya da mm kullanılmalı.');
