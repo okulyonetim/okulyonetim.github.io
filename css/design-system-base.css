@@ -15003,10 +15003,22 @@ html[data-theme] #v2ModuleRoot .ka-od-add .ka-field{flex:1 1 var(--ka-sp-120);mi
 .ka-report .vtp-c-yak{width:26mm}
 .ka-report .vtp-c-imza{width:34mm}
 .ka-report .vtp-pusulalar{display:flex;flex-direction:column;gap:3mm}
-.ka-report .vtp-pusula{box-sizing:border-box;display:flex;flex-direction:column;gap:1mm;min-height:40mm;padding:2.5mm 4mm;border:.3mm dashed var(--ka-report-border);break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-pusula{box-sizing:border-box;display:flex;flex-direction:column;gap:1mm;padding:2mm 4mm;line-height:1.3;border:.3mm dashed var(--ka-report-border);break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-pusula__ust{display:flex;align-items:center;gap:3mm;padding-bottom:1mm;border-bottom:.4mm solid var(--ka-report-border)}
+.ka-report .vtp-pusula__ust::after{content:"";flex:none;width:12mm}
+.ka-report .vtp-pusula .vtp-logo{flex:none;width:12mm;height:12mm;object-fit:contain}
+.ka-report .vtp-pusula__baslik{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.3mm;text-align:center}
+.ka-report .vtp-pusula__baslik small{font-size:8.5pt}
+.ka-report .vtp-pusula__baslik strong{font-size:10.5pt}
+.ka-report .vtp-pusula__baslik b{font-size:11.5pt;letter-spacing:.3mm}
+.ka-report .vtp-pbilgi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:.25mm solid var(--ka-report-border);background:var(--ka-report-soft-neutral-bg)}
+.ka-report .vtp-pbilgi span{display:flex;flex-direction:column;align-items:center;padding:.4mm 2mm;border-left:.25mm solid var(--ka-report-border);text-align:center}
+.ka-report .vtp-pbilgi span:first-child{border-left:0}
+.ka-report .vtp-pbilgi small{font-size:7.5pt;letter-spacing:.2mm}
+.ka-report .vtp-pbilgi b{font-size:10pt}
+.ka-report .vtp-pusula__ogr{font-size:9.5pt}
 .ka-report .vtp-pusula p{margin:0;text-indent:6mm;text-align:justify;font-size:10.5pt}
-.ka-report .vtp-pusula small{font-size:9.5pt}
-.ka-report .vtp-pusula .vtp-imza{align-self:flex-start;min-width:50mm;margin-top:auto}
+.ka-report .vtp-pusula .vtp-imza--sag{align-self:flex-end;align-items:center;min-width:50mm;margin-top:auto;text-align:center}
 
 /* ===== VELİ TOPLANTISI (vtp-*) — sınıf seç, belgeyi yazdır sayfası ===== */
 html[data-theme] #v2ModuleRoot .vtp-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
@@ -15018,6 +15030,24 @@ html[data-theme] #v2ModuleRoot .vtp-belge__ad{display:flex;flex-direction:column
 html[data-theme] #v2ModuleRoot .vtp-sec{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--ka-sp-10) var(--ka-sp-12)}
 html[data-theme] #v2ModuleRoot .vtp-sec .ka-field{min-width:0;flex:0 1 auto}
 html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var(--ka-sp-8);min-height:var(--ka-control-height)}
+html[data-theme] #v2ModuleRoot .vtp-belge__dugmeler{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .vtp-ed>summary{display:flex;flex-direction:column;gap:var(--ka-sp-2);padding:var(--ka-sp-12);cursor:pointer;list-style:none}
+html[data-theme] #v2ModuleRoot .vtp-ed>summary::-webkit-details-marker{display:none}
+html[data-theme] #v2ModuleRoot .vtp-ed>summary::after{content:"▾";position:absolute;inset-inline-end:var(--ka-sp-16);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .vtp-ed{position:relative}
+html[data-theme] #v2ModuleRoot .vtp-ed[open]>summary{border-bottom:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .vtp-ed[open]>summary::after{content:"▴"}
+html[data-theme] #v2ModuleRoot .vtp-ed__bolum{display:flex;flex-direction:column;gap:var(--ka-sp-8);align-items:flex-start}
+html[data-theme] #v2ModuleRoot .vtp-ed__liste{display:flex;flex-direction:column;gap:var(--ka-sp-8);width:100%;margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .vtp-ed__madde{display:flex;flex-direction:column;gap:var(--ka-sp-6);padding:var(--ka-sp-8);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius-sm);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .vtp-ed__satir{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .vtp-ed__no{display:grid;place-items:center;min-width:var(--ka-sp-24);min-height:var(--ka-field-h-md);color:var(--ka-text-muted);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .vtp-ed__dugmeler{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .vtp-ed__metin{line-height:var(--ka-lh-1-45)}
+@media(max-width:767px){
+  html[data-theme] #v2ModuleRoot .vtp-ed__satir{grid-template-columns:auto minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .vtp-ed__dugmeler{grid-column:1 / -1;justify-content:flex-start}
+}
 @media(max-width:767px){
   html[data-theme] #v2ModuleRoot .vtp-belge{grid-template-columns:minmax(0,1fr)}
   html[data-theme] #v2ModuleRoot .vtp-belge .ka-btn{width:100%}

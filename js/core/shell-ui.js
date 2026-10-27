@@ -312,7 +312,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=2');
-      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=3');
+      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=4');
       if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Veli Toplantısı');
       if(!global.VeliToplantisiModule.open())throw new Error('Veli Toplantısı açılamadı.');
