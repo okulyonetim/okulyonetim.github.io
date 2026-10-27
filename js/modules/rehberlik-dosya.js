@@ -1,5 +1,5 @@
 /* Koruk Asistan — Sınıf Rehberlik: Word / Excel indirme
- * Plan → Excel (ExcelJS, kaynak planın görünümü). Aylık / dönem sonu / yıl sonu raporu → Word: assets/rehberlik/*.docx şablonları
+ * Plan ve Risk Haritası → Excel (ExcelJS, kaynak dosyaların görünümü). Aylık / dönem sonu / yıl sonu raporu → Word: assets/rehberlik/*.docx şablonları
  * ({{ALAN}} işaretli; tekrarlanan satırlar OgretmenDosyasiCore.satirCogalt ile çoğaltılır). Aynı veri ekranda/baskıda RehberlikBelge ile yazılır.
  */
 (function(global){
@@ -144,8 +144,74 @@ async function excelPlan({ctx,plan}){
  await kaydet(new global.Blob([veri],{type:XLSX_TURU}),O().dosyaAdi('Rehberlik Plani',ctx.sinif,'xlsx'),XLSX_TURU);
 }
 
+/* ── Excel: sınıf risk haritası (MEB S.İ.4.a, yatay; başlıklar dikey, işaretli kutuda X, son satırda sütun toplamı) + YÖNERGE sayfası ── */
+const RISK_RENK={kimlik:'FFF79646',risk:'FFFCD5B4'};
+const RISK_KENAR={style:'thin',color:{argb:'FFC55A11'}};
+const RISK_CERCEVE={top:RISK_KENAR,left:RISK_KENAR,bottom:RISK_KENAR,right:RISK_KENAR};
+const RISK_TEK_SAYFA=45;
+const RISK_PAGE={paperSize:9,orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:0,horizontalCentered:true,margins:{left:0.4,right:0.4,top:0.6,bottom:0.6,header:0.3,footer:0.3}};
+
+async function excelRisk({ctx,risk,yonerge}){
+ await betik(EXCELJS,()=>!!global.ExcelJS,'Excel bileşeni yüklenemedi.');
+ await betik(OGRETMEN_CORE,()=>!!O(),'Dosya bileşeni yüklenemedi.');
+ const V=global.RehberlikVeri,riskler=V.risk,n=riskler.length,SON=4+n;
+ const wb=new global.ExcelJS.Workbook();wb.creator='Koruk Asistan';
+ const sayi=Math.max(risk.ogrenciler.length,B().RISK_EN_AZ_SATIR);
+ const ws=wb.addWorksheet('SINIF RİSK HARİTASI',{pageSetup:{...RISK_PAGE,fitToHeight:sayi<=RISK_TEK_SAYFA?1:0}});   // kaynak form gibi tek sayfaya sığar (imza bloğu bölünmez)
+ ws.columns=[{width:5},{width:8},{width:9},{width:32},...riskler.map(()=>({width:4.6}))];
+ let r=0;
+ const satir=yuksek=>{r++;if(yuksek)ws.getRow(r).height=yuksek;return r};
+ const yaz=(h,deger,{boyut=9,kalin=false,yatay='center',dikey='middle',dolgu,cerceve,don,sar=false}={})=>{
+  h.value=deger;h.font={name:'Arial',size:boyut,bold:kalin};
+  h.alignment={horizontal:yatay,vertical:dikey,wrapText:sar||!!don,...(don?{textRotation:don}:{})};
+  if(dolgu)h.fill={type:'pattern',pattern:'solid',fgColor:{argb:dolgu}};
+  if(cerceve)h.border=RISK_CERCEVE;
+ };
+ const birlestir=(sat,bas,son,deger,secenek)=>{if(son>bas)ws.mergeCells(sat,bas,sat,son);yaz(ws.getCell(sat,bas),deger,secenek)};
+ birlestir(satir(18),1,SON,`${ctx.yil} EĞİTİM ÖĞRETİM YILI`,{boyut:11,kalin:true});
+ birlestir(satir(18),1,SON,B().mudurluk(ctx.okul),{boyut:11,kalin:true});
+ birlestir(satir(22),1,SON,`${B().sinifBasligi(ctx.sinif)} SINIF RİSK HARİTASI`,{boyut:12,kalin:true,dolgu:RISK_RENK.kimlik});
+ birlestir(satir(16),1,SON,`Tarih: ${tarih(ctx.tarih)}`,{yatay:'right'});
+ const bas=satir(170),dik=(sut,ad,dolgu)=>yaz(ws.getCell(bas,sut),ad,{boyut:7,kalin:true,dolgu,cerceve:true,don:90,dikey:'bottom',yatay:'center'});
+ dik(1,'Sıra No',RISK_RENK.kimlik);dik(2,'Sınıf/Şube',RISK_RENK.kimlik);dik(3,'Okul Numarası',RISK_RENK.kimlik);
+ yaz(ws.getCell(bas,4),'Öğrencinin Adı Soyadı',{boyut:9,kalin:true,dolgu:RISK_RENK.kimlik,cerceve:true,dikey:'bottom',sar:true});
+ riskler.forEach(([ad],k)=>dik(5+k,ad,RISK_RENK.risk));
+ ws.pageSetup.printTitlesRow=`${bas}:${bas}`;
+ for(let i=0;i<sayi;i++){
+  const o=risk.ogrenciler[i],sat=satir(16);
+  yaz(ws.getCell(sat,1),i+1,{kalin:true,cerceve:true});
+  yaz(ws.getCell(sat,2),o?ctx.sinif:'',{cerceve:true});
+  yaz(ws.getCell(sat,3),o?o.no:'',{cerceve:true});
+  yaz(ws.getCell(sat,4),o?o.ad:'',{yatay:'left',cerceve:true});
+  riskler.forEach((_,k)=>yaz(ws.getCell(sat,5+k),o?.isaret[k]?'X':'',{kalin:true,cerceve:true}));
+ }
+ const top=satir(17);
+ birlestir(top,1,4,'TOPLAM',{kalin:true,yatay:'right',cerceve:true,dolgu:RISK_RENK.risk});
+ for(let c=2;c<=4;c++)ws.getCell(top,c).border=RISK_CERCEVE;
+ risk.toplamlar.forEach((t,k)=>yaz(ws.getCell(top,5+k),t||'',{kalin:true,cerceve:true,dolgu:RISK_RENK.risk}));
+ // imzalar: öğretmen solda; müdür sağ blokta (OLUR, tarih, ad, unvan), yazılar sola hizalı
+ satir(10);
+ const olur=satir(16),tar=satir(14),ad=satir(18),unvan=satir(16),mSut=SON-9;
+ const sol=(sat,deger,kalin,alt)=>birlestir(sat,1,4,deger,{boyut:10,kalin,yatay:'left',dikey:alt?'bottom':'top'});
+ const sag=(sat,deger,kalin,alt)=>birlestir(sat,mSut,SON,deger,{boyut:10,kalin,yatay:'left',dikey:alt?'bottom':'top'});
+ sol(ad,ctx.ogretmen||B().NOKTA,true,true);sol(unvan,'Sınıf Rehber Öğretmeni',true);
+ sag(olur,'OLUR',true);sag(tar,tarih(ctx.tarih),false);sag(ad,ctx.mudur||B().NOKTA,false,true);sag(unvan,'Okul Müdürü',true);
+ birlestir(satir(24),1,SON,'S.İ.4.a · ÖZEL EĞİTİM VE REHBERLİK HİZMETLERİ GENEL MÜDÜRLÜĞÜ',{boyut:8,kalin:true,yatay:'left',dikey:'bottom'});
+ ws.pageSetup.printArea=`A1:${ws.getColumn(SON).letter}${r}`;
+ if(yonerge){
+  const w=wb.addWorksheet('YÖNERGE',{pageSetup:RISK_PAGE});w.columns=[{width:130}];
+  let y=0;const ys=(deger,{boyut=10,kalin=false,yatay='left',yuksek}={})=>{y++;const h=w.getCell(y,1);h.value=deger;h.font={name:'Arial',size:boyut,bold:kalin};h.alignment={horizontal:yatay,vertical:'top',wrapText:true};if(yuksek)w.getRow(y).height=yuksek};
+  ys('SINIF RİSK HARİTASI',{boyut:13,kalin:true,yatay:'center',yuksek:22});ys('YÖNERGE',{boyut:13,kalin:true,yatay:'center',yuksek:22});
+  ys('DİKKAT EDİLECEK HUSUSLAR;',{boyut:11,kalin:true,yuksek:26});
+  V.riskYonerge.forEach(([b,m])=>{ys(b,{kalin:true,yuksek:22});ys(m,{yuksek:Math.max(1,Math.ceil(m.length/120))*14+6})});
+ }
+ const veri=await wb.xlsx.writeBuffer();
+ await kaydet(new global.Blob([veri],{type:XLSX_TURU}),O().dosyaAdi('Rehberlik Risk Haritasi',ctx.sinif,'xlsx'),XLSX_TURU);
+}
+
 async function indir(tur,girdi){
  if(tur==='plan')return excelPlan(girdi);
+ if(tur==='risk')return excelRisk(girdi);
  if(['aylik','donem1','donem2','yil'].includes(tur))return wordIndir(tur,girdi);
  throw new Error('Bu belge için indirme yok; Yazdır / PDF kullanın.');
 }

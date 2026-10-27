@@ -1,5 +1,5 @@
 /* Koruk Asistan — Sınıf Rehberlik
- * Sınıfı seçin: Yıllık plan (ay ay; "yapıldı" + tarih işaretlenir) · Raporlar (aylık, I./II. dönem sonu, yıl sonu; plandaki işaretlerden dolar) · Kazanımlar.
+ * Sınıfı seçin: Yıllık plan (ay ay; "yapıldı" + tarih işaretlenir) · Raporlar (aylık, I./II. dönem sonu, yıl sonu; plandaki işaretlerden dolar) · Risk Haritası (öğrenci × 36 risk alanı) · Kazanımlar.
  * Plan ve kazanım verisi rehberlik-veri.js'te, mantık rehberlik-core.js'te, kâğıt çıktıları rehberlik-belge.js'tedir.
  * Takip durumu hesabın tercih belgesinde (KaPrefs → oy_kullaniciTercihleri/{uid}) eğitim yılı ve sınıf başına tutulur; telefon ve bilgisayar aynı durumu görür.
  * Okul, sınıf, öğrenci ve öğretmen / müdür adları uygulamadan (sinif-baglam.js) gelir. Stil: css/design-system-base.css (.rhb-*).
@@ -11,12 +11,13 @@ if(!global.SinifBaglam||!global.RehberlikCore||!global.RehberlikBelge||!global.R
 
 const SB=global.SinifBaglam,C=global.RehberlikCore,B=global.RehberlikBelge,esc=B.esc;
 const toast=m=>global.toast?.(m);
-const SEKMELER=[['plan','Yıllık Plan'],['rapor','Raporlar'],['kazanim','Kazanımlar']];
+const SEKMELER=[['plan','Yıllık Plan'],['rapor','Raporlar'],['risk','Risk Haritası'],['kazanim','Kazanımlar']];
+const GORUNUMLER=[['tablo','Tablo'],['kart','Öğrenci kartları']];
 const TURLER=[['aylik','Aylık'],['donem1','I. Dönem Sonu'],['donem2','II. Dönem Sonu'],['yil','Yıl Sonu']];
 const HAFTALAR=[1,2,3,4,5];
 const EK_KOLEKSIYON=['veliGorusmeleri'];       // Veli Görüşme Formu kayıtları raporlara yazılır
 
-const S={sinifId:'',duzey:0,sekme:'plan',tur:'aylik',ay:'',hepsi:false,acik:'',acikAy:new Set(),ogretmen:'',mudur:'',durum:null,yil:'',kazAcik:new Set()};
+const S={sinifId:'',duzey:0,sekme:'plan',tur:'aylik',ay:'',hepsi:false,acik:'',acikAy:new Set(),ogretmen:'',mudur:'',durum:null,yil:'',kazAcik:new Set(),riskGorunum:'',riskAcik:'',yonerge:true};
 let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,yazT=0;
 
 /* ── bağlam ── */
@@ -33,6 +34,7 @@ function ctx(){
 }
 const plan=()=>C.planOlustur(S.duzey,S.durum,S.yil);
 const formKayitlari=()=>SB.veliGorusmeleri(sinif());   // Veli Görüşme Formu kayıtları (bu sınıf)
+const riskTablosu=()=>C.riskTablosu(S.sinifId?SB.ogrencilerOf(S.sinifId):[],S.durum);
 
 /* ── durum: yerelde KaPrefs, hesapta oy_kullaniciTercihleri ── */
 const anahtar=()=>C.durumAnahtari(S.yil,S.sinifId);
@@ -53,28 +55,29 @@ function uzakGeldi(x){
 function temizle(){offPrefs?.();offPrefs=null;unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];mounted=false}
 
 /* ── yazdırma / indirme ── */
-const BELGE_ADI={plan:'Sınıf Rehberlik Planı',aylik:'Aylık Çalışma Raporu',donem1:'I. Dönem Sonu Çalışma Raporu',donem2:'II. Dönem Sonu Çalışma Raporu',yil:'Yıl Sonu Faaliyet Raporu',kazanim:'Rehberlik Kazanımları'};
+const BELGE_ADI={plan:'Sınıf Rehberlik Planı',aylik:'Aylık Çalışma Raporu',donem1:'I. Dönem Sonu Çalışma Raporu',donem2:'II. Dönem Sonu Çalışma Raporu',yil:'Yıl Sonu Faaliyet Raporu',kazanim:'Rehberlik Kazanımları',risk:'Sınıf Risk Haritası'};
 function belgeHtml(tur){
- const c=ctx(),p=tur==='kazanim'?null:plan();
+ const c=ctx(),p=tur==='kazanim'||tur==='risk'?null:plan();
  if(tur==='plan')return B.planBelgesi(p,c);
  if(tur==='aylik')return B.aylikBelge(C.aylikRapor(p,S.ay,S.durum,{hepsi:S.hepsi,veliGorusmeleri:formKayitlari()}),c);
  if(tur==='donem1'||tur==='donem2')return B.donemBelgesi(C.donemRaporu(p,tur==='donem1'?1:2,{hepsi:S.hepsi}),c);
  if(tur==='yil')return B.yilSonuBelgesi(C.yilSonuRaporu(p,S.durum,{veliGorusmeleri:formKayitlari()}),c);
  if(tur==='kazanim')return B.kazanimBelgesi(c.duzey,c);
+ if(tur==='risk')return B.riskBelgesi(riskTablosu(),c,{yonerge:S.yonerge});
  return'';
 }
 function yazdir(tur){
  if(!S.duzey)return toast('Önce sınıfı seçin.');
  if(!global.ReportEngine?.printReport)return toast('Rapor motoru hazır değil.');
  const c=ctx(),ek=tur==='aylik'?` ${C.ayAdi(S.ay)}`:'';
- global.ReportEngine.printReport(`${BELGE_ADI[tur]}${ek}`,belgeHtml(tur),{fileName:`${BELGE_ADI[tur]}${ek} ${c.sinif}`.trim(),yon:tur==='plan'||tur==='kazanim'?'yatay':'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10});
+ global.ReportEngine.printReport(`${BELGE_ADI[tur]}${ek}`,belgeHtml(tur),{fileName:`${BELGE_ADI[tur]}${ek} ${c.sinif}`.trim(),yon:tur==='plan'||tur==='kazanim'||tur==='risk'?'yatay':'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10});
 }
 async function indir(tur){
  if(!S.duzey)return toast('Önce sınıfı seçin.');
  try{
-  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=3');
+  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=4');
   if(!global.RehberlikDosya)throw new Error('İndirme bileşeni yüklenemedi.');
-  await global.RehberlikDosya.indir(tur,{ctx:ctx(),plan:plan(),durum:S.durum,ay:S.ay,hepsi:S.hepsi,veliGorusmeleri:formKayitlari()});
+  await global.RehberlikDosya.indir(tur,{ctx:ctx(),plan:plan(),durum:S.durum,ay:S.ay,hepsi:S.hepsi,veliGorusmeleri:formKayitlari(),risk:riskTablosu(),yonerge:S.yonerge});
   toast('Dosya indirildi.');
  }catch(e){console.warn('[Sınıf Rehberlik/indir]',e);toast(String(e?.message||'Dosya indirilemedi.'))}
 }
@@ -85,7 +88,7 @@ const secenekler=(liste,sec)=>liste.map(([k,ad])=>`<option value="${esc(k)}" ${S
 const ayAdlari=()=>global.RehberlikVeri.aylar.map(a=>[a,C.ayAdi(a)]);
 const kisaTarih=iso=>{const m=/^\d{4}-(\d{2})-(\d{2})$/.exec(iso||'');return m?`${Number(m[2])} ${['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][Number(m[1])-1]}`:''};
 const dugme=(act,ad,ek='',sinif='ka-btn--secondary')=>`<button type="button" class="ka-btn ${sinif}" data-rhb-act="${act}" ${ek}>${ad}</button>`;
-const cikti=(tur,indirVar=true)=>`<div class="rhb-cikti">${dugme('yazdir','🖨 Yazdır / PDF',`data-rhb-tur="${tur}"`,'')}${indirVar?dugme('indir',tur==='plan'?'⬇ Excel indir':'⬇ Word indir',`data-rhb-tur="${tur}"`):''}</div>`;
+const cikti=(tur,indirVar=true)=>`<div class="rhb-cikti">${dugme('yazdir','🖨 Yazdır / PDF',`data-rhb-tur="${tur}"`,'')}${indirVar?dugme('indir',tur==='plan'||tur==='risk'?'⬇ Excel indir':'⬇ Word indir',`data-rhb-tur="${tur}"`):''}</div>`;
 
 /* ── sınıf seçimi ── */
 function sinifKarti(){
@@ -187,6 +190,48 @@ function raporSekmesi(){
  return`${secici}${tur==='aylik'?aylikRapor(p):tur==='yil'?yilRapor(p):donemRapor(p,tur)}`;
 }
 
+/* ── risk haritası sekmesi ── */
+const riskGorunumu=()=>S.riskGorunum||(global.matchMedia?.('(min-width:900px)').matches?'tablo':'kart');
+const riskAdi=k=>global.RehberlikVeri.risk[k][0];
+const rozetler=o=>o.isaret.map((x,k)=>x?`<span class="rhb-rchip">${esc(riskAdi(k))}</span>`:'').join('');
+function riskOzet(t){
+ const sik=C.enSikRisk(t);
+ return`<div class="rhb-ozet__yazi"><strong>${t.riskli} / ${t.ogrenciler.length} öğrenci risk grubunda</strong><span>${t.isaret} işaret${sik.length?` · en çok: ${sik.map(x=>`${esc(x.ad)} (${x.sayi})`).join(', ')}`:''}</span></div>`;
+}
+function riskTablo(t){
+ const R=global.RehberlikVeri,grupSay=gi=>R.risk.filter(r=>r[1]===gi).length;
+ const grup=R.riskGruplari.map((ad,gi)=>`<th colspan="${grupSay(gi)}" class="rhb-rt__grup" data-g="${gi}" scope="colgroup">${esc(ad)}</th>`).join('');
+ const bas=R.risk.map(([ad,g])=>`<th class="rhb-rt__bas" data-g="${g}" scope="col" title="${esc(ad)}"><span class="rhb-dik">${esc(ad)}</span></th>`).join('');
+ const satir=o=>`<tr data-rhb-ogr="${esc(o.id)}"><th scope="row" class="rhb-rt__ad"><span class="rhb-rno">${esc(o.no||o.sira)}</span>${esc(o.ad)}</th><td class="rhb-rt__sayi" data-rhb-sayi="${esc(o.id)}">${o.sayi||''}</td>${o.isaret.map((x,k)=>`<td data-g="${R.risk[k][1]}"><input type="checkbox" data-rhb-risk="${esc(o.id)}|${k}" ${x?'checked':''} aria-label="${esc(`${o.ad}: ${R.risk[k][0]}`)}" title="${esc(R.risk[k][0])}"></td>`).join('')}</tr>`;
+ const toplam=`<tr class="rhb-rt__toplam"><th scope="row" class="rhb-rt__ad">Toplam</th><td></td>${t.toplamlar.map((n,k)=>`<td data-g="${R.risk[k][1]}" data-rhb-toplam="${k}">${n||''}</td>`).join('')}</tr>`;
+ return`<div class="rhb-rt__kaydir"><table class="rhb-rt"><thead><tr><th rowspan="2" class="rhb-rt__ad" scope="col">Öğrenci</th><th rowspan="2" class="rhb-rt__sayi" scope="col" title="İşaretli risk sayısı">∑</th>${grup}</tr><tr>${bas}</tr></thead><tbody>${t.ogrenciler.map(satir).join('')}${toplam}</tbody></table></div>`;
+}
+function riskKart(o){
+ const R=global.RehberlikVeri,acik=S.riskAcik===o.id;
+ const govde=acik?`<div class="rhb-rkart__govde">${R.riskGruplari.map((ad,gi)=>`<fieldset class="rhb-rgrup"><legend>${esc(ad)}</legend><div class="rhb-rgrup__liste">${R.risk.map(([m,g],k)=>g===gi?`<label class="rhb-risk"><input type="checkbox" data-rhb-risk="${esc(o.id)}|${k}" ${o.isaret[k]?'checked':''}><span>${esc(m)}</span></label>`:'').join('')}</div></fieldset>`).join('')}</div>`:'';
+ return`<li class="rhb-rkart" data-rhb-ogr="${esc(o.id)}"><button type="button" class="rhb-rkart__ust" data-rhb-act="risk-ac" data-rhb-ref="${esc(o.id)}" aria-expanded="${acik}"><span class="rhb-rno">${esc(o.no||o.sira)}</span><strong>${esc(o.ad)}</strong><span class="rhb-sayi" data-rhb-sayi="${esc(o.id)}">${o.sayi||''}</span></button><div class="rhb-rchips" data-rhb-chips="${esc(o.id)}">${rozetler(o)}</div>${govde}</li>`;
+}
+function riskSekmesi(){
+ const t=riskTablosu(),g=riskGorunumu();
+ if(!t.ogrenciler.length)return'<div class="rhb-bos"><strong>Bu sınıfta kayıtlı öğrenci yok</strong><p>Risk haritası, uygulamadaki sınıf listesinden gelen öğrencilerle doldurulur.</p></div>';
+ const gorunum=`<nav class="ka-tabs rhb-tabs" role="tablist" aria-label="Görünüm">${GORUNUMLER.map(([k,ad])=>`<button type="button" role="tab" class="${k===g?'active':''}" aria-selected="${k===g}" data-rhb-gor="${k}">${esc(ad)}</button>`).join('')}</nav>`;
+ return`<article class="ka-card"><div class="ka-card__body rhb-ozet" data-rhb-riskozet>${riskOzet(t)}</div></article>
+<div class="rhb-aksiyon">${gorunum}${cikti('risk')}</div>
+<label class="rhb-onay"><input type="checkbox" data-rhb-alan="yonerge" ${S.yonerge?'checked':''}><span>Yönerge sayfasını da ekle (yazdır / Excel)</span></label>
+${g==='tablo'?riskTablo(t):`<ol class="rhb-rkartlar">${t.ogrenciler.map(riskKart).join('')}</ol>`}
+<small class="ka-muted">İşaretler hesabınıza kaydedilir. Harita sınıf rehber öğretmeni tarafından doldurulur; bir örneği rehberlik servisine iletilir.</small>`;
+}
+/* İşaret atılınca sayfa yeniden çizilmez (kaydırma ve odak korunur): yalnız öğrencinin sayısı, rozetleri, sütun toplamları ve özet güncellenir. */
+function riskDegisti(el){
+ const[id,k]=el.dataset.rhbRisk.split('|');
+ C.riskIsaretle(S.durum,id,Number(k),el.checked);kaydet();
+ const t=riskTablosu(),o=t.ogrenciler.find(x=>x.id===id);
+ document.querySelectorAll('[data-rhb-riskozet]').forEach(e=>{e.innerHTML=riskOzet(t)});
+ document.querySelectorAll('[data-rhb-sayi]').forEach(e=>{if(e.dataset.rhbSayi===id)e.textContent=o?.sayi||''});
+ document.querySelectorAll('[data-rhb-chips]').forEach(e=>{if(e.dataset.rhbChips===id&&o)e.innerHTML=rozetler(o)});
+ document.querySelectorAll('[data-rhb-toplam]').forEach(e=>{e.textContent=t.toplamlar[Number(e.dataset.rhbToplam)]||''});
+}
+
 /* ── kazanım sekmesi ── */
 function kazanimSekmesi(){
  const l=C.kazanimlar(S.duzey);
@@ -197,8 +242,8 @@ function kazanimSekmesi(){
 /* ── ekran ── */
 function viewHtml(){
  const sekmeler=SEKMELER.map(([k,ad])=>`<button type="button" role="tab" class="${k===S.sekme?'active':''}" aria-selected="${k===S.sekme}" data-rhb-sekme="${k}">${esc(ad)}</button>`).join('');
- const icerik=!S.duzey?'<div class="rhb-bos"><strong>Sınıfı seçin</strong><p>Yıllık plan, raporlar ve kazanımlar seçtiğiniz sınıfın düzeyine göre hazırlanır.</p></div>'
-  :S.sekme==='rapor'?raporSekmesi():S.sekme==='kazanim'?kazanimSekmesi():planSekmesi();
+ const icerik=!S.duzey?'<div class="rhb-bos"><strong>Sınıfı seçin</strong><p>Yıllık plan, raporlar, risk haritası ve kazanımlar seçtiğiniz sınıfın düzeyine göre hazırlanır.</p></div>'
+  :S.sekme==='rapor'?raporSekmesi():S.sekme==='kazanim'?kazanimSekmesi():S.sekme==='risk'?riskSekmesi():planSekmesi();
  return`<section class="ka-page ka-stack rhb-page" data-rhb-page>
 <header class="ka-page-head"><span class="ka-page-head__icon" aria-hidden="true">🧩</span><div><small>${esc(S.yil)} EĞİTİM ÖĞRETİM YILI</small><h2>Sınıf Rehberlik</h2></div></header>
 ${sinifKarti()}
@@ -221,7 +266,7 @@ function sinifSec(id){
  S.duzey=c?SB.duzeyOf(c.ad):0;
  S.ogretmen=c?SB.sinifOgretmeni(c):'';S.mudur=SB.okulMuduru();
  S.durum=S.sinifId?yerelOku():C.bosDurum();
- S.acik='';S.acikAy=new Set([bugunAy()]);S.ay=bugunAy();
+ S.acik='';S.riskAcik='';S.acikAy=new Set([bugunAy()]);S.ay=bugunAy();
 }
 function maddeBul(id){return C.maddeler(plan()).find(m=>m.id===id)||null}
 function isaretle(id,hedef){
@@ -242,6 +287,7 @@ const ISLEMLER={
  geri:b=>{C.maddeDuzenle(S.durum,b.dataset.rhbMadde,{x:0});kaydet();render()},
  'satir-ekle':b=>{const[anah,alan,en]=b.dataset.rhbRef.split('|');listeDegistir(`${anah}|${alan}|0`,l=>{for(let i=0;i<Math.max(1,Number(en)||1);i++)l.push({})})},
  'satir-sil':b=>listeDegistir(b.dataset.rhbRef,(l,i)=>{l.splice(i,1)}),
+ 'risk-ac':b=>{S.riskAcik=S.riskAcik===b.dataset.rhbRef?'':b.dataset.rhbRef;render()},
  'kaz-ac':b=>{const id=Number(b.dataset.rhbRef);S.kazAcik.has(id)?S.kazAcik.delete(id):S.kazAcik.add(id);render()}
 };
 function onClick(e){
@@ -250,6 +296,8 @@ function onClick(e){
  if(sek){S.sekme=sek.dataset.rhbSekme;render();return}
  const tur=e.target.closest('[data-rhb-tur-sec]');
  if(tur){S.tur=tur.dataset.rhbTurSec;render();return}
+ const gor=e.target.closest('[data-rhb-gor]');
+ if(gor){S.riskGorunum=gor.dataset.rhbGor;render();return}
  const b=e.target.closest('[data-rhb-act]');if(!b||b.disabled)return;
  ISLEMLER[b.dataset.rhbAct]?.(b,e);
 }
@@ -260,6 +308,7 @@ function alanDegisti(el){
  if(a==='mudur'){S.mudur=v;return}
  if(a==='ay'){S.ay=v;render();return}
  if(a==='hepsi'){S.hepsi=el.checked;render();return}
+ if(a==='yonerge'){S.yonerge=el.checked;return}
  if(a==='gerceklesti'){C.raporYaz(S.durum,'yil',{gerceklesti:v});kaydet();render();return}
  if(a==='madde-tarih'){C.tarihYaz(S.durum,id,v);kaydet();return}
  if(a==='madde-ad'){C.etkinlikAdiYaz(S.durum,id,v);kaydetGec();return}
@@ -274,6 +323,7 @@ function onChange(e){
  if(!inPage(e))return;
  const el=e.target,c=el.closest('[data-rhb-check]');
  if(c){isaretle(c.dataset.rhbCheck,c.checked);return}
+ if(el.dataset?.rhbRisk){riskDegisti(el);return}
  if(el.dataset?.rhbAlan&&(el.tagName==='SELECT'||el.type==='checkbox'||el.type==='date'))alanDegisti(el);
 }
 function onInput(e){
@@ -326,5 +376,5 @@ function open(){
 }
 function unmount(){clearTimeout(pushT);clearTimeout(yazT);temizle()}
 
-global.RehberlikModule={open,render,unmount,ctx,belgeHtml,yazdir,sinifSec,reset:()=>{S.sinifId='';S.duzey=0;S.durum=null;unmount();SB.sifirla()},get durum(){return S.durum},set sekme(v){S.sekme=v},set tur(v){S.tur=v},set ay(v){S.ay=v}};
+global.RehberlikModule={open,render,unmount,ctx,belgeHtml,yazdir,sinifSec,reset:()=>{S.sinifId='';S.duzey=0;S.durum=null;unmount();SB.sifirla()},get durum(){return S.durum},set sekme(v){S.sekme=v},set riskGorunum(v){S.riskGorunum=v},set riskAcik(v){S.riskAcik=v},set tur(v){S.tur=v},set ay(v){S.ay=v}};
 })(window);

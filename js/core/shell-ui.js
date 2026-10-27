@@ -293,10 +293,10 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
-      if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=1');
-      if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=2');
-      if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=2');
-      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=3');
+      if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=2');
+      if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=3');
+      if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=3');
+      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=4');
       if(!global.RehberlikModule?.open)throw new Error('Sınıf Rehberlik modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Sınıf Rehberlik');
       if(!global.RehberlikModule.open())throw new Error('Sınıf Rehberlik açılamadı.');
@@ -325,7 +325,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ogretmen-dosyasi'){
     try{
-      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=3');
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=4');
       if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Öğretmen Dosyası');
       if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');

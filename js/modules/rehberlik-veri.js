@@ -3,6 +3,7 @@
  *   Tablolar ilkokul / ortaokul kazanım PDF'lerinden çıkarılmış, hafta sayıları (toplam 36) ve sıralar her düzeyde sınanmıştır.
  * · plan: 2026-2027 sınıf rehberlik yıllık planları, ay ay: [ay, [[hafta, kazanım sırası | etkinlik adı], …]]. Hafta, ayın 1'ini içeren haftadan sayılır.
  *   Planda kazanım metni tutulmaz (yalnız sıra); metin ve yeterlik alanı kazanım tablosundan gelir, böylece kaynak planlardaki birkaç kopyalama yanlışı (1. sınıf 28–29, 6. sınıf 28–29 ve 33, 7–8. sınıf 28 ve 33) kataloğa uyar.
+ * · risk: MEB "Sınıf Risk Haritası" (S.İ.4.a) 36 risk alanı, formdaki sütun sırasıyla; ekranda gösterim için 4 gruba ayrılmıştır. YÖNERGE sayfasının metni de buradadır.
  * Mantık: rehberlik-core.js · Ekran: rehberlik.js
  */
 (function(global){
@@ -33,5 +34,22 @@ const PLAN={
  7:[["EYLÜL",[[3,1],[3,"Rehberlik Yürütme Komisyonu Toplantısı"],[3,"Sınıf Rehberlik Planının Hazırlanması"],[4,2],[4,"Bilgi Fişlerinin Doldurulması"],[5,3],[5,"BEP'lerin Oluşturulması"]]],["EKİM",[[1,4],[2,5],[3,6],[3,"Psikososyal (İşin Aslı)"],[4,7],[4,"Veli Toplantısı"]]],["KASIM",[[1,8],[1,"Sınıf Risk Analizi"],[2,9],[3,"ARA TATİL"],[4,10],[4,"Psikososyal (Duygu Düşünce Kartları)"],[5,11]]],["ARALIK",[[2,12],[3,13],[4,14],[4,"Psikososyal (Duygu Listem)"],[5,15],[5,"Veli Ziyaretleri"]]],["OCAK",[[1,16],[1,"Toplantı (Diğer)"],[2,17],[3,18]]],["ŞUBAT",[[2,19],[2,"Psikososyal (Ortak Özelliklerimiz)"],[3,20],[4,21],[5,22]]],["MART",[[2,23],[2,"Psikososyal (Ergenim Farkındayım)"],[3,24],[4,25],[5,26]]],["NİSAN",[[1,27],[1,"Psikososyal (Doğal Tepkiler)"],[2,"ARA TATİL"],[3,28],[4,29],[4,"Veli Ziyaretleri"]]],["MAYIS",[[1,30],[1,"RİBA Uygulaması"],[2,31],[3,32],[4,33],[4,"Veli Ziyaretleri"],[5,34]]],["HAZİRAN",[[1,35],[2,36]]]],
  8:[["EYLÜL",[[3,1],[3,"Rehberlik Yürütme Komisyonu Toplantısı"],[3,"Sınıf Rehberlik Planının Hazırlanması"],[4,2],[4,"Bilgi Fişlerinin Doldurulması"],[5,3],[5,"BEP'lerin Oluşturulması"]]],["EKİM",[[1,4],[2,5],[3,6],[3,"Psikososyal (İşin Aslı)"],[4,7],[4,"Veli Toplantısı"]]],["KASIM",[[1,8],[1,"Sınıf Risk Analizi"],[2,9],[3,"ARA TATİL"],[4,10],[4,"Psikososyal (Duygu Düşünce Kartları)"],[5,11]]],["ARALIK",[[2,12],[3,13],[4,14],[4,"Psikososyal (Duygu Listem)"],[5,15],[5,"Veli Ziyaretleri"]]],["OCAK",[[1,16],[1,"Toplantı (Diğer)"],[2,17],[3,18]]],["ŞUBAT",[[2,19],[2,"Psikososyal (Ortak Özelliklerimiz)"],[3,20],[4,21],[5,22]]],["MART",[[2,23],[2,"Psikososyal (Ergenim Farkındayım)"],[3,24],[4,25],[5,26]]],["NİSAN",[[1,27],[1,"Psikososyal (Doğal Tepkiler)"],[2,"ARA TATİL"],[3,28],[4,29],[4,"Veli Ziyaretleri"]]],["MAYIS",[[1,30],[1,"RİBA Uygulaması"],[2,31],[3,32],[4,33],[4,"Veli Ziyaretleri"],[5,34]]],["HAZİRAN",[[1,35],[2,36]]]],
 };
-global.RehberlikVeri=Object.freeze({yil:'2026-2027',aylar:AYLAR,alanlar:ALANLAR,kazanim:KAZANIM,plan:PLAN});
+/* Sınıf Risk Haritası (S.İ.4.a): [risk alanı, grup]. Sıra formdaki sütun sırasıdır (G…AP); durumda her öğrenci için bu sırayla 36 karakterlik "0/1" dizisi tutulur. */
+const RISK_GRUPLARI=["Aile yapısı","Ailedeki durumlar","Öğrencinin durumu","Eğitsel ve sosyal durum"];
+const RISK=[
+ ["Anne en fazla ilkokul mezunu",0],["Baba en fazla ilkokul mezunu",0],["Tek çocuk olan",0],["5 ve üstü kardeşi olan",0],
+ ["Anne ve babası ayrı yaşayan",0],["Anne ve babası boşanmış olan",0],["Yalnızca annesi ile yaşayan",0],["Yalnızca babası ile yaşayan",0],
+ ["Annesi hayatta olmayan",0],["Babası hayatta olmayan",0],["Anne ve babası hayatta olmayan",0],["Şehit çocuğu",0],
+ ["Yalnızca büyükanne/büyükbabasıyla yaşayan",0],["Yalnızca diğer akrabalarıyla yaşayan",0],["Koruyucu aile gözetiminde olan",0],
+ ["Sevgi Evlerinde kalan",0],["Sosyal Hizmetler Çocuk Esirgeme Kurumunda kalan",0],
+ ["Ailesinde süreğen hastalığı olan",1],["Ailesinde ruhsal hastalığı olan",1],["Ailesinde bağımlı bireyler bulunan (alkol/madde)",1],["Ailesinde cezai hükmü bulunan",1],["Ailesi mevsimlik işçi olan",1],["Aile içi şiddete maruz kalan",1],
+ ["Özel yetenekli tanısı olan",2],["Yetersizlik alanında özel eğitim raporu olan",2],["Süreğen hastalığı olan",2],["Ruhsal hastalığı olan",2],["Danışmanlık tedbir kararı olan",2],["Eğitim tedbir kararı olan",2],
+ ["Maddi sıkıntı yaşayan",3],["Sürekli devamsız olan",3],["Bir işte çalışan",3],["Akademik başarısı düşük",3],["Riskli akran grubuna dahil olan",3],["Yabancı uyruklu öğrenci",3],["Diğer",3]
+];
+const RISK_YONERGE=[
+ ["KULLANIM AMACI","Sınıf/şubelerde öğrencilerin risk gruplarında yer alma durumlarını belirlemek için kullanılır."],
+ ["KİMLER KULLANIR","Sınıf/şube rehber öğretmeni tarafından doldurulur. Bir örneği rehberlik servisine iletilir."],
+ ["DİKKAT EDİLECEK HUSUSLAR","Risk haritasında yer alan risk alanları, objektif değerlendirmeyle belirlenebilecek durumlar dikkate alınarak hazırlanmıştır. Bununla birlikte gözlem, görüşme ve bireyi tanıma teknikleri sonucunda elde edilen bilgiler ile risk grubunda olduğu belirlenen öğrenciler de \"diğer\" kategorisi altında rehberlik servisine bildirilir. Örneğin özgüven eksikliği olan, antisosyal davranış gösteren, okula karşı olumsuz tutum sergileyen, sınıfta dışlanan, akran zorbalığına maruz kalan, şiddet eğilimi olan, ailesinin olanaklarından dolayı sosyal yaşantı eksikliği olan, istismar türlerine (fiziksel, cinsel, duygusal, ekonomik) maruz kalan, anne baba tutumları dolayısıyla olumsuz davranış gösteren, ihmal türlerine (duygusal, fiziksel, eğitim, sağlık) maruz kalan, alkol, madde ya da teknoloji bağımlılığı olan öğrenciler vb."]
+];
+global.RehberlikVeri=Object.freeze({yil:'2026-2027',aylar:AYLAR,alanlar:ALANLAR,kazanim:KAZANIM,plan:PLAN,riskGruplari:RISK_GRUPLARI,risk:RISK,riskYonerge:RISK_YONERGE});
 })(window);

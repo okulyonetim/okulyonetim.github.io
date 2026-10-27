@@ -112,6 +112,40 @@ assert.strictEqual(C.yilSonuRaporu(C.planOlustur(5,C.bosDurum(),'2026-2027'),C.b
   assert.strictEqual(C.yilSonuRaporu(pf,C.bosDurum()).veliFaaliyetleri[1].kiz,undefined,'Kayıt yoksa sayı boş kalır.');
 }
 
+/* ── sınıf risk haritası: 36 alan, işaret dizisi, birleşme, sütun toplamları ── */
+{
+  const R=coreWin.RehberlikVeri;
+  assert.strictEqual(R.risk.length,36,'MEB S.İ.4.a formunda 36 risk alanı var.');
+  assert.strictEqual(new Set(R.risk.map(r=>r[0])).size,36,'Risk alanı adları tekrarsız.');
+  eq(R.risk.slice(0,2).map(r=>r[0]),['Anne en fazla ilkokul mezunu','Baba en fazla ilkokul mezunu'],'Sıra formdaki sütun sırasıdır.');
+  assert.strictEqual(R.risk[35][0],'Diğer');assert.strictEqual(R.risk[34][0],'Yabancı uyruklu öğrenci');
+  assert(R.risk.every(r=>r[1]>=0&&r[1]<R.riskGruplari.length)&&R.riskGruplari.every((_,g)=>R.risk.some(r=>r[1]===g)),'Her risk bir gruba, her grup en az bir riske ait.');
+  eq(R.riskYonerge.map(x=>x[0]),['KULLANIM AMACI','KİMLER KULLANIR','DİKKAT EDİLECEK HUSUSLAR'],'Yönerge başlıkları.');
+  const ogr=[{id:'a',no:'1',ad:'Ali',cinsiyet:'Erkek'},{id:'b',no:'2',ad:'Ayşe',cinsiyet:'Kız'},{id:'c',no:'3',ad:'Can',cinsiyet:'Erkek'}];
+  const d=C.bosDurum();
+  assert.strictEqual(C.riskDizisi(d,'a'),'0'.repeat(36),'İşaretsiz öğrenci: 36 sıfır.');
+  C.riskIsaretle(d,'a',0,true,1000);C.riskIsaretle(d,'a',35,true,1001);C.riskIsaretle(d,'b',0,true,1002);C.riskIsaretle(d,'b',12,true,1003);
+  assert.strictEqual(C.riskDizisi(d,'a'),'1'+'0'.repeat(34)+'1');
+  C.riskIsaretle(d,'b',12,false,1004);assert.strictEqual(C.riskDizisi(d,'b')[12],'0','İşaret kaldırılabilir.');
+  C.riskIsaretle(d,'a',36,true);C.riskIsaretle(d,'a',-1,true);C.riskIsaretle(d,'',3,true);C.riskIsaretle(d,'a',1.5,true);
+  assert.strictEqual(C.riskDizisi(d,'a').length,36);assert.strictEqual(d.k[''],undefined,'Geçersiz sıra / kimlik yok sayılır.');
+  const t=C.riskTablosu(ogr,d);
+  assert.strictEqual(t.ogrenciler.length,3);assert.strictEqual(t.riskli,2,'İşaretli öğrenci sayısı.');assert.strictEqual(t.isaret,3);
+  assert.strictEqual(t.toplamlar[0],2);assert.strictEqual(t.toplamlar[35],1);assert.strictEqual(t.toplamlar.length,36);
+  eq(t.ogrenciler.map(o=>o.sayi),[2,1,0]);eq(t.ogrenciler.map(o=>o.sira),[1,2,3]);
+  eq(C.enSikRisk(t).map(x=>[x.ad,x.sayi]),[['Anne en fazla ilkokul mezunu',2],['Diğer',1]],'En çok işaretlenenler çoktan aza.');
+  assert.strictEqual(C.riskTablosu([],d).ogrenciler.length,0);assert.strictEqual(C.riskTablosu(null,d).riskli,0);
+  /* sınıftan çıkan öğrencinin kaydı toplamlara girmez */
+  assert.strictEqual(C.riskTablosu(ogr.slice(1),d).toplamlar[35],0);
+  /* bozuk kayıt temizlenir; cihazlar arası birleşme: son yazan kazanır, farklı öğrenciler birlikte korunur */
+  assert.strictEqual(C.riskDizisi({k:{a:{s:'1x1',t:1}}},'a'),'101'+'0'.repeat(33),'Bozuk karakter 0 sayılır, eksik uzunluk tamamlanır.');
+  const x=C.bosDurum(),y=C.bosDurum();C.riskIsaretle(x,'a',3,true,2000);C.riskIsaretle(y,'a',4,true,3000);C.riskIsaretle(y,'c',7,true,1000);
+  const m=C.durumBirlestir(x,y);
+  assert.strictEqual(C.riskDizisi(m,'a')[4],'1');assert.strictEqual(C.riskDizisi(m,'a')[3],'0','Aynı öğrencide son yazan kazanır.');assert.strictEqual(C.riskDizisi(m,'c')[7],'1','Diğer öğrenci korunur.');
+  assert(C.durumAyni(C.durumBirlestir(x,y),C.durumBirlestir(y,x)),'Birleştirme sıradan bağımsızdır.');
+  assert.strictEqual(JSON.stringify(C.durumTemizle({})),JSON.stringify(C.bosDurum()));assert(C.durumTemizle({m:{}}).k,'Eski kayıtlarda k anahtarı bulunmasa da durum geçerli.');
+}
+
 /* ── kâğıt çıktıları (HTML) ── */
 const belgeWin=load([MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js']);
 const B=belgeWin.RehberlikBelge,BC=belgeWin.RehberlikCore;
@@ -133,6 +167,24 @@ assert(duz(B.kazanimBelgesi(5,ctx)).includes('Okulun bölümlerini ve okulda ça
 [planH,aylikH,yilH,B.donemBelgesi(dn,ctx),B.kazanimBelgesi(5,ctx)].forEach(h=>assert(!/\{\{|undefined|NaN|\[object/.test(h),'Çıktıda artık işaret / geçersiz değer olmamalı.'));
 assert(B.aylikBelge(C.aylikRapor(C.planOlustur(5,C.bosDurum(),'2026-2027'),'EKİM',C.bosDurum()),{...ctx,ogretmen:'',mudur:''}).includes('………'),'Adı bilinmeyen imza noktalı bırakılır.');
 assert(duz(B.aylikBelge({...ay,diger:[{metin:'<script>x</script>',tarih:''}]},ctx)).includes('<script>x</script>')===false,'Metinler kaçışlanır.');
+
+{
+  const ogr=Array.from({length:3},(_,i)=>({id:'o'+i,no:String(i+1),ad:'Öğrenci '+(i+1),cinsiyet:'Kız'}));
+  const d=BC.bosDurum();BC.riskIsaretle(d,'o0',0,true);BC.riskIsaretle(d,'o0',35,true);BC.riskIsaretle(d,'o1',0,true);
+  const t=BC.riskTablosu(ogr,d),h=B.riskBelgesi(t,ctx),hy=B.riskBelgesi(t,ctx,{yonerge:false});
+  assert.strictEqual((h.match(/<th class="rhb-dik-h"><span class="rhb-dik">/g)||[]).length,39,'3 kimlik + 36 risk dik başlığı.');
+  assert.strictEqual((h.match(/class="rhb-rad-h"/g)||[]).length,1,'Öğrenci adı başlığı yatay.');
+  assert.strictEqual((h.match(/<col class="rhb-c-risk">/g)||[]).length,36,'36 dar risk sütunu.');
+  assert.strictEqual((h.match(/<td class="rhb-x">X<\/td>/g)||[]).length,3,'Üç işaret "X" olarak yazılır.');
+  assert.strictEqual((h.match(/<tbody>.*<\/tbody>/s)[0].match(/<tr/g)||[]).length,B.RISK_EN_AZ_SATIR+1,'En az 10 satır (boşlar dahil) + TOPLAM satırı.');
+  assert(/<tr class="rhb-toplam"><th colspan="4">TOPLAM<\/th><td class="rhb-x">2<\/td>/.test(h)&&/<td class="rhb-x">1<\/td><\/tr>/.test(h),'TOPLAM satırı sütun toplamlarını yazar (Anne en fazla ilkokul: 2, Diğer: 1).');
+  ['5. SINIF A ŞUBESİ SINIF RİSK HARİTASI','Tarih: 27.10.2026','Öğrencinin Adı Soyadı','S.İ.4.a','OLUR','Mehmet DEMİR','Ayşe KAYA','Sınıf Rehber Öğretmeni','Anne en fazla ilkokul mezunu'].forEach(s=>assert(duz(h).includes(s),`Risk haritası "${s}" içermeli.`));
+  assert(duz(h).includes('YÖNERGE')&&duz(h).includes('KULLANIM AMACI')&&duz(h).includes('Bir örneği rehberlik servisine iletilir.'),'Yönerge sayfası eklenir.');
+  assert(!duz(hy).includes('YÖNERGE')&&hy.length<h.length,'Yönerge kapatılınca çıkmaz.');
+  assert(h.indexOf('Ayşe KAYA')<h.indexOf('rhb-imza--olur'),'Öğretmen solda, müdür sağda.');
+  assert(!/\{\{|undefined|NaN|\[object/.test(h),'Risk çıktısında artık işaret yok.');
+  assert(!B.riskBelgesi(BC.riskTablosu([{id:'x',no:'1',ad:'<img src=x>',cinsiyet:''}],BC.bosDurum()),ctx).includes('<img'),'Öğrenci adı kaçışlanır.');
+}
 
 /* ── Word şablonları: alanlar dolar, satırlar çoğalır, artık {{…}} kalmaz ── */
 const dosyaWin=load([MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js',MOD+'ogretmen-dosyasi-core.js',MOD+'rehberlik-dosya.js']);
@@ -196,7 +248,7 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   const win=load([MOD+'sinif-baglam.js',MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js',MOD+'rehberlik.js'],{
     AppStore:{data:t=>store[t]||[],get:k=>k==='session.user'?kullanici:undefined,subscribe:()=>()=>{}},
     KaPrefs:{get:(k,v)=>tercih[k]??v,set:(k,v)=>{tercih[k]=v},remoteSet:o=>Object.assign(tercih,o),remoteListen:f=>{dinleyiciler.uzak=f;return()=>{}}},
-    document:{getElementById:()=>kok,querySelector:()=>kok,addEventListener:(t,f)=>{dinleyiciler[t]=f}},
+    document:{getElementById:()=>kok,querySelector:()=>kok,querySelectorAll:()=>[],addEventListener:(t,f)=>{dinleyiciler[t]=f}},
     ReportEngine:{printReport:(...x)=>printed.push(x),schoolInfo:()=>({okulAdi:'Yedek Okul'})}
   });
   const M=win.RehberlikModule;
@@ -221,6 +273,26 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   M.sekme='rapor';M.ay='EYLÜL';M.render();
   assert(kok.innerHTML.includes('Aylık')&&kok.innerHTML.includes('Yıl Sonu'));
   M.tur='aylik';assert(duz(M.belgeHtml('aylik')).includes('EYLÜL AYI ÇALIŞMA RAPORU'));
+  /* Risk Haritası: kart ve tablo görünümü, işaretleme kaydı */
+  M.sekme='risk';M.render();
+  assert(kok.innerHTML.includes('>Risk Haritası<')&&kok.innerHTML.includes('0 / 2 öğrenci risk grubunda')&&kok.innerHTML.includes('Öğrenci kartları'),'Risk sekmesi özeti ve görünüm seçeneklerini gösterir (ekran ölçümü yoksa kart görünümü).');
+  assert(kok.innerHTML.includes('data-rhb-act="risk-ac"')&&!kok.innerHTML.includes('data-rhb-risk='),'Kart görünümünde kutular kart açılınca gelir.');
+  M.riskAcik='v2';M.render();
+  assert((kok.innerHTML.match(/data-rhb-risk="v2\|\d+"/g)||[]).length===36,'Açık kartta 36 risk kutusu.');
+  assert(kok.innerHTML.includes('Aile yapısı')&&kok.innerHTML.includes('Eğitsel ve sosyal durum'),'Risk grupları başlıklıdır.');
+  M.riskAcik='';M.riskGorunum='tablo';M.render();
+  assert((kok.innerHTML.match(/class="rhb-rt__bas"/g)||[]).length===36&&(kok.innerHTML.match(/data-rhb-risk=/g)||[]).length===72,'Tabloda 36 sütun × 2 öğrenci kutu.');
+  assert(kok.innerHTML.indexOf('Ali Yılmaz')<kok.innerHTML.indexOf('Zeynep Aydın'),'Öğrenciler okul numarasına göre sıralı.');
+  dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbRisk:'v2|0'},checked:true}});
+  dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbRisk:'v2|35'},checked:true}});
+  assert.strictEqual(M.durum.k.v2.s,'1'+'0'.repeat(34)+'1','İşaret durumda tutulur.');
+  assert.strictEqual(JSON.parse(tercih[anahtar]).k.v2.s[0],'1','Risk işareti hesaba kaydedilir (KaPrefs).');
+  M.render();assert(kok.innerHTML.includes('1 / 2 öğrenci risk grubunda')&&kok.innerHTML.includes('data-rhb-risk="v2|0" checked'),'Yeniden çizimde işaretler korunur, özet güncellenir.');
+  assert(duz(M.belgeHtml('risk')).includes('SINIF RİSK HARİTASI')&&duz(M.belgeHtml('risk')).includes('YÖNERGE'),'Risk belgesi yönergeyle birlikte üretilir.');
+  dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbAlan:'yonerge'},tagName:'INPUT',type:'checkbox',checked:false}});
+  assert(!duz(M.belgeHtml('risk')).includes('YÖNERGE'),'"Yönerge sayfasını da ekle" kapatılınca basılmaz.');
+  dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbAlan:'yonerge'},tagName:'INPUT',type:'checkbox',checked:true}});
+  M.sekme='rapor';M.render();
   /* Veli Görüşme Formu bağlantısı */
   M.ay='EKİM';M.render();
   assert(kok.innerHTML.includes('Veli Görüşme Formundan')&&kok.innerHTML.includes('data-rhb-act="veli-form"'),'Aylık raporda form kayıtları ve formu açma düğmesi.');
@@ -231,10 +303,10 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(kok.innerHTML.includes('Bireysel Görüşme sayıları Veli Görüşme Formu kayıtlarından geldi (görüşülen öğrenci: 0 kız, 1 erkek)'),'Yıl sonu: form kayıtlarından gelen sayı belirtilir.');
   assert(/Bireysel Görüşme\|\|?1\|/.test(duz(M.belgeHtml('yil')).replace(/\|+/g,'|'))||duz(M.belgeHtml('yil')).includes('Bireysel Görüşme'),'Yıl sonu belgesinde Bireysel Görüşme satırı.');
   M.tur='aylik';M.ay='EYLÜL';
-  M.yazdir('aylik');M.yazdir('plan');M.yazdir('yil');M.yazdir('donem1');M.yazdir('kazanim');
-  assert.strictEqual(printed.length,5);
+  M.yazdir('aylik');M.yazdir('plan');M.yazdir('yil');M.yazdir('donem1');M.yazdir('kazanim');M.yazdir('risk');
+  assert.strictEqual(printed.length,6);
   assert(printed.every(p=>p[2].akis===true&&p[2].kenarBosluk>=10&&!String(p[2].extraHead||'').trim()&&p[2].baslikGoster===false&&p[2].logoGoster===false),'Her sayfada üst/alt boşluk: akış kipi açık, özel CSS yok.');
-  eq(printed.map(p=>p[2].yon),['dikey','yatay','dikey','dikey','yatay'],'Plan ve kazanım yatay, raporlar dikey.');
+  eq(printed.map(p=>p[2].yon),['dikey','yatay','dikey','dikey','yatay','yatay'],'Plan, kazanım ve risk haritası yatay, raporlar dikey.');
   assert(printed.every(p=>!/…|undefined/.test(p[2].fileName)),'Dosya adı düzgün.');
   /* yönetici tüm sınıfları görür, kendi adını öğretmen alanına yazmaz */
   const yon=load([MOD+'sinif-baglam.js',MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js',MOD+'rehberlik.js'],{
@@ -254,9 +326,9 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(/\['sinif-rehberlik','Sınıf Rehberlik'[^\n]*'sinif-rehberlik'\]/.test(nav),'Menüde Sınıf Rehberlik aracı olmalı.');
   {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['sinif-rehberlik'"),'Sınıf Rehberlik "Tutanak ve Evrak" grubunda olmalı.');}
   assert(shell.includes("name==='sinif-rehberlik'")&&shell.includes('RehberlikModule.open'),'Kabukta rota tanımlı olmalı.');
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=1','rehberlik-core.js?v=2','rehberlik-belge.js?v=2','rehberlik.js?v=3','rehberlik-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=1','rehberlik-core.js?v=2','rehberlik-belge.js?v=2','rehberlik.js?v=3'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
-  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=3'),'İndirme bileşeni ilk indirmede yüklenir.');
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=3','rehberlik.js?v=4','rehberlik-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=3','rehberlik.js?v=4'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
+  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=4'),'İndirme bileşeni ilk indirmede yüklenir.');
   ['aylik','donem','yilsonu'].forEach(f=>assert(sw.includes(`./assets/rehberlik/${f}.docx`),`${f}.docx çevrimdışı için önbelleğe alınmalı.`));
   [39,50,66,67,103,129].forEach(no=>assert(new RegExp(`\\{a:"sinif-rehberlik"\\}`).test(kat),`Öğretmen Dosyası maddeleri modüle bağlı olmalı (${no}).`));
   assert((kat.match(/\{a:"sinif-rehberlik"\}/g)||[]).length>=6,'Öğretmen Dosyası listesinde 6 madde Sınıf Rehberlik\'e bağlı olmalı.');

@@ -1,14 +1,14 @@
 /* Koruk Asistan — Sınıf Rehberlik çekirdeği (saf mantık, DOM'suz)
  * · Hafta → tarih: ayın 1'ini içeren hafta o ayın 1. haftasıdır (2026 Eylül 3. hafta = 14 Eylül Pazartesi).
  * · Yıllık plan: rehberlik-veri.js'teki taban plan + öğretmenin düzenlemeleri + "yapıldı" işaretleri → ay ay madde listesi.
- * · Takip durumu (cihazlar arası birleşir, her kayıt kendi zaman damgasıyla): m = yapıldı işaretleri, p = plan düzenlemeleri, r = rapor metinleri.
- * · Rapor verisi: aylık rapor, I./II. dönem sonu, yıl sonu. Kâğıt çıktısı: rehberlik-belge.js · Ekran: rehberlik.js
+ * · Takip durumu (cihazlar arası birleşir, her kayıt kendi zaman damgasıyla): m = yapıldı işaretleri, p = plan düzenlemeleri, r = rapor metinleri, k = öğrenci risk işaretleri.
+ * · Rapor verisi: aylık rapor, I./II. dönem sonu, yıl sonu. Risk haritası: öğrenci × 36 risk alanı, sütun toplamları. Kâğıt çıktısı: rehberlik-belge.js · Ekran: rehberlik.js
  */
 (function(global){
 'use strict';
 if(global.RehberlikCore)return;
 
-const V=()=>global.RehberlikVeri||{aylar:[],kazanim:{},plan:{},alanlar:[],yil:''};
+const V=()=>global.RehberlikVeri||{aylar:[],kazanim:{},plan:{},alanlar:[],yil:'',risk:[],riskGruplari:[],riskYonerge:[]};
 const AY_NO={'EYLÜL':9,'EKİM':10,'KASIM':11,'ARALIK':12,'OCAK':1,'ŞUBAT':2,'MART':3,'NİSAN':4,'MAYIS':5,'HAZİRAN':6};
 const DONEMLER={1:['EYLÜL','EKİM','KASIM','ARALIK','OCAK'],2:['ŞUBAT','MART','NİSAN','MAYIS','HAZİRAN']};
 const DONEM_ADI={1:'I. DÖNEM',2:'II. DÖNEM'};
@@ -54,10 +54,11 @@ function kazanimlar(duzey){
 function kazanimBul(duzey,sira){return kazanimlar(duzey).find(k=>k.sira.includes(Number(sira)))||null}
 
 /* ── takip durumu ──
- * durum = { m:{id:{y:1|0,d:'YYYY-MM-DD',a:'etkinlik adı',t}}, p:{id:{ay,h,m,s,x,t}}, r:{anahtar:{…,t}} }
+ * durum = { m:{id:{y:1|0,d:'YYYY-MM-DD',a:'etkinlik adı',t}}, p:{id:{ay,h,m,s,x,t}}, r:{anahtar:{…,t}}, k:{öğrenciId:{s:'0101…',t}} }
  * m: yapıldı işareti · p: taban maddenin taşınması/silinmesi/adı veya eklenen madde ("o…" kimlikli) · r: rapor ek metinleri ("ay:EKİM", "yil")
+ * k: risk haritası, öğrenci başına risk sayısı kadar karakterlik "0/1" dizisi (formdaki sütun sırasıyla)
  * Her kayıt zaman damgasıyla (t, ms) birleşir: cihazlar arası son yazan kazanır, farklı kayıtlar birlikte korunur. */
-const bosDurum=()=>({m:{},p:{},r:{}});
+const bosDurum=()=>({m:{},p:{},r:{},k:{}});
 function durumTemizle(x){
  const d=bosDurum();
  if(!x||typeof x!=='object')return d;
@@ -109,6 +110,28 @@ function maddeEkle(d,{ay,hafta,metin},t=Date.now()){
 function maddeSil(d,id,t=Date.now()){maddeDuzenle(d,id,{x:1},t);return d}
 function raporYaz(d,anahtar,alanlar,t=Date.now()){d.r[anahtar]={...(d.r[anahtar]||{}),...alanlar,t};return d}
 const rapor=(d,anahtar)=>d?.r?.[anahtar]||{};
+
+/* ── sınıf risk haritası (S.İ.4.a): öğrenci × risk alanı ── */
+const riskler=()=>V().risk;
+const riskDizisi=(d,id)=>{const n=riskler().length;return String(d?.k?.[id]?.s||'').padEnd(n,'0').slice(0,n).replace(/[^1]/g,'0')};
+function riskIsaretle(d,id,sira,isaretli,t=Date.now()){
+ const n=riskler().length;
+ if(!id||!Number.isInteger(sira)||sira<0||sira>=n)return d;
+ const s=riskDizisi(d,id).split('');s[sira]=isaretli?'1':'0';
+ d.k[id]={s:s.join(''),t};
+ return d;
+}
+function riskTablosu(ogrenciler,d){
+ const toplamlar=Array(riskler().length).fill(0);
+ const l=(Array.isArray(ogrenciler)?ogrenciler:[]).map((o,i)=>{
+  const isaret=[...riskDizisi(d,o.id)].map(c=>c==='1');
+  isaret.forEach((x,k)=>{if(x)toplamlar[k]++});
+  return{id:o.id,sira:i+1,no:o.no,ad:o.ad,cinsiyet:o.cinsiyet,isaret,sayi:isaret.filter(Boolean).length};
+ });
+ return{ogrenciler:l,toplamlar,riskli:l.filter(o=>o.sayi>0).length,isaret:toplamlar.reduce((a,b)=>a+b,0)};
+}
+/* En çok işaretlenen risk alanları (özet satırı için). */
+const enSikRisk=(tablo,en=3)=>tablo.toplamlar.map((sayi,k)=>({k,sayi,ad:riskler()[k][0]})).filter(x=>x.sayi>0).sort((a,b)=>b.sayi-a.sayi||a.k-b.k).slice(0,en);
 
 /* ── plan ── */
 function tabanMaddeler(duzey){
@@ -215,5 +238,6 @@ const maddeMetni=m=>m.tur==='k'?`${m.sira}- ${m.metin}`:m.metin;
 
 global.RehberlikCore={AY_NO,DONEMLER,DONEM_ADI,PLAN_BANTLARI,egitimYili,yilBaslangici,ayAdi,duzeyOf,haftaBasi,planTarihi,onerilenTarih,gunEkle,tarihTR,gecerliTarih,iso,bugun,
  kazanimlar,kazanimBul,bosDurum,durumTemizle,durumBirlestir,durumAyni,durumAnahtari,isaretle,tarihYaz,etkinlikAdiYaz,maddeDuzenle,maddeEkle,maddeSil,raporYaz,rapor,
+ riskDizisi,riskIsaretle,riskTablosu,enSikRisk,
  tabanMaddeler,planOlustur,maddeler,ilerleme,gecikmis,mevcut,aylikRapor,donemRaporu,yilSonuRaporu,haftaMetni,maddeMetni};
 })(window);

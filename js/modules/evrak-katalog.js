@@ -58,7 +58,7 @@ const BASI=[
  ["rehberlik","Uygulanan Test-Anket-Formlar (varsa)"],
  ["rehberlik","Sosyal Medya Veli İzin Belgesi"],
  ["rehberlik","Sınıf Kuralları"],
- ["rehberlik","Sınıf Risk Haritası"],
+ ["rehberlik","Sınıf Risk Haritası",null,null,{a:"sinif-rehberlik"}],
  ["rehberlik","Sınıf Rehber Öğretmeninin Görevleri"],
  ["rehberlik","Sınıf Başkanı Seçimi ve Görevleri"],
  ["rehberlik","Sınıf Nöbetçi Öğrenci Görevleri / Aylık Nöbetçi Öğrenci Listesi"],

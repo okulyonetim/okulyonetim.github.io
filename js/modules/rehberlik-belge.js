@@ -1,5 +1,5 @@
 /* Koruk Asistan — Sınıf Rehberlik kâğıt çıktıları (A4)
- * Yıllık plan (yatay) · Aylık çalışma raporu · I./II. dönem sonu raporu · Yıl sonu faaliyet raporu · Kazanım tablosu (yatay).
+ * Yıllık plan (yatay) · Aylık çalışma raporu · I./II. dönem sonu raporu · Yıl sonu faaliyet raporu · Kazanım tablosu (yatay) · Sınıf risk haritası (yatay).
  * Düzenler kaynak dosyalardaki (xlsx / docx) görünümü izler; veri rehberlik-core.js'ten gelir, stil css/design-system-base.css (.rhb-*).
  * Her çıktı merkezi ReportEngine ile akış kipinde (akis:true) yazdırılır; imza blokları solda durur.
  * Bağlam c = { yil, okul, sinif, duzey, ogretmen, mudur, mevcut:{kiz,erkek,toplam}, tarih }
@@ -108,5 +108,23 @@ function kazanimBelgesi(duzey,c){
 <table class="rhb-tablo rhb-kaztablo"><thead><tr><th class="rhb-c-sira">İşleniş Sırası</th><th class="rhb-c-sayi">Hafta Sayısı</th><th>KAZANIMLAR</th><th class="rhb-c-alan">Gelişim Alanı</th><th class="rhb-c-yet">Yeterlik</th><th class="rhb-c-ac">Açıklama</th></tr></thead><tbody>${satirlar}</tbody></table></article>`;
 }
 
-global.RehberlikBelge={esc,mudurluk,sinifBasligi,doldur,NOKTA,planBelgesi,aylikBelge,donemBelgesi,yilSonuBelgesi,kazanimBelgesi};
+/* ── sınıf risk haritası (MEB S.İ.4.a, yatay A4): öğrenci × 36 risk alanı; işaretli kutuda "X", son satırda sütun toplamı ── */
+const RISK_EN_AZ_SATIR=10;
+function riskBelgesi(t,c,{yonerge=true}={}){
+ const V=global.RehberlikVeri,riskler=V.risk,dik=m=>`<span class="rhb-dik">${esc(m)}</span>`;
+ const cols36=riskler.map(()=>'<col class="rhb-c-risk">').join('');
+ const baslik=`<th class="rhb-dik-h">${dik('Sıra No')}</th><th class="rhb-dik-h">${dik('Sınıf/Şube')}</th><th class="rhb-dik-h">${dik('Okul Numarası')}</th><th class="rhb-rad-h">Öğrencinin Adı Soyadı</th>${riskler.map(([ad])=>`<th class="rhb-dik-h">${dik(ad)}</th>`).join('')}`;
+ const satir=(n,o)=>`<tr><td class="rhb-sira">${n}</td><td class="rhb-orta">${o?esc(c.sinif):''}</td><td class="rhb-orta">${o?esc(o.no):''}</td><td class="rhb-rad">${o?esc(o.ad):''}</td>${riskler.map((_,k)=>`<td class="rhb-x">${o?.isaret[k]?'X':''}</td>`).join('')}</tr>`;
+ const bos=Math.max(0,RISK_EN_AZ_SATIR-t.ogrenciler.length);
+ const govde=t.ogrenciler.map((o,i)=>satir(i+1,o)).join('')+Array.from({length:bos},(_,i)=>satir(t.ogrenciler.length+i+1,null)).join('');
+ const toplam=`<tr class="rhb-toplam"><th colspan="4">TOPLAM</th>${t.toplamlar.map(n=>`<td class="rhb-x">${n||''}</td>`).join('')}</tr>`;
+ const yon=yonerge?`<article class="rhb-paper rhb-yonerge"><h1 class="rhb-ust">SINIF RİSK HARİTASI<br>YÖNERGE</h1><h2 class="rhb-yon-ust">DİKKAT EDİLECEK HUSUSLAR;</h2>${V.riskYonerge.map(([b,m])=>`<h3 class="rhb-yon-baslik">${esc(b)}</h3><p class="rhb-yon-metin">${esc(m)}</p>`).join('')}</article>`:'';
+ return`<article class="rhb-paper rhb-risk">${baslikBlok(c,`${sinifBasligi(c.sinif)} SINIF RİSK HARİTASI`)}
+<p class="rhb-risk-tarih">Tarih: ${esc(tarih(c.tarih))}</p>
+<table class="rhb-tablo rhb-risktablo"><colgroup><col class="rhb-c-rsira"><col class="rhb-c-rsube"><col class="rhb-c-rno"><col class="rhb-c-rad">${cols36}</colgroup><thead><tr>${baslik}</tr></thead><tbody>${govde}${toplam}</tbody></table>
+<div class="rhb-imzalar">${ogretmenImza(c,'Sınıf Rehber Öğretmeni')}${mudurImza(c)}</div>
+<p class="rhb-formkodu">S.İ.4.a · ÖZEL EĞİTİM VE REHBERLİK HİZMETLERİ GENEL MÜDÜRLÜĞÜ</p></article>${yon}`;
+}
+
+global.RehberlikBelge={esc,mudurluk,sinifBasligi,doldur,NOKTA,planBelgesi,aylikBelge,donemBelgesi,yilSonuBelgesi,kazanimBelgesi,riskBelgesi,RISK_EN_AZ_SATIR};
 })(window);

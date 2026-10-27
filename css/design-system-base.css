@@ -15090,6 +15090,30 @@ html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var
 /* kazanım tablosu */
 .ka-report .rhb-kaztablo th,.ka-report .rhb-kaztablo td{font-size:8.5pt!important}
 .ka-report .rhb-kaztablo td.rhb-sira{white-space:nowrap}
+/* sınıf risk haritası (S.İ.4.a, yatay): 4 kimlik sütunu + 36 dar risk sütunu; başlıklar dikey */
+.ka-report .rhb-risk-tarih{margin:0 0 1mm;text-align:right;font-size:9pt}
+.ka-report .rhb-risktablo{margin:0}
+.ka-report .rhb-risktablo th,.ka-report .rhb-risktablo td{padding:0 .4mm!important;font-size:7.5pt!important;line-height:1.15}
+.ka-report .rhb-risktablo tr{break-inside:avoid;page-break-inside:avoid}
+.ka-report .rhb-risktablo thead{display:table-header-group}
+.ka-report .rhb-risktablo th.rhb-dik-h{height:46mm;padding:1mm 0!important;vertical-align:bottom!important}
+.ka-report .rhb-risktablo th.rhb-rad-h{vertical-align:bottom!important;padding-bottom:1mm!important}
+.ka-report .rhb-risktablo .rhb-dik{display:inline-block;max-height:44mm;writing-mode:vertical-rl;transform:rotate(180deg);font-size:6.5pt;line-height:1.1;text-align:left}
+.ka-report .rhb-risktablo tbody td{height:5mm}
+.ka-report .rhb-risktablo td.rhb-rad{padding-left:1mm!important;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.ka-report .rhb-risktablo td.rhb-x{text-align:center!important;font-weight:700!important}
+.ka-report .rhb-risktablo tr.rhb-toplam th{text-align:right!important;padding-right:1.5mm!important}
+.ka-report .rhb-c-rsira{width:8mm}
+.ka-report .rhb-c-rsube{width:10mm}
+.ka-report .rhb-c-rno{width:11mm}
+.ka-report .rhb-risktablo .rhb-c-rad{width:44mm}
+.ka-report .rhb-c-risk{width:5.4mm}
+.ka-report .rhb-formkodu{margin:3mm 0 0;font-size:8pt;font-weight:700;color:var(--ka-report-text)}
+.ka-report .rhb-yonerge{break-before:page;page-break-before:always}
+.ka-report .rhb-yonerge .rhb-ust{margin-bottom:6mm;font-size:13pt;line-height:1.35}
+.ka-report .rhb-yon-ust{margin:0 0 4mm;font-family:inherit;font-size:11pt;font-weight:700;letter-spacing:0}
+.ka-report .rhb-yon-baslik{margin:4mm 0 1mm;font-family:inherit;font-size:10.5pt;font-weight:700;letter-spacing:0}
+.ka-report .rhb-yon-metin{margin:0;font-size:10.5pt;text-align:justify;line-height:1.5}
 
 /* ===== SINIF REHBERLİK (rhb-*) — ekran ===== */
 html[data-theme] #v2ModuleRoot .rhb-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
@@ -15154,6 +15178,36 @@ html[data-theme] #v2ModuleRoot .rhb-kaz__aciklama{margin:0;font-size:var(--ka-fs
 html[data-theme] #v2ModuleRoot .rhb-bos{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-6);padding:var(--ka-sp-24) var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-card-radius);text-align:center}
 html[data-theme] #v2ModuleRoot .rhb-bos strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
 html[data-theme] #v2ModuleRoot .rhb-bos p{margin:0;font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+/* risk haritası: tablo (geniş ekran) ve öğrenci kartları (telefon) */
+html[data-theme] #v2ModuleRoot .rhb-rno{display:inline-block;min-width:var(--ka-sp-24);margin-right:var(--ka-sp-6);color:var(--ka-text-muted);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-rt__kaydir{overflow:auto;max-height:75vh;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-app-bg)}
+html[data-theme] #v2ModuleRoot .rhb-rt{border-collapse:separate;border-spacing:0;font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .rhb-rt th,html[data-theme] #v2ModuleRoot .rhb-rt td{padding:0;border-right:var(--ka-border-w) solid var(--ka-border);border-bottom:var(--ka-border-w) solid var(--ka-border);background-color:var(--ka-app-bg);text-align:center}
+html[data-theme] #v2ModuleRoot .rhb-rt [data-g="1"],html[data-theme] #v2ModuleRoot .rhb-rt [data-g="3"]{background-image:linear-gradient(var(--ka-muted-bg),var(--ka-muted-bg))}
+html[data-theme] #v2ModuleRoot .rhb-rt .rhb-rt__grup{padding:var(--ka-sp-6) var(--ka-sp-8);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-rt th.rhb-rt__ad{position:sticky;left:0;z-index:2;width:calc(var(--ka-sp-120) * 1.9);min-width:calc(var(--ka-sp-120) * 1.9);max-width:calc(var(--ka-sp-120) * 1.9);padding:var(--ka-sp-6) var(--ka-sp-10);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-rt .rhb-rt__sayi{position:sticky;left:calc(var(--ka-sp-120) * 1.9);z-index:2;min-width:var(--ka-sp-32);font-weight:var(--ka-fw-800);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-rt th.rhb-rt__bas{position:sticky;top:0;z-index:1;height:calc(var(--ka-sp-120) * 1.7);padding:var(--ka-sp-6) 0;vertical-align:bottom;font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-dik{display:inline-block;max-height:calc(var(--ka-sp-120) * 1.6);writing-mode:vertical-rl;transform:rotate(180deg);font-size:var(--ka-fs-11);line-height:1.15;text-align:left}
+html[data-theme] #v2ModuleRoot .rhb-rt td{min-width:var(--ka-sp-32)}
+html[data-theme] #v2ModuleRoot .rhb-rt input{display:block;width:var(--ka-ic-18);height:var(--ka-ic-18);margin:var(--ka-sp-8) auto;accent-color:var(--ka-warning);cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-rt .rhb-rt__toplam th,html[data-theme] #v2ModuleRoot .rhb-rt .rhb-rt__toplam td{position:sticky;bottom:0;z-index:1;padding:var(--ka-sp-6) 0;border-top:var(--ka-border-w) solid var(--ka-border-strong);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-rt .rhb-rt__toplam th.rhb-rt__ad{z-index:3;padding:var(--ka-sp-6) var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .rhb-rkartlar{display:flex;flex-direction:column;gap:var(--ka-sp-8);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .rhb-rkart{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg);overflow:hidden}
+html[data-theme] #v2ModuleRoot .rhb-rkart__ust{display:flex;align-items:center;gap:var(--ka-sp-8);width:100%;min-height:var(--ka-control-height);padding:var(--ka-sp-10) var(--ka-sp-14);border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-rkart__ust strong{flex:1 1 auto;min-width:0;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-rkart__ust .rhb-sayi{margin-left:0}
+html[data-theme] #v2ModuleRoot .rhb-rkart__ust .rhb-sayi:empty{display:none}
+html[data-theme] #v2ModuleRoot .rhb-rchips{display:flex;flex-wrap:wrap;gap:var(--ka-sp-4);padding:0 var(--ka-sp-14) var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .rhb-rchips:empty{display:none}
+html[data-theme] #v2ModuleRoot .rhb-rchip{padding:var(--ka-sp-2) var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);font-size:var(--ka-fs-11);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-rkart__govde{display:flex;flex-direction:column;gap:var(--ka-sp-12);padding:var(--ka-sp-12) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .rhb-rgrup{min-width:0;margin:0;padding:0;border:0}
+html[data-theme] #v2ModuleRoot .rhb-rgrup legend{padding:0;margin-bottom:var(--ka-sp-4);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-rgrup__liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--ka-sp-120) * 2),1fr));gap:var(--ka-sp-2) var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .rhb-risk{display:flex;align-items:flex-start;gap:var(--ka-sp-10);min-height:var(--ka-control-height);padding:var(--ka-sp-6) 0;font-size:var(--ka-fs-13);line-height:var(--ka-lh-1-35);cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);height:var(--ka-ic-20);margin:0;accent-color:var(--ka-warning)}
 @media(max-width:767px){
   html[data-theme] #v2ModuleRoot .rhb-cikti .ka-btn{flex:1 1 auto}
   html[data-theme] #v2ModuleRoot .rhb-madde{padding:var(--ka-sp-10) var(--ka-sp-12)}
