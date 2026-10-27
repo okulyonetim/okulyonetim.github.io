@@ -140,11 +140,17 @@ eq(noSeg.saatler.map(s=>s.n),[1,2,3,4,5]);
 
 /* ── terfi ── */
 const tf=C.terfiler(data,TODAY,30);
-eq(tf.map(x=>x.ad),['Fatma Şenocak','Uygar Halisdemir'],'Yalnız 30 gün içindeki aktif personel, yakından uzağa.');
-eq(tf[0],{ad:'Fatma Şenocak',det:'Derece 4 · Kademe 3 → Derece 3 · Kademe 1',tarih:'26 Ekim',kalan:'Bugün',gun:0},'Kademe 3 sonrası derece ilerler.');
-eq(tf[1],{ad:'Uygar Halisdemir',det:'Derece 3 · Kademe 2 → 3',tarih:'5 Kasım',kalan:'10 gün',gun:10});
+eq(tf.map(x=>x.ad),['Fatma Şenocak','Uygar Halisdemir'],'Yalnız ±30 gün içindeki aktif personel, eskiden yakına.');
+eq(tf[0],{ad:'Fatma Şenocak',det:'Derece 4 · Kademe 3 → Derece 3 · Kademe 1',tarih:'26 Ekim',kalan:'Bugün',gun:0,gecti:false},'Kademe 3 sonrası derece ilerler.');
+eq(tf[1],{ad:'Uygar Halisdemir',det:'Derece 3 · Kademe 2 → 3',tarih:'5 Kasım',kalan:'10 gün',gun:10,gecti:false});
+const gecmisli=C.terfiler({ogretmenler:[{id:'a',adSoyad:'Yeni',aktif:true,derece:4,kademeNo:1,sonTerfiTarihi:'2025-11-01'},{id:'b',adSoyad:'Geçen',aktif:true,derece:4,kademeNo:1,sonTerfiTarihi:'2025-10-10'},{id:'c',adSoyad:'Dün',aktif:true,derece:4,kademeNo:1,sonTerfiTarihi:'2025-10-25'}]},TODAY);
+eq(gecmisli.map(x=>x.ad),['Geçen','Dün','Yeni'],'Süresi geçenler üstte (en eski önce), sonra bugün/gelecek.');
+eq(gecmisli.map(x=>x.kalan),['16 gün geçti','1 gün geçti','6 gün'],'Geçen terfiler “N gün geçti” yazar.');
 const tfx=(o)=>C.terfiler({ogretmenler:[{id:'x',adSoyad:'A',aktif:true,...o}]},TODAY);
-eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-10-20'}),[],'Geçmiş tarih listelenmez.');
+eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-10-20'}).map(x=>[x.kalan,x.gun,x.gecti,x.tarih]),[['6 gün geçti',-6,true,'20 Ekim']],'Son 30 günde süresi geçen terfi “N gün geçti” olarak listelenir.');
+eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-09-26'}).map(x=>x.gun),[-30],'Tam 30 gün önceki terfi hâlâ listelenir.');
+eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-09-25'}),[],'30 günden eski geçmiş terfi listelenmez.');
+eq(tfx({derece:4,kademeNo:1,sonTerfiTarihi:'2025-11-26'}),[],'30 günden uzaktaki gelecek terfi listelenmez.');
 eq(tfx({derece:1,kademeNo:4,sonTerfiTarihi:'2025-10-28'}),[],'1. derece 4. kademe terfi almaz.');
 eq(tfx({derece:4,kademeNo:1}),[],'Son terfi tarihi yoksa listelenmez.');
 eq(tfx({sonTerfiTarihi:'2025-10-28'}),[],'Derece/kademe yoksa listelenmez.');

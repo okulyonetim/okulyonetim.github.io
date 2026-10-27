@@ -26,7 +26,7 @@ const KARTLAR=[
  {id:'ogretmenler',ad:'Öğretmenler',w:4,ico:'users'},
  {id:'program',ad:'Ders programları',w:8,ico:'cal'},
  {id:'takvim',ad:'Takvim',w:4,ico:'cal'},
- {id:'terfi',ad:'Terfisi yaklaşan personel',w:4,ico:'trend'},
+ {id:'terfi',ad:'Terfisi yaklaşan ve geçen personel',w:4,ico:'trend'},
  {id:'gunler',ad:'Belirli gün ve haftalar',w:4,ico:'flag'},
  {id:'dilimiz',ad:'Dilimizin Zenginlikleri',w:6,ico:'book'},
  {id:'yaklasan',ad:'Yaklaşanlar',w:4,ico:'bell'},
@@ -208,10 +208,10 @@ function takvimHtml(){
  return card('takvim',`<div class="ka-ip-month">${esc(cal.baslik)}</div><div class="ka-ip-cal">${gb.map(g=>`<span class="ka-ip-cal__h">${g}</span>`).join('')}${cells}</div>${gunPaneli()}`,{right:nav});
 }
 function terfiHtml(){
- const l=C().terfiler(M.data,M.today,30);
+ const l=C().terfiler(M.data,M.today,30,30);
  const any=M.data.ogretmenler.some(t=>t&&t.aktif!==false&&t.sonTerfiTarihi);
- const body=l.length?l.map(t=>row(t.ad,[t.det,t.tarih].filter(Boolean).join(' · '),chip(t.kalan,'blue'))).join(''):empty(any?'30 gün içinde terfisi yaklaşan personel yok.':'Öğretmen detayına derece, kademe ve son terfi tarihi girilince burada görünür.');
- return card('terfi',body,{right:'30 gün'});
+ const body=l.length?l.map(t=>row(t.ad,[t.det,t.tarih].filter(Boolean).join(' · '),chip(t.kalan,t.gecti?'red':'blue'))).join(''):empty(any?'Son 30 günde süresi geçen ya da önümüzdeki 30 günde terfisi gelen personel yok.':'Öğretmen detayına derece, kademe ve son terfi tarihi girilince burada görünür.');
+ return card('terfi',body,{right:'−30 / +30 gün'});
 }
 /* Kaynak: Dilimizin Zenginlikleri eylem planı (dilimiz.js) ve okulun girdileri (sorumlu öğretmen, aylık faaliyet notu). */
 function dilimizHtml(){

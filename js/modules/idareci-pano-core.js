@@ -185,17 +185,18 @@ function programTablosu(data,live,{tur='ogretmen',id=''}={},now=new Date()){
  return{saatler,gunler,aktif};
 }
 
-/* ── terfisi yaklaşanlar ── */
-/* Kaynak öğretmen detayıdır: derece, kademe ve son terfi tarihi. Sonraki terfi (1 yıl sonra) ve yeni derece/kademe TerfiCore'dan gelir. */
-function terfiler(data,todayIso,gun=30){
+/* ── terfisi yaklaşan ve süresi geçen personel ── */
+/* Kaynak öğretmen detayıdır: derece, kademe ve son terfi tarihi. Sonraki terfi (1 yıl sonra) ve yeni derece/kademe TerfiCore'dan gelir.
+ * Pencere: önümüzdeki `gun` gün + son `gecmis` gün (terfi tarihi geçmiş, kayıt henüz güncellenmemiş olanlar); eskiden yakına sıralanır. */
+function terfiler(data,todayIso,gun=30,gecmis=30){
  const T=g.TerfiCore;if(!T)return[];
  return activeTeachers(data)
   .map(t=>({t,r:T.sonraki(t)}))
   .filter(x=>x.r.durum==='var')
   .map(x=>({...x,d:dayDiff(x.r.tarih,todayIso)}))
-  .filter(x=>x.d>=0&&x.d<=gun)
+  .filter(x=>x.d>=-gecmis&&x.d<=gun)
   .sort((a,b)=>a.d-b.d||teacherName(a.t).localeCompare(teacherName(b.t),'tr'))
-  .map(({t,r,d})=>({ad:teacherName(t),det:T.etiket(r),tarih:dm(r.tarih),kalan:kalanText(d),gun:d}));
+  .map(({t,r,d})=>({ad:teacherName(t),det:T.etiket(r),tarih:dm(r.tarih),kalan:d<0?`${-d} gün geçti`:kalanText(d),gun:d,gecti:d<0}));
 }
 
 /* ── belirli gün ve haftalar: liste [{ad,tarihBaslangic,tarihBitis,resmi}] ── */
