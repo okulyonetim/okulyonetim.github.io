@@ -290,4 +290,14 @@ const NK='ka-nav-layout:u1:idareci';
   ({N,ls}=loadNav({store:{[NK]:JSON.stringify({v:N.LAYOUT_SURUM,bar:['home','program','tools','me','menu:okul'],gorulen:N.scopeIds('idareci'),t:1})}}));
   eq(N.layoutRaw('idareci').bar.filter(k=>['home','tools','me'].includes(k)).length,3,'Ana sayfa, Menü ve Ben yerinde kalır.');
 }
+/* ── saatin yanında hava durumu: tek kaynak SchoolLiveStatus.weatherView; sayfa ve tam ekranda var, veri yoksa gizli, tikte tazelenir ── */
+{
+  const pano=fs.readFileSync('js/modules/idareci-pano.js','utf8'),live=fs.readFileSync('js/modules/school-live-status.js','utf8');
+  assert(live.includes('glyph:glyph(w.code,isNight(w))'),'weatherView, gece/gündüze göre simgeyi (glyph) vermeli.');
+  assert(pano.includes("wxHtml('button')")&&pano.includes("wxHtml('div')"),'Hava durumu normal sayfada (dokunulur) ve tam ekranda (yalnız görüntü) saatin yanında olmalı.');
+  assert(pano.includes('SchoolLiveStatus?.weatherView?.()')&&!/fetch\(|api\.open-meteo/.test(pano),'Pano havayı ayrıca çekmemeli; SchoolLiveStatus.weatherView kullanmalı.');
+  assert(pano.includes("e.dataset.wxSig===w.sig")&&pano.includes('e.hidden=!w.sig'),'Hava çipi her saniye tikinde değişince tazelenmeli, veri yoksa gizlenmeli.');
+  assert(/hava:\(\)=>\{global\.SchoolLiveStatus\?\.openWeather\?\.\(\)\}/.test(pano),'Hava çipine dokununca hava ayrıntıları açılmalı.');
+}
+
 console.log('İdareci Pano çekirdek testi geçti.');

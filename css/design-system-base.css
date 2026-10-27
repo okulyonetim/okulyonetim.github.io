@@ -14613,6 +14613,14 @@ html[data-theme] #v2ModuleRoot .ka-ip-clock__t{display:flex;align-items:baseline
 html[data-theme] #v2ModuleRoot .ka-ip-clock__t b{font-size:var(--ka-fs-44);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-02)}
 html[data-theme] #v2ModuleRoot .ka-ip-clock__t span{font-size:var(--ka-fs-20);font-weight:var(--ka-fw-600);color:var(--ka-text-muted)}
 html[data-theme] #v2ModuleRoot .ka-ip-clock small{font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-now{display:flex;align-items:flex-start;gap:var(--ka-sp-16)}
+html[data-theme] #v2ModuleRoot .ka-ip-wx{appearance:none;display:flex;flex-direction:column;align-items:flex-end;gap:var(--ka-sp-2);margin:0;padding:0 var(--ka-sp-16) 0 0;border:0;border-right:var(--ka-border-w) solid var(--gl-sep);border-radius:0;background:transparent;font:inherit;text-align:right;color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-wx[hidden]{display:none}
+html[data-theme] #v2ModuleRoot button.ka-ip-wx{cursor:pointer}
+html[data-theme] #v2ModuleRoot .ka-ip-wx__t{display:flex;align-items:center;gap:var(--ka-sp-6);font-variant-numeric:tabular-nums}
+html[data-theme] #v2ModuleRoot .ka-ip-wx__t i{font-style:normal;font-size:var(--ka-fs-32);line-height:1}
+html[data-theme] #v2ModuleRoot .ka-ip-wx__t b{font-size:var(--ka-fs-44);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-02)}
+html[data-theme] #v2ModuleRoot .ka-ip-wx small{font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
 html[data-theme] #v2ModuleRoot .ka-ip-acts{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .ka-ip-acts .ka-btn svg{flex:none}
 html[data-theme] #v2ModuleRoot .ka-ip-read{margin-left:var(--ka-sp-4);font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
@@ -14780,12 +14788,16 @@ html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);f
 @media(min-width:1000px){
   html[data-theme] #v2ModuleRoot .ka-ip-tv{gap:var(--ka-sp-20);padding:var(--ka-sp-28) var(--ka-sp-35);font-size:var(--ka-fs-19)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv-top{flex-wrap:nowrap}
-  html[data-theme] #v2ModuleRoot .ka-ip-tv-right{gap:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv-right{flex-wrap:nowrap;flex:none;gap:var(--ka-sp-20)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-brand h1{font-size:var(--ka-fs-38)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-logo{width:var(--ka-ic-72);height:var(--ka-ic-72);font-size:var(--ka-fs-28)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock__t b{font-size:var(--ka-fs-86)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock__t span{font-size:var(--ka-fs-40)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-clock small{font-size:var(--ka-fs-24)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx{padding-right:var(--ka-sp-20)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx__t i{font-size:var(--ka-fs-40)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx__t b{font-size:var(--ka-fs-56)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx small{font-size:var(--ka-fs-19)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-card{padding:var(--ka-sp-24);gap:var(--ka-sp-14)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-head h2{font-size:var(--ka-fs-24)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-sub{font-size:var(--ka-fs-18)}
@@ -14817,6 +14829,11 @@ html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);f
   html[data-theme] #v2ModuleRoot .ka-ip-tv-msg{padding:var(--ka-sp-14) 0;font-size:var(--ka-fs-24)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv-dots{gap:var(--ka-sp-8);padding-right:var(--ka-sp-16)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{font-size:var(--ka-fs-18)}
+}
+@media(min-width:1500px){
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx__t i{font-size:var(--ka-fs-56)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx__t b{font-size:var(--ka-fs-86)}
+  html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx small{font-size:var(--ka-fs-24)}
 }
 
 /* ===== TYMM İLKOKUL ÖLÇEKLERİ (.ka-tm-*) — js/modules/tymm-olcek.js ===== */

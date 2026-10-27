@@ -253,12 +253,21 @@ function strip(){
  return out.length?`<div class="ka-ip-strip">${out.join('')}</div>`:'';
 }
 const hm=d=>`${pad(d.getHours())}:${pad(d.getMinutes())}`;
+/* Saatin yanındaki hava durumu: tek kaynak SchoolLiveStatus.weatherView (ui.weather); veri yoksa görünmez, her saniye tikinde değişince tazelenir. */
+function wxView(){
+ const v=global.SchoolLiveStatus?.weatherView?.();
+ return v?{sig:`${v.glyph}|${v.temp}|${v.text}`,html:`<span class="ka-ip-wx__t"><i aria-hidden="true">${esc(v.glyph)}</i><b>${v.temp}°</b></span><small>${esc(v.text)}</small>`}:{sig:'',html:''};
+}
+function wxHtml(tag){
+ const w=wxView(),a=`class="ka-ip-wx" data-ip-wx data-wx-sig="${esc(w.sig)}"${w.sig?'':' hidden'}`;
+ return tag==='button'?`<button type="button" ${a} data-ip-act="hava" title="Hava durumu ayrıntıları">${w.html}</button>`:`<div ${a}>${w.html}</div>`;
+}
 function btn(act,ico,label,primary=false){return `<button type="button" class="ka-btn${primary?'':' ka-btn--secondary'}" data-ip-act="${act}">${ICON[ico]}<span>${label}</span></button>`}
 function pageHtml(){
  const d=M.now,ids=aktifler();
  return `<section class="vgf-page ka-ip" data-ip-page>
  <header class="ka-ip-top"><div class="ka-ip-brand"><span class="ka-ip-logo" aria-hidden="true">K</span><div><div class="ka-ip-kicker">İDARECİ PANO</div><h1>${esc(M.okul)}</h1></div></div>
- <div class="ka-ip-clock"><div class="ka-ip-clock__t" aria-label="Saat"><b data-ip-hm>${hm(d)}</b><span data-ip-ss>:${pad(d.getSeconds())}</span></div><small>${esc(M.snap.tarih.uzun)}</small></div></header>
+ <div class="ka-ip-now">${wxHtml('button')}<div class="ka-ip-clock"><div class="ka-ip-clock__t" aria-label="Saat"><b data-ip-hm>${hm(d)}</b><span data-ip-ss>:${pad(d.getSeconds())}</span></div><small>${esc(M.snap.tarih.uzun)}</small></div></div></header>
  <div class="ka-ip-acts">${btn('tv','full','Tam ekran',true)}${btn('tema','moon','Tema')}${btn('duzenle','sliders','Düzenle')}${btn('yenile','refresh','Yenile')}${btn('paylas','share','Paylaş')}<span class="ka-ip-read" data-ip-read>Veriler ${hm(S.readAt||d)}’de okundu</span></div>
  ${strip()}
  <div class="ka-ip-grid">${ids.map(id=>RENDER[id]()).join('')||empty('Gösterilecek kart seçilmemiş. Düzenle düğmesinden kartları açabilirsiniz.')}</div>
@@ -289,7 +298,7 @@ function tvHtml(){
  }else body=`<div class="ka-ip-tv-flow" data-n="${Math.min(ids.length,3)}">${ids.map(id=>RENDER[id]()).join('')}</div>`;
  const dots=pages.map((_,i)=>`<i class="${i===S.tvPage?'is-on':''}"></i>`).join('');
  return `<div class="ka-ip-tv" data-ip-tv role="dialog" aria-modal="true" aria-label="Tam ekran pano"><header class="ka-ip-tv-top"><div class="ka-ip-brand"><span class="ka-ip-logo" aria-hidden="true">K</span><div><div class="ka-ip-kicker">İDARECİ PANO</div><h1>${esc(M.okul)}</h1></div></div>
- <div class="ka-ip-tv-right"><div class="ka-ip-clock"><div class="ka-ip-clock__t"><b data-ip-hm>${hm(d)}</b><span data-ip-ss>:${pad(d.getSeconds())}</span></div><small>${esc(M.snap.tarih.uzun)}</small></div><button type="button" class="ka-ip-icon is-lg" data-ip-act="tv-tema" aria-label="Tema">${ICON.moon}</button><button type="button" class="ka-ip-icon is-lg" data-ip-act="tv-kapat" aria-label="Tam ekranı kapat">${ICON.close}</button></div></header>
+ <div class="ka-ip-tv-right">${wxHtml('div')}<div class="ka-ip-clock"><div class="ka-ip-clock__t"><b data-ip-hm>${hm(d)}</b><span data-ip-ss>:${pad(d.getSeconds())}</span></div><small>${esc(M.snap.tarih.uzun)}</small></div><button type="button" class="ka-ip-icon is-lg" data-ip-act="tv-tema" aria-label="Tema">${ICON.moon}</button><button type="button" class="ka-ip-icon is-lg" data-ip-act="tv-kapat" aria-label="Tam ekranı kapat">${ICON.close}</button></div></header>
  <div class="ka-ip-tv-body">${body}</div>
  <footer class="ka-ip-tv-foot"><span class="ka-ip-tv-tag">DUYURU</span><span class="ka-ip-tv-msg">${esc(M.duyuru||'Güncel duyuru yok.')}</span><span class="ka-ip-tv-dots" aria-label="Sayfa ${S.tvPage+1} / ${pages.length}, ${S.cfg.sure} saniyede bir değişir">${dots}<small>${S.cfg.sure} sn</small></span></footer></div>`;
 }
@@ -347,6 +356,8 @@ function tick(){
  const now=new Date();
  mounted.querySelectorAll('[data-ip-hm]').forEach(e=>{e.textContent=hm(now)});
  mounted.querySelectorAll('[data-ip-ss]').forEach(e=>{e.textContent=':'+pad(now.getSeconds())});
+ const w=wxView();
+ mounted.querySelectorAll('[data-ip-wx]').forEach(e=>{if(e.dataset.wxSig===w.sig)return;e.dataset.wxSig=w.sig;e.innerHTML=w.html;e.hidden=!w.sig});
  const key=liveKey();
  if(key!==S.liveKey){const f=document.activeElement;if(!(f&&f.matches?.('input,select,textarea')&&mounted.contains(f)))render();return}
  const live=global.SchoolLiveStatus?.status?.(now);if(!live)return;
@@ -395,6 +406,7 @@ const ACT={
  'tv-kapat':()=>tvClose(),
  tema:()=>{global.ShellUI?.toggleTheme?.()},
  'tv-tema':()=>{global.ShellUI?.toggleTheme?.()},
+ hava:()=>{global.SchoolLiveStatus?.openWeather?.()},
  duzenle:()=>{S.draft={...S.cfg,kapali:[...S.cfg.kapali],sira:[...S.cfg.sira]};render()},
  'sheet-kapat':()=>{S.draft=null;render()},
  'k-toggle':b=>{const id=b.dataset.id,k=S.draft.kapali,i=k.indexOf(id);i<0?k.push(id):k.splice(i,1);render()},
