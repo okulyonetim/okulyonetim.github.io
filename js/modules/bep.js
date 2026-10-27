@@ -20,7 +20,7 @@ const toast=m=>global.toast?.(m);
 
 /* ── ekran durumu ── */
 const S={view:'list',step:'ogrenci',rec:null,dirty:false,query:'',ders:'',panel:'',gradePick:0,courseQ:'',kzQ:'',units:null,unitsKey:'',open:{},stQ:''};
-let catalog=null,catalogErr='',catalogLoading=null,saveTimer=0,remoteAt=0,mounted=null;
+let catalog=null,catalogErr='',catalogLoading=null,saveTimer=0,remoteAt=0,mounted=null,unsubList=null;
 const dersCache=new Map();
 
 /* ── ek yüklemeler ── */
@@ -146,6 +146,7 @@ function listItem(r){
    <span class="ka-bep-item__meta"><span class="ka-badge">${sm.ders} ders</span><span class="ka-badge">${sm.amac} amaç</span>${sm.eksik?`<span class="ka-badge ka-bep-warn">${sm.eksik} eksik</span>`:'<span class="ka-badge ka-bep-ok">Hazır</span>'}${guncel?`<small>Güncellendi ${esc(guncel)}</small>`:''}</span>
   </button>
   <div class="ka-bep-item__acts">
+   <button class="ka-btn" type="button" data-bep-act="open" data-id="${esc(r.id)}">Düzenle</button>
    <button class="ka-btn ka-btn--secondary" type="button" data-bep-act="print-rec" data-id="${esc(r.id)}">Yazdır</button>
    <button class="ka-btn ka-btn--secondary" type="button" data-bep-act="dup" data-id="${esc(r.id)}">Yeni yıl için kopyala</button>
    <button class="ka-btn ka-btn--secondary" type="button" data-bep-act="del" data-id="${esc(r.id)}">Sil</button>
@@ -382,6 +383,13 @@ function render(){
  bind(r);
  return true;
 }
+/* Liste açıkken veri değişirse (başka cihazdan gelen/silinen dosya, eşitleme) liste kendini yeniler; arama kutusundaki imleç korunur. */
+function refreshList(){
+ if(S.view!=='list'||!mounted||!mounted.isConnected||!mounted.querySelector('[data-bep-page]'))return;
+ const a=document.activeElement,typing=!!a?.matches?.('[data-bep-search]'),pos=typing?a.selectionStart:0;
+ render();
+ if(typing){const n=mounted?.querySelector('[data-bep-search]');n?.focus();n?.setSelectionRange?.(pos,pos)}
+}
 function renderBody({keepScroll=true}={}){
  const r=mounted;if(!r||S.view!=='edit')return;
  const body=r.querySelector('[data-bep-body]'),nav=r.querySelector('[data-bep-steps]');
@@ -440,7 +448,7 @@ function specList(spec){
 function onInput(e){
  if(!inPage(e))return;
  const el=e.target,d=el.dataset;
- if(el.matches('[data-bep-search]')){S.query=el.value;const pos=el.selectionStart;const r=mounted;render();const n=r.querySelector('[data-bep-search]');n?.focus();n?.setSelectionRange?.(pos,pos);return}
+ if(el.matches('[data-bep-search]')){S.query=el.value;refreshList();return}
  if(!S.rec)return;
  if(d.bepF!==undefined){
   let v=el.value;
@@ -641,12 +649,13 @@ async function open(){
  if(S.dirty&&S.rec)await save({silent:true});
  clearTimeout(saveTimer);
  S.view='list';S.rec=null;S.dirty=false;S.query='';
+ unsubList?.();unsubList=global.AppStore?.subscribe?.('data.'+T,refreshList)||null;
  render();
  loadCatalog().then(()=>{if(S.view==='edit')renderBody()});
  prepare().then(()=>{if(S.view==='list'&&document.querySelector('[data-bep-page]'))render()});
  return true;
 }
-function unmount(){clearTimeout(saveTimer);if(S.dirty)save({silent:true});mounted=null}
+function unmount(){clearTimeout(saveTimer);if(S.dirty)save({silent:true});unsubList?.();unsubList=null;mounted=null}
 
 global.BepModule={open,render,unmount};
 })(window);

@@ -134,4 +134,12 @@ const nav=fs.readFileSync('js/core/app-nav.js','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
 ['bep.js','bep-core.js','bep-print.js'].forEach(f=>assert(sw.includes('./js/modules/'+f),`${f} çevrimdışı önbellekte olmalı.`));
 
+/* Kayıtlı dosya yeniden düzenlenebilir: kartta görünür Düzenle düğmesi, liste açıkken veri değişince kendini yeniler. */
+const bepUi=fs.readFileSync('js/modules/bep.js','utf8');
+const acts=bepUi.slice(bepUi.indexOf('<div class="ka-bep-item__acts">'),bepUi.indexOf('</div>',bepUi.indexOf('<div class="ka-bep-item__acts">')));
+assert(/data-bep-act="open"[^>]*>Düzenle</.test(acts),'Her BEP kartında görünür bir Düzenle düğmesi olmalı.');
+assert(acts.indexOf('>Düzenle<')<acts.indexOf('>Yazdır<'),'Düzenle, kart eylemlerinin ilki olmalı.');
+assert(bepUi.includes("AppStore?.subscribe?.('data.'+T,refreshList)")&&bepUi.includes('unsubList?.();unsubList=null'),'Liste, bepDosyalari verisi değişince yenilenmeli ve ekrandan çıkınca aboneliği bırakmalı.');
+assert(!bepUi.includes('const pos=el.selectionStart;const r=mounted;render()'),'Arama kutusu imleç koruma mantığı refreshList içinde tek yerde olmalı.');
+
 console.log('BEP hazırlama testleri geçti.');
