@@ -295,8 +295,8 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=1');
       if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=1');
       if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=1');
-      if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=1');
-      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=1');
+      if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=2');
+      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=2');
       if(!global.RehberlikModule?.open)throw new Error('Sınıf Rehberlik modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Sınıf Rehberlik');
       if(!global.RehberlikModule.open())throw new Error('Sınıf Rehberlik açılamadı.');

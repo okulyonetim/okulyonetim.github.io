@@ -133,14 +133,12 @@ async function excelPlan({ctx,plan}){
   }
   if(bi===1)ws.getRow(r).addPageBreak();                       // ilk iki bant (Eylül–Şubat) birinci sayfada
  });
- // imzalar: sola hizalı
+ // imzalar: öğretmen solda; müdür sağ sütunda (OLUR, tarih, ad, unvan), yazılar sola hizalı
  satir(10);
- const ad=satir(18),unvan=satir(16);
- [[1,ctx.ogretmen||B().NOKTA,'Sınıf Rehber Öğretmeni'],[3,ctx.mudur||B().NOKTA,'Okul Müdürü']].forEach(([sut,isim,u])=>{
-  const a=ws.getCell(ad,sut),b=ws.getCell(unvan,sut);
-  a.value=isim;a.font={name:'Arial',size:10,bold:true};a.alignment={horizontal:'left',vertical:'bottom'};
-  b.value=u;b.font={name:'Arial',size:10,bold:true};b.alignment={horizontal:'left',vertical:'top'};
- });
+ const olur=satir(16),tar=satir(14),ad=satir(18),unvan=satir(16);
+ const yaz=(n,sut,deger,kalin,altta)=>{const h=ws.getCell(n,sut);h.value=deger;h.font={name:'Arial',size:10,bold:kalin};h.alignment={horizontal:'left',vertical:altta?'bottom':'top'}};
+ yaz(ad,1,ctx.ogretmen||B().NOKTA,true,true);yaz(unvan,1,'Sınıf Rehber Öğretmeni',true);
+ yaz(olur,5,'OLUR',true);yaz(tar,5,tarih(ctx.tarih),false);yaz(ad,5,ctx.mudur||B().NOKTA,false,true);yaz(unvan,5,'Okul Müdürü',true);
  ws.pageSetup.printArea=`A1:F${r}`;
  const veri=await wb.xlsx.writeBuffer();
  await kaydet(new global.Blob([veri],{type:XLSX_TURU}),O().dosyaAdi('Rehberlik Plani',ctx.sinif,'xlsx'),XLSX_TURU);

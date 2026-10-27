@@ -102,8 +102,10 @@ const ctx={yil:'2026-2027',okul:'Koruk Ortaokulu',sinif:'5/A',duzey:5,ogretmen:'
 assert.strictEqual(B.sinifBasligi('5/A'),'5. SINIF A ŞUBESİ');assert.strictEqual(B.sinifBasligi('1-B'),'1. SINIF B ŞUBESİ');assert.strictEqual(B.sinifBasligi('Anasınıfı'),'ANASINIFI');
 assert.strictEqual(B.mudurluk('Koruk Ortaokulu'),'KORUK ORTAOKULU MÜDÜRLÜĞÜ');assert.strictEqual(B.mudurluk(''),'……………………… MÜDÜRLÜĞÜ');
 const planH=B.planBelgesi(pr,ctx);
-['EYLÜL','HAZİRAN','ARA TATİL','3. Hafta','Ayşe KAYA','Mehmet DEMİR','5. SINIF A ŞUBESİ'].forEach(s=>assert(duz(planH).includes(s),`Plan belgesi "${s}" içermeli.`));
+['EYLÜL','HAZİRAN','ARA TATİL','3. Hafta','Ayşe KAYA','Mehmet DEMİR','5. SINIF A ŞUBESİ','OLUR','27.10.2026'].forEach(s=>assert(duz(planH).includes(s),`Plan belgesi "${s}" içermeli.`));
 assert.strictEqual((planH.match(/<table/g)||[]).length,4,'Plan 4 bant (3+3+3+1 ay).');
+assert(/rhb-imza rhb-imza--olur"><b>OLUR<\/b><span>27\.10\.2026<\/span><span>Mehmet DEMİR<\/span><b>Okul Müdürü/.test(planH),'Müdür bloğu: OLUR, tarih, ad, unvan.');
+assert(planH.indexOf('Ayşe KAYA')<planH.indexOf('rhb-imza--olur'),'Öğretmen solda, müdür sağda (sıra).');
 const aylikH=B.aylikBelge(ay,ctx);
 ['YETERLİLİK ALANI','KAZANIM','EYLÜL AYI ÇALIŞMA RAPORU','Anket','Elle eklenen','Okul Rehber Öğretmeni','Mehmet DEMİR'].forEach(s=>assert(duz(aylikH).includes(s),`Aylık belge "${s}" içermeli.`));
 assert.strictEqual((aylikH.match(/class="rhb-blok"/g)||[]).length,3,'Aylık raporda en az 3 etkinlik bloğu (boşlar dahil).');
@@ -129,7 +131,7 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   rapor.veli=[{veli:'Ali & Veli',ogrenci:'Zeynep <A>',konu:'Devam',tarih:'2026-09-25'}];
   const ayXml=await docXml('aylik',D.aylikIcerik(rapor,ctx)),ayT=metin(ayXml);
   assert(!/\{\{/.test(ayXml),'Aylık Word: işaret kalmamalı.');
-  assert(ayT.includes('KORUK ORTAOKULU MÜDÜRLÜĞÜ')&&ayT.includes('5. SINIF A ŞUBESİ EYLÜL AYI ÇALIŞMA RAPORU')&&ayT.includes('Ayşe KAYA')&&ayT.includes('Mehmet DEMİR')&&ayT.includes('27.10.2026'));
+  assert(ayT.includes('KORUK ORTAOKULU MÜDÜRLÜĞÜ')&&ayT.includes('5. SINIF A ŞUBESİ EYLÜL AYI ÇALIŞMA RAPORU')&&ayT.includes('Ayşe KAYA')&&ayT.includes('Mehmet DEMİR')&&ayT.includes('27.10.2026')&&ayT.includes('OLUR'),'Müdür bloğunda OLUR ve tarih.');
   assert(ayT.includes('Ali & Veli')&&ayT.includes('Zeynep <A>'),'Değerler XML kaçışlı yazılır.');
   const etkinlik=rapor.etkinlikler.length;
   assert.strictEqual((ayXml.match(/ETKİNLİĞİN ADI/g)||[]).length,Math.max(3,etkinlik),'Etkinlik blokları (3 satırlık) listeye göre çoğalır.');
@@ -141,7 +143,7 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   const yilXml=await docXml('yil',D.yilIcerik(ys,{...ctx}));
   assert(!/\{\{/.test(yilXml)&&!/w:tblpPr/.test(yilXml),'Yıl sonu Word: işaret ve yüzen tablo kalmamalı.');
   const yilT=metin(yilXml);
-  assert(yilT.includes('Hayır (X)')&&yilT.includes('Zaman yetmedi')&&yilT.includes('Veli Toplantısı')&&yilT.includes('36 kazanım'));
+  assert(yilT.includes('Hayır (X)')&&yilT.includes('Zaman yetmedi')&&yilT.includes('Veli Toplantısı')&&yilT.includes('36 kazanım')&&yilT.includes('OLUR')&&(yilT.match(/27\.10\.2026/g)||[]).length===1,'Yıl sonu: OLUR bloğu, tarih bir kez.');
   assert(yilT.indexOf('Yapılan Rehberlik Faaliyetleri')<yilT.indexOf('Psikolojik Danışma'),'Bölüm sırası korunur.');
   /* gruplar: yıl sonu 5 ayrı tablo, her biri kendi listesiyle */
   const bos=await docXml('yil',D.yilIcerik(C.yilSonuRaporu(C.planOlustur(5,C.bosDurum(),'2026-2027'),C.bosDurum()),ctx));
@@ -220,9 +222,9 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(/\['sinif-rehberlik','Sınıf Rehberlik'[^\n]*'sinif-rehberlik'\]/.test(nav),'Menüde Sınıf Rehberlik aracı olmalı.');
   {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['sinif-rehberlik'"),'Sınıf Rehberlik "Tutanak ve Evrak" grubunda olmalı.');}
   assert(shell.includes("name==='sinif-rehberlik'")&&shell.includes('RehberlikModule.open'),'Kabukta rota tanımlı olmalı.');
-  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=1','rehberlik.js?v=1','rehberlik-dosya.js?v=1'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=1','rehberlik.js?v=1'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
-  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=1'),'İndirme bileşeni ilk indirmede yüklenir.');
+  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=2','rehberlik.js?v=2','rehberlik-dosya.js?v=2'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=2','rehberlik.js?v=2'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
+  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=2'),'İndirme bileşeni ilk indirmede yüklenir.');
   ['aylik','donem','yilsonu'].forEach(f=>assert(sw.includes(`./assets/rehberlik/${f}.docx`),`${f}.docx çevrimdışı için önbelleğe alınmalı.`));
   [39,50,66,67,103,129].forEach(no=>assert(new RegExp(`\\{a:"sinif-rehberlik"\\}`).test(kat),`Öğretmen Dosyası maddeleri modüle bağlı olmalı (${no}).`));
   assert((kat.match(/\{a:"sinif-rehberlik"\}/g)||[]).length>=6,'Öğretmen Dosyası listesinde 6 madde Sınıf Rehberlik\'e bağlı olmalı.');
@@ -232,7 +234,8 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   }
   assert(css.includes('.ka-report .rhb-paper')&&css.includes('#v2ModuleRoot .rhb-'),'Stiller tasarım sistemi CSS dosyasında olmalı.');
   const a4=css.slice(css.indexOf('/* ===== A4 — Sınıf Rehberlik'),css.indexOf('/* ===== SINIF REHBERLİK (rhb-*)'));
-  assert(/\.rhb-imza\{[^}]*align-items:flex-start[^}]*text-align:left/.test(a4)&&/\.rhb-imzalar\{[^}]*justify-content:flex-start/.test(a4)&&!/\.rhb-imza[^{]*\{[^}]*(?:text-align:center|align-self:flex-end|justify-content:(?:center|flex-end|space-))/.test(a4),'Öğretmen/müdür imzaları solda hizalanır.');
+  assert(/\.rhb-imza\{[^}]*align-items:flex-start[^}]*text-align:left/.test(a4)&&/\.rhb-imzalar\{[^}]*justify-content:flex-start/.test(a4)&&!/\.rhb-imza[^{]*\{[^}]*(?:text-align:center|align-self:flex-end|justify-content:(?:center|flex-end|space-))/.test(a4),'Öğretmen imzaları solda hizalanır.');
+  assert(/\.rhb-imza--olur\{[^}]*margin-left:auto/.test(a4),'Müdür bloğu sağ kenara yaslanır.');
   assert(!/\d(?:\.\d+)?px/.test(css.slice(css.indexOf('/* ===== A4 — Sınıf Rehberlik')).replace(/@media\([^)]*\)/g,'').replace(/@media [^{]*\{/g,'')),'Yeni stillerde sabit px olmamalı (ekran kesme noktası hariç); belirteç ya da mm kullanılmalı.');
   console.log('Sınıf Rehberlik testleri geçti.');
 })().catch(e=>{console.error(e);process.exit(1)});

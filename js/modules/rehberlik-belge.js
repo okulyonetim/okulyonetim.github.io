@@ -25,7 +25,8 @@ const cols=(...sinif)=>`<colgroup>${sinif.map(c=>`<col${c?` class="${c}"`:''}>`)
 const doldur=(liste,en)=>{const l=Array.isArray(liste)?liste.slice():[];while(l.length<en)l.push(null);return l};
 const imza=(ad,unvan)=>`<div class="rhb-imza"><span>${esc(ad||NOKTA)}</span><b>${esc(unvan)}</b></div>`;
 const ogretmenImza=(c,unvan='Sınıf Rehber Öğretmeni')=>imza(c.ogretmen,unvan);
-const mudurImza=c=>imza(c.mudur,'Okul Müdürü');
+/* Müdür onayı: sağ kenarda "OLUR", tarih, ad ve unvan (öğretmen imzaları solda kalır). */
+const mudurImza=c=>`<div class="rhb-imza rhb-imza--olur"><b>OLUR</b><span>${esc(tarih(c.tarih))}</span><span>${esc(c.mudur||NOKTA)}</span><b>Okul Müdürü</b></div>`;
 const baslikBlok=(c,konu)=>`<header class="rhb-baslik"><b>${esc(c.yil)} EĞİTİM ÖĞRETİM YILI</b><b>${esc(mudurluk(c.okul))}</b><b>${esc(konu)}</b></header>`;
 
 /* ── yıllık plan (yatay A4): üçerli ay blokları ── */
@@ -97,7 +98,6 @@ function yilSonuBelgesi(y,c){
 <section class="rhb-bolum"><p class="rhb-etiket">7. Okul PDR Servisi İle İşbirliği:</p>
 <table class="rhb-tablo rhb-metinler"><tbody>${soru('Okul PDR Servisi ve sınıf rehber öğretmenleri arasındaki işbirliği nasıl daha güçlü hale getirilebilir?',y.isbirligi)}${soru('Okul PDR Hizmetlerinden beklentileriniz nelerdir?',y.beklenti)}</tbody></table></section>
 <p class="rhb-not">*Bu rapor bir örneği sınıf rehberlik dosyasında tutulmak kaydıyla, okul idaresi ya da PDR Servisi tarafından muhafaza edilir.</p>
-<p class="rhb-tarih-satiri">${esc(tarih(c.tarih))}</p>
 <div class="rhb-imzalar">${ogretmenImza(c,'Şube Rehber Öğretmeni')}${mudurImza(c)}</div></article>`;
 }
 

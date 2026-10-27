@@ -15033,7 +15033,6 @@ html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var
 .ka-report .rhb-etiket{margin:3mm 0 1.5mm;font-size:10.5pt;break-after:avoid;page-break-after:avoid}
 .ka-report .rhb-etiket small,.ka-report .rhb-tablo small{font-size:8.5pt;font-weight:400}
 .ka-report .rhb-not{margin:2mm 0 0;font-size:9pt}
-.ka-report .rhb-tarih-satiri{margin:6mm 0 0;text-align:center}
 .ka-report .rhb-tablo{width:100%;margin:0 0 3mm;border-collapse:collapse;table-layout:fixed}
 .ka-report .rhb-tablo th,.ka-report .rhb-tablo td{padding:1mm 1.5mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:9.5pt!important;font-weight:400!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
 .ka-report .rhb-tablo th{background:var(--ka-report-soft-header-bg)!important;font-weight:700!important;text-align:center!important}
@@ -15057,6 +15056,7 @@ html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var
 .ka-report .rhb-liste{margin:0;padding-left:5mm}
 .ka-report .rhb-imzalar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:flex-start;gap:8mm 18mm;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
 .ka-report .rhb-imza{display:flex;flex-direction:column;align-items:flex-start;gap:1mm;min-width:42mm;text-align:left}
+.ka-report .rhb-imza--olur{margin-left:auto}
 /* yıllık plan */
 .ka-report .rhb-bant{margin:0 0 3mm;break-inside:avoid;page-break-inside:avoid}
 .ka-report .rhb-bant--1{width:33.333%!important}
