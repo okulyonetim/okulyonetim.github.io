@@ -41,7 +41,7 @@ const store={
 const kok={innerHTML:'',querySelectorAll:()=>[],querySelector:()=>null};
 const printed=[];
 const kullanici={bagliOgretmenId:'t1'};
-const win=load(['js/modules/veli-toplantisi-veri.js','js/modules/veli-toplantisi.js'],{
+const win=load(['js/modules/sinif-baglam.js','js/modules/veli-toplantisi-veri.js','js/modules/veli-toplantisi.js'],{
   AppStore:{data:t=>store[t]||[],get:k=>k==='session.user'?kullanici:undefined,subscribe:()=>()=>{}},
   document:{getElementById:()=>kok,querySelector:()=>null},
   ReportEngine:{printReport:(...a)=>printed.push(a),schoolInfo:()=>({okulAdi:'Yedek Okul'})}
@@ -130,7 +130,7 @@ M.degistir('sinifId','__elle');M.degistir('duzey','7');assert.strictEqual(M.tuta
 win.VeliToplantisiVeri.yil='2025-2026';assert(M.tutanakDurumu(7).includes('2025-2026'));assert.strictEqual(M.yazdir('tutanak'),false);
 
 /* ── yönetici tüm sınıfları görür ── */
-const yon=load(['js/modules/veli-toplantisi-veri.js','js/modules/veli-toplantisi.js'],{
+const yon=load(['js/modules/sinif-baglam.js','js/modules/veli-toplantisi-veri.js','js/modules/veli-toplantisi.js'],{
   AppStore:{data:t=>store[t]||[],get:k=>k==='session.user'?{admin:true}:undefined,subscribe:()=>()=>{}},
   document:{getElementById:()=>kok,querySelector:()=>null},ReportEngine:{printReport(){}}
 });
@@ -144,7 +144,7 @@ const nav=fs.readFileSync('js/core/app-nav.js','utf8'),shell=fs.readFileSync('js
 assert(/\['veli-toplantisi','Veli Toplantısı','users'[^\n]*'veli-toplantisi'\]/.test(nav),'Menüde Veli Toplantısı aracı olmalı.');
 {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['veli-toplantisi'")&&!nav.slice(nav.indexOf("['ogrenci','Öğrenciler'"),nav.indexOf("['sinav','Sınav ve Not'")).includes("['veli-toplantisi'"),'Veli Toplantısı "Tutanak ve Evrak" menüsünde (Öğretmen Dosyası yanında), tek yerde durur.');}
 assert(shell.includes("name==='veli-toplantisi'")&&shell.includes('VeliToplantisiModule.open'),'Kabukta rota tanımlı olmalı.');
-['veli-toplantisi-veri.js?v=2','veli-toplantisi.js?v=2'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&shell.includes(f),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
+['veli-toplantisi-veri.js?v=2','veli-toplantisi.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&shell.includes(f),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
 assert(/\["idari","Veli Toplantısı Evrakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat)&&/\["rehberlik","Veli Toplantı Tutanakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat),'Öğretmen Dosyası maddeleri modüle bağlı olmalı.');
 assert(!/localStorage\s*\.\s*setItem/.test(ui)&&!/<style|createElement\('style'\)/.test(ui),'Modül depolamaya yazmaz, stil gömmez.');
 assert(css.includes('.ka-report .vtp-paper')&&css.includes('#v2ModuleRoot .vtp-page'),'Stiller tasarım sistemi CSS dosyasında olmalı.');

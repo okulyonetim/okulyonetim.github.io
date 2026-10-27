@@ -9,25 +9,14 @@
 if(global.VeliToplantisiModule)return;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
-const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
-const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
+if(!global.SinifBaglam)throw new Error('Sınıf bağlamı yüklenmeden Veli Toplantısı açılamaz.');
+const {adBicimi,duzeyOf,egitimYili,okulAdi,okulMuduru,siniflar,sinifBul,ogrencilerOf,sinifOgretmeni}=global.SinifBaglam;
 const veri=()=>global.VeliToplantisiVeri||{yil:'',donem:'',duzeyler:{}};
 const NOKTA='…………………',AYRAC='\u00a0/\u00a0',TARIH_BOS=['……','……','20……'].join(AYRAC),SAAT_BOS='………';
-const egitimYili=(d=new Date())=>{const y=d.getFullYear();return d.getMonth()+1>=9?`${y}-${y+1}`:`${y-1}-${y}`};
 
 /* ── biçimler ── */
 const tarihMetni=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?[m[3],m[2],m[1]].join(AYRAC):TARIH_BOS};
 const saatMetni=s=>/^\d{1,2}:\d{2}$/.test(String(s||''))?String(s):SAAT_BOS;
-/* "ayşe kaya" → "Ayşe KAYA": adlar baş harfi büyük, soyad tamamen büyük. */
-function adBicimi(s){
- const w=String(s||'').trim().split(/\s+/).filter(Boolean);
- if(!w.length)return'';
- const son=w.pop().toLocaleUpperCase('tr');
- return[...w.map(x=>x.charAt(0).toLocaleUpperCase('tr')+x.slice(1).toLocaleLowerCase('tr')),son].join(' ');
-}
-const adSoyad=t=>t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):'';
-const duzeyOf=ad=>{const n=parseInt(String(ad||'').trim(),10);return n>=1&&n<=8?n:0};
 /* "5/A" → "5/A sınıfı", "5. Sınıf A" → olduğu gibi. */
 const sinifMetni=l=>/sınıf/i.test(l)?l:`${l} sınıfı`;
 const sinifBuyuk=l=>(/sınıf/i.test(l)?l:`${l} SINIFI`).toLocaleUpperCase('tr');
@@ -83,35 +72,9 @@ const BELGELER=[
 const belge=(k,c)=>BELGELER.find(b=>b.k===k)?.yap(c)||'';
 
 /* ── uygulama verisi: sınıflar, öğrenciler, kadro ── */
-let S=null,unsubs=[],hazirlandi=false;
+let S=null,unsubs=[];
 const blank=()=>({sinifId:'',duzey:'',sube:'',tarih:'',saat:'',ogretmen:'',mudur:'',yon:'dikey',veliAdlari:true,bosSatir:30});
 function ensure(){if(!S){S=blank();S.mudur=okulMuduru()}return S}
-function teacherId(){const u=user();return String(u.bagliOgretmenId||u.ogretmenId||'')}
-const okulKaydi=()=>{const l=rows('okulBilgileri');return l.find(x=>x.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
-function okulMuduru(){const o=okulKaydi();return adBicimi(adSoyad(rows('ogretmenler').find(t=>String(t.id)===String(o.mudurId||o.mudirId||'')))||String(o.mudurAdSoyad||o.mudurAdi||''))}
-/* Ortak okullarda sınıfın kademesine ait okul adı (1–4 ilkokul, 5–8 ortaokul); tanımlı değilse okul adı. */
-function okulAdi(duzey){
- const o=okulKaydi(),genel=String(o.okulAdi||o.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'').trim();
- const kademe=duzey>=5?'ortaokul':duzey>=1?'ilkokul':'';
- return String(kademe&&o[`${kademe}Adi`]||'').trim()||genel;
-}
-function siniflar(){
- const tid=teacherId();
- const hepsi=rows('siniflar').map(c=>({id:String(c.id),ad:String(c.ad||c.sinifAdi||'').trim(),ogretmenId:String(c.sinifOgretmeniId||c.ogretmenId||'')})).filter(c=>c.ad)
-  .sort((a,b)=>a.ad.localeCompare(b.ad,'tr',{numeric:true,sensitivity:'base'}));
- const own=hepsi.filter(c=>tid&&c.ogretmenId===tid);
- return{liste:isManager()||!own.length?hepsi:own,own:new Set(own.map(c=>c.id))};
-}
-const sinifBul=id=>siniflar().liste.find(c=>c.id===id)||null;
-function ogrencilerOf(id){
- return rows('veliler').filter(v=>String(v.sinifId)===String(id))
-  .sort((a,b)=>Number(a.ogrenciNo||a.no||0)-Number(b.ogrenciNo||b.no||0)||String(a.ogrenciAdi||'').localeCompare(String(b.ogrenciAdi||''),'tr'))
-  .map(v=>({ad:String(v.ogrenciAdi||v.adSoyad||[v.ad,v.soyad].filter(Boolean).join(' ')||'').trim(),veli:String(v.veliAdi||'').trim(),yakinlik:String(v.yakinlik||'').trim()})).filter(o=>o.ad);
-}
-function sinifOgretmeni(c){
- const t=rows('ogretmenler').find(x=>String(x.id)===String(c?.ogretmenId||'')),me=rows('ogretmenler').find(x=>String(x.id)===teacherId());
- return adBicimi(adSoyad(t)||(isManager()?'':adSoyad(me)||String(user().adSoyad||user().ad||'')));
-}
 const duzeyi=()=>{const s=ensure(),c=sinifBul(s.sinifId);return c?duzeyOf(c.ad)||Number(s.duzey)||0:Number(s.duzey)||0};
 function ctx(){
  const s=ensure(),c=sinifBul(s.sinifId),duzey=duzeyi();
@@ -193,13 +156,6 @@ function yazdir(k){
  return true;
 }
 
-async function prepare(){
- const SE=global.SyncEngine,col=global.COL;if(!SE||!col||hazirlandi)return;
- hazirlandi=true;
- const tipler=[];
- for(const t of ['siniflar','veliler','ogretmenler','okulBilgileri'])if(col[t]){SE.register(t,col[t]);tipler.push(t)}
- await SE.localHydrate(tipler);SE.schedule?.(100);
-}
 function temizle(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
 function open(){
  S=blank();S.mudur=okulMuduru();temizle();
@@ -207,14 +163,14 @@ function open(){
  if(own.size===1)S.sinifId=[...own][0];
  S.ogretmen=sinifOgretmeni(sinifBul(S.sinifId));
  const ok=render();
- ['data.siniflar','data.veliler','data.ogretmenler','data.okulBilgileri'].forEach(p=>{
+ global.SinifBaglam.ABONELIK.forEach(p=>{
   const u=global.AppStore?.subscribe?.(p,()=>{const kok=document.querySelector('[data-vtp-page]');if(!kok)return temizle();
    const s=ensure();if(!s.mudur)s.mudur=okulMuduru();if(!s.ogretmen)s.ogretmen=sinifOgretmeni(sinifBul(s.sinifId));render()});
   if(u)unsubs.push(u);
  });
- prepare().catch(e=>console.warn('[Veli Toplantısı]',e?.message||e));
+ global.SinifBaglam.hazirla().catch(e=>console.warn('[Veli Toplantısı]',e?.message||e));
  return ok;
 }
 
-global.VeliToplantisiModule={open,render,degistir,yazdir,belge,ctx,tutanakDurumu,reset:()=>{S=null;hazirlandi=false;temizle()}};
+global.VeliToplantisiModule={open,render,degistir,yazdir,belge,ctx,tutanakDurumu,reset:()=>{S=null;global.SinifBaglam.sifirla();temizle()}};
 })(window);

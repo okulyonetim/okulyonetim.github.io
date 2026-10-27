@@ -15022,3 +15022,135 @@ html[data-theme] #v2ModuleRoot .vtp-onay{display:flex;align-items:center;gap:var
   html[data-theme] #v2ModuleRoot .vtp-belge{grid-template-columns:minmax(0,1fr)}
   html[data-theme] #v2ModuleRoot .vtp-belge .ka-btn{width:100%}
 }
+
+/* ===== A4 — Sınıf Rehberlik (.rhb-*) =====
+   js/modules/rehberlik-belge.js çıktılarının kâğıt stili (yıllık plan, aylık / dönem sonu / yıl sonu raporu, kazanım tablosu);
+   kaynak xlsx / docx dosyalarının düzenini izler. Renk --ka-report-* belirteçlerinden gelir. */
+.ka-report .rhb-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.3}
+.ka-report .rhb-baslik{display:flex;flex-direction:column;align-items:center;gap:1mm;margin:0 0 4mm;text-align:center;font-size:11.5pt}
+.ka-report .rhb-ust{margin:0 0 4mm;text-align:center;font-family:inherit;font-size:12pt;font-weight:700;letter-spacing:0}
+.ka-report .rhb-alt{margin:3mm 0 2mm;text-align:center;font-family:inherit;font-size:11pt;font-weight:700;letter-spacing:0;break-after:avoid;page-break-after:avoid}
+.ka-report .rhb-etiket{margin:3mm 0 1.5mm;font-size:10.5pt;break-after:avoid;page-break-after:avoid}
+.ka-report .rhb-etiket small,.ka-report .rhb-tablo small{font-size:8.5pt;font-weight:400}
+.ka-report .rhb-not{margin:2mm 0 0;font-size:9pt}
+.ka-report .rhb-tarih-satiri{margin:6mm 0 0;text-align:center}
+.ka-report .rhb-tablo{width:100%;margin:0 0 3mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .rhb-tablo th,.ka-report .rhb-tablo td{padding:1mm 1.5mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:9.5pt!important;font-weight:400!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
+.ka-report .rhb-tablo th{background:var(--ka-report-soft-header-bg)!important;font-weight:700!important;text-align:center!important}
+.ka-report .rhb-tablo .rhb-sira,.ka-report .rhb-tablo .rhb-orta,.ka-report .rhb-tablo .rhb-tarih{text-align:center!important}
+.ka-report .rhb-tablo .rhb-sira{font-weight:700!important}
+.ka-report .rhb-tablo tbody tr:nth-child(n) td{background:var(--ka-report-bg)!important}
+.ka-report .rhb-tablo tbody tr:nth-child(n) th{background:var(--ka-report-soft-header-bg)!important}
+.ka-report .rhb-tablo th{padding-left:.5mm!important;padding-right:.5mm!important;font-size:8.5pt!important}
+.ka-report .rhb-c-sira{width:11mm}
+.ka-report .rhb-c-tarih{width:24mm}
+.ka-report .rhb-c-sayi{width:19mm}
+.ka-report .rhb-c-no{width:24mm}
+.ka-report .rhb-c-etiket{width:32mm}
+.ka-report .rhb-c-veli{width:46mm}
+.ka-report .rhb-c-ogr{width:40mm}
+.ka-report .rhb-c-ad{width:52mm}
+.ka-report .rhb-c-hafta{width:17mm}
+.ka-report .rhb-c-alan{width:28mm}
+.ka-report .rhb-c-yet{width:36mm}
+.ka-report .rhb-c-ac{width:62mm}
+.ka-report .rhb-liste{margin:0;padding-left:5mm}
+.ka-report .rhb-imzalar{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:flex-start;gap:8mm 18mm;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .rhb-imza{display:flex;flex-direction:column;align-items:flex-start;gap:1mm;min-width:42mm;text-align:left}
+/* yıllık plan */
+.ka-report .rhb-bant{margin:0 0 3mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .rhb-bant--1{width:33.333%!important}
+.ka-report .rhb-bant th.rhb-ay{font-size:10pt!important}
+.ka-report .rhb-bant td{font-size:9pt!important}
+.ka-report .rhb-bant td.rhb-hafta{text-align:center!important;white-space:nowrap}
+.ka-report .rhb-bant td.rhb-tatil{font-weight:700!important;text-align:center!important}
+/* aylık rapor: tablolar kenar kenara birleşir */
+.ka-report .rhb-aylik .rhb-tablo{margin:0 0 -.25mm}
+.ka-report .rhb-aylik .rhb-baslik-hucre{padding:2mm!important;text-align:center!important;font-weight:700!important;font-size:10.5pt!important;line-height:1.35}
+.ka-report .rhb-aylik .rhb-ustbilgi th,.ka-report .rhb-aylik .rhb-mevcut th{font-size:8.5pt!important}
+.ka-report .rhb-aylik .rhb-mevcut{table-layout:auto}
+.ka-report .rhb-aylik .rhb-blok{break-inside:avoid;page-break-inside:avoid}
+.ka-report .rhb-aylik .rhb-blok th{width:30mm;font-size:8pt!important}
+.ka-report .rhb-aylik .rhb-blok td:last-child{height:7mm}
+.ka-report .rhb-aylik .rhb-diger th{font-size:8pt!important}
+.ka-report .rhb-aylik .rhb-test td,.ka-report .rhb-aylik .rhb-veli td,.ka-report .rhb-aylik .rhb-ogr td,.ka-report .rhb-aylik .rhb-diger td{height:6.5mm}
+/* dönem sonu */
+.ka-report .rhb-kimlik th{width:48mm;text-align:left!important}
+.ka-report .rhb-aylar th{width:30mm;vertical-align:top!important;text-align:left!important}
+.ka-report .rhb-aylar td{height:30mm;vertical-align:top!important}
+/* yıl sonu */
+.ka-report .rhb-kazanim th{width:62%;text-align:left!important}
+.ka-report .rhb-kazanim td.rhb-secim{text-align:center!important;font-weight:700!important}
+.ka-report .rhb-kazanim td.rhb-soru{font-size:9pt!important}
+.ka-report .rhb-nedenler{margin-top:-3mm}
+.ka-report .rhb-nedenler td,.ka-report .rhb-faal td,.ka-report .rhb-yonlendirme td{height:7mm}
+.ka-report .rhb-metinler th{width:38%;text-align:left!important;vertical-align:top!important}
+.ka-report .rhb-metinler td{height:26mm;vertical-align:top!important}
+.ka-report .rhb-bolum{break-inside:avoid;page-break-inside:avoid}
+/* kazanım tablosu */
+.ka-report .rhb-kaztablo th,.ka-report .rhb-kaztablo td{font-size:8.5pt!important}
+.ka-report .rhb-kaztablo td.rhb-sira{white-space:nowrap}
+
+/* ===== SINIF REHBERLİK (rhb-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .rhb-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .rhb-ozet{display:flex;flex-direction:column;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .rhb-ozet__yazi{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--ka-sp-4) var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .rhb-ozet__yazi strong{font-size:var(--ka-fs-16);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-ozet__yazi span{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-bar{display:block;width:100%;height:var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--ka-muted-bg);overflow:hidden}
+html[data-theme] #v2ModuleRoot .rhb-bar i{display:block;height:100%;border-radius:inherit;background:var(--ka-success);transition:width var(--ka-dur-200) ease}
+html[data-theme] #v2ModuleRoot .rhb-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+html[data-theme] #v2ModuleRoot .rhb-tabs::-webkit-scrollbar{display:none}
+html[data-theme] #v2ModuleRoot .rhb-tabs button{flex:0 0 auto;white-space:nowrap}
+html[data-theme] #v2ModuleRoot .rhb-aksiyon{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--ka-sp-8) var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .rhb-cikti{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .rhb-ay{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg);overflow:hidden}
+html[data-theme] #v2ModuleRoot .rhb-ay>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-12);padding:var(--ka-sp-12) var(--ka-sp-14);cursor:pointer;list-style:none;font-size:var(--ka-fs-15)}
+html[data-theme] #v2ModuleRoot .rhb-ay>summary::-webkit-details-marker{display:none}
+html[data-theme] #v2ModuleRoot .rhb-ay>summary::after{content:"›";margin-left:var(--ka-sp-8);color:var(--ka-text-muted);font-size:var(--ka-fs-18);transition:transform var(--ka-dur-200) ease}
+html[data-theme] #v2ModuleRoot .rhb-ay[open]>summary::after{transform:rotate(90deg)}
+html[data-theme] #v2ModuleRoot .rhb-sayi{margin-left:auto;padding:var(--ka-sp-2) var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:var(--ka-primary-soft);color:var(--ka-text);font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-liste{margin:0;padding:0;list-style:none;border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .rhb-madde{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--ka-sp-8) var(--ka-sp-12);align-items:start;padding:var(--ka-sp-10) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--ka-border);border-left:var(--ka-sp-4) solid transparent}
+html[data-theme] #v2ModuleRoot .rhb-madde:first-child{border-top:0}
+html[data-theme] #v2ModuleRoot .rhb-madde[data-state="h"]{border-left-color:var(--ka-success)}
+html[data-theme] #v2ModuleRoot .rhb-madde[data-state="g"]{border-left-color:var(--ka-warning)}
+html[data-theme] #v2ModuleRoot .rhb-madde--tatil{opacity:.62}
+html[data-theme] #v2ModuleRoot .rhb-check{display:flex;align-items:center;justify-content:center;min-width:var(--ka-ic-24);min-height:var(--ka-ic-24);cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-check input{width:var(--ka-ic-20);height:var(--ka-ic-20);margin:0;accent-color:var(--ka-success);cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-govde{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0;padding:0;border:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-metin{font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);line-height:var(--ka-lh-1-35);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .rhb-madde[data-state="h"] .rhb-metin{color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-no{margin-right:var(--ka-sp-6);color:var(--ka-text-muted);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-govde small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-detay{grid-column:1 / -1;display:flex;flex-direction:column;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border-radius:var(--ka-card-radius);background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .rhb-detay__alt{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .rhb-ekle{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--ka-sp-10);padding:var(--ka-sp-12) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .rhb-ekle .ka-field{flex:1 1 var(--ka-sp-120);min-width:0}
+html[data-theme] #v2ModuleRoot .rhb-geri{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .rhb-onay{display:flex;align-items:center;gap:var(--ka-sp-8);min-height:var(--ka-control-height)}
+html[data-theme] #v2ModuleRoot .rhb-ed{display:flex;flex-direction:column;gap:var(--ka-sp-10);margin:0;padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius)}
+html[data-theme] #v2ModuleRoot .rhb-ed legend{padding:0 var(--ka-sp-6);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-ed__satir{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .rhb-ed__satir .ka-field{flex:1 1 var(--ka-sp-120);min-width:0}
+html[data-theme] #v2ModuleRoot .rhb-metin-ed{resize:vertical;min-height:calc(var(--ka-control-height) * 2)}
+html[data-theme] #v2ModuleRoot .rhb-donem{display:flex;flex-direction:column;gap:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .rhb-donem ul{margin:0;padding-left:var(--ka-sp-20);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .rhb-neden{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .rhb-neden>summary{cursor:pointer;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .rhb-kazanimlar{margin:0;padding:0;list-style:none;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg);overflow:hidden}
+html[data-theme] #v2ModuleRoot .rhb-kaz{display:grid;grid-template-columns:var(--ka-sp-48) minmax(0,1fr);gap:var(--ka-sp-8) var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .rhb-kaz:first-child{border-top:0}
+html[data-theme] #v2ModuleRoot .rhb-kaz__no{color:var(--ka-text-muted);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-kaz__govde{display:flex;flex-direction:column;gap:var(--ka-sp-4);min-width:0}
+html[data-theme] #v2ModuleRoot .rhb-kaz__govde strong{font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);line-height:var(--ka-lh-1-35)}
+html[data-theme] #v2ModuleRoot .rhb-kaz__govde small{font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-kaz__ac{align-self:flex-start;padding:0;border:0;background:none;color:var(--ka-primary);font:inherit;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700);cursor:pointer}
+html[data-theme] #v2ModuleRoot .rhb-kaz__aciklama{margin:0;font-size:var(--ka-fs-13);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-bos{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-6);padding:var(--ka-sp-24) var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-card-radius);text-align:center}
+html[data-theme] #v2ModuleRoot .rhb-bos strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .rhb-bos p{margin:0;font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+@media(max-width:767px){
+  html[data-theme] #v2ModuleRoot .rhb-cikti .ka-btn{flex:1 1 auto}
+  html[data-theme] #v2ModuleRoot .rhb-madde{padding:var(--ka-sp-10) var(--ka-sp-12)}
+}

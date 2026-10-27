@@ -14,6 +14,8 @@ const NOKTA='……………………………';
 
 const upper=s=>String(s??'').replace(/\s+/g,' ').trim().toLocaleUpperCase('tr');
 const xmlKac=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* Yalnız <w:t> içine yazılan değer: satır sonu → Word satır sonu (işaretin geçtiği <w:t> xml:space="preserve" olmalıdır). */
+const xmlMetin=s=>xmlKac(s).replace(/\r?\n/g,'</w:t><w:br/><w:t xml:space="preserve">');
 /* "ahmet YILMAZ" → "Ahmet YILMAZ": adlar baş harfi büyük, soyad tamamen büyük (imza biçimi). */
 function imzaAd(s){
  const w=String(s||'').trim().split(/\s+/).filter(Boolean);
@@ -72,25 +74,30 @@ function dersSaatSatirlari(cfg){
  return satirlar;
 }
 
-/* Tekrarlanan tablo satırları: şablonda {{SAAT_AD}} … içeren satır ders için, {{ARA_AD}} … içeren satır teneffüs için örnektir.
- * Örnek satırlar listedeki sırayla çoğaltılır (ilk örneğin yerine), diğer örnek satırlar silinir. */
+/* Tekrarlanan tablo satırları: şablonda {{TUR_ALAN}} (örn. {{SAAT_AD}}, {{ARA_AD}}) içeren satır o türün örnek satırıdır.
+ * gruplar: birlikte yazılan türler (her grup şablonda ayrı bir tabloya / bölüme karşılık gelir). Bir grubun örnek satırları listedeki
+ * sırayla çoğaltılır (ilk örneğin yerine), grubun diğer örnek satırları silinir. Birden çok satırlık blok için her satıra ayrı tür verilir
+ * ve liste blok blok dizilir (örn. ETK1, ETK2, ETK3, ETK1, ETK2, ETK3 …). */
+const SATIR_GRUPLARI=[['SAAT','ARA']];
 const XML_SATIR=/<w:tr[ >](?:(?!<w:tr[ >])[\s\S])*?<\/w:tr>/g;
-const SATIR_ALANI=/\{\{(SAAT|ARA)_[A-Z_]+\}\}/;
-const satirTuru=tr=>(SATIR_ALANI.exec(tr)||[])[1];
-function satirCogalt(xml,satirlar){
+function satirCogalt(xml,satirlar,gruplar=SATIR_GRUPLARI){
+ const alan=new RegExp(`\\{\\{(${gruplar.flat().join('|')})_[A-Z0-9_]+\\}\\}`);
+ const turu=tr=>(alan.exec(tr)||[])[1];
  const sablon={};
- for(const tr of String(xml).match(XML_SATIR)||[]){const t=satirTuru(tr);if(t&&!sablon[t])sablon[t]=tr}
- let yazildi=false;
+ for(const tr of String(xml).match(XML_SATIR)||[]){const t=turu(tr);if(t&&!sablon[t])sablon[t]=tr}
+ const yazildi=new Set();
  return String(xml).replace(XML_SATIR,tr=>{
-  if(!satirTuru(tr))return tr;
-  if(yazildi)return'';
-  yazildi=true;
-  return(satirlar||[]).map(s=>(sablon[s.tur]||'').replace(/\{\{[A-Z]+_([A-Z_]+)\}\}/g,(_,k)=>xmlKac(s[k]??''))).join('');
+  const t=turu(tr);
+  if(!t)return tr;
+  const g=gruplar.findIndex(x=>x.includes(t));
+  if(yazildi.has(g))return'';
+  yazildi.add(g);
+  return(satirlar||[]).filter(s=>gruplar[g].includes(s.tur)).map(s=>(sablon[s.tur]||'').replace(new RegExp(`\\{\\{${s.tur}_([A-Z0-9_]+)\\}\\}`,'g'),(_,k)=>xmlMetin(s[k]))).join('');
  });
 }
 
-/* {{ALAN}} → değer (XML'e uygun kaçışla). Bilinmeyen alan boş bırakılır; ekranda "{{…}}" görünmez. */
-const xmlDoldur=(xml,v,satirlar)=>satirCogalt(xml,satirlar).replace(/\{\{([A-Z_]+)\}\}/g,(_,k)=>xmlKac(v[k]??''));
+/* {{ALAN}} → değer (XML'e uygun kaçışla; değerdeki satır sonları Word satır sonu olur). Bilinmeyen alan boş bırakılır; ekranda "{{…}}" görünmez. */
+const xmlDoldur=(xml,v,satirlar,gruplar)=>satirCogalt(xml,satirlar,gruplar).replace(/\{\{([A-Z0-9_]+)\}\}/g,(_,k)=>xmlMetin(v[k]));
 const DOLDURULAN=/^word\/(document|header\d*|footer\d*)\.xml$/;
 
 function betikYukle(src,hazir){
@@ -100,12 +107,12 @@ function betikYukle(src,hazir){
  return global.AppLoader.loadScript(src).then(()=>{if(!hazir())throw hata()});
 }
 /* .docx şablon baytları + alanlar (+ tekrarlanan satırlar) → doldurulmuş .docx Blob. */
-async function docxDoldur(tampon,v,satirlar){
+async function docxDoldur(tampon,v,satirlar,gruplar){
  await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
  let paket;try{paket=await global.JSZip.loadAsync(tampon)}catch(_){throw new Error('Şablon geçerli bir Word (.docx) belgesi değil.')}
  for(const ad of Object.keys(paket.files)){
   if(!DOLDURULAN.test(ad))continue;
-  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),v,satirlar));
+  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),v,satirlar,gruplar));
  }
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
 }

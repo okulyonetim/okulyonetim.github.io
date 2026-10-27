@@ -289,11 +289,30 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='sinif-rehberlik'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=1');
+      if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=1');
+      if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=1');
+      if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=1');
+      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=1');
+      if(!global.RehberlikModule?.open)throw new Error('Sınıf Rehberlik modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Sınıf Rehberlik');
+      if(!global.RehberlikModule.open())throw new Error('Sınıf Rehberlik açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Sınıf Rehberlik'});
+    }catch(e){
+      console.error('[Shell/sinif-rehberlik]',e);global.toast?.('Sınıf Rehberlik açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='veli-toplantisi'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=1');
       if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=2');
-      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=2');
+      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=3');
       if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Veli Toplantısı');
       if(!global.VeliToplantisiModule.open())throw new Error('Veli Toplantısı açılamadı.');
@@ -306,7 +325,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ogretmen-dosyasi'){
     try{
-      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=2');
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=3');
       if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Öğretmen Dosyası');
       if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');
