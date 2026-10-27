@@ -20,10 +20,11 @@ const swap=(list,i,d)=>{const j=i+d;if(j<0||j>=list.length)return false;[list[i]
 /* Alt menü yuvasının görünümü: yerleşik sayfa, menü ya da tek sayfa. */
 function describe(key,L){
   const r=role();
-  if(key==='home')return{label:r==='idareci'?'Özet':'Bugün',kind:'Sayfa',hint:'Günün özeti ve ana sayfa',icon:'home',tone:'blue'};
-  if(key==='program')return{label:'Programım',kind:'Sayfa',hint:'Ders, nöbet ve takvim',icon:'calendar',tone:'green'};
-  if(key==='tools')return{label:'Araçlar',kind:'Sayfa',hint:'Tüm menüleriniz ve arama',icon:'grid',tone:'amber'};
-  if(key==='me')return{label:'Ben',kind:'Sayfa',hint:'Profil, ayarlar ve menü düzeni',icon:'user',tone:'slate'};
+  const label=k=>nav().TAB_LABEL[k](r);
+  if(key==='home')return{label:label('home'),kind:'Sayfa',hint:'Günün özeti ve ana sayfa',icon:'home',tone:'blue'};
+  if(key==='program')return{label:label('program'),kind:'Sayfa',hint:'Ders, nöbet ve takvim',icon:'calendar',tone:'green'};
+  if(key==='tools')return{label:label('tools'),kind:'Sayfa',hint:'Tüm menüleriniz, arama ve sık kullandıklarınız',icon:'grid',tone:'amber'};
+  if(key==='me')return{label:label('me'),kind:'Sayfa',hint:'Profil, ayarlar ve menü düzeni',icon:'user',tone:'slate'};
   if(key.startsWith('menu:')){
     const m=L.menus.find(x=>x.id===key.slice(5));
     return m?{label:m.ad,kind:`Menü · ${m.ids.length} sayfa`,hint:nav().menu(m.id)?'':'Boş menü alt menüde görünmez',icon:m.icon,tone:m.tone}:{label:'Silinmiş menü',kind:'Menü',icon:'grid',tone:'slate'};
@@ -47,7 +48,7 @@ function homeHtml(){
   return H.pageRoot('menu-edit',H.head('Menüyü düzenle','Alt menüyü ve menülerinizi kendiniz belirleyin')
     +`<div class="ka-nav-section"><h3>Alt menü<span>5 yuva</span></h3><p class="ka-nav-hint">Ekranın altındaki beş düğmeyi seçin. Her yuvaya bir menü ya da tek bir sayfa koyabilirsiniz. “Ben” alt menüde kalmalıdır; menü düzenine oradan ulaşırsınız.</p>${H.rowCard(slots)}</div>`
     +`<div class="ka-nav-section"><h3>Menülerim<span>${L.menus.length}</span></h3>${H.rowCard(menus||H.emptyState('Henüz menü yok.'))}<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="menu-new">${H.ic('plus',18)}<span>Yeni menü oluştur</span></button></div>`
-    +(orphan?`<p class="ka-nav-hint">${orphan} sayfa hiçbir menüde yok. Bunlara Araçlar › Tüm sayfalar listesinden ya da arama ile ulaşırsınız.</p>`:'')
+    +(orphan?`<div class="ka-nav-section"><p class="ka-nav-hint">${orphan} sayfa hiçbir menüde yok. Bunlara Menü › Tüm sayfalar listesinden ya da arama ile ulaşırsınız.</p><button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="orphans">${H.ic('plus',18)}<span>Hepsini uygun menüye ekle</span></button></div>`:'')
     +(L.custom?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="reset">${H.ic('swap',18)}<span>Varsayılan düzene dön</span></button>`:`<p class="ka-nav-hint">Şu an varsayılan düzeni kullanıyorsunuz.</p>`));
 }
 
@@ -137,6 +138,10 @@ function onClick(e){
     if(m&&global.confirm?.(`“${m.ad}” menüsü silinsin mi? İçindeki sayfalar silinmez, yalnız bu menüden kalkar.`)){
       if(mutate(L=>{L.menus=L.menus.filter(x=>x.id!==id)}))ui()?.back?.();
     }
+  }
+  else if(act==='orphans'){
+    const n=nav().placeOrphans(role());
+    toast(n?'Menüde olmayan sayfalar kendi menülerine eklendi.':'Eklenecek sayfa yok.');
   }
   else if(act==='reset'){
     if(global.confirm?.('Alt menü, menüler ve sık kullandıklarınız varsayılan düzene dönsün mü?'))nav().resetLayout(role());

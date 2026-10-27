@@ -1,5 +1,5 @@
 /* Koruk Asistan — NavPages
- * Alt sekmelerin sayfaları (Araçlar/Yönetim, araç grubu, Okul, İletişim, Programım, Ben) burada çizilir.
+ * Alt sekmelerin sayfaları (Menü, menü sayfası, Programım, Ben) burada çizilir.
  * Katalog, rol ve favoriler AppNav'dadır; sayfa açma, geri yığını ve alt çubuk ShellUI'dadır.
  * Bu dosya yalnız #v2ModuleRoot içine HTML yazar ve tıklamaları ShellUI.routeModule / ShellUI.openPage'e yönlendirir.
  */
@@ -91,7 +91,7 @@ function linkRow(tool,{sub,right=''}={}){
 function pageRoot(id,inner,extra=''){return `<section class="ka-nav-page" data-nav-page="${esc(id)}"${extra}>${inner}</section>`}
 const emptyState=text=>`<div class="ka-empty">${esc(text)}</div>`;
 
-/* ── Araçlar: arama, sık kullanılanlar, son açılanlar, menüler ── */
+/* ── Menü: arama, sık kullanılanlar, son açılanlar, menüler ── */
 function searchResults(q){
   const rows=nav().search(q);
   if(!rows.length)return emptyState('Eşleşen sayfa yok. Başka bir sözcük deneyin ya da Tüm sayfalar listesine bakın.');
@@ -103,7 +103,7 @@ function switchCard(variant='full'){
   if(!nav().canSwitch())return '';
   const next=nav().otherRole(),toTeacher=next==='ogretmen';
   const title=toTeacher?'Öğretmen menüsüne geç':'Yönetim menüsüne geç';
-  const sub=toTeacher?(variant==='compact'?'Derse giriyorsanız: not, plan, rehberlik ve formlar':'Ders veren yöneticiler için'):'Okul yönetimi araçları ve özet';
+  const sub=toTeacher?(variant==='compact'?'Derse giriyorsanız: not, plan, rehberlik ve formlar':'Ders veren yöneticiler için'):'Okul yönetimi sayfaları ve özet';
   return `<button type="button" class="ka-nav-switch${variant==='compact'?' is-compact':''}" data-nav-role="${next}" data-tone="${toTeacher?'teal':'indigo'}"><span class="ka-nav-switch__ico">${ic('swap',22)}</span><span class="ka-nav-switch__copy"><strong>${title}</strong><small>${sub}</small></span>${chevron()}</button>`;
 }
 function renderTools(){
@@ -122,7 +122,7 @@ function renderMenu(id){
   if(!m)return null;
   return pageRoot(`menu:${m.id}`,head(m.ad,`${m.tools.length} sayfa`,editButton(`menu-edit:${m.id}`))
     +rowCard(m.tools.map((t,i)=>toolRow(t,{star:true,first:i===0,right:t.id==='school-info'?setupPill():''})).join(''))
-    +`<p class="ka-nav-hint">Yıldızladığınız sayfalar Araçlar sayfasındaki Sık kullandıklarım bölümünde görünür. Bu menünün sayfalarını Düzenle ile siz belirlersiniz.</p>`);
+    +`<p class="ka-nav-hint">Yıldızladığınız sayfalar Menü sayfasındaki Sık kullandıklarım bölümünde görünür. Bu menünün sayfalarını Düzenle ile siz belirlersiniz.</p>`);
 }
 function renderAll(){
   const list=nav().allTools();
@@ -203,7 +203,7 @@ function renderProgram(){
   }
   const events=weekEvents(dates,tid);
   const cal=`<article class="ka-nav-cal"><div class="ka-nav-cal__head"><h3>Takvim · bu hafta</h3></div><p class="ka-nav-hint">Tatil günleri okulun tatil takviminden gelir.</p>${events.length?events.map(e=>{const d=new Date(`${e.iso}T12:00:00`);return `<div class="ka-nav-ev" data-tone="${e.tone}"><span class="ka-nav-ev__date"><small>${MONTH_SHORT[d.getMonth()]}</small><b>${d.getDate()}</b></span><span class="ka-nav-ev__copy"><strong>${esc(e.title)}</strong><small>${esc(e.sub)}</small></span></div>`}).join(''):emptyState('Bu hafta kayıtlı etkinlik yok.')}</article>`;
-  const menu=nav().menu('programim');
+  const menu=nav().menu('program');
   const more=menu?menu.tools:[];
   const print=tid?`<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-nav-print-schedule>${ic('doc',16)}<span>Yazdır</span></button>`:'';
   return pageRoot('program',head(own?'Programım':'Ders programım','Ders, nöbet ve takvim tek yerde',print)+`<div class="ka-nav-days" role="group" aria-label="Hafta günleri">${chips}</div>${body}${cal}${more.length?rowCard(more.map(t=>linkRow(t)).join('')):''}`);

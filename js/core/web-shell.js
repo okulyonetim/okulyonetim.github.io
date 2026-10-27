@@ -1,6 +1,6 @@
 /* Koruk Asistan — WEB KABUĞU (≥1100px)
    Geniş ekranda (tarayıcı, tablet yatay) alt gezinme çubuğu yerine sol menü + üst çubuk gösterir.
-   Sol menü AppNav.webMenu()'den (rolün sekmeleri; Araçlar/Yönetim altında araç grupları) kurulur, sayfalar ShellUI.openTab / openPage /
+   Sol menü AppNav.webMenu()'den (rolün sekmeleri; Menü altında menüler) kurulur, sayfalar ShellUI.openTab / openPage /
    routeModule ile açılır ve rota olayı (koruk:shell-route) dinlenir. Telefon / APK görünümü aynı yönlendirmeyi kullanır.
    Tüm görünüm css/design-system-base.css içindeki "WEB ARAYÜZÜ" bölümündeki --ka-web-* belirteçlerinden gelir; ≥1100px dışında bu öğeler CSS ile gizlidir. */
 (function(global){
@@ -33,7 +33,7 @@ function build(){
     const crumb=doc.createElement('div');crumb.className='ka-web-crumb';
     crumb.innerHTML=`<button class="ka-web-crumb__back" type="button" data-ka-shell-back aria-label="Önceki sayfaya dön" title="Geri" hidden>${SVG.back}</button><span class="ka-web-crumb__group" data-ka-web-crumb-group hidden></span><i class="ka-web-crumb__sep" aria-hidden="true" hidden>${SVG.chevron}</i><strong class="ka-web-crumb__title" data-ka-web-crumb-title>Ana Sayfa</strong>`;
     const search=doc.createElement('label');search.className='ka-web-search';
-    search.innerHTML=`${SVG.search}<input type="search" class="ka-field-bare" data-ka-web-search placeholder="Araç, öğretmen, öğrenci veya sayfa ara…" autocomplete="off" aria-label="Ara"><kbd aria-hidden="true">Ctrl K</kbd>`;
+    search.innerHTML=`${SVG.search}<input type="search" class="ka-field-bare" data-ka-web-search placeholder="Sayfa, öğretmen, öğrenci veya personel ara…" autocomplete="off" aria-label="Ara"><kbd aria-hidden="true">Ctrl K</kbd>`;
     const wx=doc.createElement('button');wx.type='button';wx.className='ka-web-wx';wx.hidden=true;wx.setAttribute('data-ka-web-wx','');wx.setAttribute('aria-label','Hava durumu');
     wx.innerHTML='<span class="ka-web-wx__icon" data-ka-web-wx-icon></span><b data-ka-web-wx-temp></b><span class="ka-web-wx__text" data-ka-web-wx-text></span>';
     const note=doc.createElement('button');note.type='button';note.className='ka-primary ka-web-note';note.setAttribute('data-ka-web-note','');
@@ -43,7 +43,7 @@ function build(){
   bind(side);
 }
 
-/* ── yan menü içeriği: rolün sekmeleri; Araçlar/Yönetim sekmesi araç gruplarını açar ── */
+/* ── yan menü içeriği: rolün sekmeleri; Menü sekmesi menüleri açar ── */
 function readModel(){try{return nav()?.webMenu?.()||[]}catch(e){console.warn('[WebShell/menu]',e);return[]}}
 function tabHtml(t){
   const kids=t.children||[],open=kids.length&&t.key===openKey;

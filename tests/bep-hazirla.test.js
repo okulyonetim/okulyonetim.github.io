@@ -129,7 +129,8 @@ const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 assert(/name==='bep-hazirla'/.test(shell)&&/js\/modules\/bep\.js/.test(shell),'Kabukta bep-hazirla yolu bulunmalı.');
 assert(!/BepModule/.test(shell.replace(/name==='bep-hazirla'[\s\S]*?return true;\s*}/,'')),'form-bep (plan teslim takibi) artık BEP modülüne yönlendirilmemeli.');
 const nav=fs.readFileSync('js/core/app-nav.js','utf8');
-assert(/\['bep-hazirla','BEP Hazırla'/.test(nav)&&/\['form-bep','Yıllık ve BEP Plan Takibi'/.test(nav),'Menüde BEP Hazırla ve plan takibi ayrı sayfalar olmalı.');
+{ const cat=Object.fromEntries(require('./helpers/app-nav').loadNav().N.catalog().map(t=>[t.id,t]));
+  assert(cat['bep-hazirla']?.label==='BEP Dosyası Hazırla'&&cat['form-bep']?.label==='Plan Teslim Takibi','Menüde BEP dosyası ve plan teslim takibi ayrı sayfalar olmalı.'); }
 const sw=fs.readFileSync('service-worker.js','utf8');
 ['bep.js','bep-core.js','bep-print.js'].forEach(f=>assert(sw.includes('./js/modules/'+f),`${f} çevrimdışı önbellekte olmalı.`));
 

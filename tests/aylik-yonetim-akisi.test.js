@@ -17,7 +17,8 @@ test('modül KaPrefs kullanır, doğrudan localStorage içermez', () => {
 });
 test('menü, rota ve önbellek bağlantıları var', () => {
   assert.match(fs.readFileSync('js/core/shell-ui.js', 'utf8'), /name==='monthflow'/);
-  assert.match(fs.readFileSync('js/core/app-nav.js', 'utf8'), /\['monthflow','Aylık Yönetim Akışı'[^\]]*'monthflow'\]/);
+  const t = require('./helpers/app-nav').loadNav().N.catalog().find(x => x.id === 'monthflow');
+  assert.ok(t && t.label === 'Aylık Yönetim Akışı' && t.route === 'monthflow' && t.kat === 'plan' && t.y);
   assert.match(fs.readFileSync('service-worker.js', 'utf8'), /monthly-flow\.js/);
 });
 test('CSS yalnız token kullanır (hex yok)', () => {

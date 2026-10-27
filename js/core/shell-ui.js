@@ -1,6 +1,6 @@
 /* Koruk Asistan — V2 Shell UI
  * Kabuk: alt sekmeler, geri yığını, rota yöneticisi (routeModule), profil, arama, bildirimler, hızlı not, tema.
- * Menü yapısı AppNav'da (rol, sekmeler, araç kataloğu), sekme sayfaları NavPages'dadır; burada yalnız açma ve geri dönme vardır.
+ * Menü yapısı AppNav'da (rol, sekmeler, sayfa kataloğu), sekme sayfaları NavPages'dadır; burada yalnız açma ve geri dönme vardır.
  */
 (function(global){
 'use strict';
@@ -188,7 +188,7 @@ function applySubpage(name,page,title){
   }
   if(name==='tools'&&['checklists','map','attendance'].includes(page)){
     const ok=global.ToolsModule?.openPage?.(page,title);
-    if(ok===false)global.toast?.('Araç sayfası açılamadı.');
+    if(ok===false)global.toast?.('Sayfa açılamadı.');
     if(title)setTitle(title);return true;
   }
   if(name==='academic'){
@@ -281,8 +281,8 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.BepModule?.open)await global.AppLoader?.loadScript?.('js/modules/bep.js');
       if(!global.BepModule?.open)throw new Error('BEP modülü yüklenemedi.');
-      setBottomActive(bottom);setTitle('BEP Hazırla');
-      global.BepModule.open();if(remember)rememberView({kind:'route',name,bottom,page,title:'BEP Hazırla'});
+      setBottomActive(bottom);setTitle('BEP Dosyası Hazırla');
+      global.BepModule.open();if(remember)rememberView({kind:'route',name,bottom,page,title:'BEP Dosyası Hazırla'});
     }catch(e){
       console.error('[Shell/bep]',e);global.toast?.('BEP modülü açılamadı.');
       await routeModule('management',{bottom,remember});
@@ -306,10 +306,10 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       if(!global.IdareciPano?.open)await global.AppLoader?.loadScript?.('js/modules/idareci-pano.js');
       if(!global.IdareciPano?.open)throw new Error('İdareci Pano modülü yüklenemedi.');
-      setBottomActive(bottom);setTitle('İdareci Pano');
+      setBottomActive(bottom);setTitle('Pano');
       const opened=await global.IdareciPano.open();
       if(opened===false){await routeModule('management',{bottom,remember});return true}
-      if(remember)rememberView({kind:'route',name,bottom,page,title:'İdareci Pano'});
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Pano'});
     }catch(e){
       console.error('[Shell/idareci-pano]',e);global.toast?.('İdareci Pano açılamadı.');
       await routeModule('management',{bottom,remember});
@@ -430,7 +430,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
 const WEB_MEDIA='(min-width:1100px)';
 function webMode(){try{return global.matchMedia?.(WEB_MEDIA).matches===true}catch(_){return false}}
 function currentView(){return navStack[navStack.length-1]||null}
-/* ── alt sekmeler: sekme kümesini rol (AppNav) belirler; ortadaki sekme yükseltilmiş Araçlar / Yönetim düğmesidir ── */
+/* ── alt sekmeler: sekme kümesini rol (AppNav) belirler; ortadaki sekme yükseltilmiş Menü düğmesidir ── */
 let lastRole='';
 function renderBottomNav(){
   const bar=$('[data-ka-bottom-nav]');if(!bar||!nav())return;
@@ -450,7 +450,7 @@ function leaveToolSurfaces(keep={}){
   if(!keep.form)cleanupFormPage();
   return true
 }
-/* Sekme sayfası (Araçlar, araç grubu, Okul, İletişim, Programım, Ben): NavPages çizer, geri yığınına "nav" görünümü olarak girer. */
+/* Sekme sayfası (Menü, menü sayfası, Programım, Ben): NavPages çizer, geri yığınına "nav" görünümü olarak girer. */
 function openPage(id,{remember=true,fresh=false}={}){
   closeHeaderPopover();
   const v=navView(id);
@@ -569,13 +569,13 @@ function openNotifications(){
   $$('[data-notice-index]',p).forEach(b=>b.addEventListener('click',()=>{const r=rows[Number(b.dataset.noticeIndex)];if(!r)return;closeHeaderPopover();routeModule(r.module,{page:r.page||'',title:r.routeTitle||r.type})}))
 }
 function norm(v){return String(v||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-const SEARCH_CATEGORIES=[['all','Tümü'],['tool','🧰 Araç'],['teacher','👩‍🏫 Öğretmen'],['student','👨‍🎓 Öğrenci'],['staff','🧑‍💼 Personel'],['service','🚌 Servis'],['note','📝 Not']];
+const SEARCH_CATEGORIES=[['all','Tümü'],['tool','🧰 Sayfa'],['teacher','👩‍🏫 Öğretmen'],['student','👨‍🎓 Öğrenci'],['staff','🧑‍💼 Personel'],['service','🚌 Servis'],['note','📝 Not']];
 function checkedSet(root,selector){return new Set($$(selector,root).filter(x=>x.checked).map(x=>x.value).filter(Boolean))}
 function searchFilterState(root){return{category:root.querySelector('[data-search-category][aria-pressed="true"]')?.dataset.searchCategory||'all',classes:checkedSet(root,'[data-search-class]'),services:checkedSet(root,'[data-search-service]'),clubs:checkedSet(root,'[data-search-club]'),gender:root.querySelector('[data-search-gender][aria-pressed="true"]')?.dataset.searchGender||''}}
 function searchActiveFilterCount(root){const f=searchFilterState(root);return f.classes.size+f.services.size+f.clubs.size+(f.gender?1:0)}
 function searchRows(q,f={category:'all',classes:new Set(),services:new Set(),clubs:new Set(),gender:''}){
   const n=norm(q),rows=[],category=f.category||'all',advanced=!!(f.classes?.size||f.services?.size||f.clubs?.size||f.gender),accept=(cat,hay)=>!advanced&&(category==='all'||category===cat)&&(!n||norm(hay).includes(n)),studentAccept=(x,hay)=>{if(category!=='all'&&category!=='student')return false;if(f.classes?.size&&!f.classes.has(x.sinifId||''))return false;if(f.services?.size&&!f.services.has(x.servisId||''))return false;if(f.clubs?.size&&!f.clubs.has(x.kulupId||''))return false;if(f.gender&&norm(x.cinsiyet)!==norm(f.gender))return false;return!n||norm(hay).includes(n)},push=(cat,type,icon,title,meta,route,page,hay)=>{if(accept(cat,hay)&&pageAllowed(route,page))rows.push({cat,type,icon,title,meta,route,page})};
-  if(!advanced&&n&&(category==='all'||category==='tool'))for(const t of nav().search(q))rows.push({cat:'tool',type:'Araç',icon:'🧰',title:t.label,meta:t.where||t.sub||'',route:t.route,page:t.page});
+  if(!advanced&&n&&(category==='all'||category==='tool'))for(const t of nav().search(q))rows.push({cat:'tool',type:'Sayfa',icon:'🧰',title:t.label,meta:t.where||t.sub||'',route:t.route,page:t.page});
   for(const x of arr('ogretmenler')){const title=x.adSoyad||[x.ad,x.soyad].filter(Boolean).join(' ')||'Öğretmen';push('teacher','Öğretmen','👩‍🏫',title,x.brans||x.unvan||'','people','teachers',`${title} ${x.brans||''} ${x.unvan||''} ${x.telefon||''} ${x.email||''}`)}
   const classes=arr('siniflar'),services=arr('servisler'),clubs=arr('sosyalKulupler');
   for(const x of arr('veliler')){const title=x.ogrenciAdi||x.adSoyad||x.ad||'Öğrenci',sinif=classes.find(s=>s.id===x.sinifId),servis=services.find(s=>s.id===x.servisId),kulup=clubs.find(k=>k.id===x.kulupId),meta=[sinif?.ad,x.cinsiyet,x.veliAdi,servis?.guzergah||servis?.servisAdi,kulup?.ad].filter(Boolean).join(' · '),hay=`${title} ${meta} ${x.telefon||x.telefon1||''} ${x.ogrenciNo||''}`;if(studentAccept(x,hay))rows.push({cat:'student',type:'Öğrenci',icon:'👨‍🎓',title,meta,route:'people',page:'students'})}
@@ -598,7 +598,7 @@ function renderSearchResults(root,q){
 function renderSearch({remember=true}={}){
   closeHeaderPopover();suspendModuleForShellSurface();setBottomActive('');if(remember)rememberView({kind:'search'});setTitle('Arama');const root=$('#v2ModuleRoot');if(!root)return;
   const classes=[...arr('siniflar')].sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{sensitivity:'base'})),services=[...arr('servisler')].sort((a,b)=>String(a.guzergah||a.servisAdi||'').localeCompare(String(b.guzergah||b.servisAdi||''),'tr',{sensitivity:'base'})),clubs=[...arr('sosyalKulupler')].sort((a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{sensitivity:'base'}));
-  root.innerHTML=`<section class="ka-search-page"><header class="ka-search-hero"><span class="ka-search-hero__icon" aria-hidden="true">${SVG.search}</span><div class="ka-search-hero__copy"><span>HIZLI ERİŞİM</span><h2>Arama</h2><p>Araç, öğretmen, öğrenci, personel, servis ve notlarda hızlı arama yapın.</p></div></header><div class="ka-search-toolbar"><label class="ka-search-box">${SVG.search}<input type="search" data-shell-search-input placeholder="Araç, isim, sınıf, telefon veya servis ara…" autocomplete="off" aria-label="Kayıtlarda ara"><button type="button" class="ka-search-clear" data-search-clear aria-label="Aramayı temizle" hidden>${SVG.close}</button></label><div class="ka-search-categories" data-search-categories role="group" aria-label="Arama kategorileri">${SEARCH_CATEGORIES.map(([k,l],i)=>`<button type="button" class="ka-search-category ${i===0?'active':''}" data-search-category="${k}" aria-pressed="${i===0?'true':'false'}">${l}</button>`).join('')}</div></div><details class="ka-search-filters"><summary><span class="ka-search-filters__icon" aria-hidden="true">⚙️</span><span class="ka-search-filters__copy"><strong>Gelişmiş Filtreler</strong><small>Öğrencileri sınıf, servis, kulüp ve cinsiyete göre süzün.</small></span><span class="ka-search-filters__status"><b data-search-filter-count>Filtre yok</b><i aria-hidden="true">${SVG.chevron}</i></span></summary><div class="ka-search-filters__body"><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>🚌 Servisler</strong><span>${services.length}</span></div><div class="ka-search-filter-options">${services.length?services.map(s=>`<label class="ka-search-filter-chip"><input type="checkbox" data-search-service value="${esc(s.id)}"><span>${esc(s.guzergah||s.servisAdi||s.plaka||'Servis')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Servis kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>🏫 Sınıflar</strong><span>${classes.length}</span></div><div class="ka-search-filter-options">${classes.length?classes.map(s=>`<label class="ka-search-filter-chip ka-search-filter-chip--short"><input type="checkbox" data-search-class value="${esc(s.id)}"><span>${esc(s.ad||'Sınıf')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Sınıf kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>♡ Sosyal Kulüpler</strong><span>${clubs.length}</span></div><div class="ka-search-filter-options">${clubs.length?clubs.map(k=>`<label class="ka-search-filter-chip"><input type="checkbox" data-search-club value="${esc(k.id)}"><span>${esc(k.ad||'Kulüp')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Sosyal kulüp kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>♀♂ Cinsiyet</strong></div><div class="ka-search-gender" role="group" aria-label="Cinsiyet filtresi"><button type="button" class="active" data-search-gender="" aria-pressed="true">Tümü</button><button type="button" data-search-gender="Kız" aria-pressed="false">Kız</button><button type="button" data-search-gender="Erkek" aria-pressed="false">Erkek</button></div></section><div class="ka-search-filter-actions"><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-reset>Filtreleri Temizle</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-print>🖨️ Yazdır</button></div></div></details><div class="ka-search-results-head"><div><strong>Arama Sonuçları</strong><small>Araçlar ile kişi, servis ve not kayıtları gösterilir.</small></div><span class="ka-search-count" data-search-count hidden></span></div><div class="ka-search-results" data-shell-search-results></div></section>`;
+  root.innerHTML=`<section class="ka-search-page"><header class="ka-search-hero"><span class="ka-search-hero__icon" aria-hidden="true">${SVG.search}</span><div class="ka-search-hero__copy"><span>HIZLI ERİŞİM</span><h2>Arama</h2><p>Sayfa, öğretmen, öğrenci, personel, servis ve notlarda hızlı arama yapın.</p></div></header><div class="ka-search-toolbar"><label class="ka-search-box">${SVG.search}<input type="search" data-shell-search-input placeholder="Sayfa, isim, sınıf, telefon veya servis ara…" autocomplete="off" aria-label="Kayıtlarda ara"><button type="button" class="ka-search-clear" data-search-clear aria-label="Aramayı temizle" hidden>${SVG.close}</button></label><div class="ka-search-categories" data-search-categories role="group" aria-label="Arama kategorileri">${SEARCH_CATEGORIES.map(([k,l],i)=>`<button type="button" class="ka-search-category ${i===0?'active':''}" data-search-category="${k}" aria-pressed="${i===0?'true':'false'}">${l}</button>`).join('')}</div></div><details class="ka-search-filters"><summary><span class="ka-search-filters__icon" aria-hidden="true">⚙️</span><span class="ka-search-filters__copy"><strong>Gelişmiş Filtreler</strong><small>Öğrencileri sınıf, servis, kulüp ve cinsiyete göre süzün.</small></span><span class="ka-search-filters__status"><b data-search-filter-count>Filtre yok</b><i aria-hidden="true">${SVG.chevron}</i></span></summary><div class="ka-search-filters__body"><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>🚌 Servisler</strong><span>${services.length}</span></div><div class="ka-search-filter-options">${services.length?services.map(s=>`<label class="ka-search-filter-chip"><input type="checkbox" data-search-service value="${esc(s.id)}"><span>${esc(s.guzergah||s.servisAdi||s.plaka||'Servis')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Servis kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>🏫 Sınıflar</strong><span>${classes.length}</span></div><div class="ka-search-filter-options">${classes.length?classes.map(s=>`<label class="ka-search-filter-chip ka-search-filter-chip--short"><input type="checkbox" data-search-class value="${esc(s.id)}"><span>${esc(s.ad||'Sınıf')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Sınıf kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>♡ Sosyal Kulüpler</strong><span>${clubs.length}</span></div><div class="ka-search-filter-options">${clubs.length?clubs.map(k=>`<label class="ka-search-filter-chip"><input type="checkbox" data-search-club value="${esc(k.id)}"><span>${esc(k.ad||'Kulüp')}</span></label>`).join(''):'<span class="ka-search-filter-empty">Sosyal kulüp kaydı yok.</span>'}</div></section><section class="ka-search-filter-group"><div class="ka-search-filter-group__head"><strong>♀♂ Cinsiyet</strong></div><div class="ka-search-gender" role="group" aria-label="Cinsiyet filtresi"><button type="button" class="active" data-search-gender="" aria-pressed="true">Tümü</button><button type="button" data-search-gender="Kız" aria-pressed="false">Kız</button><button type="button" data-search-gender="Erkek" aria-pressed="false">Erkek</button></div></section><div class="ka-search-filter-actions"><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-reset>Filtreleri Temizle</button><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-search-print>🖨️ Yazdır</button></div></div></details><div class="ka-search-results-head"><div><strong>Arama Sonuçları</strong><small>Sayfalar ile kişi, servis ve not kayıtları gösterilir.</small></div><span class="ka-search-count" data-search-count hidden></span></div><div class="ka-search-results" data-shell-search-results></div></section>`;
   const input=root.querySelector('[data-shell-search-input]'),clear=root.querySelector('[data-search-clear]'),refresh=()=>{const value=input?.value||'';if(clear)clear.hidden=!String(value).trim();renderSearchResults(root,value)};
   input?.addEventListener('input',refresh);clear?.addEventListener('click',()=>{if(input)input.value='';refresh();input?.focus()});
   $$('[data-search-category]',root).forEach(b=>b.addEventListener('click',()=>{setSearchCategory(root,b.dataset.searchCategory||'all');refresh()}));

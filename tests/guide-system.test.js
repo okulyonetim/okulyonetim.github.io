@@ -150,8 +150,9 @@ for(const page of['index.html','beta.html']){
 const shell=read('js/core/shell-ui.js');
 assert(/registerPageRoute\('guide'/.test(shell)&&/registerPageRoute\('about'/.test(shell),'guide/about sayfa rotaları kayıtlı olmalı');
 assert(/data-ka-guide-help/.test(shell)&&/openGuideHelp/.test(shell),'Kabuk "?" düğmesini işlemeli');
-assert(/\['guide','Kullanım kılavuzu','book','green','[^']*','dashboard','guide'\]/.test(read('js/core/app-nav.js')),'Araç kataloğunda (app-nav.js) Kullanım kılavuzu öğesi olmalı');
-assert(/\['about','Uygulama hakkında','sparkle','violet','[^']*','dashboard','about'\]/.test(read('js/core/app-nav.js')),'Araç kataloğunda (app-nav.js) Uygulama hakkında öğesi olmalı');
+{ const cat=require('./helpers/app-nav').loadNav().N.catalog(),has=(id,label,page)=>cat.some(t=>t.id===id&&t.label===label&&t.route==='dashboard'&&t.page===page);
+  assert(has('guide','Kullanım Kılavuzu','guide'),'Araç kataloğunda (app-nav.js) Kullanım Kılavuzu öğesi olmalı');
+  assert(has('about','Uygulama Hakkında','about'),'Araç kataloğunda (app-nav.js) Uygulama Hakkında öğesi olmalı'); }
 assert(/define\('guide',\['js\/modules\/guide-data\.js\?v=\d+','js\/modules\/guide\.js\?v=\d+'\]\)/.test(read('js/app-loader.js')),'AppLoader guide modülünü tanımlamalı');
 const sw=read('service-worker.js');
 assert(sw.includes('./js/modules/guide-data.js?v=')&&sw.includes('./js/modules/guide.js?v='),'Service worker kılavuz dosyalarını ön belleğe almalı (çevrimdışı çalışsın)');

@@ -445,7 +445,7 @@ async function ensureDeps(){
  if(!global.IdareciPanoCore||!global.TerfiCore)throw new Error('İdareci Pano bileşenleri yüklenemedi.');
 }
 async function open(){
- try{await ensureDeps()}catch(e){console.error('[İdareci Pano]',e);toast('İdareci Pano açılamadı.');return false}
+ try{await ensureDeps()}catch(e){console.error('[İdareci Pano]',e);toast('Pano açılamadı.');return false}
  if(mounted)destroy();
  S.cfg=readCfg();S.notes=readNotes();S.draft=null;S.tv=false;S.calSel='';S.rehberQ='';S.noteDraft='';
  if(!render())return false;

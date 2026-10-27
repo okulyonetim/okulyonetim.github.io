@@ -1,11 +1,12 @@
 /* Koruk Asistan — AppNav
- * Arayüz rolü (Öğretmen / İdareci), araç kataloğu, menü düzeni (alt menü yuvaları, menüler, sık kullanılanlar) ve sayfa kapıları TEK burada durur.
+ * Arayüz rolü (Öğretmen / İdareci), sayfa kataloğu, menü düzeni (alt menü yuvaları, menüler, sık kullanılanlar) ve sayfa kapıları TEK burada durur.
  *   • Rol, Öğretmenler listesindeki unvandan seçilir ("Müdür", "Müdür Yardımcısı", "İdari Personel" → İdareci; diğer → Öğretmen).
  *     Unvanı olmayan hesapta admin / yönetici rolü İdareci, diğerleri Öğretmen sayılır. Hem yöneten hem ders veren kişi
  *     Ben sayfasından diğer arayüze geçebilir (tercih bu cihazda hatırlanır).
  *   • Rol yalnız hangi varsayılan menü düzeninin geleceğini belirler. Hangi sayfaya girilebileceğini PermissionService belirler;
- *     burada yalnız öğretmen hesabı için gizli sayfalar (TEACHER_HIDDEN) ve yönetici-yalnız araçlar süzülür.
- *   • Katalogdaki her araç tek bir sayfadır ve gerçek bir ShellUI rotasına (route + page) bağlıdır; ekranları nav-pages.js çizer,
+ *     burada yalnız öğretmen hesabı için gizli sayfalar (TEACHER_HIDDEN) ve yönetici-yalnız sayfalar süzülür.
+ *   • Sayfa kataloğu menüye göre gruplu yazılır (KATALOG): her sayfa tek bir sayfadır, gerçek bir ShellUI rotasına (route + page)
+ *     bağlıdır ve satırının durduğu menüde varsayılan olarak çıkar; menüsüz sayfa yazılamaz. Ekranları nav-pages.js çizer,
  *     menü düzenleme ekranlarını nav-editor.js çizer. Alt menü yuvaları, menüler ve içindeki sayfaları kullanıcı seçer.
  */
 (function(global){
@@ -132,140 +133,170 @@ function moduleAllowed(name){
 const canOpen=(name,page='')=>moduleAllowed(name)&&pageAllowed(name,page)&&global.RolePermissionBridge?.allowedRoute?.(name,page||'')!==false;
 const adminOrManager=()=>user().admin===true||global.PermissionService?.isManager?.()===true;
 
-/* ── araç kataloğu: [id, ad, simge, ton, alt yazı, rota, sayfa, ek koşul] ── */
-const TOOLS={};
-[
- ['student-attendance','Öğrenci Yoklama','clip','blue','Sınıf yoklamasını al ve kaydet','tools','student-attendance'],
- ['classes','Sınıflar','school','blue','Sınıflar ve sınıf öğretmenleri','people','classes'],
- ['students','Öğrenciler','users','blue','Öğrenci listesi ve bilgileri','people','students'],
- ['student-list','Öğrenci Listesi Oluşturucu','doc','blue','Sınıf ve öğrenci listesi hazırla','tools','student-list'],
- ['written','Yazılı Sınavlar','edit','violet','Yazılı sınav planı ve tutanağı','academic','written'],
- ['trial','Deneme Sınavları','clip','violet','Deneme sınavı ve süre sayacı','academic','trial'],
- ['results','Deneme ve Test Sonuçları','chart','violet','Sonuç listeleri ve sıralamalar','academic','results'],
- ['grades','Not Çizelgesi','chart','violet','Dönem not çizelgesi','tools','grades'],
- ['homework','Ödev Takip Çizelgesi','check','violet','Ödev teslim takibi','tools','homework'],
- ['rubric','Ders Et. Kat. Puan Dağıtımı','ruler','violet','Ders etkinliği katılım puanı','tools','rubric'],
- ['project','Proje Değerlendirme Ölçeği','ruler','violet','Proje puanlama ölçeği','tools','project'],
- ['plans','Yıllık Plan','calendar','green','Yıllık planlar ve haftalık kazanımlar','academic','plans'],
- ['form-maarif','Maarif Model','award','green','Maarif Model aylık raporları','tools','form-maarif'],
- ['form-bep','Yıllık ve BEP Plan Takibi','doc','green','Öğretmenlerin plan teslim takibi','tools','form-bep'],
- ['bep-hazirla','BEP Hazırla','pen','green','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla'],
- ['tymm-olcek','TYMM İlkokul Ölçekleri','ruler','blue','1–4. sınıf süreç değerlendirme gözlem formları','tymm-olcek'],
- ['idareci-pano','İdareci Pano','chart','indigo','Okulun anlık durumu: nöbet, izin, sınıflar, takvim','idareci-pano'],
- ['tutanak','Tutanak Hazırla','pen','orange','Toplantı ve olay tutanakları','tutanak'],
- ['dilekce-olustur','Dilekçe Oluştur','doc','orange','Hazır dilekçe örnekleri','dilekcehazirla'],
- ['form-sok','ŞÖK','users','orange','Şube öğretmenler kurulu','tools','form-sok'],
- ['form-zumre','Zümre','book','orange','Zümre toplantı tutanağı','tools','form-zumre'],
- ['form-diger','Diğer Evraklar','folder','orange','Diğer okul evrakları','tools','form-diger'],
- ['parentmeeting','Veli Görüşme Formu','users','rose','Veli görüşmesini kaydet ve yazdır','parentmeeting'],
- ['form-rehberlik','Rehberlik','shield','rose','Rehberlik çalışma raporları','tools','form-rehberlik'],
- ['gezi','Gezi Planı','bus','cyan','Gezi planı ve izin belgeleri','gezi'],
- ['form-kulup','Sosyal Kulüpler','star','cyan','Sosyal kulüp çalışmaları','tools','form-kulup'],
- ['form-belirli','Belirli Gün ve Haftalar','calendar','cyan','Belirli gün ve hafta etkinlikleri','tools','form-belirli'],
- ['dilimiz','Dilimizin Zenginlikleri','book','cyan','Atasözü ve deyim çalışması','documents','dilimiz'],
- ['documents','Dökümanlar','folder','amber','Okul dökümanları','documents'],
- ['pdf-images','Resimden PDF Oluştur','doc','amber','Fotoğraflardan PDF yap','documents','pdf-images'],
- ['pdf-merge','PDF Birleştir','doc','amber','PDF dosyalarını tek dosyada topla','documents','pdf-merge'],
- ['checklists','Kontrol Listeleri','check','amber','Kontrol listeleri ve tamamlama','tools','checklists'],
- ['school-age-calculator','İlkokula Başlama Yaşı','calendar','amber','Kayıt yaşı durumunu hesapla','documents','school-age-calculator'],
- ['folder-spine','Klasör Sırtlığı Oluşturucu','folder','amber','Sırtlık tasarla, seri üret, yazdır','documents','folder-spine',adminOrManager],
- ['staff-leaves','İzin İşlemleri','calendar','indigo','İzin kayıtları ve talepleri','management','staff-leaves'],
- ['puantaj','Puantaj & İmza Sirküsü','clock','indigo','Aylık puantaj ve imza','management','puantaj'],
- ['dilekce-izin','Dilekçe & İzinler','doc','indigo','İzin ve dilekçe formları','management','dilekce'],
- ['payroll','Maaş Değişikliği','wallet','indigo','Maaş değişikliği bildirimi','payroll'],
- ['diploma-request','Diploma Kayıt Talep Dilekçesi','doc','indigo','Diploma kayıt talebi','management','diploma-request'],
- ['diploma-response','Diploma Okul Dilekçesi','school','indigo','Okuldan diploma cevabı','management','diploma-response'],
- ['teblig','Tebliğ-Tebellüğ İmza Sirküsü','pen','indigo','Tebliğ ve tebellüğ imzaları','documents','teblig'],
- ['attendance','Devamsızlık Çizelgesi','calendar','indigo','Personel devamsızlık çizelgesi','tools','attendance'],
- ['evrak','Evrak Takibi','inbox','amber','Gelen ve giden evrak','documents','evrak'],
- ['evrak-teslim','Teslim İmza Çizelgesi','check','amber','Öğretmenden istenecek evraklar ve imza çizelgesi','management','evrak-teslim'],
- ['evrak-teblig-donem1','Dönem Sonu Tebliğ Yazısı','doc','amber','Dönem sonu evrak teslimi tebliği','management','evrak-teblig-donem1'],
- ['evrak-teblig-sonu','Sene Sonu Tebliğ Yazısı','doc','amber','Sene sonu evrak teslimi tebliği','management','evrak-teblig-sonu'],
- ['tasks','Aylık İşler','clock','amber','Aylık işler ve görevler','management','tasks'],
- ['monthflow','Aylık Yönetim Akışı','calendar','amber','Ay ay yönetim iş akışı','monthflow'],
- ['reports','Okul Raporları','chart','rose','Okul raporları ve listeler','reports','home'],
- ['food-audit','Yemek Denetim Formu','food','rose','Yemek denetim kaydı','food','audit'],
- ['teacher-list-builder','Öğretmen Liste Oluşturucu','doc','rose','Öğretmen listesi hazırla','management','teacher-list-builder'],
- ['school-info','Okul bilgileri ve kurulum','school','indigo','Okul adı, kademeler, tatiller','settings','school'],
- ['holiday','Tatil günleri','calendar','indigo','Tatil takvimi','settings','holiday'],
- ['acad-calendar','Akademik takvim','calendar','indigo','Akademik takvim','academic','calendar'],
- ['teachers','Öğretmenler','users','blue','Öğretmen kadrosu','people','teachers'],
- ['staff','Personeller','briefcase','blue','Personel kadrosu','management','staff'],
- ['schedule','Ders Programı','calendar','green','Okulun ders programı','academic','schedule'],
- ['duty','Nöbet Programı','shield','green','Nöbet çizelgesi','management','duty'],
- ['meeting-schedule','Toplantı Çizelgesi','users','green','Toplantı ve kurul çizelgesi','management','meeting-schedule'],
- ['committees','Kurul ve Komisyonlar','shield','orange','Kurul ve komisyon görevleri','committees','home'],
- ['transport','Taşıma İşlemleri','bus','cyan','Servisler ve güzergâhlar','transport','services'],
- ['bus-seats','Servis Oturma','bus','cyan','Servis oturma planı','transport','busSeats'],
- ['map','Harita','map','cyan','Okul ve servis haritası','tools','map'],
- ['food','Yemek Menüsü','food','cyan','Günlük, haftalık, aylık menü','food','daily'],
- ['messages','Mesajlaşma','message','rose','Kişi ve grup mesajları','communication','messages'],
- ['news','Haberler','mega','rose','Okul haberleri','communication','news'],
- ['announcements','Duyurular','mega','rose','Duyurular ve okundu bilgisi','communication','announcements'],
- ['polls','Anketler','chart','rose','Anket ve oylamalar','communication','polls'],
- ['calendar','Takvim','calendar','green','Takvim ve hatırlatıcılar','communication','calendar'],
- ['notes','Notlarım','note','amber','Kişisel notlar','communication','notes'],
- ['settings','Ayarlar','sliders','slate','Okul, kullanıcılar, hesap','settings'],
- ['guide','Kullanım kılavuzu','book','green','Adım adım kullanım','dashboard','guide'],
- ['about','Uygulama hakkında','sparkle','violet','Sürüm ve bilgiler','dashboard','about']
-].forEach(([id,label,ic,tone,sub,route,page='',need])=>{TOOLS[id]={id,label,icon:ic,glyph:glyphOf(id),tone,sub,route,page,need}});
+/* ── sayfa kataloğu: menüye göre gruplu; bir sayfanın menüsü, satırının yazıldığı yerdir ──
+ * Menü:  [id, ad, simge, ton, [sayfa satırları]]
+ * Satır: [id, ad, simge, alt yazı, rota, sayfa, ek?]   ek: {need: () => bool, y: true}
+ *   y = yalnız İdareci arayüzünde varsayılan menüde çıkar (öğretmen arayüzünde çıkmaz); need = ek koşul.
+ * Yeni sayfa eklemek = doğru menünün altına bir satır yazmak; ayrı bir varsayılan menü listesi yoktur.
+ * Hangi menü? Sayfa neyle uğraşıyor:
+ *   öğrenci → Öğrenciler · sınav, not, ölçek → Sınav ve Not · plan ve teslim takibi → Planlar · zaman ve çizelge → Program ve Takvim
+ *   resmî yazı, tutanak → Tutanak ve Evrak · personel hakları → Personel İşleri · gezi, kulüp, anma → Etkinlik ve Gezi
+ *   servis, yemek → Servis ve Yemek · duyuru, mesaj → İletişim · dosya ve PDF aracı → Belgeler ve PDF
+ *   okulun kendisi, kadro, kurul → Okul · hesap ve yardım → Ayarlar ve Yardım
+ * Sayfa rengi menüsünün rengidir. */
+const KATALOG=[
+ ['ogrenci','Öğrenciler','users','blue',[
+  ['classes','Sınıflar','school','Sınıflar ve sınıf öğretmenleri','people','classes'],
+  ['students','Öğrenciler','users','Öğrenci listesi ve bilgileri','people','students'],
+  ['student-attendance','Öğrenci Yoklama','clip','Sınıf yoklamasını al ve kaydet','tools','student-attendance'],
+  ['student-list','Öğrenci Listesi Oluşturucu','doc','Sınıf ve öğrenci listesi hazırla','tools','student-list'],
+  ['school-age-calculator','İlkokula Başlama Yaşı','calendar','Kayıt yaşı durumunu hesapla','documents','school-age-calculator'],
+  ['parentmeeting','Veli Görüşme Formu','users','Veli görüşmesini kaydet ve yazdır','parentmeeting'],
+  ['form-rehberlik','Rehberlik Raporları','shield','Rehberlik çalışma raporları','tools','form-rehberlik'],
+  ['bep-hazirla','BEP Dosyası Hazırla','pen','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla']
+ ]],
+ ['sinav','Sınav ve Not','clip','violet',[
+  ['written','Yazılı Sınavlar','edit','Yazılı sınav planı ve tutanağı','academic','written'],
+  ['trial','Deneme Sınavları','clip','Deneme sınavı ve süre sayacı','academic','trial'],
+  ['results','Sınav Sonuçları','chart','Deneme ve test sonuç listeleri, sıralamalar','academic','results'],
+  ['grades','Not Çizelgesi','chart','Dönem not çizelgesi','tools','grades'],
+  ['homework','Ödev Takip Çizelgesi','check','Ödev teslim takibi','tools','homework'],
+  ['rubric','Katılım Puanı Dağıtımı','ruler','Ders etkinliği katılım puanı','tools','rubric'],
+  ['project','Proje Değerlendirme Ölçeği','ruler','Proje puanlama ölçeği','tools','project'],
+  ['tymm-olcek','TYMM İlkokul Ölçekleri','ruler','1–4. sınıf süreç değerlendirme gözlem formları','tymm-olcek']
+ ]],
+ ['plan','Planlar','calendar','green',[
+  ['plans','Yıllık Plan','calendar','Yıllık planlar ve haftalık kazanımlar','academic','plans'],
+  ['form-maarif','Maarif Model Raporları','award','Maarif Model aylık raporları','tools','form-maarif'],
+  ['form-bep','Plan Teslim Takibi','doc','Öğretmenlerin yıllık plan ve BEP teslim takibi','tools','form-bep'],
+  ['monthflow','Aylık Yönetim Akışı','calendar','Ay ay yönetim iş akışı','monthflow','',{y:1}],
+  ['tasks','Periyodik İşler','clock','Her ay tekrarlayan işler ve görevler','management','tasks',{y:1}]
+ ]],
+ ['program','Program ve Takvim','clock','cyan',[
+  ['schedule','Ders Programı','calendar','Okulun ders programı','academic','schedule'],
+  ['duty','Nöbet Programı','shield','Nöbet çizelgesi','management','duty'],
+  ['meeting-schedule','Toplantı Çizelgesi','users','Toplantı ve kurul çizelgesi','management','meeting-schedule'],
+  ['calendar','Takvim','calendar','Takvim ve hatırlatıcılar','communication','calendar'],
+  ['acad-calendar','Akademik Takvim','calendar','Eğitim öğretim yılı takvimi','academic','calendar'],
+  ['holiday','Tatil Modu','calendar','Planlı tatiller ve otomatik tarih aralıkları','settings','holiday',{y:1}],
+  ['notes','Notlarım','note','Kişisel notlar','communication','notes']
+ ]],
+ ['evrak','Tutanak ve Evrak','pen','orange',[
+  ['tutanak','Tutanak Hazırla','pen','Toplantı ve olay tutanakları','tutanak'],
+  ['dilekce-olustur','Dilekçe Oluştur','doc','Hazır dilekçe örnekleri','dilekcehazirla'],
+  ['form-sok','Şube Öğretmenler Kurulu','users','ŞÖK toplantı evrakı','tools','form-sok'],
+  ['form-zumre','Zümre Toplantısı','book','Zümre toplantı tutanağı','tools','form-zumre'],
+  ['form-diger','Diğer Evraklar','folder','Diğer okul evrakları','tools','form-diger'],
+  ['evrak','Evrak Takibi','inbox','Gelen ve giden evrak','documents','evrak',{y:1}],
+  ['evrak-teslim','Evrak Teslim İmza Çizelgesi','check','Öğretmenden istenecek evraklar ve imza çizelgesi','management','evrak-teslim',{y:1}],
+  ['evrak-teblig-donem1','Dönem Sonu Evrak Teslimi Tebliği','doc','Dönem sonu evrak teslimi tebliği','management','evrak-teblig-donem1',{y:1}],
+  ['evrak-teblig-sonu','Sene Sonu Evrak Teslimi Tebliği','doc','Sene sonu evrak teslimi tebliği','management','evrak-teblig-sonu',{y:1}],
+  ['teblig','Tebliğ-Tebellüğ İmza Sirküsü','pen','Tebliğ ve tebellüğ imzaları','documents','teblig',{y:1}]
+ ]],
+ ['personel','Personel İşleri','briefcase','indigo',[
+  ['staff-leaves','İzin İşlemleri','calendar','İzin kayıtları ve talepleri','management','staff-leaves',{y:1}],
+  ['puantaj','Puantaj & İmza Sirküsü','clock','Aylık puantaj ve imza','management','puantaj',{y:1}],
+  ['dilekce-izin','Dilekçe & İzinler','doc','İzin ve dilekçe formları','management','dilekce',{y:1}],
+  ['attendance','Personel Devamsızlık Çizelgesi','calendar','Personel devamsızlık çizelgesi','tools','attendance',{y:1}],
+  ['payroll','Maaş Değişikliği','wallet','Maaş değişikliği bildirimi','payroll','',{y:1}],
+  ['diploma-request','Diploma Kayıt Talep Dilekçesi','doc','Diploma kayıt talebi','management','diploma-request',{y:1}],
+  ['diploma-response','Diploma Okul Dilekçesi','school','Okuldan diploma cevabı','management','diploma-response',{y:1}],
+  ['teacher-list-builder','Öğretmen Liste Oluşturucu','doc','Öğretmen listesi hazırla','management','teacher-list-builder',{y:1}]
+ ]],
+ ['etkinlik','Etkinlik ve Gezi','star','rose',[
+  ['gezi','Gezi Planı','bus','Gezi planı ve izin belgeleri','gezi'],
+  ['form-kulup','Sosyal Kulüpler','star','Sosyal kulüp çalışmaları','tools','form-kulup'],
+  ['form-belirli','Belirli Gün ve Haftalar','calendar','Belirli gün ve hafta etkinlikleri','tools','form-belirli'],
+  ['dilimiz','Dilimizin Zenginlikleri','book','Atasözü ve deyim çalışması','documents','dilimiz']
+ ]],
+ ['hizmet','Servis ve Yemek','bus','amber',[
+  ['transport','Servisler','bus','Servisler ve güzergâhlar','transport','services',{y:1}],
+  ['bus-seats','Servis Oturma Planı','bus','Servis oturma planı','transport','busSeats'],
+  ['food','Yemek Menüsü','food','Günlük, haftalık, aylık menü','food','daily'],
+  ['food-audit','Yemek Denetim Formu','food','Yemek denetim kaydı','food','audit',{y:1}]
+ ]],
+ ['iletisim','İletişim','message','cyan',[
+  ['messages','Mesajlaşma','message','Kişi ve grup mesajları','communication','messages'],
+  ['news','Haberler','mega','Okul haberleri','communication','news'],
+  ['announcements','Duyurular','mega','Duyurular ve okundu bilgisi','communication','announcements'],
+  ['polls','Anketler','chart','Anket ve oylamalar','communication','polls']
+ ]],
+ ['belge','Belgeler ve PDF','folder','amber',[
+  ['documents','Dökümanlar','folder','Okul dökümanları','documents'],
+  ['pdf-images','Resimden PDF Oluştur','doc','Fotoğraflardan PDF yap','documents','pdf-images'],
+  ['pdf-merge','PDF Birleştir','doc','PDF dosyalarını tek dosyada topla','documents','pdf-merge'],
+  ['checklists','Kontrol Listeleri','check','Kontrol listeleri ve tamamlama','tools','checklists'],
+  ['folder-spine','Klasör Sırtlığı Oluşturucu','folder','Sırtlık tasarla, seri üret, yazdır','documents','folder-spine',{y:1,need:adminOrManager}]
+ ]],
+ ['okul','Okul','school','indigo',[
+  ['idareci-pano','Pano','chart','Okulun anlık durumu: nöbet, izin, sınıflar, takvim','idareci-pano','',{y:1}],
+  ['school-info','Okul bilgileri ve kurulum','school','Okul adı, kademeler, tatiller','settings','school',{y:1}],
+  ['reports','Okul Raporları','chart','Okul raporları ve listeler','reports','home',{y:1}],
+  ['committees','Kurul ve Komisyonlar','shield','Kurul ve komisyon görevleri','committees','home',{y:1}],
+  ['teachers','Öğretmenler','users','Öğretmen kadrosu','people','teachers'],
+  ['staff','Personeller','briefcase','Personel kadrosu','management','staff',{y:1}],
+  ['map','Harita','map','Okul ve servis haritası','tools','map']
+ ]],
+ ['ayar','Ayarlar ve Yardım','sliders','slate',[
+  ['settings','Ayarlar','sliders','Okul, kullanıcılar, hesap','settings'],
+  ['guide','Kullanım Kılavuzu','book','Adım adım kullanım','dashboard','guide'],
+  ['about','Uygulama Hakkında','sparkle','Sürüm ve bilgiler','dashboard','about']
+ ]]
+];
+const TOOLS={},MENU_TREE=[];
+for(const [mid,mad,micon,mtone,rows] of KATALOG){
+  MENU_TREE.push({id:mid,ad:mad,icon:micon,tone:mtone});
+  for(const [id,label,ic,sub,route,page='',ek={}] of rows){
+    if(TOOLS[id])throw new Error(`AppNav katalogu: "${id}" iki kez yazılmış.`);
+    TOOLS[id]={id,label,icon:ic,glyph:glyphOf(id),tone:mtone,sub,route,page,need:ek.need,y:!!ek.y,kat:mid};
+  }
+}
 
 /* ── menü düzeni ──
- * Alt menü (5 yuva), menüler ve sık kullanılanlar kullanıcıya aittir: varsayılan rol başına gelir, kullanıcı değiştirince
- * kendi kopyası bu cihazda saklanır ve hesabına eşitlenir (oy_kullaniciTercihleri). Katalogdaki her araç tek bir sayfadır;
- * çok sayfalı ya da sekmeli araç yoktur, her sayfa istenen menüye ve alt menüye ayrı eklenir. */
-const MENU_ICONS=['grid','folder','doc','pen','users','school','calendar','clip','chart','shield','bus','food','star','award','book','inbox','wallet','briefcase','message','mega','clock','map'];
+ * Varsayılan düzen KATALOG'dan üretilir (buildDefault): menü sırası rol başınadır, sayfalar katalogdaki menülerinde durur.
+ * Alt menü (5 yuva), menüler ve sık kullanılanlar kullanıcıya aittir: kullanıcı değiştirince kendi kopyası bu cihazda saklanır ve
+ * hesabına eşitlenir (oy_kullaniciTercihleri). Kayıt `v` (düzen sürümü) ve `gorulen` (kullanıcının bildiği sayfalar) taşır:
+ *   • v eski/eksik → menüler ve alt çubuk yeni varsayılana döner, sık kullandıklar korunur (bir kerelik sıfırlama);
+ *   • katalogdaki yeni sayfa `gorulen`'de yoksa kullanıcının kendi menüsüne (o menü yoksa "Diğer sayfalar"a) otomatik eklenir.
+ * Her sayfa tek bir sayfadır; çok sayfalı ya da sekmeli sayfa yoktur, her sayfa istenen menüye ve alt menüye ayrı eklenir. */
+const MENU_ICONS=['grid','folder','doc','pen','users','school','calendar','clip','chart','shield','bus','food','star','award','book','inbox','wallet','briefcase','message','mega','clock','map','sliders'];
 const MENU_TONES=['blue','violet','green','orange','rose','cyan','amber','indigo','slate'];
 const BAR_SLOTS=5,MENU_MAX=24,MENU_ITEMS_MAX=60,MENU_NAME_MAX=32;
+const LAYOUT_SURUM=2;
+const DIGER={id:'diger',ad:'Diğer sayfalar'};
 const BAR_FIXED=['home','program','tools','me'];                  /* yerleşik sayfalar; geri kalan yuvalar menü ya da tek sayfadır */
-const M=(id,ad,icon,tone,ids)=>({id,ad,icon,tone,ids});
-const DEFAULT_LAYOUT={
-  ogretmen:{
-    bar:['home','program','tools','menu:okul','me'],
-    menus:[
-      M('sinifim','Sınıfım','users','blue',['student-attendance','classes','students','student-list']),
-      M('sinav','Sınav ve not','clip','violet',['written','trial','results','grades','homework','rubric','project','tymm-olcek']),
-      M('planlar','Planlar','calendar','green',['plans','form-maarif','bep-hazirla','form-bep']),
-      M('tutanak','Tutanak ve dilekçe','pen','orange',['tutanak','dilekce-olustur','form-sok','form-zumre','form-diger']),
-      M('veli','Veli ve rehberlik','message','rose',['parentmeeting','form-rehberlik']),
-      M('etkinlik','Etkinlik ve gezi','bus','cyan',['gezi','form-kulup','form-belirli','dilimiz']),
-      M('belgeler','Belgeler','folder','amber',['documents','pdf-images','pdf-merge','checklists','school-age-calculator']),
-      M('programim','Program ve takvim','clock','green',['schedule','duty','calendar','acad-calendar','meeting-schedule','notes']),
-      M('okul','Okul','school','indigo',['messages','news','announcements','polls','teachers','food','map','bus-seats'])
-    ],
-    fav:['student-attendance','written','tutanak','plans']
-  },
-  idareci:{
-    bar:['home','menu:okul','tools','tool:idareci-pano','me'],
-    menus:[
-      M('okul','Okul','school','indigo',['idareci-pano','school-info','holiday','acad-calendar','teachers','staff','students','classes']),
-      M('evrak','Evrak ve yazışma','inbox','amber',['evrak','tutanak','dilekce-olustur','form-diger','evrak-teslim','evrak-teblig-donem1','evrak-teblig-sonu','teblig']),
-      M('belgeler','Belgeler ve PDF','folder','amber',['documents','pdf-images','pdf-merge','folder-spine']),
-      M('personel','Personel ve özlük','briefcase','indigo',['staff-leaves','puantaj','dilekce-izin','attendance','payroll','diploma-request','diploma-response']),
-      M('ogrenci','Öğrenci ve sınav','users','blue',['student-attendance','student-list','school-age-calculator','written','trial','results','parentmeeting','form-rehberlik','bep-hazirla','tymm-olcek']),
-      M('plan','Plan, rapor ve denetim','chart','green',['monthflow','tasks','plans','form-bep','reports','teacher-list-builder','checklists','food-audit']),
-      M('programlar','Programlar ve kurullar','calendar','cyan',['schedule','duty','meeting-schedule','committees','form-sok','form-zumre','notes']),
-      M('etkinlik','Etkinlik ve hizmetler','bus','rose',['gezi','form-kulup','form-belirli','dilimiz','transport','bus-seats','food','map']),
-      M('iletisim','İletişim','message','rose',['messages','news','announcements','polls','calendar'])
-    ],
-    fav:[]
-  }
+/* Rolün menü sırası: her biri KATALOG'daki tüm menülerin bir sıralamasıdır; rolde sayfası olmayan menü gizlenir. */
+const MENU_SIRA={
+  ogretmen:['ogrenci','sinav','plan','program','evrak','etkinlik','hizmet','iletisim','belge','okul','personel','ayar'],
+  idareci:['okul','evrak','personel','ogrenci','sinav','plan','program','etkinlik','hizmet','iletisim','belge','ayar']
 };
+const BAR_VARSAYILAN={ogretmen:['home','program','tools','menu:iletisim','me'],idareci:['home','menu:okul','tools','tool:idareci-pano','me']};
+const FAV_VARSAYILAN={ogretmen:['student-attendance','written','tutanak','plans'],idareci:[]};
+const inScope=(t,r)=>r==='idareci'||!t.y;
+const scopeIds=r=>Object.values(TOOLS).filter(t=>inScope(t,r)).map(t=>t.id);
+function buildDefault(r){
+  const menus=MENU_SIRA[r].map(mid=>{
+    const m=MENU_TREE.find(x=>x.id===mid);
+    return{id:m.id,ad:m.ad,icon:m.icon,tone:m.tone,ids:Object.values(TOOLS).filter(t=>t.kat===mid&&inScope(t,r)).map(t=>t.id)};
+  }).filter(m=>m.ids.length);
+  return{bar:[...BAR_VARSAYILAN[r]],menus,fav:[...FAV_VARSAYILAN[r]]};
+}
+const DEFAULT_LAYOUT={ogretmen:buildDefault('ogretmen'),idareci:buildDefault('idareci')};
 /* Eski sürümde çok sayfalı araç olan kimlikler: yalnız eski sık kullanılan kayıtlarını ilk sayfaya taşımak için. */
 const LEGACY_IDS={'aylik-yonetim':'monthflow','evrak-belge':'tutanak','ogretmenden-istenecekler':'evrak-teslim','personel-isleri':'staff-leaves','diploma-isleri':'diploma-request','dokumanlar':'documents','sinav-isleri':'written'};
-/* Arama eş anlamlıları: ad ve alt yazıda geçmeyen ama insanların yazdığı sözcükler. */
+/* Arama eş anlamlıları: ad ve alt yazıda geçmeyen ama insanların yazdığı sözcükler (eski sayfa adları dahil). */
 const KEYWORDS={
-  'student-attendance':'yoklama devamsızlık yok yazma','students':'öğrenci liste kayıt','student-list':'öğrenci sınıf listesi çizelge','classes':'şube sınıf rehber',
-  'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama','grades':'not karne puan','homework':'ödev','rubric':'puan katılım rubrik','project':'proje performans ölçek',
-  'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan','idareci-pano':'pano dijital panosu müdür idareci nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
+  'student-attendance':'yoklama devamsızlık yok yazma','students':'öğrenci liste kayıt','student-list':'öğrenci sınıf listesi çizelge oluşturucu','classes':'şube sınıf rehber',
+  'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama deneme ve test sonuçları','grades':'not karne puan','homework':'ödev takip çizelgesi','rubric':'puan katılım rubrik ders etkinliği dağıtımı','project':'proje performans ölçek',
+  'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan yıllık ve bep plan takibi','idareci-pano':'idareci pano dijital panosu müdür nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep hazırla bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',
-  'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
-  'teblig':'tebliğ tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
-  'tasks':'aylık iş görev','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste',
-  'school-info':'okul bilgi kurulum ayar müdür','holiday':'tatil','acad-calendar':'akademik takvim eğitim öğretim yılı','teachers':'öğretmen kadro','staff':'personel kadro','schedule':'ders programı','duty':'nöbet','meeting-schedule':'toplantı kurul çizelge',
-  'committees':'kurul komisyon','transport':'servis taşıma güzergah','bus-seats':'servis oturma','map':'harita','food':'yemek menü','messages':'mesaj yazışma','news':'haber','announcements':'duyuru','polls':'anket oy','calendar':'takvim hatırlatıcı','notes':'not','settings':'ayar kullanıcı hesap','guide':'yardım kılavuz','about':'sürüm'
+  'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
+  'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
+  'tasks':'aylık iş işler görev periyodik','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste oluşturucu',
+  'school-info':'okul bilgi kurulum ayar müdür','holiday':'tatil günleri','acad-calendar':'akademik takvim eğitim öğretim yılı','teachers':'öğretmen kadro','staff':'personel kadro','schedule':'ders programı','duty':'nöbet','meeting-schedule':'toplantı kurul çizelge',
+  'committees':'kurul komisyon','transport':'servis taşıma işlemleri güzergah','bus-seats':'servis oturma','map':'harita','food':'yemek menü','messages':'mesaj yazışma','news':'haber','announcements':'duyuru','polls':'anket oy','calendar':'takvim hatırlatıcı','notes':'not','settings':'ayar kullanıcı hesap','guide':'yardım kılavuz kullanım kılavuzu','about':'sürüm uygulama hakkında'
 };
 const clone=v=>JSON.parse(JSON.stringify(v));
 const deviceKey=r=>`ka-nav-layout:${user().uid||'-'}:${r}`;
@@ -308,27 +339,37 @@ function legacyFav(r){
   try{const raw=store.get(legacyFavKey(r));if(raw!==null){const v=JSON.parse(raw);if(Array.isArray(v))return cleanIds(v)}}catch(_){}
   return null;
 }
-/* Alt menüye sonradan eklenen varsayılan yuvalar: kayıtlı (özelleştirilmiş) çubuğa bir kez, son değiştirilebilir yuvanın yerine konur.
- * Ana sayfa, Araçlar ve Ben yerinde kalır; kullanıcı sonra menü düzenlemeden dilediğini değiştirebilir (sunulan kayıt tekrar eklemeyi önler). */
-const BAR_YENI=[{id:'idareci-pano',rol:'idareci',key:'tool:idareci-pano'}];
-const barSunulan=(r,extra=[])=>[...new Set([...extra,...BAR_YENI.filter(x=>x.rol===r).map(x=>x.id)])];
-function migrateBar(r,o){
-  if(!o?.bar)return o;
-  const done=Array.isArray(o.sunulan)?o.sunulan:[],todo=BAR_YENI.filter(x=>x.rol===r&&!done.includes(x.id));
-  if(!todo.length)return o;
-  const bar=cleanBar(o.bar,o.menus?cleanMenus(o.menus):DEFAULT_LAYOUT[r].menus,r);
-  for(const x of todo){
-    if(bar.includes(x.key)||!TOOLS[x.id])continue;
-    let i=-1;
-    for(let j=bar.length-1;j>=0;j--)if(!['home','tools','me'].includes(bar[j])){i=j;break}
-    if(i>=0)bar[i]=x.key;
+/* Sayfayı menülere yerleştirir: önce kendi menüsüne, o menü kullanıcıda yoksa "Diğer sayfalar"a. Yerleştirdiyse true. */
+function placeInto(menus,id){
+  const t=TOOLS[id];
+  if(!t||menus.some(m=>m.ids.includes(id)))return false;
+  let m=menus.find(x=>x.id===t.kat)||menus.find(x=>x.id===DIGER.id);
+  if(!m&&menus.length<MENU_MAX){m={id:DIGER.id,ad:DIGER.ad,icon:'grid',tone:'slate',ids:[]};menus.push(m)}
+  if(!m||m.ids.length>=MENU_ITEMS_MAX)return false;
+  m.ids.push(id);
+  return true;
+}
+/* Kayıtlı (özelleştirilmiş) düzeni güncel katalogla uzlaştırır:
+ *   • düzen sürümü eski/eksikse menüler ve alt çubuk yeni varsayılana döner (sık kullandıklar korunur), bir kez haber verilir;
+ *   • katalogdaki yeni sayfa kullanıcının "gorulen" listesinde yoksa menüsüne eklenir; kullanıcının bilerek çıkardığı sayfa geri gelmez. */
+function settle(r,o){
+  if(!o||!(o.menus||o.bar))return o;
+  if((Number(o.v)||0)<LAYOUT_SURUM){
+    commitOverride(r,{v:LAYOUT_SURUM,...(Array.isArray(o.fav)?{fav:cleanIds(o.fav)}:{}),t:Date.now()});
+    try{global.toast?.('Menüler yenilendi: sayfalar yeniden gruplandı.')}catch(_){}
+    return readOverride(r);
   }
-  writeOverride(r,{bar,sunulan:barSunulan(r,done)},{silent:true});
+  if(!o.menus)return o;
+  const ids=scopeIds(r),known=new Set(Array.isArray(o.gorulen)?o.gorulen:[]);
+  if(ids.every(id=>known.has(id)))return o;
+  const menus=cleanMenus(o.menus);
+  ids.filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id));
+  writeOverride(r,{menus,gorulen:ids},{silent:true});
   return readOverride(r);
 }
 /* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı varsayılandan gelir. */
 function layoutRaw(r=role()){
-  const o=migrateBar(r,readOverride(r)),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
+  const o=settle(r,readOverride(r)),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
   return{bar:cleanBar(o?.bar||def.bar,menus,r),menus,fav:o?.fav?cleanIds(o.fav):(legacyFav(r)||clone(def.fav)),custom:!!(o&&(o.bar||o.menus))};
 }
 function emitLayoutChanged(r){try{global.dispatchEvent(new CustomEvent('koruk:nav-layout-changed',{detail:{role:r}}))}catch(_){}}
@@ -337,22 +378,29 @@ function pushOverride(r){
   clearTimeout(pushTimers[r]);
   pushTimers[r]=setTimeout(()=>{const o=readOverride(r);global.KaPrefs?.remoteSet?.({[`menuDuzeni_${r}`]:o?JSON.stringify(o):'',[`menuDuzeniT_${r}`]:o?.t||Date.now()})},800);
 }
+/* Kaydı olduğu gibi yazar (cihaz + hesap eşitlemesi); sessiz, olay göndermez. */
+function commitOverride(r,next){
+  store.set(deviceKey(r),JSON.stringify(next));overrideCache[cacheKey(r)]=next;pushOverride(r);
+}
 function writeOverride(r,patch,{reset=false,silent=false}={}){
-  const k=cacheKey(r);
-  if(reset){store.del(deviceKey(r));overrideCache[k]=null;store.del(legacyFavKey(r));global.KaPrefs?.remoteSet?.({[`menuDuzeni_${r}`]:'',[`menuDuzeniT_${r}`]:Date.now()})}
-  else{
-    const cur=readOverride(r)||{},next={...cur,...patch,t:Date.now()};
-    store.set(deviceKey(r),JSON.stringify(next));overrideCache[k]=next;pushOverride(r);
-  }
+  if(reset){const k=cacheKey(r);store.del(deviceKey(r));overrideCache[k]=null;store.del(legacyFavKey(r));global.KaPrefs?.remoteSet?.({[`menuDuzeni_${r}`]:'',[`menuDuzeniT_${r}`]:Date.now()})}
+  else commitOverride(r,{...(readOverride(r)||{}),...patch,t:Date.now()});
   if(!silent)emitLayoutChanged(r);
 }
-/* Düzeni kaydeder: tek yer, tüm düzenleme buradan geçer. */
+/* Düzeni kaydeder: tek yer, tüm düzenleme buradan geçer. Kullanıcının gördüğü sayfalar `gorulen`'e yazılır. */
 function saveLayout(next,r=role(),{silent=false}={}){
   const menus=cleanMenus(next?.menus);
-  writeOverride(r,{menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav),sunulan:barSunulan(r,readOverride(r)?.sunulan)},{silent});
+  writeOverride(r,{v:LAYOUT_SURUM,menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav),gorulen:scopeIds(r)},{silent});
   return layoutRaw(r);
 }
 const resetLayout=(r=role())=>writeOverride(r,null,{reset:true});
+/* Hiçbir menüde olmayan sayfaları kendi menülerine (yoksa "Diğer sayfalar"a) ekler; eklenen sayfa sayısını döner. */
+function placeOrphans(r=role()){
+  const L=layoutRaw(r),menus=clone(L.menus);
+  const n=scopeIds(r).filter(id=>placeInto(menus,id)).length;
+  if(n)saveLayout({...L,menus},r);
+  return n;
+}
 /* Hesaba eşitleme: başka cihazdaki daha yeni düzen bu cihaza gelir; cihazdaki daha yeniyse hesaba gider. */
 let pulledFor='';
 function pullLayouts(){
@@ -384,7 +432,7 @@ function menus(r=role()){
   return layoutRaw(r).menus.map(m=>({...m,tools:visible(m.ids)})).filter(m=>m.tools.length);
 }
 function menu(id,r=role()){return menus(r).find(m=>m.id===id)||null}
-const TAB_LABEL={home:r=>r==='idareci'?'Özet':'Bugün',program:()=>'Programım',tools:()=>'Araçlar',me:()=>'Ben'};
+const TAB_LABEL={home:()=>'Ana Sayfa',program:()=>'Programım',tools:()=>'Menü',me:()=>'Ben'};
 const TAB_ICON={home:'home',program:'calendar',tools:'grid',me:'user'};
 function barItem(key,r){
   if(BAR_FIXED.includes(key))return{key,label:TAB_LABEL[key](r),icon:TAB_ICON[key],kind:'page'};
@@ -402,18 +450,19 @@ function tabs(r=role()){
 }
 const tab=(key,r=role())=>tabs(r).find(t=>t.key===key)||null;
 const homeTab=()=>'home';
-const hub=()=>({title:'Araçlar',search:'Sayfa ara: izin, evrak, tebliğ, BEP'});
+const hub=()=>({title:'Menü',search:'Sayfa ara: izin, evrak, tebliğ, BEP'});
 const toolCount=(r=role())=>new Set(menus(r).flatMap(m=>m.tools.map(t=>t.id))).size;
 function allTools(){
   return Object.values(TOOLS).filter(toolAllowed).sort((a,b)=>a.label.localeCompare(b.label,'tr'));
 }
-const inNoMenu=(r=role())=>{const used=new Set(layoutRaw(r).menus.flatMap(m=>m.ids));return allTools().filter(t=>!used.has(t.id))};
+/* Rolün sayfalarından hiçbir menüde olmayanlar (yetkisi olanlar). */
+const inNoMenu=(r=role())=>{const used=new Set(layoutRaw(r).menus.flatMap(m=>m.ids));return scopeIds(r).map(tool).filter(t=>toolAllowed(t)&&!used.has(t.id)).sort((a,b)=>a.label.localeCompare(b.label,'tr'))};
 function findTool(route,page=''){
   route=String(route||'');page=String(page||'');
   return Object.values(TOOLS).find(t=>t.route===route&&t.page===page)||null;
 }
 const ME_TOOLS=new Set(['settings','guide','about','notes']);
-/* Bir sayfa hangi alt menü yuvasını aydınlatır: önce tek başına eklenmişse onu, sonra onu içeren menüyü, sonra Araçlar'ı. */
+/* Bir sayfa hangi alt menü yuvasını aydınlatır: önce tek başına eklenmişse onu, sonra onu içeren menüyü, sonra Ben ya da Menü'yü. */
 function tabOf(route,page=''){
   route=String(route||'');page=String(page||'');
   if(route==='dashboard'&&!page)return 'home';
@@ -427,14 +476,15 @@ function tabOf(route,page=''){
   if(route==='settings'||route==='dashboard')return 'me';
   return keys.includes('tools')?'tools':'';
 }
-/* Bir aracın geri dönüş sayfası: alt menüdeki menü, yoksa ilk içeren menü, yoksa Araçlar / Ben. */
+/* Bir sayfanın geri dönüş sayfası: alt menüde sabit olan menü; yoksa Ben sayfasındakiler (Ayarlar, Notlarım…) için Ben, diğerleri için ilk içeren menü, o da yoksa Menü. */
 function parentOf(route,page=''){
   const t=findTool(route,page),r=role();
   if(!t)return route==='settings'||route==='dashboard'?'me':'';
   const all=layoutRaw(r).menus.filter(x=>x.ids.includes(t.id)&&menu(x.id,r)),keys=tabs(r).map(x=>x.key);
-  const m=all.find(x=>keys.includes(`menu:${x.id}`))||all[0];
-  if(m)return `menu:${m.id}`;
-  return ME_TOOLS.has(t.id)?'me':'tools';
+  const pinned=all.find(x=>keys.includes(`menu:${x.id}`));
+  if(pinned)return `menu:${pinned.id}`;
+  if(ME_TOOLS.has(t.id))return 'me';
+  return all[0]?`menu:${all[0].id}`:'tools';
 }
 const menuNamesOf=(id,r)=>layoutRaw(r).menus.filter(m=>m.ids.includes(id)).map(m=>m.ad);
 /* ── sık kullanılanlar ve son açılanlar ── */
@@ -472,10 +522,10 @@ function search(q,r=role()){
     if(rows.length)break;
   }
   rows.sort((a,b)=>a.score-b.score||a.t.label.localeCompare(b.t.label,'tr'));
-  return rows.map(({t})=>({...t,where:ME_TOOLS.has(t.id)&&!menuNamesOf(t.id,r).length?'Ben':(menuNamesOf(t.id,r).slice(0,2).join(' · ')||'Araçlar')}));
+  return rows.map(({t})=>({...t,where:menuNamesOf(t.id,r).slice(0,2).join(' · ')||'Tüm sayfalar'}));
 }
 
-/* ── web yan menüsü: alt menüdeki yuvalar; Araçlar'ın altında alt menüde olmayan menüler ── */
+/* ── web yan menüsü: alt menüdeki yuvalar; Menü'nün altında alt menüde olmayan menüler ── */
 function webMenu(){
   const r=role(),list=tabs(r),pinned=new Set(list.filter(t=>t.key.startsWith('menu:')).map(t=>t.key.slice(5)));
   return list.map(t=>({key:t.key,label:t.label,icon:t.icon,children:t.key==='tools'?menus(r).filter(m=>!pinned.has(m.id)).map(m=>({key:`menu:${m.id}`,label:m.ad,icon:m.icon,count:m.tools.length})):[]}));
@@ -484,7 +534,8 @@ function webMenu(){
 global.AppNav={
   icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
   tabs,tab,homeTab,tabOf,parentOf,hub,menus,menu,toolCount,tool,findTool,allTools,inNoMenu,
-  layoutRaw,saveLayout,resetLayout,defaultLayout:r=>clone(DEFAULT_LAYOUT[r]),MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,
+  layoutRaw,saveLayout,resetLayout,placeOrphans,defaultLayout:r=>clone(DEFAULT_LAYOUT[r]),MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,TAB_LABEL,
+  catalog:()=>Object.values(TOOLS).map(t=>({id:t.id,label:t.label,kat:t.kat,y:t.y,route:t.route,page:t.page})),menuTree:()=>MENU_TREE.map(m=>({...m})),menuOrder:r=>[...MENU_SIRA[r]],scopeIds,LAYOUT_SURUM,
   favorites,isFavorite,toggleFavorite,recent,noteOpened,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN
 };

@@ -20,7 +20,7 @@ const pagesSrc=fs.readFileSync('js/core/nav-pages.js','utf8');
 const editorSrc=fs.readFileSync('js/core/nav-editor.js','utf8');
 assert(!/\bSUITES\b|suiteOf|suiteTool|renderSuiteBar|ka-suite/.test(src+pagesSrc+fs.readFileSync('css/design-system-base.css','utf8')),'Çok sayfalı (sekmeli) araç yapısı kalmamalı; her sayfa ayrı araçtır.');
 assert(!/\bGROUPS\b|\bCOMM_IDS\b|\bPROGRAM_IDS\b|key:'personel',label:'Personel işlemleri'/.test(src),'Eski sabit grup/sekme tabloları kalmamalı; menüler DEFAULT_LAYOUT ve kullanıcı düzeninden gelir.');
-const toolIds=new Set([...src.matchAll(/^ \['([a-z0-9-]+)','[^']+','[a-z]+','[a-z]+',/gm)].map(m=>m[1]));
+const toolIds=new Set(nav.AppNav.catalog().map(t=>t.id));
 const defs={ogretmen:nav.AppNav.defaultLayout('ogretmen'),idareci:nav.AppNav.defaultLayout('idareci')};
 for(const [role,def] of Object.entries(defs)){
   assert.strictEqual(def.bar.length,5,`${role}: alt menü 5 yuvadan oluşmalı.`);

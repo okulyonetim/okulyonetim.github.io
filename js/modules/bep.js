@@ -1,4 +1,4 @@
-/* Koruk Asistan — BEP Hazırla
+/* Koruk Asistan — BEP Dosyası Hazırla
  * Öğretmenin kendi öğrencileri için BEP dosyaları: kayıtlı dosya listesi + 6 adımlı hazırlama ekranı.
  * Kayıtlar oy_bepDosyalari koleksiyonunda DeviceData/SyncEngine ile tutulur; her öğretmen yalnız kendi dosyalarını görür (yönetici hepsini).
  * Kazanım kataloğu data/bep/ altındadır; mantık bep-core.js, çıktı (yazdır/PDF/Word) bep-print.js içindedir.
@@ -158,7 +158,7 @@ function viewList(){
  const body=list.length?`<ul class="ka-bep-list">${list.map(listItem).join('')}</ul>`
   :all.length?`<p class="ka-bep-empty">Aramaya uyan dosya yok.</p>`
   :`<div class="ka-bep-empty ka-bep-empty--big"><strong>Henüz BEP dosyası yok</strong><p>Öğrenciyi, performans düzeyini ve kazanımları adım adım girin; dosya cihazınıza kaydedilir, istediğinizde yazdırır veya Word olarak alırsınız.</p><button class="ka-btn" type="button" data-bep-act="new">İlk BEP dosyasını hazırla</button></div>`;
- return`<header class="vgf-head ka-bep-head"><div><h2>BEP Hazırla</h2><p class="ka-muted">Öğrenci için Bireyselleştirilmiş Eğitim Programı hazırlayın. Dosyalarınız yalnız size görünür.</p></div><button class="ka-btn" type="button" data-bep-act="new">Yeni BEP</button></header>${search}${body}`;
+ return`<header class="vgf-head ka-bep-head"><div><h2>BEP Dosyası Hazırla</h2><p class="ka-muted">Öğrenci için Bireyselleştirilmiş Eğitim Programı hazırlayın. Dosyalarınız yalnız size görünür.</p></div><button class="ka-btn" type="button" data-bep-act="new">Yeni BEP</button></header>${search}${body}`;
 }
 
 /* ── düzenleme görünümü ── */

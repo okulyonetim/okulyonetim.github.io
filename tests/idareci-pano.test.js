@@ -250,11 +250,13 @@ assert(txt.includes('Gelmeyenler: Uygar Halisdemir — Yıllık izin'));
 assert(txt.includes('Dersi boş sınıf: 4/A'));
 
 /* ── bağlantılar: araç kataloğu, alt menü, rota, öğretmen formu, stil ── */
-const nav=fs.readFileSync('js/core/app-nav.js','utf8');
-assert(/\['idareci-pano','İdareci Pano','[a-z]+','[a-z]+','[^']+','idareci-pano'\]/.test(nav),'Araç kataloğunda İdareci Pano rotası olmalı.');
-assert(/idareci:\{\s*bar:\['home','menu:okul','tools','tool:idareci-pano','me'\]/.test(nav),'İdareci varsayılan alt menüsünde İdareci Pano olmalı.');
-assert(/M\('okul','Okul','school','indigo',\['idareci-pano'/.test(nav),'İdareci Pano Okul menüsünde de bulunmalı.');
-assert(/TEACHER_HIDDEN=new Set\(\['idareci-pano:'/.test(nav),'Öğretmen hesabına kapalı olmalı (izin ve terfi bilgisi içerir).');
+const {loadNav}=require('./helpers/app-nav');
+const navN=loadNav().N;
+assert(navN.catalog().some(t=>t.id==='idareci-pano'&&t.label==='Pano'&&t.route==='idareci-pano'&&t.kat==='okul'&&t.y),'Katalogda Pano rotası Okul menüsünde ve yönetime özel olmalı.');
+eq(navN.defaultLayout('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'İdareci varsayılan alt menüsünde Pano olmalı.');
+assert(navN.defaultLayout('idareci').menus.find(m=>m.id==='okul').ids.includes('idareci-pano'),'Pano Okul menüsünde de bulunmalı.');
+assert(navN.TEACHER_HIDDEN.has('idareci-pano:'),'Öğretmen hesabına kapalı olmalı (izin ve terfi bilgisi içerir).');
+assert(!navN.defaultLayout('ogretmen').menus.some(m=>m.ids.includes('idareci-pano')),'Öğretmen varsayılan menüsünde Pano olmamalı.');
 const shell=fs.readFileSync('js/core/shell-ui.js','utf8');
 assert(/name==='idareci-pano'[\s\S]{0,400}IdareciPano\.open\(\)/.test(shell),'Kabukta idareci-pano rotası modülü açmalı.');
 const people=fs.readFileSync('js/modules/people-directory.js','utf8');
@@ -275,31 +277,17 @@ assert(css.includes('/* ===== İDARECİ PANO'),'İdareci Pano stil bloğu olmal�
 const ui=fs.readFileSync('js/modules/idareci-pano.js','utf8');
 assert(!/localStorage\.setItem/.test(ui),'Modül doğrudan localStorage yazmamalı (KaPrefs kullanılır).');
 
-/* ── alt menü: kayıtlı düzene Pano bir kez eklenir ── */
-function navWith(initial){
-  const ls=new Map(Object.entries(initial||{}));
-  const win={console,setTimeout:()=>0,clearTimeout(){},localStorage:{getItem:k=>ls.has(k)?ls.get(k):null,setItem:(k,v)=>ls.set(k,String(v)),removeItem:k=>ls.delete(k)},
-    AppStore:{get:k=>k==='session.user'?{uid:'u1',admin:true}:undefined,data:()=>[],subscribe:()=>()=>{}},
-    addEventListener(){},dispatchEvent(){},CustomEvent:function(n,o){this.detail=o&&o.detail},document:{addEventListener(){},querySelectorAll:()=>[],getElementById:()=>null}};
-  win.window=win;win.globalThis=win;vm.createContext(win);
-  vm.runInContext(nav,win,{filename:'app-nav.js'});
-  return{N:win.AppNav,ls};
-}
+/* ── alt menü: eski sürümlü kayıtlı düzen yeni varsayılana (Pano dahil) döner; yeni sürümlü kayıt korunur ── */
 const NK='ka-nav-layout:u1:idareci';
 {
-  let {N,ls}=navWith({[NK]:JSON.stringify({bar:['home','menu:okul','tools','menu:evrak','me'],t:1})});
-  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Kayıtlı alt menüde son değiştirilebilir yuva yerine Pano gelir.');
-  eq(JSON.parse(ls.get(NK)).sunulan,['idareci-pano'],'Eklendiği kayıt altına alınır.');
-  const raw=N.layoutRaw('idareci');
-  N.saveLayout({...raw,bar:['home','menu:okul','tools','menu:evrak','me']},'idareci');
-  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','menu:evrak','me'],'Kullanıcı Panoyu çıkarırsa geri eklenmez.');
-  ({N,ls}=navWith({}));
-  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Varsayılan düzende Pano zaten alt menüde.');
+  let {N,ls}=loadNav();
+  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Varsayılan düzende Pano alt menüde.');
   assert.strictEqual(ls.size,0,'Özelleştirilmemiş düzene yazılmaz.');
-  ({N,ls}=navWith({[NK]:JSON.stringify({bar:['home','tool:idareci-pano','tools','menu:okul','me'],t:1})}));
-  eq(N.layoutRaw('idareci').bar,['home','tool:idareci-pano','tools','menu:okul','me'],'Pano zaten barda ise sıra bozulmaz.');
-  ({N,ls}=navWith({[NK]:JSON.stringify({bar:['home','program','tools','me','menu:okul'],t:1})}));
-  eq(N.layoutRaw('idareci').bar.filter(k=>['home','tools','me'].includes(k)).length,3,'Ana sayfa, Araçlar ve Ben yerinde kalır.');
-  assert(N.layoutRaw('idareci').bar.includes('tool:idareci-pano'));
+  ({N,ls}=loadNav({store:{[NK]:JSON.stringify({bar:['home','menu:okul','tools','menu:evrak','me'],t:1})}}));
+  eq(N.layoutRaw('idareci').bar,['home','menu:okul','tools','tool:idareci-pano','me'],'Eski sürümlü kayıtlı alt menü yeni varsayılana döner.');
+  ({N,ls}=loadNav({store:{[NK]:JSON.stringify({v:N.LAYOUT_SURUM,bar:['home','tool:idareci-pano','tools','menu:okul','me'],gorulen:N.scopeIds('idareci'),t:1})}}));
+  eq(N.layoutRaw('idareci').bar,['home','tool:idareci-pano','tools','menu:okul','me'],'Güncel sürümlü kayıtlı alt menünün sırası bozulmaz.');
+  ({N,ls}=loadNav({store:{[NK]:JSON.stringify({v:N.LAYOUT_SURUM,bar:['home','program','tools','me','menu:okul'],gorulen:N.scopeIds('idareci'),t:1})}}));
+  eq(N.layoutRaw('idareci').bar.filter(k=>['home','tools','me'].includes(k)).length,3,'Ana sayfa, Menü ve Ben yerinde kalır.');
 }
 console.log('İdareci Pano çekirdek testi geçti.');

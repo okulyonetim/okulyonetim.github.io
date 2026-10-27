@@ -192,8 +192,8 @@ const rules=rd('firestore.rules'),m=rules.match(/match \/oy_tymmOlcekleri\/\{id\
 assert(m&&/resource\.data\.sahipUid == request\.auth\.uid/.test(m[0])&&/request\.resource\.data\.sahipUid == request\.auth\.uid/.test(m[0]),'Kural: yalnız sahibi okur/yazar.');
 assert(!/allow (read|write|create|update|delete)[^;]*: if (true|girisYapmis\(\));/.test(m[0]),'Kural herkese açık değil.');
 const nav=rd('js/core/app-nav.js');
-assert(/\['tymm-olcek','TYMM İlkokul Ölçekleri','ruler','blue',[^\]]*'tymm-olcek'\]/.test(nav),'Araç kataloğunda.');
-assert((nav.match(/'tymm-olcek'\]/g)||[]).length>=1&&/'rubric','project','tymm-olcek'\]/.test(nav)&&/'bep-hazirla','tymm-olcek'\]/.test(nav),'Öğretmen ve idareci menülerinde.');
+assert(require('./helpers/app-nav').loadNav().N.catalog().some(t=>t.id==='tymm-olcek'&&t.label==='TYMM İlkokul Ölçekleri'&&t.route==='tymm-olcek'&&t.kat==='sinav'),'Araç kataloğunda.');
+{ const {N}=require('./helpers/app-nav').loadNav(); assert(['ogretmen','idareci'].every(r=>N.defaultLayout(r).menus.some(m=>m.id==='sinav'&&m.ids.includes('tymm-olcek'))),'Öğretmen ve idareci menülerinde.'); }
 const shell=rd('js/core/shell-ui.js');
 assert(/name==='tymm-olcek'/.test(shell)&&/js\/modules\/tymm-olcek\.js/.test(shell)&&/TymmModule\.open\(\)/.test(shell),'Shell yönlendirmesi.');
 const sw=rd('service-worker.js');
