@@ -49,14 +49,14 @@ function dilekce(c){
 }
 
 function tutanak(c){
- const d=veri().duzeyler[c.duzey]||{},adi=`${ogretmenUnvani(c)} ${imzaAdi(c)}`;
+ const d=veri().duzeyler[c.duzey]||{},adi=`${ogretmenUnvani(c)} ${imzaAdi(c)}`,baslik=`${veri().donem.toLocaleUpperCase('tr')} VELİ TOPLANTI TUTANAĞI`;
  const gorusme=(d.gorusme||[]).map((g,i)=>`<section class="vtp-madde"><h3 class="vtp-alt">${i+1}. ${esc(g.b)}</h3>${g.p.map(p=>`<p>${esc(p).replace(/\{OGRETMEN\}/g,()=>esc(adi))}</p>`).join('')}</section>`).join('');
- return`<article class="vtp-paper vtp-tutanak">${baslikKutusu(c,`${veri().donem.toLocaleUpperCase('tr')} VELİ TOPLANTI TUTANAĞI`)}
+ return`<article class="vtp-paper vtp-tutanak">${baslikKutusu(c,baslik)}
 <table class="vtp-bilgi"><tbody><tr><th>SINIF / ŞUBE</th><th>TARİH</th><th>SAAT</th><th>${esc(ogretmenUnvani(c).toLocaleUpperCase('tr'))}</th></tr><tr><td>${esc(c.sinif)}</td><td>${esc(tarihMetni(c.tarih))}</td><td>${esc(saatMetni(c.saat))}</td><td>${esc(imzaAdi(c))}</td></tr></tbody></table>
 <h2 class="vtp-baslik">GÜNDEM MADDELERİ</h2>${gundemListe(c)}
 <h2 class="vtp-baslik">GÜNDEM MADDELERİNİN GÖRÜŞÜLMESİ</h2>${gorusme}
-<h2 class="vtp-baslik">ALINAN KARARLAR</h2><ol class="vtp-liste">${(d.kararlar||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
-<div class="vtp-imzalar">${imzaBlok(imzaAdi(c),ogretmenUnvani(c))}${mudurBlok(c,'UYGUNDUR')}</div></article>`;
+<section class="vtp-kararlar">${baslikKutusu(c,baslik)}<h2 class="vtp-baslik">ALINAN KARARLAR</h2><ol class="vtp-liste">${(d.kararlar||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ol>
+<div class="vtp-imzalar">${imzaBlok(imzaAdi(c),ogretmenUnvani(c))}${mudurBlok(c,'UYGUNDUR')}</div></section></article>`;
 }
 
 function imzaSirkusu(c){
@@ -64,7 +64,7 @@ function imzaSirkusu(c){
  const govde=liste.map((o,i)=>`<tr><td class="vtp-no">${i+1}</td><td>${esc(o.ad||'')}</td><td>${esc(c.veliAdlari?o.veli||'':'')}</td><td>${esc(c.veliAdlari?o.yakinlik||'':'')}</td><td></td></tr>`).join('');
  return`<article class="vtp-paper vtp-sirku">${baslikKutusu(c,'VELİ TOPLANTISI İMZA SİRKÜSÜ')}
 <table class="vtp-tablo"><thead><tr><th class="vtp-c-no">No</th><th>Öğrenci Adı</th><th>Veli Adı Soyadı</th><th class="vtp-c-yak">Yakınlık Durumu</th><th class="vtp-c-imza">İmza</th></tr></thead><tbody>${govde}</tbody></table>
-<div class="vtp-imzalar vtp-imzalar--sag">${imzaBlok(imzaAdi(c),ogretmenUnvani(c))}</div></article>`;
+<div class="vtp-imzalar">${imzaBlok(imzaAdi(c),ogretmenUnvani(c))}</div></article>`;
 }
 
 function pusula(c){
@@ -119,11 +119,9 @@ function ctx(){
  return{yil:egitimYili(),okul:okulAdi(duzey),sinif:etiket,duzey,tarih:s.tarih,saat:s.saat,ogretmen:s.ogretmen,mudur:s.mudur,
   ogrenciler:c?ogrencilerOf(c.id):[],veliAdlari:s.veliAdlari,bosSatir:s.bosSatir};
 }
-/* Tutanak metni yalnız hazır olan düzeylerde ve metinlerin yazıldığı eğitim yılında üretilir (2026/70 sayılı Genelge göndermeleri yıla özgüdür). */
+/* Tutanak metni yalnız metinlerin yazıldığı eğitim yılında üretilir (2026/70 sayılı Genelge göndermeleri yıla özgüdür). */
 function tutanakDurumu(duzey){
- const d=veri().duzeyler[duzey];
  if(!duzey)return'Önce sınıfı seçin.';
- if(!d?.gorusme)return`${duzey}. sınıf tutanak metni henüz eklenmedi.`;
  if(veri().yil!==egitimYili())return`Tutanak metinleri ${veri().yil} eğitim-öğretim yılı içindir.`;
  return'';
 }
@@ -191,7 +189,7 @@ function yazdir(k){
  const b=BELGELER.find(x=>x.k===k),c=ctx();
  if(!b||belgeDurumu(k,c.duzey))return false;
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
- global.ReportEngine.printReport(`Veli Toplantısı ${b.ad}`,b.yap(c),{fileName:`Veli Toplantısı ${b.ad} ${c.sinif}`.replace(/…/g,''),yon:k==='imza'&&ensure().yon==='yatay'?'yatay':'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});
+ global.ReportEngine.printReport(`Veli Toplantısı ${b.ad}`,b.yap(c),{fileName:`Veli Toplantısı ${b.ad} ${c.sinif}`.replace(/…/g,''),yon:k==='imza'&&ensure().yon==='yatay'?'yatay':'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10});
  return true;
 }
 

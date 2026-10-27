@@ -55,8 +55,8 @@ function patchReportEngine(engine){
   const original=engine.printReport.bind(engine);
   const wrapped=function(title,body,opts={}){
     const schedule=isScheduleReport(opts);
-    const extra=String(opts.extraHead||'')+GLOBAL_SOFT_STYLE+(schedule?COLUMN_ZEBRA_STYLE:'');
-    return original(title,schedule?injectClassTeacher(body):body,{...opts,extraHead:extra});
+    /* Ortak stil ekStil ile gider: extraHead'e eklenseydi her rapor "özel CSS'li" sayılıp akış kipi (her sayfada üst/alt boşluk) kapanırdı. */
+    return original(title,schedule?injectClassTeacher(body):body,{...opts,ekStil:GLOBAL_SOFT_STYLE+(schedule?COLUMN_ZEBRA_STYLE:'')});
   };
   wrapped.__kaScheduleColumnZebra=true;
   wrapped.__kaReportSoftFill=true;

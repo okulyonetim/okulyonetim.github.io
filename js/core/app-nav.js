@@ -154,7 +154,6 @@ const KATALOG=[
   ['student-list','Öğrenci Listesi Oluşturucu','doc','Sınıf ve öğrenci listesi hazırla','tools','student-list'],
   ['school-age-calculator','İlkokula Başlama Yaşı','calendar','Kayıt yaşı durumunu hesapla','documents','school-age-calculator'],
   ['parentmeeting','Veli Görüşme Formu','users','Veli görüşmesini kaydet ve yazdır','parentmeeting'],
-  ['veli-toplantisi','Veli Toplantısı','users','Dilekçe, tutanak, imza sirküsü ve davet pusulası','veli-toplantisi'],
   ['form-rehberlik','Rehberlik Raporları','shield','Rehberlik çalışma raporları','tools','form-rehberlik'],
   ['bep-hazirla','BEP Dosyası Hazırla','pen','Öğrenci BEP dosyası hazırla ve yazdır','bep-hazirla']
  ]],
@@ -186,6 +185,7 @@ const KATALOG=[
  ]],
  ['evrak','Tutanak ve Evrak','pen','orange',[
   ['ogretmen-dosyasi','Öğretmen Dosyası','folder','Evrak listesi, hazır formlar ve teslim takibi','ogretmen-dosyasi'],
+  ['veli-toplantisi','Veli Toplantısı','users','Dilekçe, tutanak, imza sirküsü ve davet pusulası','veli-toplantisi'],
   ['tutanak','Tutanak Hazırla','pen','Toplantı ve olay tutanakları','tutanak'],
   ['dilekce-olustur','Dilekçe Oluştur','doc','Hazır dilekçe örnekleri','dilekcehazirla'],
   ['form-sok','Şube Öğretmenler Kurulu','users','ŞÖK toplantı evrakı','tools','form-sok'],

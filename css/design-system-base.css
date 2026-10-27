@@ -14983,10 +14983,10 @@ html[data-theme] #v2ModuleRoot .ka-od-add .ka-field{flex:1 1 var(--ka-sp-120);mi
 .ka-report .vtp-alt{margin:3mm 0 1mm;font-family:inherit;font-size:10.5pt;font-weight:700;letter-spacing:0;break-after:avoid;page-break-after:avoid}
 .ka-report .vtp-madde{break-inside:avoid;page-break-inside:avoid}
 .ka-report .vtp-madde p{margin:0 0 1.5mm;text-indent:8mm;text-align:justify;font-size:10.5pt}
-.ka-report .vtp-imzalar{display:flex;justify-content:space-around;gap:8mm;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
-.ka-report .vtp-imzalar--alt{flex-direction:column;align-items:center;gap:8mm}
-.ka-report .vtp-imzalar--sag{justify-content:flex-end;padding-right:10mm}
-.ka-report .vtp-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:55mm;text-align:center}
+.ka-report .vtp-imzalar{display:flex;justify-content:flex-start;align-items:flex-start;gap:25mm;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .vtp-imzalar--alt{flex-direction:column;gap:8mm}
+.ka-report .vtp-imza{display:flex;flex-direction:column;align-items:flex-start;gap:1mm;min-width:55mm;text-align:left}
+.ka-report .vtp-kararlar{break-before:page;page-break-before:always}
 .ka-report .vtp-kutu{display:flex;flex-direction:column;align-items:center;gap:1mm;margin:0 0 4mm;padding:2.5mm;border:.4mm solid var(--ka-report-border);text-align:center}
 .ka-report .vtp-kutu__yil{font-size:9.5pt}
 .ka-report .vtp-kutu__sinif{font-size:13pt}
@@ -15006,7 +15006,7 @@ html[data-theme] #v2ModuleRoot .ka-od-add .ka-field{flex:1 1 var(--ka-sp-120);mi
 .ka-report .vtp-pusula{box-sizing:border-box;display:flex;flex-direction:column;gap:1mm;min-height:40mm;padding:2.5mm 4mm;border:.3mm dashed var(--ka-report-border);break-inside:avoid;page-break-inside:avoid}
 .ka-report .vtp-pusula p{margin:0;text-indent:6mm;text-align:justify;font-size:10.5pt}
 .ka-report .vtp-pusula small{font-size:9.5pt}
-.ka-report .vtp-pusula .vtp-imza{align-self:flex-end;min-width:50mm;margin-top:auto}
+.ka-report .vtp-pusula .vtp-imza{align-self:flex-start;min-width:50mm;margin-top:auto}
 
 /* ===== VELİ TOPLANTISI (vtp-*) — sınıf seç, belgeyi yazdır sayfası ===== */
 html[data-theme] #v2ModuleRoot .vtp-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}

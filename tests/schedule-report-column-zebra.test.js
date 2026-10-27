@@ -27,14 +27,18 @@ new Function('window',fix)(window);
 let scheduleOpts=null,otherOpts=null;
 window.ReportEngine={printReport:(title,body,opts)=>{if(title==='schedule')scheduleOpts=opts;else otherOpts=opts;return opts}};
 window.ReportEngine.printReport('schedule','', {extraHead:'<style>.ka-sr-report{}</style>',fontSize:7});
-assert(scheduleOpts.extraHead.includes('data-ka-schedule-column-zebra'),'Ders programı çıktısına sütun zebra öncelik stili eklenmedi.');
-assert(scheduleOpts.extraHead.includes('data-ka-report-soft-fill'),'Ders programına ortak hafif dolgu stili eklenmedi.');
+assert(scheduleOpts.ekStil.includes('data-ka-schedule-column-zebra'),'Ders programı çıktısına sütun zebra öncelik stili eklenmedi.');
+assert(scheduleOpts.ekStil.includes('data-ka-report-soft-fill'),'Ders programına ortak hafif dolgu stili eklenmedi.');
 assert(scheduleOpts.fontSize===7,'Rapor seçenekleri zebra düzeltmesinde korunmalı.');
+assert.strictEqual(scheduleOpts.extraHead,'<style>.ka-sr-report{}</style>','Çağıranın extraHead değeri değiştirilmemeli.');
 window.ReportEngine.printReport('other','',{extraHead:'<style>.other-report{}</style>'});
-assert(!otherOpts.extraHead.includes('data-ka-schedule-column-zebra'),'Ders programı dışındaki raporlara sütun zebra uygulanmamalı.');
-assert(otherOpts.extraHead.includes('data-ka-report-soft-fill'),'Diğer raporlara ortak hafif dolgu uygulanmalı.');
+assert(!otherOpts.ekStil.includes('data-ka-schedule-column-zebra'),'Ders programı dışındaki raporlara sütun zebra uygulanmamalı.');
+assert(otherOpts.ekStil.includes('data-ka-report-soft-fill'),'Diğer raporlara ortak hafif dolgu uygulanmalı.');
+/* Ortak stil extraHead'e karışırsa rapor "özel CSS'li" sayılıp akış kipi (her sayfada üst/alt boşluk) kapanır; yinelenen şikâyetin kök nedeni. */
+window.ReportEngine.printReport('duz','',{});
+assert(!String(otherOpts.extraHead||'').trim(),'Özel CSS vermeyen rapora extraHead eklenmemeli (akış kipi açık kalmalı).');
 
-assert(init.includes('schedule-report-column-zebra.js?v=939'),'Sütun zebra runtime uygulama başlangıcında yüklenmeli.');
+assert(init.includes('schedule-report-column-zebra.js?v=940'),'Sütun zebra runtime uygulama başlangıcında yüklenmeli.');
 assert(sw.includes("'./js/core/schedule-report-column-zebra.js?v=939'"),'Sütun zebra runtime offline precache içinde olmalı.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
 assert(cache&&Number(cache[1])>=938,'Service Worker cache sürümü sütun zebra düzeltmesi için yeterli olmalı.');

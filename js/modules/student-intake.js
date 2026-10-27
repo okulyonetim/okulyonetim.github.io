@@ -393,7 +393,7 @@ const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSiz
 </style>`};
 async function ensureEngine(){
   if(global.ReportEngine?.printReport)return;
-  await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=7');
+  await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=8');
   if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
 }
 const safeName=v=>String(v||'Ogrenci').replace(/[^\p{L}\p{N}]+/gu,'_').replace(/^_|_$/g,'')||'Ogrenci';
