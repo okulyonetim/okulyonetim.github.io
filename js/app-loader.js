@@ -21,7 +21,7 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1072','js/modules/hafta-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/dashboard.js?v=1107']);
+define('dashboard',['js/modules/school-live-status.js?v=1072','js/modules/hafta-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/dashboard.js?v=1108']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/terfi-core.js','js/modules/people-directory.js']);
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=7','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/yillik-plan-word.js?v=2','js/modules/yillik-plan-excel.js?v=1','js/modules/yillik-plan-dialog.js?v=1','js/modules/yillik-plan-ui.js?v=2','js/modules/academic.js?v=895']);
 define('management',['js/core/report-customizer.js?v=1004','js/modules/report-engine.js?v=7','js/modules/management.js?v=898']);
