@@ -81,6 +81,7 @@ const GLYPHS={
 GLYPHS['bep-hazirla']='📝';
 GLYPHS['idareci-pano']='🖥️';
 GLYPHS['tymm-olcek']='📏';
+GLYPHS['ogretmen-dosyasi']='📁';
 const glyphOf=id=>GLYPHS[id]||'📌';
 function glyph(g,cls=''){return `<span class="ka-glyph${cls?' '+cls:''}" data-ka-glyph="${String(g).replace(/"/g,'&quot;')}" aria-hidden="true">${g}</span>`}
 /* Bilinen emojiye CSS bir çizgi simge (--ic) verir; maskelenebilenler .has-ic alır, bilinmeyenler emoji kalır. */
@@ -182,6 +183,7 @@ const KATALOG=[
   ['notes','Notlarım','note','Kişisel notlar','communication','notes']
  ]],
  ['evrak','Tutanak ve Evrak','pen','orange',[
+  ['ogretmen-dosyasi','Öğretmen Dosyası','folder','Evrak listesi, hazır formlar ve teslim takibi','ogretmen-dosyasi'],
   ['tutanak','Tutanak Hazırla','pen','Toplantı ve olay tutanakları','tutanak'],
   ['dilekce-olustur','Dilekçe Oluştur','doc','Hazır dilekçe örnekleri','dilekcehazirla'],
   ['form-sok','Şube Öğretmenler Kurulu','users','ŞÖK toplantı evrakı','tools','form-sok'],
@@ -289,6 +291,7 @@ const KEYWORDS={
   'student-attendance':'yoklama devamsızlık yok yazma','students':'öğrenci liste kayıt','student-list':'öğrenci sınıf listesi çizelge oluşturucu','classes':'şube sınıf rehber',
   'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama deneme ve test sonuçları','grades':'not karne puan','homework':'ödev takip çizelgesi','rubric':'puan katılım rubrik ders etkinliği dağıtımı','project':'proje performans ölçek',
   'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan yıllık ve bep plan takibi','idareci-pano':'idareci pano dijital panosu müdür nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep hazırla bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
+  'ogretmen-dosyasi':'öğretmen dosyası kapak evrak form kontrol listesi teslim dosya hazırlık',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',

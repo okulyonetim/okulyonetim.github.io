@@ -55,7 +55,8 @@ assert(loader.includes("['management.evrakTeslim'")&&loader.includes("['manageme
 assert(fs.readFileSync('service-worker.js','utf8').includes('./js/modules/evrak-teslim.js?v='),'Modül önbelleğe alınmalı.');
 
 /* ── evrak listeleri: her dönemin kendi listesi ── */
-const ev=load('js/modules/evrak-teslim.js');
+const katalogWin=load('js/modules/evrak-katalog.js');
+const ev=load('js/modules/evrak-teslim.js',{EvrakKatalog:katalogWin.EvrakKatalog});
 const page=ev.EvrakTeslimPage;
 assert(page&&Array.isArray(page.KATALOG),'EvrakTeslimPage.KATALOG açık olmalı.');
 const per={};page.KATALOG.forEach(e=>{(per[e.donem]=per[e.donem]||[]).push(e)});

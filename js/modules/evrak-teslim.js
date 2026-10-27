@@ -1,5 +1,6 @@
 /* Koruk Asistan — Öğretmenden İstenecekler · Evrak Teslim İmza Çizelgesi
  * Dönem seçilir, istenecek evraklar işaretlenir, her evrak için kimden isteneceği seçilir; çıktı A4 yatay imza çizelgesidir.
+ * Evrak listesi js/modules/evrak-katalog.js içindedir (Öğretmen Dosyası ile ortak kaynak).
  * Kişisel ayarlar TeacherListBuilder ile aynı yerel-öncelikli koleksiyonda (personelOgretmenListeleri) tutulur.
  * Veri akışı: DeviceData -> IndexedDB/AppStore -> SyncEngine -> Firestore.
  */
@@ -8,99 +9,8 @@
 if(global.EvrakTeslimPage)return;
 
 const TYPE='personelOgretmenListeleri';
-const DONEMLER=[['basi','Sene Başı'],['donem1','1. Dönem Sonu'],['sonu','Sene Sonu']];
-const KIMDEN=[['herkes','Herkes'],['rehber','Sınıf rehber öğretmenleri'],['zumre','Zümre başkanları'],['kulup','Kulüp danışman öğretmenler'],['belirli','Belirli gün/hafta görevlileri']];
-const GRUPLAR={idari:'Genel (İdari) Evraklar',rehberlik:'Rehberlik Dosyası',kulup:'Kulüp Dosyası',ozel:'Eklediğiniz Maddeler'};
-/* Her dönemin evrak listesi ayrıdır. Satır: [grup, ad (çizelge sütunu), yazı metni (tebliğ yazısındaki madde), varsayılan kimden]; sıra, çıktıdaki sütun sırasıdır. */
-const BASI=[
- ['idari','Öğretmen Dosyası Kapağı'],['idari','Atatürk Portresi'],['idari','Türk Bayrağı'],['idari','İstiklal Marşı'],['idari','Gençliğe Hitabe'],
- ['idari','Öğretmen Öz Geçmiş (CV / Tanıtım Formu)'],['idari','Yıllık İş Günü / Eğitim-Öğretim İş Takvimi'],['idari','Ders Giriş-Çıkış Saatleri'],
- ['idari','Ünitelendirilmiş Yıllık Plan'],['idari','Maarif Aylık Raporları (Öğrenme Çıktıları)'],['idari','Günlük Planlar'],
- ['idari','Dersine Girilen Sınıfların Güncel Öğrenci Listesi (e-Okul)'],
- ['idari','Şube Öğretmenler Kurulu Toplantı Tutanakları',null,'rehber'],['idari','Zümre Öğretmenler Kurulu Toplantı Tutanakları (1. ve 2. Dönem)',null,'zumre'],
- ['idari','İl / İlçe Zümre Toplantı Tutanakları',null,'zumre'],['idari','Veli Toplantısı Evrakları'],['idari','Sınav Analizleri'],
- ['idari','Kazanım Değerlendirme Ölçekleri'],['idari','Proje / Performans / Ders İçi Katılım Değerlendirme Ölçeği'],['idari','Proje Ödevleri Dağıtım Listesi'],
- ['idari','Gezi İzin Belgesi ve Gezi Planı'],['idari','Sınıf Oturma Planı ve Ödev Çizelgesi'],['idari','Sosyal Kulüp Dosyası (danışman öğretmenler)',null,'kulup'],
- ['idari','Sınıf Rehber Öğretmeni Dosyası',null,'rehber'],['idari','Ders Dışı Egzersiz ve Sosyal Etkinlik Belgeleri'],['idari','Öğrenci Ürün Dosyası Örnekleri'],
- ['idari','Öğrenci Performans Çizelgesi'],['idari','BEP’li Öğrenci Dosyası (varsa)'],['idari','Yazılı Kâğıtları ve Puanlanmış Cevap Anahtarı'],
- ['idari','Ders Kesim Raporu'],['idari','Aday Öğretmen Çalışmaları / Performans Değerlendirme Formları'],
- ['idari','Belirli Gün ve Haftalar Çizelgesi / Program Akışları',null,'belirli'],
- ['rehberlik','Sınıf Öğrenci Listesi'],['rehberlik','Sınıf Oturma Planı'],['rehberlik','Rehberlik Raporları'],['rehberlik','Devamsızlık Çizelgesi / Mektupları'],
- ['rehberlik','Veli İletişim Bilgileri'],['rehberlik','Veli Görüşme Kayıtları'],['rehberlik','Veli Toplantı Tutanakları'],['rehberlik','Veli Formu'],
- ['rehberlik','Öğrenci Tanıma ve Gözlem Formları'],['rehberlik','Rehberlik Servisine Öğrenci Yönlendirme Formu'],['rehberlik','Uygulanan Test-Anket-Formlar (varsa)'],
- ['rehberlik','Sosyal Medya Veli İzin Belgesi'],['rehberlik','Sınıf Kuralları'],['rehberlik','Sınıf Risk Haritası'],['rehberlik','Sınıf Rehber Öğretmeninin Görevleri'],
- ['rehberlik','Sınıf Başkanı Seçimi ve Görevleri'],['rehberlik','Sınıf Nöbetçi Öğrenci Görevleri / Aylık Nöbetçi Öğrenci Listesi'],['rehberlik','Sınıf Kitaplık Listesi'],
- ['rehberlik','Sınıf Rehberlik Programı Kazanımları'],['rehberlik','Yıllık Rehberlik Çalışma Planı'],
- ['kulup','Kulüp Öğrenci Listesi (Eğitici Kulüplere Seçilenler)'],['kulup','Kulüp Tüzüğü / Yönetmeliği'],['kulup','Kulüp Yıllık Çalışma Planı'],
- ['kulup','Kulüp Toplum Hizmeti Çalışma Planı'],['kulup','Kulüp Toplantı Tutanakları / Karar Defteri'],['kulup','Kulüp Aylık Çalışma Raporları'],
- ['kulup','Kulüp Yıl Sonu Faaliyet Raporu'],['kulup','Kulüp Bütçesi Evrakları'],['kulup','Kulüp Görev Dağılım Çizelgesi'],['kulup','Pano Çalışmaları Dosyası']
-];
-const DONEM1=[
- ["idari","Her dersten iki yazılı notunu e-Okul'a işle","Her dersten iki yazılı sınav notunun e-Okul'a işlenmesi"],
- ["idari","Sınav analizlerini hazırla ve teslim et","Sınav analizlerinin hazırlanarak teslim edilmesi"],
- ["idari","Ders ve etkinliklere katılım puanlarını ver","Ders ve etkinliklere katılım puanlarının verilmesi"],
- ["idari","Kazanım değerlendirme ölçeklerini dosyana koy","Kazanım değerlendirme ölçeklerinin öğretmen dosyasına konulması"],
- ["idari","Puanların e-Okul'daki karşılığını kontrol et","Puanların e-Okul'daki karşılığının kontrol edilmesi"],
- ["rehberlik","Not girişinin özel kurallarını uygula","Not girişine ilişkin özel kurallara uyulması"],
- ["idari","Mazeretli öğrencilerin sınavlarını tamamla","Mazeretli öğrencilerin sınavlarının tamamlanması"],
- ["idari","Maarif aylık raporlarını tamamla ve teslim et","Maarif aylık raporlarının tamamlanarak teslim edilmesi"],
- ["idari","Yıllık planın birinci dönem işlenişini kontrol et","Yıllık planın birinci dönem işlenişinin kontrol edilmesi"],
- ["rehberlik","Karne bilgileri — öğretmen görüşünü doldur","Karne bilgileri öğretmen görüşü bölümünün doldurulması"],
- ["idari","Gelişim düzeyleri ve sosyal-duygusal öğrenme becerilerini gir","Gelişim düzeyleri ile sosyal-duygusal öğrenme becerilerinin girilmesi"],
- ["rehberlik","Davranış notlarını gir","Davranış notlarının girilmesi"],
- ["idari","Sınıf kitaplığını oluştur, okunan kitapları gir","Sınıf kitaplığının oluşturulması ve okunan kitapların girilmesi"],
- ["kulup","Sosyal etkinlik girişlerini tamamla","Sosyal etkinlik girişlerinin tamamlanması"],
- ["idari","Öğretmen puan çizelgesini kontrol et ve imzala","Öğretmen puan çizelgesinin kontrol edilerek imzalanması"],
- ["idari","Ders defterini ve sınıf defterini kapat","Ders defteri ile sınıf defterinin kapatılması"],
- ["idari","Devamsızlık girişlerini kapat","Devamsızlık girişlerinin tamamlanarak kapatılması"],
- ["idari","Nöbet defterini kontrol et","Nöbet defterinin kontrol edilmesi"],
- ["idari","Yazılı kâğıtlarını teslim tutanağıyla teslim et","Yazılı sınav kâğıtlarının teslim tutanağıyla teslim edilmesi"],
- ["rehberlik","Takdir / teşekkür ve onur belgesi durumunu kontrol et","Takdir, teşekkür ve onur belgesi durumlarının kontrol edilmesi"],
- ["idari","Dönem sonu şube öğretmenler kurulu (ŞÖK) toplantısına katıl","Dönem sonu şube öğretmenler kurulu toplantısına katılım sağlanması","rehber"],
- ["idari","Dönem sonu zümre toplantısına katıl","Dönem sonu zümre öğretmenler kurulu toplantısına katılım sağlanması","zumre"],
- ["rehberlik","Dönem sonu veli toplantısını yap","Dönem sonu veli toplantısının yapılması"],
- ["rehberlik","Sınıf rehberlik dönem sonu faaliyet raporunu teslim et","Sınıf rehberlik dönem sonu faaliyet raporunun teslim edilmesi"],
- ["kulup","Kulüp dönem sonu faaliyet ve aylık raporlarını teslim et","Öğrenci kulübü dönem sonu faaliyet raporu ile aylık raporların teslim edilmesi"],
- ["idari","Ders dışı egzersiz çalışmalarının dönem kaydını tamamla","Ders dışı egzersiz çalışmalarına ait dönem kayıtlarının tamamlanması"],
- ["idari","Dönem içinde yapılan gezilerin evrakını dosyala","Dönem içinde yapılan gezilere ait evrakın dosyalanması"],
- ["idari","Kurul, komisyon ve belirli gün-hafta işlerini tamamla","Kurul, komisyon ve belirli gün ve haftalara ilişkin görevlerin tamamlanması","belirli"],
- ["idari","Anasınıfı gelişim / beceri edinme formlarını doldur","Anasınıfı gelişim ve beceri edinme formlarının doldurulması"],
- ["idari","İkinci dönem için oturma planını ve ödev çizelgesini yenile","İkinci dönem için oturma planı ile ödev çizelgesinin yenilenmesi"],
- ["idari","Gerekirse tutanak tut, dilekçe yaz","Gerekli durumlarda tutanak tutulması ve dilekçe yazılması"],
- ["idari","Yarıyıl tatili izin işlemlerini kontrol et","Yarıyıl tatiline ilişkin izin işlemlerinin kontrol edilmesi"],
- ["idari","Öğretmen dosyasını idareye teslim et","Öğretmen dosyasının okul idaresine teslim edilmesi"]
-];
-const SONU=[
- ["idari","İkinci dönem yazılı ve katılım notlarını tamamla","İkinci dönem yazılı ve katılım notlarının tamamlanması"],
- ["idari","Sınav analizlerini hazırla ve teslim et","Sınav analizlerinin hazırlanarak teslim edilmesi"],
- ["idari","Proje notunu gir","Proje notunun girilmesi"],
- ["idari","Proje ve katılım değerlendirme ölçeklerini idareye teslim et","Proje ve katılım değerlendirme ölçeklerinin idareye teslim edilmesi"],
- ["idari","Maarif aylık raporlarının yıl sonu dosyasını tamamla","Maarif aylık raporlarının yıl sonu dosyasının tamamlanması"],
- ["rehberlik","Karne bilgileri — öğretmen görüşünü doldur","Karne bilgileri öğretmen görüşü bölümünün doldurulması"],
- ["rehberlik","Yıl sonu davranış notlarını gir","Yıl sonu davranış notlarının girilmesi"],
- ["idari","Gelişim düzeyi ile sosyal-duygusal öğrenme becerisi girişlerini tamamla","Gelişim düzeyi ile sosyal-duygusal öğrenme becerisi girişlerinin tamamlanması"],
- ["kulup","Sınıf kitaplığı ve sosyal etkinlik girişlerini yıl sonuna göre kapat","Sınıf kitaplığı ve sosyal etkinlik girişlerinin yıl sonuna göre kapatılması"],
- ["idari","Ders kesim raporunu hazırla","Ders kesim raporunun hazırlanması"],
- ["idari","BEP'li öğrenciler için değerlendirme / ilerleme raporunu hazırla","BEP'li öğrenciler için değerlendirme ve ilerleme raporunun hazırlanması"],
- ["idari","Öğretmen puan çizelgesini kontrol et ve imzala","Öğretmen puan çizelgesinin kontrol edilerek imzalanması"],
- ["idari","Sene sonu şube öğretmenler kurulu (ŞÖK) toplantısına katıl","Sene sonu şube öğretmenler kurulu toplantısına katılım sağlanması","rehber"],
- ["idari","Yıl sonu zümre toplantısına katıl","Yıl sonu zümre öğretmenler kurulu toplantısına katılım sağlanması","zumre"],
- ["rehberlik","Rehberlik yıl sonu faaliyet raporunu teslim et","Rehberlik yıl sonu faaliyet raporunun teslim edilmesi"],
- ["kulup","Kulüp yıl sonu faaliyet raporunu ve aylık raporları teslim et","Öğrenci kulübü yıl sonu faaliyet raporu ile aylık raporların teslim edilmesi"],
- ["idari","Ders dışı egzersiz bitiş raporunu teslim et","Ders dışı egzersiz bitiş raporunun teslim edilmesi"],
- ["idari","Yıl içi gezilerin evrakını dosyala","Yıl içinde yapılan gezilere ait evrakın dosyalanması"],
- ["idari","Belirli gün ve hafta görevlerinin dosyasını tamamla","Belirli gün ve haftalara ilişkin görevlerin dosyasının tamamlanması","belirli"],
- ["idari","Sınıf defterlerini ve nöbet defterini kapat","Sınıf defterleri ile nöbet defterinin kapatılması"],
- ["idari","Yazılı kâğıtlarını teslim tutanağıyla teslim et","Yazılı sınav kâğıtlarının teslim tutanağıyla teslim edilmesi"],
- ["rehberlik","Takdir / teşekkür belgelerini karneyle birlikte ver","Takdir ve teşekkür belgelerinin karneyle birlikte verilmesi"],
- ["rehberlik","Karne işlemlerini tamamla, mühür ve imzayı yaptır","Karne işlemlerinin tamamlanarak mühür ve imzanın yaptırılması"],
- ["idari","Anasınıfı yıl sonu beceri edinim raporlarını hazırla","Anasınıfı yıl sonu beceri edinim raporlarının hazırlanması"],
- ["idari","Yaz tatili izin ve görev işlemlerini kontrol et","Yaz tatiline ilişkin izin ve görev işlemlerinin kontrol edilmesi"],
- ["idari","Öğretmen dosyasını idareye teslim et","Öğretmen dosyasının okul idaresine teslim edilmesi"]
-];
-/* Sene başında rehberlik evrakı sınıf rehber öğretmenlerinden, dönem ve yıl sonunda herkesten istenir. */
-const katalogYap=(donem,onek,rows,rehberVarsayilan)=>rows.map((x,i)=>({id:onek+String(i+1).padStart(2,'0'),donem,grup:x[0],ad:x[1],yazi:x[2]||x[1],kimden:x[3]||(x[0]==='kulup'?'kulup':x[0]==='rehberlik'&&rehberVarsayilan?'rehber':'herkes')}));
-const KATALOG=[...katalogYap('basi','b',BASI,true),...katalogYap('donem1','d',DONEM1,false),...katalogYap('sonu','s',SONU,false)];
+const {DONEMLER,KIMDEN,GRUPLAR,KATALOG,egitimYili}=global.EvrakKatalog||{};
+if(!KATALOG)throw new Error('evrak-katalog.js yüklenmedi.');
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
@@ -113,7 +23,6 @@ const norm=s=>String(s||'').toLocaleLowerCase('tr');
 const teacherName=t=>String(t?.adSoyad||[t?.ad,t?.soyad].filter(Boolean).join(' ')||'').replace(/\s+/g,' ').trim();
 const shortAd=(s,n=30)=>s.length>n?s.slice(0,n-1).trimEnd()+'…':s;
 const tempId=()=>`o_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,6)}`;
-function academicYear(){const d=new Date(),y=d.getFullYear();return d.getMonth()+1>=9?`${y}-${y+1}`:`${y-1}-${y}`}
 function school(){const l=arr('okulBilgileri');return l.find(x=>x.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}}
 function schoolName(){const o=school();return String(o.okulAdi||o.ad||'').trim()}
 const imzaAd=s=>{const w=String(s||'').trim().split(/\s+/).filter(Boolean);if(!w.length)return'';const son=w.pop().toLocaleUpperCase('tr');return[...w.map(x=>x.charAt(0).toLocaleUpperCase('tr')+x.slice(1).toLocaleLowerCase('tr')),son].join(' ')};
@@ -155,7 +64,7 @@ function teachers(){
 }
 const removedPool=()=>arr('ogretmenler').filter(t=>t?.id&&t.aktif!==false&&state.cikarilan.includes(String(t.id)));
 function academicKurullar(){
-  const list=arr('kurulKomisyonlar').filter(k=>{const n=norm(k.ad);return n.includes('zümre başkanları')&&!n.includes('bölge')}),y=academicYear(),cur=list.filter(k=>String(k.egitimOgretimYili||'')===y);
+  const list=arr('kurulKomisyonlar').filter(k=>{const n=norm(k.ad);return n.includes('zümre başkanları')&&!n.includes('bölge')}),y=egitimYili(),cur=list.filter(k=>String(k.egitimOgretimYili||'')===y);
   return cur.length?cur:list;
 }
 function groupSets(){
@@ -225,7 +134,7 @@ async function pdf(sort){
   try{
     if(!global.ReportEngine?.printReport)await global.AppLoader.loadScript('js/modules/report-engine.js?v=7');
     const d=DONEMLER.find(x=>x[0]===state.donem)?.[1]||'',r=reportHtml(sort);
-    return await global.ReportEngine.printReport(`EVRAK TESLİM İMZA ÇİZELGESİ — ${upper(d)}`,r.body,{fileName:`Evrak_Teslim_Imza_Cizelgesi_${state.donem}`,yon:'yatay',logoGoster:true,baslikGoster:true,tarihGoster:false,ustBaslik:`${academicYear()} EĞİTİM ÖĞRETİM YILI`,okulAdi:schoolName()||undefined,extraHead:r.css});
+    return await global.ReportEngine.printReport(`EVRAK TESLİM İMZA ÇİZELGESİ — ${upper(d)}`,r.body,{fileName:`Evrak_Teslim_Imza_Cizelgesi_${state.donem}`,yon:'yatay',logoGoster:true,baslikGoster:true,tarihGoster:false,ustBaslik:`${egitimYili()} EĞİTİM ÖĞRETİM YILI`,okulAdi:schoolName()||undefined,extraHead:r.css});
   }catch(e){global.toast?.(e?.message||'Çizelge oluşturulamadı.')}
 }
 
@@ -241,7 +150,7 @@ function tebligVeri(d){
   const sel=selectedIds(d),secili=items(d).filter(e=>sel.has(e.id)),o=school(),il=String(o.il||'').trim(),ilce=String(o.ilce||'').trim();
   const md=arr('ogretmenler').find(x=>String(x.id)===String(o.mudurId||o.mudirId||'')),sinif=t=>/sınıf öğretmen/.test(norm(t.brans))?0:1;
   let no=0;
-  return{d,t:TEBLIG[d],toplam:items(d).length,secili:secili.length,yil:academicYear(),
+  return{d,t:TEBLIG[d],toplam:items(d).length,secili:secili.length,yil:egitimYili(),
     gruplar:GRUP_SIRA.map(g=>({ad:GRUPLAR[g],rows:secili.filter(e=>(e.grup==='ozel'?'idari':e.grup)===g).map(e=>({no:++no,yazi:e.yazi||e.ad}))})).filter(g=>g.rows.length),
     ogretmenler:teachers().filter(t=>!t.yonetici).sort((a,b)=>sinif(a)-sinif(b)||a.ad.localeCompare(b.ad,'tr')),
     okul:schoolName()||'............................',

@@ -289,6 +289,19 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='ogretmen-dosyasi'){
+    try{
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=1');
+      if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Öğretmen Dosyası');
+      if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Öğretmen Dosyası'});
+    }catch(e){
+      console.error('[Shell/ogretmen-dosyasi]',e);global.toast?.('Öğretmen Dosyası açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='tymm-olcek'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
