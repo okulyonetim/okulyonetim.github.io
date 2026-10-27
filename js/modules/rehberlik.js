@@ -14,6 +14,7 @@ const toast=m=>global.toast?.(m);
 const SEKMELER=[['plan','Yıllık Plan'],['rapor','Raporlar'],['kazanim','Kazanımlar']];
 const TURLER=[['aylik','Aylık'],['donem1','I. Dönem Sonu'],['donem2','II. Dönem Sonu'],['yil','Yıl Sonu']];
 const HAFTALAR=[1,2,3,4,5];
+const EK_KOLEKSIYON=['veliGorusmeleri'];       // Veli Görüşme Formu kayıtları raporlara yazılır
 
 const S={sinifId:'',duzey:0,sekme:'plan',tur:'aylik',ay:'',hepsi:false,acik:'',acikAy:new Set(),ogretmen:'',mudur:'',durum:null,yil:'',kazAcik:new Set()};
 let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,yazT=0;
@@ -31,6 +32,7 @@ function ctx(){
  return{yil:S.yil,okul:SB.okulAdi(duzey),sinif:c?.ad||'',duzey,ogretmen:S.ogretmen,mudur:S.mudur,mevcut:C.mevcut(c?SB.ogrencilerOf(c.id):[]),tarih:bugun()};
 }
 const plan=()=>C.planOlustur(S.duzey,S.durum,S.yil);
+const formKayitlari=()=>SB.veliGorusmeleri(sinif());   // Veli Görüşme Formu kayıtları (bu sınıf)
 
 /* ── durum: yerelde KaPrefs, hesapta oy_kullaniciTercihleri ── */
 const anahtar=()=>C.durumAnahtari(S.yil,S.sinifId);
@@ -55,9 +57,9 @@ const BELGE_ADI={plan:'Sınıf Rehberlik Planı',aylik:'Aylık Çalışma Raporu
 function belgeHtml(tur){
  const c=ctx(),p=tur==='kazanim'?null:plan();
  if(tur==='plan')return B.planBelgesi(p,c);
- if(tur==='aylik')return B.aylikBelge(C.aylikRapor(p,S.ay,S.durum,{hepsi:S.hepsi}),c);
+ if(tur==='aylik')return B.aylikBelge(C.aylikRapor(p,S.ay,S.durum,{hepsi:S.hepsi,veliGorusmeleri:formKayitlari()}),c);
  if(tur==='donem1'||tur==='donem2')return B.donemBelgesi(C.donemRaporu(p,tur==='donem1'?1:2,{hepsi:S.hepsi}),c);
- if(tur==='yil')return B.yilSonuBelgesi(C.yilSonuRaporu(p,S.durum),c);
+ if(tur==='yil')return B.yilSonuBelgesi(C.yilSonuRaporu(p,S.durum,{veliGorusmeleri:formKayitlari()}),c);
  if(tur==='kazanim')return B.kazanimBelgesi(c.duzey,c);
  return'';
 }
@@ -70,9 +72,9 @@ function yazdir(tur){
 async function indir(tur){
  if(!S.duzey)return toast('Önce sınıfı seçin.');
  try{
-  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=2');
+  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=3');
   if(!global.RehberlikDosya)throw new Error('İndirme bileşeni yüklenemedi.');
-  await global.RehberlikDosya.indir(tur,{ctx:ctx(),plan:plan(),durum:S.durum,ay:S.ay,hepsi:S.hepsi});
+  await global.RehberlikDosya.indir(tur,{ctx:ctx(),plan:plan(),durum:S.durum,ay:S.ay,hepsi:S.hepsi,veliGorusmeleri:formKayitlari()});
   toast('Dosya indirildi.');
  }catch(e){console.warn('[Sınıf Rehberlik/indir]',e);toast(String(e?.message||'Dosya indirilemedi.'))}
 }
@@ -146,14 +148,17 @@ const metinEd=(anahtarR,alan,etiket)=>field(etiket,`<textarea class="ka-input rh
 const hepsiOnay=()=>`<label class="rhb-onay"><input type="checkbox" data-rhb-alan="hepsi" ${S.hepsi?'checked':''}><span>İşaretlenmeyen çalışmaları da yaz (plandaki tarihleriyle)</span></label>`;
 
 function aylikRapor(p){
- const r=C.aylikRapor(p,S.ay,S.durum,{hepsi:S.hepsi});
+ const r=C.aylikRapor(p,S.ay,S.durum,{hepsi:S.hepsi,veliGorusmeleri:formKayitlari()}),formdan=r.veli.filter(x=>x.formdan);
  const sec=ayAdlari().map(([k,ad])=>{const a=p.aylar.find(x=>x.ad===k),n=a?a.maddeler.filter(m=>m.yapildi).length:0;return[k,`${ad}${n?` (${n} işaretli)`:''}`]});
  return`<article class="ka-card"><div class="ka-card__body ka-stack"><div class="ka-grid">${field('Rapor ayı',`<select class="ka-input" data-rhb-alan="ay">${secenekler(sec,S.ay)}</select>`)}</div>
 ${hepsiOnay()}
 <small class="ka-muted">${r.etkinlikler.length} kazanım etkinliği ve ${r.diger.length} diğer çalışma rapora yazılacak${S.hepsi?'':` (${r.isaretli} / ${r.planlanan} madde işaretli)`}. İşaretleme Yıllık Plan sekmesindedir.</small></div></article>
+<article class="ka-card"><div class="ka-card__body ka-stack"><div class="rhb-aksiyon"><strong>Veli Görüşme Formundan</strong>${dugme('veli-form','💬 Görüşme formunu aç','','ka-btn--secondary ka-btn--sm')}</div>
+${formdan.length?`<ul class="rhb-formdan">${formdan.map(g=>`<li><span>${esc(kisaTarih(g.tarih))}</span><strong>${esc(g.ogrenci||'Öğrenci')}</strong><small>${esc([g.veli,g.konu].filter(Boolean).join(' · '))}</small></li>`).join('')}</ul>`:'<small class="ka-muted">Bu ay bu sınıf için kayıtlı görüşme yok.</small>'}
+<small class="ka-muted">Veli Görüşme Formu’na kaydettiğiniz görüşmeler rapora kendiliğinden yazılır; formda olmayanları aşağıdan ekleyebilirsiniz.</small></div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>Elle eklenecekler</strong>
 ${listeEd(`ay:${S.ay}`,'test','Uygulanan test ve anketler',[['ad','Test / anket'],['tarih','Uygulama tarihi','date'],['kiz','Kız','number'],['erkek','Erkek','number']])}
-${listeEd(`ay:${S.ay}`,'veli','Velilerle yapılan görüşmeler',[['veli','Veli'],['ogrenci','Öğrencisi'],['konu','Görüşme konusu'],['tarih','Tarih','date']])}
+${listeEd(`ay:${S.ay}`,'veli','Velilerle yapılan görüşmeler (formda olmayanlar)',[['veli','Veli'],['ogrenci','Öğrencisi'],['konu','Görüşme konusu'],['tarih','Tarih','date']])}
 ${listeEd(`ay:${S.ay}`,'ogrenci','Öğrencilerle yapılan görüşmeler',[['no','No'],['ad','Adı soyadı'],['konu','Görüşme konusu'],['tarih','Tarih','date']])}
 ${listeEd(`ay:${S.ay}`,'diger','Diğer çalışmalar',[['metin','Çalışma'],['tarih','Tarih','date']])}</div></article>
 ${cikti('aylik')}`;
@@ -164,7 +169,7 @@ function donemRapor(p,tur){
 ${d.aylar.map(a=>`<div class="rhb-donem"><strong>${esc(C.ayAdi(a.ad))}</strong>${a.satirlar.length?`<ul>${a.satirlar.map(s=>`<li>${esc(s.metin)}</li>`).join('')}</ul>`:'<small class="ka-muted">İşaretlenmiş çalışma yok.</small>'}</div>`).join('')}</div></article>${cikti(tur)}`;
 }
 function yilRapor(p){
- const y=C.yilSonuRaporu(p,S.durum),r=C.rapor(S.durum,'yil');
+ const y=C.yilSonuRaporu(p,S.durum,{veliGorusmeleri:formKayitlari()}),r=C.rapor(S.durum,'yil'),bireysel=y.veliFaaliyetleri.find(f=>f.formdan);
  const nedenler=y.gerceklesmeyen.length&&y.gerceklesti!=='Evet'?`<details class="rhb-neden"><summary>Gerçekleşmeyen ${y.gerceklesmeyen.length} kazanım ve nedenleri</summary>${y.gerceklesmeyen.map(g=>`<label class="ka-field"><span class="ka-field__label">${g.sira}. ${esc(g.metin)}</span><input class="ka-input" type="text" value="${esc(g.neden)}" data-rhb-neden="${g.sira}" maxlength="160" autocomplete="off"></label>`).join('')}</details>`:'';
  return`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>1. Kazanımlar</strong><small class="ka-muted">${y.kazanimYapilan} / ${y.kazanimToplam} kazanım işaretli.</small>
 <div class="ka-grid">${field('Tüm kazanımlar gerçekleştirilebildi mi?',`<select class="ka-input" data-rhb-alan="gerceklesti"><option value="" ${r.gerceklesti?'':'selected'}>Otomatik (${esc(y.otomatik)})</option>${['Evet','Kısmen','Hayır'].map(x=>`<option ${r.gerceklesti===x?'selected':''}>${x}</option>`).join('')}</select>`)}</div>${nedenler}</div></article>
@@ -173,7 +178,7 @@ ${listeEd('yil','teknikler','2. Uygulanan teknikler (otobiyografi, öğrenci tan
 ${listeEd('yil','faaliyetler','3. Yapılan rehberlik faaliyetleri',[['ad','Yapılan çalışma'],['kiz','Kız','number'],['erkek','Erkek','number']],3)}
 ${listeEd('yil','yonlendirilen','4. Rehberlik servisine yönlendirilen öğrenci ve veliler',[['ad','Öğrenci adı soyadı'],['no','Numarası'],['veli','Veli adı'],['neden','Yönlendirme nedeni']],1)}
 ${listeEd('yil','veliFaaliyetleri','5. Velilere yönelik faaliyetler',[['ad','Yapılan çalışma'],['kiz','Kız','number'],['erkek','Erkek','number']],2)}
-<small class="ka-muted">Boş bıraktığınız “Velilere yönelik faaliyetler” listesinde Veli Toplantısı ve Bireysel Görüşme hazır yazılır.</small></div></article>
+<small class="ka-muted">Boş bıraktığınız “Velilere yönelik faaliyetler” listesinde Veli Toplantısı ve Bireysel Görüşme hazır yazılır.${bireysel?` Bireysel Görüşme sayıları Veli Görüşme Formu kayıtlarından geldi (görüşülen öğrenci: ${bireysel.kiz||0} kız, ${bireysel.erkek||0} erkek).`:''}</small></div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack">${metinEd('yil','guclukler','6. Karşılaşılan güçlükler ve nedenleri')}${metinEd('yil','cozumler','Çözüm önerileri')}${metinEd('yil','isbirligi','7. Okul PDR servisi ve sınıf rehber öğretmenleri arasındaki işbirliği nasıl daha güçlü hale getirilebilir?')}${metinEd('yil','beklenti','Okul PDR hizmetlerinden beklentileriniz nelerdir?')}</div></article>${cikti('yil')}`;
 }
 function raporSekmesi(){
@@ -229,6 +234,7 @@ function listeDegistir(ref,fn){
 }
 const ISLEMLER={
  yazdir:b=>yazdir(b.dataset.rhbTur),
+ 'veli-form':()=>{const t=global.AppNav?.tool?.('parentmeeting');if(!t)return toast('Veli görüşme formu bulunamadı.');Promise.resolve(global.ShellUI?.routeModule?.(t.route,{page:t.page,title:t.label})).catch(e=>{console.warn('[Sınıf Rehberlik/form]',e);toast('Form açılamadı.')})},
  indir:b=>indir(b.dataset.rhbTur),
  ac:b=>{S.acik=S.acik===b.dataset.rhbMadde?'':b.dataset.rhbMadde;render()},
  sil:b=>{const m=maddeBul(b.dataset.rhbMadde);if(!m||!global.confirm(`“${m.metin}” planınızdan çıkarılsın mı?`))return;C.maddeSil(S.durum,m.id);S.acik='';kaydet();render()},
@@ -313,9 +319,9 @@ function open(){
  sinifSec(own.size===1?[...own][0]:'');
  const ok=render();
  offPrefs=global.KaPrefs?.remoteListen?.(uzakGeldi)||null;
- SB.ABONELIK.forEach(p=>{const u=global.AppStore?.subscribe?.(p,()=>{if(!document.querySelector('[data-rhb-page]'))return temizle();
+ SB.abonelik(EK_KOLEKSIYON).forEach(p=>{const u=global.AppStore?.subscribe?.(p,()=>{if(!document.querySelector('[data-rhb-page]'))return temizle();
   if(S.sinifId&&!S.ogretmen)S.ogretmen=SB.sinifOgretmeni(sinif());if(!S.mudur)S.mudur=SB.okulMuduru();render()});if(u)unsubs.push(u)});
- SB.hazirla().catch(e=>console.warn('[Sınıf Rehberlik]',e?.message||e));
+ SB.hazirla(EK_KOLEKSIYON).catch(e=>console.warn('[Sınıf Rehberlik]',e?.message||e));
  return ok;
 }
 function unmount(){clearTimeout(pushT);clearTimeout(yazT);temizle()}

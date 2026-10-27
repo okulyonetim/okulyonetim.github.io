@@ -161,7 +161,11 @@ function mevcut(ogrenciler){
 /* ── rapor verisi ── */
 const bos=()=>({test:[],veli:[],ogrenci:[],diger:[]});
 const liste=x=>Array.isArray(x)?x:[];
-/* Aylık rapor: seçilen ayın yapılan (ya da hepsi) kazanım etkinlikleri + diğer çalışmalar + elle eklenen satırlar.
+/* Veli Görüşme Formu kayıtları (SinifBaglam.veliGorusmeleri): bir aya / eğitim yılına düşenler. */
+const aydaMi=(tarih,yil,ay)=>{const no=AY_NO[ay];return!!no&&String(tarih||'').startsWith(`${yilBaslangici(yil)+(no>=9?0:1)}-${String(no).padStart(2,'0')}`)};
+const yildaMi=(tarih,yil)=>{const t=String(tarih||''),b=yilBaslangici(yil);return t>=`${b}-09-01`&&t<=`${b+1}-08-31`};
+/* Aylık rapor: seçilen ayın yapılan (ya da hepsi) kazanım etkinlikleri + diğer çalışmalar + elle eklenen satırlar;
+ * velilerle görüşmeler önce Veli Görüşme Formu kayıtlarından (secenek.veliGorusmeleri), sonra elle eklenenlerden.
  * Yeterlik alanı kaynak tabloda boşsa (36. kazanım: "Tüm Alanlar") gelişim alanı yazılır. */
 function aylikRapor(plan,ay,durum,secenek={}){
  const a=plan.aylar.find(x=>x.ad===ay),d=durumTemizle(durum),ek={...bos(),...rapor(d,`ay:${ay}`)};
@@ -169,7 +173,8 @@ function aylikRapor(plan,ay,durum,secenek={}){
  const maddeler=(a?.maddeler||[]).filter(sec);
  const etkinlikler=maddeler.filter(m=>m.tur==='k').map((m,i)=>({sira:i+1,tarih:tarih(m),yeterlik:m.yeterlik||m.alan,kazanim:m.metin,ad:m.ad}));
  const diger=[...maddeler.filter(m=>m.tur==='e').map(m=>({metin:m.metin,tarih:tarih(m)})),...liste(ek.diger).map(x=>({metin:String(x.metin||x||''),tarih:String(x.tarih||'')}))].filter(x=>x.metin);
- return{ay,etkinlikler,test:liste(ek.test),veli:liste(ek.veli),ogrenci:liste(ek.ogrenci),diger,
+ const formdan=liste(secenek.veliGorusmeleri).filter(g=>aydaMi(g.tarih,plan.yil,ay)).map(g=>({veli:g.veli,ogrenci:g.ogrenci,konu:g.konu,tarih:g.tarih,formdan:true}));
+ return{ay,etkinlikler,test:liste(ek.test),veli:[...formdan,...liste(ek.veli)],ogrenci:liste(ek.ogrenci),diger,
   planlanan:(a?.maddeler||[]).filter(m=>m.tur!=='tatil').length,isaretli:(a?.maddeler||[]).filter(m=>m.yapildi).length};
 }
 /* Dönem sonu: dönemin her ayı için yapılan (ya da hepsi) çalışmaların listesi. */
@@ -180,15 +185,24 @@ function donemRaporu(plan,donem,secenek={}){
   return{ad,satirlar};
  })};
 }
-/* Yıl sonu: kazanım sayıları ve "gerçekleşti mi" otomatik; metinler r.yil içinde elle yazılır. */
-function yilSonuRaporu(plan,durum){
+/* Form kayıtlarından görüşülen öğrenci sayısı (her öğrenci bir kez): kız / erkek. */
+function bireyselSayi(f,kayitlar,yil){
+ if(String(f?.ad||'').trim().toLocaleLowerCase('tr')!=='bireysel görüşme'||f.kiz||f.erkek)return f;
+ const ogr=new Map();
+ liste(kayitlar).filter(g=>yildaMi(g.tarih,yil)&&g.ogrenci).forEach(g=>{const k=g.ogrenci.toLocaleLowerCase('tr');if(!ogr.has(k))ogr.set(k,g.cinsiyet)});
+ const kiz=[...ogr.values()].filter(c=>c==='Kız').length,erkek=[...ogr.values()].filter(c=>c==='Erkek').length;
+ return kiz||erkek?{...f,kiz,erkek,formdan:true}:f;
+}
+/* Yıl sonu: kazanım sayıları ve "gerçekleşti mi" otomatik; metinler r.yil içinde elle yazılır.
+ * Velilere yönelik faaliyetlerde "Bireysel Görüşme" satırının kız/erkek sayısı (görüşülen öğrenci) boşsa Veli Görüşme Formu kayıtlarından gelir. */
+function yilSonuRaporu(plan,durum,secenek={}){
  const d=durumTemizle(durum),y=rapor(d,'yil'),ip=ilerleme(plan),k=ip.kazanim;
  const otomatik=k.toplam&&k.yapilan>=k.toplam?'Evet':k.yapilan>0?'Kısmen':'Hayır';
  const gerceklesmeyen=maddeler(plan).filter(m=>m.tur==='k'&&!m.yapildi).map(m=>({sira:m.sira,metin:m.metin,neden:String(y.nedenler?.[m.sira]||'')}));
  return{kazanimToplam:k.toplam,kazanimYapilan:k.yapilan,otomatik,gerceklesti:['Evet','Kısmen','Hayır'].includes(y.gerceklesti)?y.gerceklesti:otomatik,
   gerceklesmeyen,
   teknikler:liste(y.teknikler),faaliyetler:liste(y.faaliyetler),
-  veliFaaliyetleri:liste(y.veliFaaliyetleri).length?liste(y.veliFaaliyetleri):[{ad:'Veli Toplantısı'},{ad:'Bireysel Görüşme'}],
+  veliFaaliyetleri:(liste(y.veliFaaliyetleri).length?liste(y.veliFaaliyetleri):[{ad:'Veli Toplantısı'},{ad:'Bireysel Görüşme'}]).map(f=>bireyselSayi(f,secenek.veliGorusmeleri,plan.yil)),
   yonlendirilen:liste(y.yonlendirilen),guclukler:String(y.guclukler||''),cozumler:String(y.cozumler||''),
   isbirligi:String(y.isbirligi||''),beklenti:String(y.beklenti||'')};
 }

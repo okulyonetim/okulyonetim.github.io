@@ -15135,6 +15135,10 @@ html[data-theme] #v2ModuleRoot .rhb-ed__satir{display:flex;flex-wrap:wrap;align-
 html[data-theme] #v2ModuleRoot .rhb-ed__satir .ka-field{flex:1 1 var(--ka-sp-120);min-width:0}
 html[data-theme] #v2ModuleRoot .rhb-metin-ed{resize:vertical;min-height:calc(var(--ka-control-height) * 2)}
 html[data-theme] #v2ModuleRoot .rhb-donem{display:flex;flex-direction:column;gap:var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .rhb-formdan{display:grid;gap:var(--ka-sp-8);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .rhb-formdan li{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:var(--ka-sp-2) var(--ka-sp-12);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .rhb-formdan li>span{color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .rhb-formdan li>small{grid-column:2;color:var(--ka-text-muted)}
 html[data-theme] #v2ModuleRoot .rhb-donem ul{margin:0;padding-left:var(--ka-sp-20);font-size:var(--ka-fs-13)}
 html[data-theme] #v2ModuleRoot .rhb-neden{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .rhb-neden>summary{cursor:pointer;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}

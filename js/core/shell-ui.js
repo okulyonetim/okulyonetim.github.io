@@ -292,11 +292,11 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   if(name==='sinif-rehberlik'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
-      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=1');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=1');
-      if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=1');
+      if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=2');
       if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=2');
-      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=2');
+      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=3');
       if(!global.RehberlikModule?.open)throw new Error('Sınıf Rehberlik modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Sınıf Rehberlik');
       if(!global.RehberlikModule.open())throw new Error('Sınıf Rehberlik açılamadı.');
@@ -310,7 +310,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   if(name==='veli-toplantisi'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
-      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=1');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=2');
       if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=3');
       if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');

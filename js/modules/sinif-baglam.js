@@ -49,18 +49,32 @@ function sinifOgretmeni(c){
  return adBicimi(adSoyad(t)||(isManager()?'':adSoyad(me)||String(user().adSoyad||user().ad||'')));
 }
 
-/* Sayfa açılırken gereken koleksiyonları kaydedip yerelden yükler; abone olunacak veri yolları: ABONELIK. */
+/* Veli Görüşme Formu kayıtları (oy_veliGorusmeleri): sınıfın görüşmeleri, tarihe göre. Öğretmen kendi kayıtlarını, yönetici hepsini görür.
+ * Öğrencinin cinsiyeti sınıf listesinden bulunur (ad, yoksa okul numarası ile). */
+function veliGorusmeleri(c){
+ if(!c)return[];
+ const uid=user().uid,tum=rows('veliGorusmeleri'),kendi=isManager()?tum:tum.filter(x=>x.olusturanUid===uid);
+ const k=s=>String(s||'').trim().toLocaleLowerCase('tr'),ogr=ogrencilerOf(c.id);
+ return kendi.filter(x=>k(x.sinif)===k(c.ad)).map(x=>{
+  const o=ogr.find(y=>k(y.ad)===k(x.ogrenciAd))||ogr.find(y=>x.no&&y.no&&y.no===String(x.no).trim());
+  const veli=String(x.veliAd||'').trim(),yakin=String(x.yakinlik||'').trim();
+  return{id:String(x.id||''),veli:veli&&yakin?`${veli} (${yakin})`:veli,ogrenci:String(x.ogrenciAd||'').trim(),konu:String(x.neden||x.konusulanlar||'').trim(),tarih:String(x.tarih||''),cinsiyet:o?.cinsiyet||''};
+ }).sort((a,b)=>a.tarih.localeCompare(b.tarih));
+}
+
+/* Sayfa açılırken gereken koleksiyonları kaydedip yerelden yükler (ek: o sayfaya özgü koleksiyonlar); abone olunacak veri yolları: ABONELIK / abonelik(ek). */
 const KOLEKSIYONLAR=['siniflar','veliler','ogretmenler','okulBilgileri'];
-const ABONELIK=KOLEKSIYONLAR.map(t=>`data.${t}`);
-let hazirlandi=false;
-async function hazirla(){
- const SE=global.SyncEngine,col=global.COL;if(!SE||!col||hazirlandi)return;
- hazirlandi=true;
- const tipler=[];
- for(const t of KOLEKSIYONLAR)if(col[t]){SE.register(t,col[t]);tipler.push(t)}
+const abonelik=(ek=[])=>[...KOLEKSIYONLAR,...ek].map(t=>`data.${t}`);
+const ABONELIK=abonelik();
+const hazirlananlar=new Set();
+async function hazirla(ek=[]){
+ const SE=global.SyncEngine,col=global.COL;if(!SE||!col)return;
+ const tipler=[...KOLEKSIYONLAR,...ek].filter(t=>col[t]&&!hazirlananlar.has(t));
+ if(!tipler.length)return;
+ for(const t of tipler){hazirlananlar.add(t);SE.register(t,col[t])}
  await SE.localHydrate(tipler);SE.schedule?.(100);
 }
-const sifirla=()=>{hazirlandi=false};
+const sifirla=()=>hazirlananlar.clear();
 
-global.SinifBaglam={rows,user,isManager,egitimYili,adBicimi,adSoyad,duzeyOf,teacherId,okulKaydi,okulMuduru,okulAdi,siniflar,sinifBul,ogrencilerOf,sinifOgretmeni,hazirla,sifirla,ABONELIK};
+global.SinifBaglam={rows,user,isManager,egitimYili,adBicimi,adSoyad,duzeyOf,teacherId,okulKaydi,okulMuduru,okulAdi,siniflar,sinifBul,ogrencilerOf,sinifOgretmeni,veliGorusmeleri,hazirla,sifirla,abonelik,ABONELIK};
 })(window);

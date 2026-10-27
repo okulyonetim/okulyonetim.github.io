@@ -95,6 +95,23 @@ C.raporYaz(r,'yil',{nedenler:{28:'Zaman yetmedi'},gerceklesti:'Hayır'});
 ys=C.yilSonuRaporu(pr,r);assert.strictEqual(ys.gerceklesti,'Hayır');assert.strictEqual(ys.gerceklesmeyen.find(x=>x.sira===28).neden,'Zaman yetmedi');
 assert.strictEqual(C.yilSonuRaporu(C.planOlustur(5,C.bosDurum(),'2026-2027'),C.bosDurum()).otomatik,'Hayır');
 
+/* Veli Görüşme Formu kayıtları: aylık veli satırları ve yıl sonu Bireysel Görüşme sayıları */
+{
+  const g=[{veli:'Hasan Yılmaz (Baba)',ogrenci:'Ali Yılmaz',konu:'Devamsızlık',tarih:'2026-10-05',cinsiyet:'Erkek'},{veli:'Fatma Aydın (Anne)',ogrenci:'Zeynep Aydın',konu:'Uyum',tarih:'2027-02-10',cinsiyet:'Kız'},{veli:'Hasan Yılmaz (Baba)',ogrenci:'Ali Yılmaz',konu:'Takip',tarih:'2026-11-02',cinsiyet:'Erkek'},{veli:'Eski',ogrenci:'Eski Yıl',konu:'x',tarih:'2025-10-05',cinsiyet:'Kız'}];
+  const pf=C.planOlustur(5,C.bosDurum(),'2026-2027'),dr=C.bosDurum();
+  C.raporYaz(dr,'ay:EKİM',{veli:[{veli:'Elle',ogrenci:'Veli Dışı',konu:'k',tarih:'2026-10-20'}]});
+  const ek=C.aylikRapor(pf,'EKİM',dr,{veliGorusmeleri:g});
+  eq(ek.veli.map(x=>x.veli),['Hasan Yılmaz (Baba)','Elle'],'Aylık veli satırları: önce forma kayıtlı, sonra elle eklenen; yalnız o ayın görüşmeleri.');
+  assert(ek.veli[0].formdan&&!ek.veli[1].formdan);
+  assert.strictEqual(C.aylikRapor(pf,'ŞUBAT',dr,{veliGorusmeleri:g}).veli.length,1,'Ocak–Haziran görüşmeleri bir sonraki takvim yılında aranır.');
+  assert.strictEqual(C.aylikRapor(pf,'EKİM',dr).veli.length,1,'Form kaydı verilmezse yalnız elle eklenenler.');
+  const vf=C.yilSonuRaporu(pf,C.bosDurum(),{veliGorusmeleri:g}).veliFaaliyetleri.find(f=>f.ad==='Bireysel Görüşme');
+  assert.strictEqual(vf.kiz,1);assert.strictEqual(vf.erkek,1,'Her öğrenci bir kez sayılır (Ali iki görüşme = 1 erkek); başka eğitim yılı sayılmaz.');
+  const el=C.bosDurum();C.raporYaz(el,'yil',{veliFaaliyetleri:[{ad:'Bireysel Görüşme',kiz:'7',erkek:'2'}]});
+  eq(C.yilSonuRaporu(pf,el,{veliGorusmeleri:g}).veliFaaliyetleri[0].kiz,'7','Elle yazılan sayı form kayıtlarıyla ezilmez.');
+  assert.strictEqual(C.yilSonuRaporu(pf,C.bosDurum()).veliFaaliyetleri[1].kiz,undefined,'Kayıt yoksa sayı boş kalır.');
+}
+
 /* ── kâğıt çıktıları (HTML) ── */
 const belgeWin=load([MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js']);
 const B=belgeWin.RehberlikBelge,BC=belgeWin.RehberlikCore;
@@ -137,6 +154,7 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert.strictEqual((ayXml.match(/ETKİNLİĞİN ADI/g)||[]).length,Math.max(3,etkinlik),'Etkinlik blokları (3 satırlık) listeye göre çoğalır.');
   assert.strictEqual((ayXml.match(/w:vMerge w:val="restart"/g)||[]).length,Math.max(3,etkinlik)*2+4,'Sıra/tarih hücreleri blok başına birleşik (+ test başlığı 2, "ÖĞRENCİNİN" ve "DİĞER ÇALIŞMALAR" etiketleri).');
   assert(ayT.includes(rapor.etkinlikler[0].kazanim));
+  assert(metin(await docXml('aylik',D.aylikIcerik(C.aylikRapor(pr,'EKİM',C.bosDurum(),{veliGorusmeleri:[{veli:'Hasan Yılmaz (Baba)',ogrenci:'Ali Yılmaz',konu:'Devamsızlık',tarih:'2026-10-05'}]}),ctx))).includes('Hasan Yılmaz (Baba)'),'Word aylık raporda form görüşmeleri.');
   assert(!/w:tblpPr/.test(ayXml),'Yüzen tablo yok.');
   const donemT=metin(await docXml('donem',D.donemIcerik(C.donemRaporu(pr,2,{hepsi:true}),ctx)));
   assert(donemT.includes('II. DÖNEM SONU ÇALIŞMA RAPORU')&&donemT.includes('ŞUBAT')&&donemT.includes('HAZİRAN')&&donemT.includes('• ')&&!donemT.includes('{{'));
@@ -167,10 +185,14 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
     siniflar:[{id:'c5a',ad:'5/A',sinifOgretmeniId:'t1'},{id:'c1b',ad:'1-B',sinifOgretmeniId:'t9'},{id:'cx',ad:'Anasınıfı',sinifOgretmeniId:'t9'}],
     veliler:[{id:'v1',sinifId:'c5a',ogrenciAdi:'Zeynep Aydın',ogrenciNo:'3',cinsiyet:'Kız'},{id:'v2',sinifId:'c5a',ogrenciAdi:'Ali Yılmaz',ogrenciNo:'1',cinsiyet:'Erkek'},{id:'v4',sinifId:'c1b',ogrenciAdi:'Elif Kaya',ogrenciNo:'1',cinsiyet:'Kız'}],
     ogretmenler:[{id:'t1',ad:'ayşe',soyad:'kaya'},{id:'m1',ad:'mehmet',soyad:'demir'},{id:'t9',ad:'veli',soyad:'hoca'}],
-    okulBilgileri:[{id:'ayarlar',okulAdi:'Koruk İlk - Ortaokulu',ilkokulAdi:'Koruk İlkokulu',ortaokulAdi:'Koruk Ortaokulu',mudurId:'m1'}]
+    okulBilgileri:[{id:'ayarlar',okulAdi:'Koruk İlk - Ortaokulu',ilkokulAdi:'Koruk İlkokulu',ortaokulAdi:'Koruk Ortaokulu',mudurId:'m1'}],
+    veliGorusmeleri:[
+      {id:'g1',olusturanUid:'u1',sinif:'5/A',ogrenciAd:'Ali Yılmaz',no:'1',veliAd:'Hasan Yılmaz',yakinlik:'Baba',tarih:`${C.egitimYili().slice(0,4)}-10-05`,neden:'Devamsızlık'},
+      {id:'g2',olusturanUid:'u2',sinif:'5/A',ogrenciAd:'Başkasının Kaydı',veliAd:'Gizli Veli',tarih:`${C.egitimYili().slice(0,4)}-10-06`,neden:'Gizli'},
+      {id:'g3',olusturanUid:'u1',sinif:'1-B',ogrenciAd:'Elif Kaya',veliAd:'Ayşe Kaya',tarih:`${C.egitimYili().slice(0,4)}-10-07`,neden:'Başka sınıf'}]
   };
   const kok={innerHTML:''},printed=[],tercih={},dinleyiciler={};
-  const kullanici={bagliOgretmenId:'t1'};
+  const kullanici={uid:'u1',bagliOgretmenId:'t1'};
   const win=load([MOD+'sinif-baglam.js',MOD+'rehberlik-veri.js',MOD+'rehberlik-core.js',MOD+'rehberlik-belge.js',MOD+'rehberlik.js'],{
     AppStore:{data:t=>store[t]||[],get:k=>k==='session.user'?kullanici:undefined,subscribe:()=>()=>{}},
     KaPrefs:{get:(k,v)=>tercih[k]??v,set:(k,v)=>{tercih[k]=v},remoteSet:o=>Object.assign(tercih,o),remoteListen:f=>{dinleyiciler.uzak=f;return()=>{}}},
@@ -199,6 +221,16 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   M.sekme='rapor';M.ay='EYLÜL';M.render();
   assert(kok.innerHTML.includes('Aylık')&&kok.innerHTML.includes('Yıl Sonu'));
   M.tur='aylik';assert(duz(M.belgeHtml('aylik')).includes('EYLÜL AYI ÇALIŞMA RAPORU'));
+  /* Veli Görüşme Formu bağlantısı */
+  M.ay='EKİM';M.render();
+  assert(kok.innerHTML.includes('Veli Görüşme Formundan')&&kok.innerHTML.includes('data-rhb-act="veli-form"'),'Aylık raporda form kayıtları ve formu açma düğmesi.');
+  assert(kok.innerHTML.includes('Ali Yılmaz')&&kok.innerHTML.includes('Hasan Yılmaz (Baba)')&&kok.innerHTML.includes('Devamsızlık'));
+  assert(!kok.innerHTML.includes('Gizli Veli')&&!kok.innerHTML.includes('Elif Kaya'),'Başkasının kaydı ve başka sınıf görünmez.');
+  assert(duz(M.belgeHtml('aylik')).includes('Hasan Yılmaz (Baba)'),'Yazdırılan aylık rapora form kayıtları girer.');
+  M.tur='yil';M.render();
+  assert(kok.innerHTML.includes('Bireysel Görüşme sayıları Veli Görüşme Formu kayıtlarından geldi (görüşülen öğrenci: 0 kız, 1 erkek)'),'Yıl sonu: form kayıtlarından gelen sayı belirtilir.');
+  assert(/Bireysel Görüşme\|\|?1\|/.test(duz(M.belgeHtml('yil')).replace(/\|+/g,'|'))||duz(M.belgeHtml('yil')).includes('Bireysel Görüşme'),'Yıl sonu belgesinde Bireysel Görüşme satırı.');
+  M.tur='aylik';M.ay='EYLÜL';
   M.yazdir('aylik');M.yazdir('plan');M.yazdir('yil');M.yazdir('donem1');M.yazdir('kazanim');
   assert.strictEqual(printed.length,5);
   assert(printed.every(p=>p[2].akis===true&&p[2].kenarBosluk>=10&&!String(p[2].extraHead||'').trim()&&p[2].baslikGoster===false&&p[2].logoGoster===false),'Her sayfada üst/alt boşluk: akış kipi açık, özel CSS yok.');
@@ -222,9 +254,9 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(/\['sinif-rehberlik','Sınıf Rehberlik'[^\n]*'sinif-rehberlik'\]/.test(nav),'Menüde Sınıf Rehberlik aracı olmalı.');
   {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['sinif-rehberlik'"),'Sınıf Rehberlik "Tutanak ve Evrak" grubunda olmalı.');}
   assert(shell.includes("name==='sinif-rehberlik'")&&shell.includes('RehberlikModule.open'),'Kabukta rota tanımlı olmalı.');
-  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=2','rehberlik.js?v=2','rehberlik-dosya.js?v=2'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-  ['sinif-baglam.js?v=1','rehberlik-veri.js?v=1','rehberlik-core.js?v=1','rehberlik-belge.js?v=2','rehberlik.js?v=2'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
-  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=2'),'İndirme bileşeni ilk indirmede yüklenir.');
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=1','rehberlik-core.js?v=2','rehberlik-belge.js?v=2','rehberlik.js?v=3','rehberlik-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=1','rehberlik-core.js?v=2','rehberlik-belge.js?v=2','rehberlik.js?v=3'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
+  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=3'),'İndirme bileşeni ilk indirmede yüklenir.');
   ['aylik','donem','yilsonu'].forEach(f=>assert(sw.includes(`./assets/rehberlik/${f}.docx`),`${f}.docx çevrimdışı için önbelleğe alınmalı.`));
   [39,50,66,67,103,129].forEach(no=>assert(new RegExp(`\\{a:"sinif-rehberlik"\\}`).test(kat),`Öğretmen Dosyası maddeleri modüle bağlı olmalı (${no}).`));
   assert((kat.match(/\{a:"sinif-rehberlik"\}/g)||[]).length>=6,'Öğretmen Dosyası listesinde 6 madde Sınıf Rehberlik\'e bağlı olmalı.');

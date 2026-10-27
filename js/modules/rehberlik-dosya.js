@@ -71,12 +71,12 @@ async function betik(src,hazir,hata){
 }
 
 /* ── Word ── */
-async function wordIndir(tur,{ctx,plan,durum,ay,hepsi}){
+async function wordIndir(tur,{ctx,plan,durum,ay,hepsi,veliGorusmeleri}){
  await betik(OGRETMEN_CORE,()=>!!O(),'Word bileşeni yüklenemedi.');
  const p=SABLON[tur==='aylik'?'aylik':tur==='yil'?'yil':'donem'];
- const secenek={hepsi};
+ const secenek={hepsi,veliGorusmeleri};
  const icerik=tur==='aylik'?aylikIcerik(C().aylikRapor(plan,ay,durum,secenek),ctx)
-  :tur==='yil'?yilIcerik(C().yilSonuRaporu(plan,durum),ctx)
+  :tur==='yil'?yilIcerik(C().yilSonuRaporu(plan,durum,secenek),ctx)
   :donemIcerik(C().donemRaporu(plan,tur==='donem1'?1:2,secenek),ctx);
  const r=await global.fetch(`${KOK}${p.dosya}`);
  if(!r.ok)throw new Error(`Şablon alınamadı (${r.status}).`);
