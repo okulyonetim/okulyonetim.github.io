@@ -126,4 +126,7 @@ for(const f of ['js/modules/transport.js','js/modules/class-seating.js','js/modu
   assert(fs.readFileSync(f,'utf8').includes('PermissionService?.isManager?.()'),f+' yönetici muafiyetini uygulamalı.');
 assert(fs.readFileSync('js/modules/settings.js','utf8').includes("if(global.PermissionService?.isManager?.())return false;"),'Okul bilgileri düzenleme kapısı yöneticiyi öğretmen saymamalı.');
 
+/* Ben sayfasından açılan "Ders programım" kişisel programdır: alttaki "Program ve Takvim" menü bağlantıları yalnız Program sekmesinin kendi sayfasında görünür. */
+assert(fs.readFileSync('js/core/nav-pages.js','utf8').includes("const menu=nav().tabs().some(t=>t.key==='program')?nav().menu('program'):null;"),'Program sayfasındaki menü listesi yalnız Program sekmesi varken çizilmeli.');
+
 console.log('manager-linked-teacher-menu.test.js: OK');

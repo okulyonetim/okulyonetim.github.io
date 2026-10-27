@@ -203,7 +203,8 @@ function renderProgram(){
   }
   const events=weekEvents(dates,tid);
   const cal=`<article class="ka-nav-cal"><div class="ka-nav-cal__head"><h3>Takvim · bu hafta</h3></div><p class="ka-nav-hint">Tatil günleri okulun tatil takviminden gelir.</p>${events.length?events.map(e=>{const d=new Date(`${e.iso}T12:00:00`);return `<div class="ka-nav-ev" data-tone="${e.tone}"><span class="ka-nav-ev__date"><small>${MONTH_SHORT[d.getMonth()]}</small><b>${d.getDate()}</b></span><span class="ka-nav-ev__copy"><strong>${esc(e.title)}</strong><small>${esc(e.sub)}</small></span></div>`}).join(''):emptyState('Bu hafta kayıtlı etkinlik yok.')}</article>`;
-  const menu=nav().menu('program');
+  /* Alttaki "Program ve Takvim" bağlantıları yalnız Program sekmesinin kendi sayfasında görünür; Ben sayfasından açılan kişisel programda yer almaz. */
+  const menu=nav().tabs().some(t=>t.key==='program')?nav().menu('program'):null;
   const more=menu?menu.tools:[];
   const print=tid?`<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-nav-print-schedule>${ic('doc',16)}<span>Yazdır</span></button>`:'';
   return pageRoot('program',head(own?'Programım':'Ders programım','Ders, nöbet ve takvim tek yerde',print)+`<div class="ka-nav-days" role="group" aria-label="Hafta günleri">${chips}</div>${body}${cal}${more.length?rowCard(more.map(t=>linkRow(t)).join('')):''}`);
