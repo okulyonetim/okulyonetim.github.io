@@ -361,7 +361,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.MaarifOyunVeri)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-veri.js?v=1');
       if(!global.MaarifOyunPlan)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-plan.js?v=1');
-      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=2');
+      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=3');
       if(!global.MaarifOyunModule?.open)throw new Error('Maarif’in Kalbinde Oyun modülü yüklenemedi.');
       const ad=(global.MaarifOyunVeri.SAYFALAR[page]||global.MaarifOyunVeri.SAYFALAR.nedir).ad;
       setBottomActive(bottom);setTitle(ad);

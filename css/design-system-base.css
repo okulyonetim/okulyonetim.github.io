@@ -15324,11 +15324,11 @@ html[data-theme] #v2ModuleRoot .mok-imza-islem{display:flex;gap:var(--ka-sp-2)}
 html[data-theme] #v2ModuleRoot .mok-onay{display:flex;flex-direction:column;gap:var(--ka-sp-10);padding-top:var(--ka-sp-10);border-top:var(--ka-border-w) solid var(--ka-border)}
 html[data-theme] #v2ModuleRoot .mok-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .mok-eylem .ka-btn{flex:1 1 auto}
-html[data-theme] #v2ModuleRoot .mok-imza-onizle{overflow:auto;padding:var(--ka-sp-10);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-report-bg)}
-html[data-theme] #v2ModuleRoot .mok-imza-onizle .mpl-belge{min-width:190mm}
+html[data-theme] #v2ModuleRoot .mok-imza-onizle{overflow:auto;border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-report-bg)}
+html[data-theme] #v2ModuleRoot .mok-imza-cerceve{display:block;width:100%;min-width:190mm;height:30mm;border:0;background:var(--ka-report-bg)}
 html[data-theme] #v2ModuleRoot .mok-onizle{overflow:auto;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-muted-bg)}
-html[data-theme] #v2ModuleRoot .mok-onizle__olcek{zoom:var(--mok-olcek,1);width:max-content}
-html[data-theme] #v2ModuleRoot .mok-kagit{box-sizing:border-box;width:297mm;padding:12mm 14mm;background:var(--ka-report-bg);color:var(--ka-report-text)}
+html[data-theme] #v2ModuleRoot .mok-onizle__sahne{position:relative;overflow:hidden}
+html[data-theme] #v2ModuleRoot .mok-kagit{display:block;width:297mm;border:0;background:var(--ka-report-bg);transform-origin:0 0}
 @media(max-width:767px){
  html[data-theme] #v2ModuleRoot .mok-imza-satir{grid-template-columns:minmax(0,1fr) auto}
  html[data-theme] #v2ModuleRoot .mok-imza-satir>[data-mok-imza="unvan"]{grid-column:1;grid-row:2}
@@ -15353,12 +15353,13 @@ html[data-theme] #v2ModuleRoot .mok-kagit{box-sizing:border-box;width:297mm;padd
 .mpl-tablo{width:100%;margin:0 0 5mm;border-collapse:collapse;table-layout:fixed}
 .mpl-tablo thead{display:table-header-group}
 .mpl-tablo tr{break-inside:avoid;page-break-inside:avoid}
-.mpl-tablo th,.mpl-tablo td{padding:1mm 1.6mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:8pt!important;font-weight:400!important;line-height:1.25!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
-.mpl-tablo th{background:var(--mpl-zemin)!important;font-size:7.5pt!important;font-weight:700!important;text-align:center!important}
-.mpl-tablo td.mpl-ay{font-weight:700!important;text-align:center!important}
-.mpl-tablo td.mpl-hafta{text-align:center!important}
-.mpl-tablo td small{display:block;color:var(--mpl-soluk)!important;font-size:6.5pt;font-style:italic}
-.mpl-tablo tr.mpl-ara td{background:var(--mpl-zemin)!important;font-weight:700!important;text-align:center!important}
+/* Hücre biçimi, rapor motorunun genel tablo stilini (.ka-report th / td, zebra) her bağlamda ezecek özgüllükte yazılır. */
+.mpl-belge .mpl-tablo th,.mpl-belge .mpl-tablo tbody tr:nth-child(n) td{padding:1mm 1.6mm!important;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:8pt!important;font-weight:400!important;line-height:1.25!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
+.mpl-belge .mpl-tablo thead tr th{background:var(--mpl-zemin)!important;font-size:7.5pt!important;font-weight:700!important;text-align:center!important}
+.mpl-belge .mpl-tablo tbody tr:nth-child(n) td.mpl-ay{font-weight:700!important;text-align:center!important}
+.mpl-belge .mpl-tablo tbody tr:nth-child(n) td.mpl-hafta{text-align:center!important}
+.mpl-belge .mpl-tablo tbody tr:nth-child(n) td small{display:block;color:var(--mpl-soluk)!important;font-size:6.5pt!important;font-style:italic}
+.mpl-belge .mpl-tablo tbody tr.mpl-ara:nth-child(n) td{background:var(--mpl-zemin)!important;font-weight:700!important;text-align:center!important}
 .mpl-belge--ilkokul .mpl-tablo col:nth-child(1){width:8%}
 .mpl-belge--ilkokul .mpl-tablo col:nth-child(2){width:11%}
 .mpl-belge--ilkokul .mpl-tablo col:nth-child(3),.mpl-belge--ilkokul .mpl-tablo col:nth-child(4){width:21%}

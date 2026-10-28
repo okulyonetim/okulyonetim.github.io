@@ -15,18 +15,20 @@ const {rows,adBicimi,adSoyad,teacherId,okulMuduru,okulAdi}=B;
 /* Sayfa anahtarı → AppNav sayfa kimliği (menüdeki satır). */
 const KIMLIK={nedir:'oyun-nedir',oyunlar:'oyun-aylik',ilkokul:'oyun-ilkokul',ortaokul:'oyun-ortaokul'};
 const ALTYAZI='Maarif’in Kalbinde Oyun: ayın oyunları (20 geleneksel oyun), ilkokul ve ortaokul yıllık planları (önizleme, PDF ve Word).';
-const A4_GENISLIK=297*96/25.4; /* A4 yatay kâğıt genişliği, CSS pikseli (1 in = 96 px) */
-const BUYUTME=1.8;
+const A4_GENISLIK=297*96/25.4,A4_YUKSEKLIK=210*96/25.4; /* A4 yatay kâğıt, CSS pikseli (1 in = 96 px) */
+const BUYUTME=1.8; /* Büyüt: sığdırma ölçeğinin 1,8 katı; sonra gerçek boyut (kâğıt yana kaydırılır) */
+/* Önizleme ve PDF aynı belgeyi (ReportEngine.documentHtml) aynı seçeneklerle kullanır; her sayfada 10 mm üst / alt boşluk. */
+const CIKTI={yon:'yatay',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10,ozellestirilebilir:false};
 const DUZEY={nedir:0,oyunlar:0,ilkokul:1,ortaokul:5};
 
-let S=null,unsubs=[],bekleyen={},pushT=0;
+let S=null,unsubs=[],bekleyen={},pushT=0,kagitT=0;
 
 /* ── belge bilgisi: uygulamadan gelir, ekranda değiştirilebilir ── */
 function ogretmenAdi(){
  const t=rows('ogretmenler').find(x=>String(x.id)===String(teacherId())),u=B.user();
  return adBicimi(adSoyad(t)||String(u.adSoyad||u.ad||u.displayName||'').trim());
 }
-const blank=sayfa=>({sayfa,okul:'',ogretmen:'',mudur:'',elle:{},mesgul:new Set(),imza:{},imzaT:{},buyuk:false});
+const blank=sayfa=>({sayfa,okul:'',ogretmen:'',mudur:'',elle:{},mesgul:new Set(),imza:{},imzaT:{},seviye:0});
 const ensure=()=>S||(S=blank('nedir'));
 /* Elle değiştirilmeyen alanları veriden doldurur; değişen bir şey olduysa true. */
 function varsayilanlar(){
@@ -92,7 +94,7 @@ function belgeSatiri(plan){
 const belgeKarti=(baslik,planlar)=>kart(baslik,planlar.map(belgeSatiri).join(''),'mok-belgeler');
 
 /* ── yıllık plan: imza düzenleyici ve A4 önizleme ── */
-const imzaOnizle=plan=>`<div class="mok-imza-onizle" data-mok-imza-onizle><div class="mpl-belge">${MP.imzaHtml(model(plan).imza)||'<small class="ka-muted">İmza bölümü boş.</small>'}</div></div>`;
+const imzaOnizle=()=>`<div class="mok-imza-onizle"><iframe class="mok-imza-cerceve" data-mok-imza-onizle title="İmza bölümü önizlemesi"></iframe></div>`;
 function imzaKarti(plan){
  const im=imzaDuzeni(plan),cz=model(plan).imza,o=im.onay;
  const girdi=(ozellik,deger,ph,etiket,en,tur='text')=>`<input class="ka-input" type="${tur}" value="${esc(deger)}" placeholder="${esc(ph)}" aria-label="${esc(etiket)}"${en?` maxlength="${en}"`:''} ${ozellik} autocomplete="off">`;
@@ -102,13 +104,13 @@ function imzaKarti(plan){
  return kart('İmza bölümü',`<small class="ka-muted">İmza sahiplerini ekleyip silebilir, sıralayabilirsiniz; adı boş bıraktığınız imza noktalı çizgiyle çıkar. Onay bloğunun ibaresini ve tarihini değiştirebilirsiniz. Önizleme, PDF ve Word’de aynı düzen kullanılır; düzeniniz hesabınıza kaydedilir.</small>
  <div class="mok-imza-liste">${im.imzalar.length?im.imzalar.map(satir).join(''):'<small class="ka-muted">İmza sahibi yok; aşağıdan ekleyin.</small>'}</div>
  <div class="mok-eylem"><button type="button" class="ka-btn ka-btn--secondary" data-mok-imza-ekle${im.imzalar.length>=MP.ENCOK_IMZA?' disabled':''}>＋ İmza ekle</button><button type="button" class="ka-btn ka-btn--ghost" data-mok-imza-sifirla>Varsayılan düzene dön</button></div>
- ${onay}<strong class="mok-kart__baslik">İmza bölümü önizlemesi</strong>${imzaOnizle(plan)}`,'mok-imzalar');
+ ${onay}<strong class="mok-kart__baslik">İmza bölümü önizlemesi</strong>${imzaOnizle()}`,'mok-imzalar');
 }
 function onizlemeKarti(plan){
  const s=ensure(),mesgul=s.mesgul.has(plan);
- return kart('Önizleme',`<small class="ka-muted">${esc(MP.PLAN[plan].alt)} · A4 yatay. Çıktıda sayfalara bölünür; tablo başlığı her sayfada tekrarlanır.</small>
- <div class="mok-onizle" data-mok-onizle><div class="mok-onizle__olcek" data-mok-olcek><div class="mok-kagit" data-mok-kagit>${MP.belge(plan,model(plan))}</div></div></div>
- <div class="mok-eylem"><button type="button" class="ka-btn ka-btn--primary" data-mok-yazdir="${plan}">Yazdır / PDF</button><button type="button" class="ka-btn ka-btn--secondary" data-mok-indir="${plan}"${mesgul?' disabled':''}>${mesgul?'Hazırlanıyor…':'Word indir'}</button><button type="button" class="ka-btn ka-btn--ghost" data-mok-buyut>${s.buyuk?'Sığdır':'Büyüt'}</button></div>`,'mok-onizleme');
+ return kart('Önizleme',`<small class="ka-muted">${esc(MP.PLAN[plan].alt)} · A4 yatay. Telefonda okumak için Büyüt’e dokunun; çıktıda sayfalara bölünür, tablo başlığı her sayfada tekrarlanır.</small>
+ <div class="mok-onizle" data-mok-onizle><div class="mok-onizle__sahne" data-mok-sahne><iframe class="mok-kagit" data-mok-kagit title="${esc(`${V.PLANLAR[plan].ad} önizleme`)}"></iframe></div></div>
+ <div class="mok-eylem"><button type="button" class="ka-btn ka-btn--primary" data-mok-yazdir="${plan}">Yazdır / PDF</button><button type="button" class="ka-btn ka-btn--secondary" data-mok-indir="${plan}"${mesgul?' disabled':''}>${mesgul?'Hazırlanıyor…':'Word indir'}</button><button type="button" class="ka-btn ka-btn--ghost" data-mok-buyut>Büyüt</button></div>`,'mok-onizleme');
 }
 
 /* ── sayfalar ── */
@@ -163,7 +165,7 @@ function render(kok=document.getElementById('v2ModuleRoot')){
  ${SAYFA_HTML[s.sayfa]()}
  </section>`;
  baglan(kok);
- olcekle();
+ cerceveleriYaz();olcekle();
  global.scrollTo?.(0,y);
  return true;
 }
@@ -188,25 +190,45 @@ async function indir(plan){
  }catch(e){console.warn('[Maarif’in Kalbinde Oyun]',e);global.toast?.(String(e?.message||'').startsWith('Form dosyası')||String(e?.message||'').includes('Word')?e.message:'Plan indirilemedi.');return false}
  finally{s.mesgul.delete(plan);if(document.querySelector('[data-mok-page]'))render()}
 }
-/* Önizleme ve imza özeti yalnız içeriği değiştirir: yazarken alan odağı kaybolmaz. */
+/* Kâğıt ve imza özeti, yazdırma çıktısıyla aynı stil dosyasını kullanan ayrı çerçevelerde çizilir: uygulamanın tema stilleri (koyu tema dâhil) kâğıdın renklerini bozamaz. */
+function cerceveYaz(frame,html,yuklenince){
+ if(!frame||frame._son===html)return;
+ frame._son=html;frame.onload=yuklenince;frame.srcdoc=html;
+}
+function imzaBelgesi(plan){
+ const iz=MP.imzaHtml(model(plan).imza);
+ return`<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="${esc(global.ReportEngine.styleUrl())}"></head><body><div class="mpl-belge">${iz||'<small>İmza bölümü boş.</small>'}</div></body></html>`;
+}
+function cerceveleriYaz(){
+ const plan=ensure().sayfa,R=global.ReportEngine;
+ if(!MP.PLAN[plan]||!R?.documentHtml)return;
+ cerceveYaz(document.querySelector('[data-mok-kagit]'),R.documentHtml(V.PLANLAR[plan].ad,MP.belge(plan,model(plan)),CIKTI),olcekle);
+ const ozet=document.querySelector('[data-mok-imza-onizle]');
+ cerceveYaz(ozet,imzaBelgesi(plan),()=>{try{ozet.style.height=`${ozet.contentDocument.body.scrollHeight}px`}catch(_){}});
+}
+/* İmza düzenleyici ve önizlemeler yerinde yenilenir: yazarken alan odağı kaybolmaz (kâğıt, yazma durunca güncellenir). */
 function onizlemeYenile(){
  const plan=ensure().sayfa;if(!MP.PLAN[plan])return;
- const kagit=document.querySelector('[data-mok-kagit]'),ozet=document.querySelector('[data-mok-imza-onizle]');
- if(kagit)kagit.innerHTML=MP.belge(plan,model(plan));
- if(ozet)ozet.innerHTML=`<div class="mpl-belge">${MP.imzaHtml(model(plan).imza)||'<small class="ka-muted">İmza bölümü boş.</small>'}</div>`;
  /* Uygulamadan gelen (elle yazılmamış) adlar alanlarda da güncel görünür. */
  const cz=model(plan).imza,im=imzaDuzeni(plan);
  document.querySelectorAll('[data-mok-imza="ad"]').forEach(el=>{if(im.imzalar[Number(el.dataset.i)]?.ad==null&&el!==document.activeElement)el.value=cz.imzalar[Number(el.dataset.i)].ad});
  const oad=document.querySelector('[data-mok-onay="ad"]');if(oad&&im.onay.ad==null&&oad!==document.activeElement)oad.value=cz.onay.ad;
- olcekle();
+ clearTimeout(kagitT);kagitT=setTimeout(cerceveleriYaz,200);
 }
-/* A4 kâğıdı kutunun genişliğine sığdırır (Büyüt: daha okunaklı, yana kaydırılır). */
+/* A4 kâğıdı kutunun genişliğine sığdırır; Büyüt sırayla daha büyük ölçeklere (en sonda gerçek boyut, yana kaydırılır) ve yeniden sığdırmaya geçer. Çerçeve yüksekliği içeriğe uyar. */
 function olcekle(){
  const s=ensure();
  document.querySelectorAll('[data-mok-onizle]').forEach(el=>{
-  const kutu=el.clientWidth;if(!kutu)return;
-  const sigdir=Math.min(1,kutu/A4_GENISLIK),k=Math.min(1,s.buyuk?sigdir*BUYUTME:sigdir);
-  el.style.setProperty('--mok-olcek',String(Math.floor(k*1000)/1000));
+  const frame=el.querySelector('[data-mok-kagit]'),sahne=el.querySelector('[data-mok-sahne]'),kutu=el.clientWidth;
+  if(!frame||!sahne||!kutu)return;
+  let h=A4_YUKSEKLIK;
+  try{const d=frame.contentDocument;h=Math.max(h,d?.documentElement?.scrollHeight||0,d?.body?.scrollHeight||0)}catch(_){}
+  const sigdir=Math.min(1,kutu/A4_GENISLIK),seviyeler=[...new Set([sigdir,Math.min(1,sigdir*BUYUTME),1].map(v=>Math.floor(v*1000)/1000))];
+  if(s.seviye>=seviyeler.length)s.seviye=0;
+  const k=seviyeler[s.seviye];
+  frame.style.height=`${h}px`;frame.style.transform=`scale(${k})`;
+  sahne.style.width=`${Math.ceil(A4_GENISLIK*k)}px`;sahne.style.height=`${Math.ceil(h*k)}px`;
+  const dugme=document.querySelector('[data-mok-buyut]');if(dugme)dugme.textContent=s.seviye>=seviyeler.length-1?'Sığdır':'Büyüt';
  });
 }
 function yazdir(plan){
@@ -214,7 +236,7 @@ function yazdir(plan){
  if(!P||!MP.PLAN[plan])return false;
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const ad=String(ensure().ogretmen||'').trim();
- global.ReportEngine.printReport(P.ad,MP.belge(plan,model(plan)),{fileName:`Maarif Oyun Yillik Plan ${plan==='ilkokul'?'Ilkokul':'Ortaokul'}${ad?` ${ad}`:''}`,yon:'yatay',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10,ozellestirilebilir:false});
+ global.ReportEngine.printReport(P.ad,MP.belge(plan,model(plan)),{...CIKTI,fileName:`Maarif Oyun Yillik Plan ${plan==='ilkokul'?'Ilkokul':'Ortaokul'}${ad?` ${ad}`:''}`});
  return true;
 }
 function imzaDegistir(fn){const plan=ensure().sayfa;fn(imzaDuzeni(plan),plan);imzaKaydet(plan)}
@@ -236,12 +258,12 @@ function baglan(kok){
   const s=ensure(),plan=s.sayfa;s.imza[plan]=MP.varsayilanImza(plan);imzaKaydet(plan);render(kok);global.toast?.('İmza düzeni varsayılana döndü.');
  });
  kok.querySelectorAll('[data-mok-yazdir]').forEach(b=>b.addEventListener('click',()=>yazdir(b.dataset.mokYazdir)));
- kok.querySelector('[data-mok-buyut]')?.addEventListener('click',e=>{const s=ensure();s.buyuk=!s.buyuk;e.currentTarget.textContent=s.buyuk?'Sığdır':'Büyüt';olcekle()});
+ kok.querySelector('[data-mok-buyut]')?.addEventListener('click',()=>{ensure().seviye+=1;olcekle()});
  kok.querySelectorAll('[data-mok-git]').forEach(b=>b.addEventListener('click',()=>git(b.dataset.mokGit)));
  kok.querySelectorAll('[data-mok-indir]').forEach(b=>b.addEventListener('click',()=>indir(b.dataset.mokIndir)));
 }
 
-function temizle(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[]}
+function temizle(){unsubs.forEach(f=>{try{f()}catch(_){}});unsubs=[];clearTimeout(kagitT)}
 /* sayfa: 'nedir' | 'oyunlar' | 'ilkokul' | 'ortaokul' (bilinmeyen anahtar → nedir) */
 function open(sayfa='nedir'){
  const k=V.SAYFALAR[sayfa]?sayfa:'nedir';
