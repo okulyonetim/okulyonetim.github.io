@@ -60,7 +60,7 @@ const ev=load('js/modules/evrak-teslim.js',{EvrakKatalog:katalogWin.EvrakKatalog
 const page=ev.EvrakTeslimPage;
 assert(page&&Array.isArray(page.KATALOG),'EvrakTeslimPage.KATALOG açık olmalı.');
 const per={};page.KATALOG.forEach(e=>{(per[e.donem]=per[e.donem]||[]).push(e)});
-assert.deepStrictEqual([per.basi.length,per.donem1.length,per.sonu.length],[62,33,26],'Sene başı 62, 1. dönem sonu 33, sene sonu 26 evrak içermeli.');
+assert.deepStrictEqual([per.basi.length,per.donem1.length,per.sonu.length],[63,33,26],'Sene başı 63, 1. dönem sonu 33, sene sonu 26 evrak içermeli.');
 assert.strictEqual(new Set(page.KATALOG.map(e=>e.id)).size,page.KATALOG.length,'Evrak kimlikleri tüm dönemlerde benzersiz olmalı.');
 [...per.donem1,...per.sonu].forEach(e=>assert(e.yazi&&e.yazi!==e.ad,`${e.id}: tebliğ yazısı için ayrı yazı metni olmalı.`));
 assert(per.donem1.find(e=>/ŞÖK/.test(e.ad)).kimden==='rehber'&&per.sonu.find(e=>/zümre/.test(e.ad)).kimden==='zumre','ŞÖK sınıf rehberlerinden, zümre toplantısı zümre başkanlarından istenmeli.');

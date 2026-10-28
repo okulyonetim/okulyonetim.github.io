@@ -74,7 +74,8 @@ const BASI=[
  ["kulup","Kulüp Yıl Sonu Faaliyet Raporu",null,null,{a:"form-kulup"}],
  ["kulup","Kulüp Bütçesi Evrakları"],
  ["kulup","Kulüp Görev Dağılım Çizelgesi"],
- ["kulup","Pano Çalışmaları Dosyası"]
+ ["kulup","Pano Çalışmaları Dosyası"],
+ ["idari","Maarif'in Kalbinde Oyun Yıllık Planı",null,null,{f:["oyun-ilkokul","oyun-ortaokul"]}]
 ];
 const DONEM1=[
  ["idari","Her dersten iki yazılı notunu e-Okul'a işle","Her dersten iki yazılı sınav notunun e-Okul'a işlenmesi"],
@@ -159,7 +160,9 @@ const FORMLAR={
  'proje-secim':{ad:'Proje Ödevi Seçim Formu',docx:'proje-odevi-secim-formu.docx'},
  'proje-dagitim':{ad:'Proje Ödevleri Dağıtım Listesi',docx:'proje-dagitim-listesi.docx'},
  'proje-degerlendirme':{ad:'Proje Ödev Değerlendirme ve Takip Formu',docx:'proje-odev-degerlendirme-formu.docx'},
- 'yazili-teslim':{ad:'Yazılı Kâğıtları Teslim Tutanağı',docx:'yazili-kagitlari-teslim-tutanagi.docx'}
+ 'yazili-teslim':{ad:'Yazılı Kâğıtları Teslim Tutanağı',docx:'yazili-kagitlari-teslim-tutanagi.docx'},
+ 'oyun-ilkokul':{ad:"Maarif'in Kalbinde Oyun — Yıllık Çalışma Planı (İlkokul, 1–4. sınıf)",docx:'maarifin-kalbinde-oyun-yillik-plan-ilkokul.docx',yil:'2026-2027'},
+ 'oyun-ortaokul':{ad:"Maarif'in Kalbinde Oyun — Yıllık Tema ve Oyun Planı (Ortaokul, 5–8. sınıf)",docx:'maarifin-kalbinde-oyun-yillik-plan-ortaokul.docx',yil:'2026-2027'}
 };
 
 /* Eğitim-öğretim yılı: Eylül'den itibaren yeni yıl. */

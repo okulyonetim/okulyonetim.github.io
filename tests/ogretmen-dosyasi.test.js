@@ -17,9 +17,9 @@ const w=load(['js/modules/evrak-katalog.js','js/modules/ogretmen-dosyasi-core.js
 const K=w.EvrakKatalog,C=w.OgretmenDosyasiCore;
 assert(K&&C,'EvrakKatalog ve OgretmenDosyasiCore yüklenmeli.');
 
-/* ── ortak katalog: Evrak Teslim ile aynı 62 + 33 + 26 madde, tek kaynak ── */
+/* ── ortak katalog: Evrak Teslim ile aynı 63 + 33 + 26 madde, tek kaynak ── */
 const per={};K.KATALOG.forEach(e=>{(per[e.donem]=per[e.donem]||[]).push(e)});
-eq([per.basi.length,per.donem1.length,per.sonu.length],[62,33,26],'Katalog sayıları değişmemeli (kayıtlı işaretler kimliklere bağlı).');
+eq([per.basi.length,per.donem1.length,per.sonu.length],[63,33,26],'Katalog sayıları (yalnız sona eklenir; kayıtlı işaretler kimliklere bağlı) değişmemeli (kayıtlı işaretler kimliklere bağlı).');
 assert.strictEqual(new Set(K.KATALOG.map(e=>e.id)).size,K.KATALOG.length,'Kimlikler benzersiz olmalı.');
 assert.strictEqual(K.egitimYili(new Date(2026,9,27)),'2026-2027');assert.strictEqual(K.egitimYili(new Date(2027,5,1)),'2026-2027');assert.strictEqual(K.egitimYili(new Date(2026,7,31)),'2025-2026');
 const tek=fs.readFileSync('js/modules/evrak-teslim.js','utf8');
@@ -141,7 +141,7 @@ const bilinen=new Set([...Object.keys(v),...['AD','GIRIS','CIKIS','SURE'].flatMa
   assert(/\['evrak','Tutanak ve Evrak'[^\n]*\n\s*\['ogretmen-dosyasi','Öğretmen Dosyası'/.test(nav),'Öğretmen Dosyası, Tutanak ve Evrak menüsünün ilk sayfası olmalı.');
   assert(!nav.includes("'management:ogretmen-dosyasi'")&&![...navWin.AppNav.TEACHER_HIDDEN].some(x=>x.startsWith('ogretmen-dosyasi')),'Sayfa öğretmen hesabına da açık olmalı.');
   assert(shell.includes("name==='ogretmen-dosyasi'")&&shell.includes('OgretmenDosyasi.open'),'Kabukta rota tanımlı olmalı.');
-  ['evrak-katalog.js?v=6','ogretmen-dosyasi-core.js?v=3','ogretmen-dosyasi.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
+  ['evrak-katalog.js?v=7','ogretmen-dosyasi-core.js?v=3','ogretmen-dosyasi.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
   Object.values(K.FORMLAR).filter(f=>f.docx).forEach(f=>assert(sw.includes(`./${DIR}${f.docx}`),`${f.docx} çevrimdışı çalışsın diye önbelleğe alınmalı.`));
   assert(!/localStorage\s*\.\s*setItem/.test(ui)&&ui.includes('KaPrefs'),'Modül tarayıcı depolamasına doğrudan yazmamalı; KaPrefs kullanmalı.');
   assert(ui.includes('remoteListen')&&ui.includes('remoteSet'),'İlerleme hesap tercih belgesine eşitlenmeli.');
