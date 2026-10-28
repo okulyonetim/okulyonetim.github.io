@@ -142,12 +142,12 @@ function applySubpage(name,page,title){
     if(title)setTitle(title);return true;
   }
   if(name==='documents'&&page==='dilimiz'&&global.DocumentsModule?.openDilimiz){
-    global.DocumentsModule.openDilimiz();
+    global.DocumentsModule.openDilimiz({shell:true});
     requestAnimationFrame(()=>{const shell=root.querySelector('[data-documents-module]');if(shell){const head=shell.querySelector(':scope > .ka-row'),search=shell.querySelector('#documentsSearch')?.closest('.ka-field'),formButton=shell.querySelector('[data-document-form="teblig"]')?.closest('.ka-row');if(head)head.hidden=true;if(search)search.hidden=true;if(formButton)formButton.hidden=true}});
     if(title)setTitle(title);return true;
   }
   if(name==='documents'&&page==='teblig'&&global.DocumentsModule?.openTeblig){
-    global.DocumentsModule.openTeblig();
+    global.DocumentsModule.openTeblig({shell:true});
     requestAnimationFrame(()=>{const shell=root.querySelector('[data-documents-module]');if(shell){const head=shell.querySelector(':scope > .ka-row'),search=shell.querySelector('#documentsSearch')?.closest('.ka-field'),formButton=shell.querySelector('[data-document-form="teblig"]')?.closest('.ka-row');if(head)head.hidden=true;if(search)search.hidden=true;if(formButton)formButton.hidden=true}});
     if(title)setTitle(title);return true;
   }
