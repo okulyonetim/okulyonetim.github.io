@@ -23,5 +23,5 @@ assert(form.includes('data-w-teacher-hint')&&form.includes("lessonSel.addEventLi
 assert(form.includes('if(teacherLocked)return;'),'Öğretmen hesabında (öğretmen kendine kilitli) otomatik doldurma devre dışı olmalı.');
 assert(form.includes("sel.addEventListener('change',()=>{elle=true"),'Elle seçilen öğretmen sınıf değişiminde korunmalı.');
 const loader=fs.readFileSync('js/app-loader.js','utf8');
-assert(loader.includes('academic.js?v=900'),'academic.js sürümü yenilenmeli.');
+assert(loader.includes('academic.js?v=901'),'academic.js sürümü yenilenmeli.');
 console.log('yazili-ogretmen-otomatik: OK');

@@ -54,5 +54,5 @@ assert(/\.kwr-tablo thead\{display:table-header-group\}/.test(kwr),'Başlık sat
 const mm=c=>Number((kwr.match(new RegExp('\\.'+c+'\\{width:([\\d.]+)mm\\}'))||[])[1]);
 assert(mm('kwr-c-tarih')>=22&&mm('kwr-c-sira')>=11,'Tarih (gg.aa.yyyy) ve Sıra sütunları tek satıra sığacak genişlikte.');
 assert(/\.kwr-tablo \.kwr-nw\{[^}]*white-space:nowrap/.test(kwr),'Tarih hücresi tek satırda kalır.');
-assert(loader.includes('academic.js?v=900')&&sw.includes('academic.js?v=900'),'academic.js sürümü yenilenmeli.');
+assert(loader.includes('academic.js?v=901')&&sw.includes('academic.js?v=901'),'academic.js sürümü yenilenmeli.');
 console.log('yazili-sinav-raporu: OK');
