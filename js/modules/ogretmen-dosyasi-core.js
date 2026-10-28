@@ -106,13 +106,16 @@ function betikYukle(src,hazir){
  if(!global.AppLoader?.loadScript)return Promise.reject(hata());
  return global.AppLoader.loadScript(src).then(()=>{if(!hazir())throw hata()});
 }
-/* .docx şablon baytları + alanlar (+ tekrarlanan satırlar) → doldurulmuş .docx Blob. */
-async function docxDoldur(tampon,v,satirlar,gruplar){
+/* .docx şablon baytları + alanlar (+ tekrarlanan satırlar) → doldurulmuş .docx Blob.
+ * donustur (isteğe bağlı): alanlar yazıldıktan sonra word/document.xml metnini değiştiren işlev (örn. imza tablosunu yeniden yazar). */
+async function docxDoldur(tampon,v,satirlar,gruplar,donustur){
  await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
  let paket;try{paket=await global.JSZip.loadAsync(tampon)}catch(_){throw new Error('Şablon geçerli bir Word (.docx) belgesi değil.')}
  for(const ad of Object.keys(paket.files)){
   if(!DOLDURULAN.test(ad))continue;
-  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),v,satirlar,gruplar));
+  let xml=xmlDoldur(await paket.file(ad).async('string'),v,satirlar,gruplar);
+  if(ad==='word/document.xml'&&typeof donustur==='function')xml=donustur(xml);
+  paket.file(ad,xml);
  }
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
 }

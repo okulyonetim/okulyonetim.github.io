@@ -69,8 +69,8 @@ assert(tools.every(t=>!t.y),'Sayfalar öğretmene de açık.');
 Object.values(V.SAYFALAR).forEach((s,i)=>{const k=Object.keys(V.SAYFALAR)[i];assert(tools.some(t=>t.page===k),`${k}: katalogda sayfa var.`)});
 assert(['oyun-nedir','oyun-aylik','oyun-ilkokul','oyun-ortaokul'].every(id=>nav.includes(`GLYPHS['${id}']`)||nav.includes(`'${id}':'`)),'Simgeler ve arama sözcükleri.');
 assert.deepStrictEqual(J(N.search('maarif kalbinde oyun').map(t=>t.id).sort()),['oyun-aylik','oyun-ilkokul','oyun-nedir','oyun-ortaokul'],'Arama dört sayfayı da bulur.');
-assert(/if\(name==='maarif-oyun'\)\{[\s\S]*?MaarifOyunModule\.open\(page\)/.test(shell)&&shell.includes('maarif-oyun-veri.js?v=1')&&shell.includes('maarif-oyun.js?v=1'),'Rota modülleri yükleyip sayfa anahtarıyla açar.');
-assert(sw.includes('maarif-oyun-veri.js?v=1')&&sw.includes('maarif-oyun.js?v=1'),'Önbelleğe alınmalı.');
+assert(/if\(name==='maarif-oyun'\)\{[\s\S]*?MaarifOyunModule\.open\(page\)/.test(shell)&&shell.includes('maarif-oyun-veri.js?v=1')&&shell.includes('maarif-oyun.js?v=2'),'Rota modülleri yükleyip sayfa anahtarıyla açar.');
+assert(sw.includes('maarif-oyun-veri.js?v=1')&&sw.includes('maarif-oyun.js?v=2'),'Önbelleğe alınmalı.');
 assert(katSrc.includes('{f:["oyun-ilkokul","oyun-ortaokul"],a:["oyun-ilkokul","oyun-ortaokul"]}'),'Öğretmen Dosyası maddesi sayfalara bağlanmalı.');
 const madde=K.KATALOG.find(m=>/Kalbinde Oyun/.test(m.ad));
 assert.deepStrictEqual(J(madde.araclar),['oyun-ilkokul','oyun-ortaokul']);
@@ -78,8 +78,8 @@ assert.deepStrictEqual(J(madde.araclar),['oyun-ilkokul','oyun-ortaokul']);
 /* ── Word indirme: Öğretmen Dosyası'yla aynı yol ── */
 assert(/async function formKaydet\(key,tur,ek=\{\}\)/.test(odSrc)&&/OgretmenDosyasi=\{open,render,unmount,formKaydet\}/.test(odSrc),'formKaydet dışa açılmalı.');
 assert(/async function formIndir\(key,tur\)[\s\S]*?formKaydet\(key,tur\)/.test(odSrc),'Öğretmen Dosyası da aynı yolu kullanır (kopya yok).');
-assert(/formKaydet\(p\.form,'docx',\{okul:planOkulu\(plan\),ad:s\.ogretmen,mudur:s\.mudur\}\)/.test(uiSrc),'Sayfa, ekrandaki okul / öğretmen / müdür bilgisiyle indirir.');
-assert(/ogretmen-dosyasi\.js\?v=5/.test(uiSrc)&&shell.includes('ogretmen-dosyasi.js?v=5')&&sw.includes('ogretmen-dosyasi.js?v=5'),'Öğretmen Dosyası pinleri aynı.');
+assert(/formKaydet\(p\.form,'docx',\{okul:planOkulu\(plan\),ad:s\.ogretmen,mudur:s\.mudur,xmlDonustur:xml=>MP\.imzaTablosunuDegistir\(xml,imza\)\}\)/.test(uiSrc),'Sayfa, ekrandaki okul / öğretmen / müdür bilgisiyle ve özelleştirilmiş imza bölümüyle indirir.');
+assert(/ogretmen-dosyasi\.js\?v=6/.test(uiSrc)&&shell.includes('ogretmen-dosyasi.js?v=6')&&sw.includes('ogretmen-dosyasi.js?v=6'),'Öğretmen Dosyası pinleri aynı.');
 assert(!/localStorage\.setItem/.test(veriSrc+uiSrc)&&!/<style/i.test(veriSrc+uiSrc)&&!/style="/.test(veriSrc+uiSrc),'Modül depolama yazmaz, stil gömmez.');
 
 /* ── CSS: yalnız belirteç ── */

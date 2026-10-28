@@ -1,29 +1,32 @@
 /* Koruk Asistan — Projeler › Maarif'in Kalbinde Oyun
  * Dört sayfa (her biri Projeler menüsünde ayrı satır): Maarif'in Kalbinde Oyun nedir · Ayın Oyunları (20 oyun, nasıl oynanır) · İlkokul yıllık planı · Ortaokul yıllık planı.
- * Planlar Word olarak iner: okul, öğretmen ve müdür adı uygulamadan yazılır (Öğretmen Dosyası'nın hazır formlarıyla aynı şablon ve aynı indirme yolu: OgretmenDosyasi.formKaydet).
- * İçerik: maarif-oyun-veri.js. Ekran stili: css/design-system-base.css (.mok-*).
+ * Yıllık plan sayfaları: sayfada A4 önizleme, Yazdır / PDF (ReportEngine) ve Word indirme; okul, öğretmen ve müdür adı uygulamadan yazılır, imza bölümü özelleştirilir
+ * (imza sahipleri ve onay bloğu; hesabın tercih belgesinde KaPrefs ile saklanır, önizleme · PDF · Word aynı düzeni kullanır). Word, Öğretmen Dosyası'nın hazır formlarıyla aynı şablon ve indirme yoludur (OgretmenDosyasi.formKaydet).
+ * İçerik: maarif-oyun-veri.js · plan belgesi ve imza mantığı: maarif-oyun-plan.js. Ekran stili: css/design-system-base.css (.mok-*, kâğıt .mpl-*).
  */
 (function(global){
 'use strict';
 if(global.MaarifOyunModule)return;
-const V=global.MaarifOyunVeri,B=global.SinifBaglam;
-if(!V||!B)throw new Error('Maarif’in Kalbinde Oyun için gerekli bileşenler yüklenmedi.');
+const V=global.MaarifOyunVeri,MP=global.MaarifOyunPlan,B=global.SinifBaglam;
+if(!V||!MP||!B)throw new Error('Maarif’in Kalbinde Oyun için gerekli bileşenler yüklenmedi.');
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const {rows,adBicimi,adSoyad,teacherId,okulMuduru,okulAdi}=B;
 /* Sayfa anahtarı → AppNav sayfa kimliği (menüdeki satır). */
 const KIMLIK={nedir:'oyun-nedir',oyunlar:'oyun-aylik',ilkokul:'oyun-ilkokul',ortaokul:'oyun-ortaokul'};
-const ALTYAZI='Maarif’in Kalbinde Oyun: ayın oyunları (20 geleneksel oyun), ilkokul ve ortaokul yıllık planları (Word).';
+const ALTYAZI='Maarif’in Kalbinde Oyun: ayın oyunları (20 geleneksel oyun), ilkokul ve ortaokul yıllık planları (önizleme, PDF ve Word).';
+const A4_GENISLIK=297*96/25.4; /* A4 yatay kâğıt genişliği, CSS pikseli (1 in = 96 px) */
+const BUYUTME=1.8;
 const DUZEY={nedir:0,oyunlar:0,ilkokul:1,ortaokul:5};
 
-let S=null,unsubs=[];
+let S=null,unsubs=[],bekleyen={},pushT=0;
 
 /* ── belge bilgisi: uygulamadan gelir, ekranda değiştirilebilir ── */
 function ogretmenAdi(){
  const t=rows('ogretmenler').find(x=>String(x.id)===String(teacherId())),u=B.user();
  return adBicimi(adSoyad(t)||String(u.adSoyad||u.ad||u.displayName||'').trim());
 }
-const blank=sayfa=>({sayfa,okul:'',ogretmen:'',mudur:'',elle:{},mesgul:new Set()});
+const blank=sayfa=>({sayfa,okul:'',ogretmen:'',mudur:'',elle:{},mesgul:new Set(),imza:{},imzaT:{},buyuk:false});
 const ensure=()=>S||(S=blank('nedir'));
 /* Elle değiştirilmeyen alanları veriden doldurur; değişen bir şey olduysa true. */
 function varsayilanlar(){
@@ -35,6 +38,38 @@ function varsayilanlar(){
 }
 /* Plan başına okul adı: ortak okullarda kademeye ait ad; okul adı elle yazıldıysa o. */
 const planOkulu=plan=>{const s=ensure();return s.elle.okul?s.okul:okulAdi(V.PLANLAR[plan].duzey)};
+
+/* ── imza düzeni: yıl + plan başına, yerelde ve hesapta (KaPrefs); en yeni zaman damgası geçerli ── */
+const slug=v=>String(v||'').replace(/[^0-9A-Za-z]+/g,'_').replace(/^_+|_+$/g,'');
+const imzaAnahtar=plan=>`maarifOyunImza_${slug(V.YIL)}_${plan}`;
+function imzaOku(plan,j){let x=null;try{x=JSON.parse(j||'null')}catch(_){}return{imza:MP.imzaTemizle(plan,x),t:Number(x?.t)||0}}
+function imzaYukle(){
+ const s=ensure();
+ Object.keys(V.PLANLAR).forEach(p=>{const r=imzaOku(p,global.KaPrefs?.get?.(imzaAnahtar(p),''));s.imza[p]=r.imza;s.imzaT[p]=r.t});
+}
+function imzaKaydet(plan){
+ const s=ensure(),t=s.imzaT[plan]=Date.now(),a=imzaAnahtar(plan),j=JSON.stringify({...s.imza[plan],t});
+ global.KaPrefs?.set?.(a,j);
+ bekleyen[a]=j;clearTimeout(pushT);
+ pushT=setTimeout(()=>{const b=bekleyen;bekleyen={};global.KaPrefs?.remoteSet?.(b)},700);
+}
+/* Başka cihazdaki daha yeni imza düzeni gelirse yerelin yerine geçer. */
+function uzakGeldi(x){
+ if(!document.querySelector('[data-mok-page]'))return temizle();
+ const s=ensure();let degisti=false;
+ Object.keys(V.PLANLAR).forEach(p=>{
+  const a=imzaAnahtar(p),j=x?.[a];if(!j)return;
+  const r=imzaOku(p,j);
+  if(r.t>(s.imzaT[p]||0)){s.imza[p]=r.imza;s.imzaT[p]=r.t;global.KaPrefs?.set?.(a,j);degisti=true}
+ });
+ if(degisti&&!document.querySelector('[data-mok-page]').contains(document.activeElement))render();
+}
+const imzaDuzeni=plan=>{const s=ensure();return s.imza[plan]||(s.imza[plan]=MP.varsayilanImza(plan))};
+/* Belge modeli: okul, plan hazırlayan ve imza düzeni (null adlar uygulamadan gelen adla doldurulur). */
+function model(plan){
+ const s=ensure();
+ return{okul:planOkulu(plan),ogretmen:s.ogretmen,imza:MP.imzaCozumle(imzaDuzeni(plan),{ogretmen:s.ogretmen,mudur:s.mudur})};
+}
 
 /* ── ekran parçaları ── */
 const kart=(baslik,icerik,sinif='')=>`<article class="ka-card mok-kart${sinif?` ${sinif}`:''}"><div class="ka-card__body ka-stack">${baslik?`<strong class="mok-kart__baslik">${esc(baslik)}</strong>`:''}${icerik}</div></article>`;
@@ -48,13 +83,33 @@ function sekmeler(){
 }
 function bilgiKarti(){
  const s=ensure(),f=(k,ad,ph)=>`<label class="ka-field"><span class="ka-field__label">${esc(ad)}</span><input class="ka-input" type="text" value="${esc(s[k])}" placeholder="${esc(ph)}" data-mok="${k}" autocomplete="off"></label>`;
- return kart('Belgeye yazılacak bilgiler',`<small class="ka-muted">Okul, öğretmen ve müdür adı uygulamadaki kayıtlarınızdan gelir; Word’e bu hâliyle yazılır. Gerekirse buradan değiştirin.</small><div class="ka-grid">${f('okul','Okul adı','Okul adı')}${f('ogretmen','Planı hazırlayan öğretmen','Ad SOYAD')}${f('mudur','Okul müdürü','Ad SOYAD')}</div>`);
+ return kart('Belgeye yazılacak bilgiler',`<small class="ka-muted">Okul, öğretmen ve müdür adı uygulamadaki kayıtlarınızdan gelir; önizlemeye, PDF’ye ve Word’e bu hâliyle yazılır. Gerekirse buradan değiştirin.</small><div class="ka-grid">${f('okul','Okul adı','Okul adı')}${f('ogretmen','Planı hazırlayan öğretmen','Ad SOYAD')}${f('mudur','Okul müdürü','Ad SOYAD')}</div>`);
 }
 function belgeSatiri(plan){
  const p=V.PLANLAR[plan],mesgul=ensure().mesgul.has(plan);
  return`<div class="mok-belge"><span class="mok-rozet" aria-hidden="true">WORD</span><div class="mok-belge__metin"><strong>${esc(p.ad)}</strong><small class="ka-muted">${esc(p.not)}</small></div><button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-mok-indir="${plan}"${mesgul?' disabled':''}>${mesgul?'Hazırlanıyor…':'İndir'}</button></div>`;
 }
 const belgeKarti=(baslik,planlar)=>kart(baslik,planlar.map(belgeSatiri).join(''),'mok-belgeler');
+
+/* ── yıllık plan: imza düzenleyici ve A4 önizleme ── */
+const imzaOnizle=plan=>`<div class="mok-imza-onizle" data-mok-imza-onizle><div class="mpl-belge">${MP.imzaHtml(model(plan).imza)||'<small class="ka-muted">İmza bölümü boş.</small>'}</div></div>`;
+function imzaKarti(plan){
+ const im=imzaDuzeni(plan),cz=model(plan).imza,o=im.onay;
+ const girdi=(ozellik,deger,ph,etiket,en,tur='text')=>`<input class="ka-input" type="${tur}" value="${esc(deger)}" placeholder="${esc(ph)}" aria-label="${esc(etiket)}"${en?` maxlength="${en}"`:''} ${ozellik} autocomplete="off">`;
+ const satir=(_,i)=>`<div class="mok-imza-satir">${girdi(`data-mok-imza="ad" data-i="${i}"`,cz.imzalar[i].ad,'Ad SOYAD',`${i+1}. imza: ad soyad`,MP.AD_ENCOK)}${girdi(`data-mok-imza="unvan" data-i="${i}"`,cz.imzalar[i].unvan,'Unvan',`${i+1}. imza: unvan`,MP.UNVAN_ENCOK)}<span class="mok-imza-islem"><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-mok-imza-yer="${i}" data-yon="-1" aria-label="Yukarı taşı"${i===0?' disabled':''}>↑</button><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-mok-imza-yer="${i}" data-yon="1" aria-label="Aşağı taşı"${i===im.imzalar.length-1?' disabled':''}>↓</button><button type="button" class="ka-btn ka-btn--ghost ka-btn--sm" data-mok-imza-sil="${i}" aria-label="İmzayı sil">×</button></span></div>`;
+ const f=(ad,html)=>`<label class="ka-field"><span class="ka-field__label">${esc(ad)}</span>${html}</label>`;
+ const onay=`<div class="mok-onay"><label class="ka-check"><input type="checkbox" data-mok-onay-goster${o.goster?' checked':''}><span>Onay bloğu yazılsın (okul müdürü)</span></label>${o.goster?`<div class="ka-grid">${f('Onay ibaresi',girdi('data-mok-onay="etiket" list="mokOnayIbare"',o.etiket,'UYGUNDUR','Onay ibaresi',MP.ETIKET_ENCOK))}${f('Tarih',girdi('data-mok-onay="tarih"',o.tarih,'','Onay tarihi',0,'date'))}${f('Ad soyad',girdi('data-mok-onay="ad"',cz.onay.ad,'Ad SOYAD','Onay: ad soyad',MP.AD_ENCOK))}${f('Unvan',girdi('data-mok-onay="unvan"',o.unvan,'Okul Müdürü','Onay: unvan',MP.UNVAN_ENCOK))}</div><datalist id="mokOnayIbare"><option value="UYGUNDUR"></option><option value="OLUR"></option><option value="ONAY"></option></datalist><small class="ka-muted">Tarih seçmezseniz kâğıtta “…… / 09 / ${esc(MP.PLAN[plan].ust.slice(0,4))}” gibi elle yazılacak biçimde kalır.</small>`:''}</div>`;
+ return kart('İmza bölümü',`<small class="ka-muted">İmza sahiplerini ekleyip silebilir, sıralayabilirsiniz; adı boş bıraktığınız imza noktalı çizgiyle çıkar. Onay bloğunun ibaresini ve tarihini değiştirebilirsiniz. Önizleme, PDF ve Word’de aynı düzen kullanılır; düzeniniz hesabınıza kaydedilir.</small>
+ <div class="mok-imza-liste">${im.imzalar.length?im.imzalar.map(satir).join(''):'<small class="ka-muted">İmza sahibi yok; aşağıdan ekleyin.</small>'}</div>
+ <div class="mok-eylem"><button type="button" class="ka-btn ka-btn--secondary" data-mok-imza-ekle${im.imzalar.length>=MP.ENCOK_IMZA?' disabled':''}>＋ İmza ekle</button><button type="button" class="ka-btn ka-btn--ghost" data-mok-imza-sifirla>Varsayılan düzene dön</button></div>
+ ${onay}<strong class="mok-kart__baslik">İmza bölümü önizlemesi</strong>${imzaOnizle(plan)}`,'mok-imzalar');
+}
+function onizlemeKarti(plan){
+ const s=ensure(),mesgul=s.mesgul.has(plan);
+ return kart('Önizleme',`<small class="ka-muted">${esc(MP.PLAN[plan].alt)} · A4 yatay. Çıktıda sayfalara bölünür; tablo başlığı her sayfada tekrarlanır.</small>
+ <div class="mok-onizle" data-mok-onizle><div class="mok-onizle__olcek" data-mok-olcek><div class="mok-kagit" data-mok-kagit>${MP.belge(plan,model(plan))}</div></div></div>
+ <div class="mok-eylem"><button type="button" class="ka-btn ka-btn--primary" data-mok-yazdir="${plan}">Yazdır / PDF</button><button type="button" class="ka-btn ka-btn--secondary" data-mok-indir="${plan}"${mesgul?' disabled':''}>${mesgul?'Hazırlanıyor…':'Word indir'}</button><button type="button" class="ka-btn ka-btn--ghost" data-mok-buyut>${s.buyuk?'Sığdır':'Büyüt'}</button></div>`,'mok-onizleme');
+}
 
 /* ── sayfalar ── */
 function nedirSayfasi(){
@@ -83,7 +138,7 @@ function oyunlarSayfasi(){
 function ilkokulSayfasi(){
  const I=V.ILKOKUL;
  return`<h3 class="mok-ara">İlkokul Yıllık Çalışma Planı</h3><p class="mok-giris">${esc(I.giris)}</p>
- ${bilgiKarti()}${belgeKarti('',['ilkokul'])}
+ ${bilgiKarti()}${imzaKarti('ilkokul')}${onizlemeKarti('ilkokul')}
  ${kart('Aylara göre özet',tablo(['Ay','Haftalık oyunlardan örnekler','Ayın geleneksel oyunları'],I.ozet.map(([ay,ornek])=>`<tr><td class="mok-nw"><b>${esc(ay)}</b></td><td>${esc(ornek)}</td><td>${esc(V.oyunlarAy(ay).map(o=>o.ad).join(' · '))}</td></tr>`)))}
  ${kart('Belgeyi okulunuza uyarlarken',liste(I.uyarlama))}
  <p class="mok-kaynak">Oyunların kısa anlatımı: <button type="button" class="mok-baglanti" data-mok-git="oyunlar">Ayın Oyunları</button></p>${kaynak()}`;
@@ -91,7 +146,7 @@ function ilkokulSayfasi(){
 function ortaokulSayfasi(){
  const O=V.ORTAOKUL;
  return`<h3 class="mok-ara">Ortaokul Yıllık Tema ve Oyun Planı</h3><p class="mok-giris">${esc(O.giris)}</p>
- ${bilgiKarti()}${belgeKarti('',['ortaokul'])}
+ ${bilgiKarti()}${imzaKarti('ortaokul')}${onizlemeKarti('ortaokul')}
  ${kart('Yıllık tema planı',tablo(['Ay · Tema','Örnek oyun / etkinlik ve amaç','Önerilen geleneksel oyun · belirli gün'],O.tema.map(([ay,tema,ornek,amac,gelenek])=>`<tr><td><b>${esc(ay)}</b><br>${esc(tema)}</td><td>${esc(ornek)}<br><small class="ka-muted">${esc(amac)}</small></td><td>${esc(gelenek)}</td></tr>`)))}
  ${kart('Uygulama esasları',liste(O.esaslar))}
  <p class="mok-kaynak">Oyunların kısa anlatımı: <button type="button" class="mok-baglanti" data-mok-git="oyunlar">Ayın Oyunları</button></p>${kaynak()}`;
@@ -108,6 +163,7 @@ function render(kok=document.getElementById('v2ModuleRoot')){
  ${SAYFA_HTML[s.sayfa]()}
  </section>`;
  baglan(kok);
+ olcekle();
  global.scrollTo?.(0,y);
  return true;
 }
@@ -121,18 +177,66 @@ function git(sayfa){
 async function indir(plan){
  const s=ensure(),p=V.PLANLAR[plan];
  if(!p||s.mesgul.has(plan))return false;
- if(!global.OgretmenDosyasi?.formKaydet)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=5');
+ if(!global.OgretmenDosyasi?.formKaydet)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=6');
  if(!global.OgretmenDosyasi?.formKaydet){global.toast?.('Word hazırlama bileşeni yüklenemedi.');return false}
  s.mesgul.add(plan);render();
  try{
-  const ok=await global.OgretmenDosyasi.formKaydet(p.form,'docx',{okul:planOkulu(plan),ad:s.ogretmen,mudur:s.mudur});
+  const imza=model(plan).imza;
+  const ok=await global.OgretmenDosyasi.formKaydet(p.form,'docx',{okul:planOkulu(plan),ad:s.ogretmen,mudur:s.mudur,xmlDonustur:xml=>MP.imzaTablosunuDegistir(xml,imza)});
   if(ok)global.toast?.('Plan indirildi.');
   return ok;
  }catch(e){console.warn('[Maarif’in Kalbinde Oyun]',e);global.toast?.(String(e?.message||'').startsWith('Form dosyası')||String(e?.message||'').includes('Word')?e.message:'Plan indirilemedi.');return false}
  finally{s.mesgul.delete(plan);if(document.querySelector('[data-mok-page]'))render()}
 }
+/* Önizleme ve imza özeti yalnız içeriği değiştirir: yazarken alan odağı kaybolmaz. */
+function onizlemeYenile(){
+ const plan=ensure().sayfa;if(!MP.PLAN[plan])return;
+ const kagit=document.querySelector('[data-mok-kagit]'),ozet=document.querySelector('[data-mok-imza-onizle]');
+ if(kagit)kagit.innerHTML=MP.belge(plan,model(plan));
+ if(ozet)ozet.innerHTML=`<div class="mpl-belge">${MP.imzaHtml(model(plan).imza)||'<small class="ka-muted">İmza bölümü boş.</small>'}</div>`;
+ /* Uygulamadan gelen (elle yazılmamış) adlar alanlarda da güncel görünür. */
+ const cz=model(plan).imza,im=imzaDuzeni(plan);
+ document.querySelectorAll('[data-mok-imza="ad"]').forEach(el=>{if(im.imzalar[Number(el.dataset.i)]?.ad==null&&el!==document.activeElement)el.value=cz.imzalar[Number(el.dataset.i)].ad});
+ const oad=document.querySelector('[data-mok-onay="ad"]');if(oad&&im.onay.ad==null&&oad!==document.activeElement)oad.value=cz.onay.ad;
+ olcekle();
+}
+/* A4 kâğıdı kutunun genişliğine sığdırır (Büyüt: daha okunaklı, yana kaydırılır). */
+function olcekle(){
+ const s=ensure();
+ document.querySelectorAll('[data-mok-onizle]').forEach(el=>{
+  const kutu=el.clientWidth;if(!kutu)return;
+  const sigdir=Math.min(1,kutu/A4_GENISLIK),k=Math.min(1,s.buyuk?sigdir*BUYUTME:sigdir);
+  el.style.setProperty('--mok-olcek',String(Math.floor(k*1000)/1000));
+ });
+}
+function yazdir(plan){
+ const P=V.PLANLAR[plan];
+ if(!P||!MP.PLAN[plan])return false;
+ if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
+ const ad=String(ensure().ogretmen||'').trim();
+ global.ReportEngine.printReport(P.ad,MP.belge(plan,model(plan)),{fileName:`Maarif Oyun Yillik Plan ${plan==='ilkokul'?'Ilkokul':'Ortaokul'}${ad?` ${ad}`:''}`,yon:'yatay',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10,ozellestirilebilir:false});
+ return true;
+}
+function imzaDegistir(fn){const plan=ensure().sayfa;fn(imzaDuzeni(plan),plan);imzaKaydet(plan)}
 function baglan(kok){
- kok.querySelectorAll('[data-mok]').forEach(el=>el.addEventListener('input',()=>{const s=ensure(),k=el.dataset.mok;s[k]=String(el.value??'');s.elle[k]=true}));
+ kok.querySelectorAll('[data-mok]').forEach(el=>el.addEventListener('input',()=>{const s=ensure(),k=el.dataset.mok;s[k]=String(el.value??'');s.elle[k]=true;onizlemeYenile()}));
+ kok.querySelectorAll('[data-mok-imza]').forEach(el=>el.addEventListener('input',()=>{imzaDegistir(d=>{const g=d.imzalar[Number(el.dataset.i)];if(g)g[el.dataset.mokImza]=String(el.value??'')});onizlemeYenile()}));
+ kok.querySelectorAll('[data-mok-onay]').forEach(el=>['input','change'].forEach(o=>el.addEventListener(o,()=>{imzaDegistir(d=>{d.onay[el.dataset.mokOnay]=String(el.value??'')});onizlemeYenile()})));
+ kok.querySelector('[data-mok-onay-goster]')?.addEventListener('change',e=>{imzaDegistir(d=>{d.onay.goster=e.target.checked});render(kok)});
+ kok.querySelector('[data-mok-imza-ekle]')?.addEventListener('click',()=>{
+  imzaDegistir((d,plan)=>{if(d.imzalar.length<MP.ENCOK_IMZA)d.imzalar.push({ad:'',unvan:MP.PLAN[plan].imzaUnvan})});
+  render(kok);const son=[...kok.querySelectorAll('[data-mok-imza="ad"]')].pop();son?.focus?.();
+ });
+ kok.querySelectorAll('[data-mok-imza-sil]').forEach(b=>b.addEventListener('click',()=>{imzaDegistir(d=>{d.imzalar.splice(Number(b.dataset.mokImzaSil),1)});render(kok)}));
+ kok.querySelectorAll('[data-mok-imza-yer]').forEach(b=>b.addEventListener('click',()=>{
+  imzaDegistir(d=>{const i=Number(b.dataset.mokImzaYer),j=i+Number(b.dataset.yon);if(d.imzalar[i]&&d.imzalar[j])[d.imzalar[i],d.imzalar[j]]=[d.imzalar[j],d.imzalar[i]]});
+  render(kok);
+ }));
+ kok.querySelector('[data-mok-imza-sifirla]')?.addEventListener('click',()=>{
+  const s=ensure(),plan=s.sayfa;s.imza[plan]=MP.varsayilanImza(plan);imzaKaydet(plan);render(kok);global.toast?.('İmza düzeni varsayılana döndü.');
+ });
+ kok.querySelectorAll('[data-mok-yazdir]').forEach(b=>b.addEventListener('click',()=>yazdir(b.dataset.mokYazdir)));
+ kok.querySelector('[data-mok-buyut]')?.addEventListener('click',e=>{const s=ensure();s.buyuk=!s.buyuk;e.currentTarget.textContent=s.buyuk?'Sığdır':'Büyüt';olcekle()});
  kok.querySelectorAll('[data-mok-git]').forEach(b=>b.addEventListener('click',()=>git(b.dataset.mokGit)));
  kok.querySelectorAll('[data-mok-indir]').forEach(b=>b.addEventListener('click',()=>indir(b.dataset.mokIndir)));
 }
@@ -144,7 +248,10 @@ function open(sayfa='nedir'){
  /* Aynı oturumda sayfalar arasında geçerken elle yazılan belge bilgisi korunur. */
  const onceki=S;S=blank(k);if(onceki){S.elle=onceki.elle;['okul','ogretmen','mudur'].forEach(a=>{if(onceki.elle[a])S[a]=onceki[a]})}
  temizle();
+ imzaYukle();
  const ok=render();
+ const boyut=()=>olcekle();global.addEventListener('resize',boyut);unsubs.push(()=>global.removeEventListener('resize',boyut));
+ const uzak=global.KaPrefs?.remoteListen?.(uzakGeldi);if(uzak)unsubs.push(uzak);
  B.abonelik().forEach(p=>{
   const u=global.AppStore?.subscribe?.(p,()=>{
    const kok=document.querySelector('[data-mok-page]');if(!kok)return temizle();
@@ -157,5 +264,5 @@ function open(sayfa='nedir'){
  return ok;
 }
 
-global.MaarifOyunModule={open,render,indir,git,reset:()=>{S=null;temizle()}};
+global.MaarifOyunModule={open,render,indir,yazdir,git,model,reset:()=>{S=null;temizle()}};
 })(window);

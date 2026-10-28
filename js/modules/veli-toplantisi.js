@@ -15,7 +15,7 @@ if(!global.SinifBaglam)throw new Error('Sınıf bağlamı yüklenmeden Veli Topl
 const {adBicimi,duzeyOf,egitimYili,okulAdi,okulMuduru,siniflar,sinifBul,ogrencilerOf,sinifOgretmeni}=global.SinifBaglam;
 const veri=()=>global.VeliToplantisiVeri||{yil:'',donem:'',duzeyler:{}};
 const NOKTA='…………………',AYRAC=' / ',TARIH_BOS=['……','……','20……'].join(AYRAC),SAAT_BOS='………';
-const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=3',WORD_BELGE='js/modules/veli-toplantisi-word.js?v=1';
+const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=4',WORD_BELGE='js/modules/veli-toplantisi-word.js?v=1';
 
 /* ── biçimler ── */
 const tarihMetni=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?[m[3],m[2],m[1]].join(AYRAC):TARIH_BOS};

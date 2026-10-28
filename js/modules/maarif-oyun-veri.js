@@ -20,8 +20,8 @@ const SAYFALAR={
 };
 /* Word planları: anahtar → Öğretmen Dosyası form kimliği (EvrakKatalog.FORMLAR), okul kademesi (okul adı için sınıf düzeyi). */
 const PLANLAR={
- ilkokul:{form:'oyun-ilkokul',duzey:1,ad:"Maarif'in Kalbinde Oyun Yıllık Çalışma Planı — İlkokul (2026-2027)",not:'Word · yatay A4 · 4 sayfa · okul, öğretmen ve müdür adı otomatik yazılır · imza: sınıf öğretmenleri + okul müdürü UYGUNDUR'},
- ortaokul:{form:'oyun-ortaokul',duzey:5,ad:"Maarif'in Kalbinde Oyun Yıllık Tema ve Oyun Planı — Ortaokul (2026-2027)",not:'Word · yatay A4 · 2 sayfa · okul, öğretmen ve müdür adı otomatik yazılır · imza: hazırlayan öğretmen + okul müdürü UYGUNDUR'}
+ ilkokul:{form:'oyun-ilkokul',duzey:1,ad:"Maarif'in Kalbinde Oyun Yıllık Çalışma Planı — İlkokul (2026-2027)",not:'Word · yatay A4 · 4 sayfa · okul, öğretmen ve müdür adı otomatik yazılır · imza bölümü özelleştirilebilir'},
+ ortaokul:{form:'oyun-ortaokul',duzey:5,ad:"Maarif'in Kalbinde Oyun Yıllık Tema ve Oyun Planı — Ortaokul (2026-2027)",not:'Word · yatay A4 · 2 sayfa · okul, öğretmen ve müdür adı otomatik yazılır · imza bölümü özelleştirilebilir'}
 };
 
 /* ── ayın oyunları: ay sırasıyla iki oyun ── */
@@ -110,7 +110,8 @@ const ILKOKUL={
   ['Haziran','Tekerleme atışması, zıt anlam tombalası, geleneksel oyunlar turnuvası, istasyon şenliği']
  ],
  uyarlama:[
-  ['Bant altındaki okul adı ve planı hazırlayan öğretmen','alanları uygulamadaki bilgilerinizden yazılır; farklıysa Word’de düzeltin.'],
+  ['Bant altındaki okul adı ve planı hazırlayan öğretmen','alanları uygulamadaki bilgilerinizden yazılır; farklıysa yukarıdan değiştirin (önizleme, PDF ve Word aynı bilgiyle çıkar).'],
+  ['İmza bölümü','sınıf öğretmenleri ve okul müdürü onayı olarak hazır gelir; yukarıdan ad, unvan, onay ibaresi ve tarihi değiştirebilir, imza sahibi ekleyebilirsiniz.'],
   ['Hafta sütunundaki notlar','(29 Ekim, 1 Ocak, 23 Nisan, Kurban Bayramı gibi) tatil günlerini gösterir; o hafta oyun kalan günlere yayılır.'],
   ['Sınıfınızın düzeyine uymayan oyunu','aynı haftanın diğer sütunundaki oyunla değiştirebilirsiniz.'],
   ['Plan, okul müdürünün UYGUNDUR onayıyla','dosyalanır.']

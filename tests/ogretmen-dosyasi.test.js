@@ -141,7 +141,7 @@ const bilinen=new Set([...Object.keys(v),...['AD','GIRIS','CIKIS','SURE'].flatMa
   assert(/\['evrak','Tutanak ve Evrak'[^\n]*\n\s*\['ogretmen-dosyasi','Öğretmen Dosyası'/.test(nav),'Öğretmen Dosyası, Tutanak ve Evrak menüsünün ilk sayfası olmalı.');
   assert(!nav.includes("'management:ogretmen-dosyasi'")&&![...navWin.AppNav.TEACHER_HIDDEN].some(x=>x.startsWith('ogretmen-dosyasi')),'Sayfa öğretmen hesabına da açık olmalı.');
   assert(shell.includes("name==='ogretmen-dosyasi'")&&shell.includes('OgretmenDosyasi.open'),'Kabukta rota tanımlı olmalı.');
-  ['evrak-katalog.js?v=9','ogretmen-dosyasi-core.js?v=3','ogretmen-dosyasi.js?v=5'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
+  ['evrak-katalog.js?v=9','ogretmen-dosyasi-core.js?v=4','ogretmen-dosyasi.js?v=6'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&(shell.includes(f)||fs.readFileSync('js/app-loader.js','utf8').includes(f)||ui.includes(f)),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
   Object.values(K.FORMLAR).filter(f=>f.docx).forEach(f=>assert(sw.includes(`./${DIR}${f.docx}`),`${f.docx} çevrimdışı çalışsın diye önbelleğe alınmalı.`));
   assert(!/localStorage\s*\.\s*setItem/.test(ui)&&ui.includes('KaPrefs'),'Modül tarayıcı depolamasına doğrudan yazmamalı; KaPrefs kullanmalı.');
   assert(ui.includes('remoteListen')&&ui.includes('remoteSet'),'İlerleme hesap tercih belgesine eşitlenmeli.');

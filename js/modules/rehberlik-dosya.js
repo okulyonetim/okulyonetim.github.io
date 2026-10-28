@@ -8,7 +8,7 @@ if(global.RehberlikDosya)return;
 
 const KOK='assets/rehberlik/';
 const EXCELJS='https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
-const OGRETMEN_CORE='js/modules/ogretmen-dosyasi-core.js?v=3';
+const OGRETMEN_CORE='js/modules/ogretmen-dosyasi-core.js?v=4';
 const XLSX_TURU='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 const C=()=>global.RehberlikCore,B=()=>global.RehberlikBelge,O=()=>global.OgretmenDosyasiCore;
 const tarih=s=>C().tarihTR(s)||'';

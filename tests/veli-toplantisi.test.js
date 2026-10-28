@@ -218,7 +218,7 @@ assert(/\['veli-toplantisi','Veli Toplantısı','users'[^\n]*'veli-toplantisi'\]
 {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['veli-toplantisi'")&&!nav.slice(nav.indexOf("['ogrenci','Öğrenciler'"),nav.indexOf("['sinav','Sınav ve Not'")).includes("['veli-toplantisi'"),'Veli Toplantısı "Tutanak ve Evrak" menüsünde (Öğretmen Dosyası yanında), tek yerde durur.');}
 assert(shell.includes("name==='veli-toplantisi'")&&shell.includes('VeliToplantisiModule.open'),'Kabukta rota tanımlı olmalı.');
 ['veli-toplantisi-veri.js?v=2','veli-toplantisi.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&shell.includes(f),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
-['veli-toplantisi-word.js?v=1','ogretmen-dosyasi-core.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&ui.includes(f),`${f} Word indirme için yüklenmeli ve önbelleğe alınmalı.`));
+['veli-toplantisi-word.js?v=1','ogretmen-dosyasi-core.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&ui.includes(f),`${f} Word indirme için yüklenmeli ve önbelleğe alınmalı.`));
 assert(/\["idari","Veli Toplantısı Evrakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat)&&/\["rehberlik","Veli Toplantı Tutanakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat),'Öğretmen Dosyası maddeleri modüle bağlı olmalı.');
 assert(!/localStorage\s*\.\s*setItem/.test(ui)&&!/<style|createElement\('style'\)/.test(ui),'Modül depolamaya yazmaz, stil gömmez.');
 assert(css.includes('.ka-report .vtp-paper')&&css.includes('#v2ModuleRoot .vtp-page')&&css.includes('#v2ModuleRoot .vtp-ed__madde')&&css.includes('.ka-report .vtp-pbilgi'),'Stiller tasarım sistemi CSS dosyasında olmalı.');

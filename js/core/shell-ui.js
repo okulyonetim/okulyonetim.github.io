@@ -357,9 +357,11 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='maarif-oyun'){
     try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.MaarifOyunVeri)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-veri.js?v=1');
-      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=1');
+      if(!global.MaarifOyunPlan)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-plan.js?v=1');
+      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=2');
       if(!global.MaarifOyunModule?.open)throw new Error('Maarif’in Kalbinde Oyun modülü yüklenemedi.');
       const ad=(global.MaarifOyunVeri.SAYFALAR[page]||global.MaarifOyunVeri.SAYFALAR.nedir).ad;
       setBottomActive(bottom);setTitle(ad);
@@ -373,7 +375,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ogretmen-dosyasi'){
     try{
-      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=5');
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=6');
       if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Öğretmen Dosyası');
       if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');

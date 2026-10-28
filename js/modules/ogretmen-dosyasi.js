@@ -82,7 +82,7 @@ async function dosyaKaydet(blob,ad,tur){
  a.href=url;a.download=ad;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>global.URL.revokeObjectURL(url),1200);
 }
-/* Hazır formu (Word: bilgiler doldurulur, PDF: olduğu gibi) hazırlayıp kaydeder. ek: form bilgisini ezer (okul, ad, mudur, yil…);
+/* Hazır formu (Word: bilgiler doldurulur, PDF: olduğu gibi) hazırlayıp kaydeder. ek: form bilgisini ezer (okul, ad, mudur, yil…); ek.xmlDonustur (isteğe bağlı): alanlar yazıldıktan sonra document.xml'i değiştirir (örn. özelleştirilmiş imza tablosu);
  * Öğretmen Dosyası dışındaki sayfalar da (Projeler › Maarif'in Kalbinde Oyun) aynı yolu kullanır. Başarıda true, eksik veriyle durunca false döner. */
 async function formKaydet(key,tur,ek={}){
  await ensureDeps();
@@ -91,9 +91,10 @@ async function formKaydet(key,tur,ek={}){
  if(satirlar&&!satirlar.length){toast('Ders saatleri tanımlı değil. Ayarlar › Ders Saatleri bölümünden ekleyin.');return false}
  const dosya=tur==='docx'?f.docx:f.pdf,r=await global.fetch(`${K().DOSYA_KOKU}${dosya}`);
  if(!r.ok)throw new Error(`Form dosyası alınamadı (${r.status}).`);
- const b={...bilgi(),yil:S.yil||K().egitimYili(),...ek};
+ const {xmlDonustur,...alanlar}=ek;
+ const b={...bilgi(),yil:S.yil||K().egitimYili(),...alanlar};
  if(tur==='docx'){
-  const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(b),satirlar);
+  const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(b),satirlar,undefined,xmlDonustur);
   await dosyaKaydet(blob,C().dosyaAdi(f.ad,C().imzaAd(b.ad),'docx'),C().DOCX_TURU);
  }else{
   await dosyaKaydet(await r.blob(),C().dosyaAdi(f.ad,'','pdf'),C().PDF_TURU);
@@ -286,7 +287,7 @@ function baglan(){
 async function ensureDeps(){
  const L=global.AppLoader;
  if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=9');
- if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=3');
+ if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=4');
  if(!K()||!C())throw new Error('Öğretmen Dosyası bileşenleri yüklenemedi.');
 }
 async function prepare(){

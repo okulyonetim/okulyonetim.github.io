@@ -15317,6 +15317,68 @@ html[data-theme] #v2ModuleRoot .mok-baglanti{padding:0;border:0;background:none;
  html[data-theme] #v2ModuleRoot .mok-belge .ka-btn{margin-inline-start:auto}
 }
 
+/* ===== MAARİF'İN KALBİNDE OYUN › yıllık plan — imza düzenleyici ve önizleme (ekran) ===== */
+html[data-theme] #v2ModuleRoot .mok-imza-liste{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .mok-imza-satir{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr) auto;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .mok-imza-islem{display:flex;gap:var(--ka-sp-2)}
+html[data-theme] #v2ModuleRoot .mok-onay{display:flex;flex-direction:column;gap:var(--ka-sp-10);padding-top:var(--ka-sp-10);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .mok-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .mok-eylem .ka-btn{flex:1 1 auto}
+html[data-theme] #v2ModuleRoot .mok-imza-onizle{overflow:auto;padding:var(--ka-sp-10);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-report-bg)}
+html[data-theme] #v2ModuleRoot .mok-imza-onizle .mpl-belge{min-width:190mm}
+html[data-theme] #v2ModuleRoot .mok-onizle{overflow:auto;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .mok-onizle__olcek{zoom:var(--mok-olcek,1);width:max-content}
+html[data-theme] #v2ModuleRoot .mok-kagit{box-sizing:border-box;width:297mm;padding:12mm 14mm;background:var(--ka-report-bg);color:var(--ka-report-text)}
+@media(max-width:767px){
+ html[data-theme] #v2ModuleRoot .mok-imza-satir{grid-template-columns:minmax(0,1fr) auto}
+ html[data-theme] #v2ModuleRoot .mok-imza-satir>[data-mok-imza="unvan"]{grid-column:1;grid-row:2}
+ html[data-theme] #v2ModuleRoot .mok-imza-satir>.mok-imza-islem{grid-column:2;grid-row:1 / 3}
+ html[data-theme] #v2ModuleRoot .mok-imza-satir{padding-bottom:var(--ka-sp-8);border-bottom:var(--ka-border-w) solid var(--ka-border)}
+}
+
+/* ===== A4 — Maarif'in Kalbinde Oyun yıllık planı (.mpl-*) =====
+   js/modules/maarif-oyun-plan.js belgesinin kâğıt stili (sayfadaki önizleme ve ReportEngine çıktısı aynıdır): üst başlık, bilgi şeridi, haftalık tablo
+   (başlık satırı her sayfada tekrarlanır), uygulama esasları ve imza bölümü. Yalnız rapor belirteçleri ve mm. */
+.mpl-belge{--mpl-soluk:color-mix(in srgb,var(--ka-report-text) 62%,var(--ka-report-bg));--mpl-zemin:color-mix(in srgb,var(--ka-report-text) 7%,var(--ka-report-bg));box-sizing:border-box;width:100%;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:Cambria,Georgia,"Times New Roman",serif;font-size:9pt;line-height:1.3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.mpl-ust{margin:0 0 4mm;padding:3mm 4mm;text-align:center;border:.25mm solid var(--ka-report-border);background:var(--mpl-zemin)}
+.mpl-ust small{display:block;color:var(--mpl-soluk);font-size:8.5pt}
+.mpl-okul{margin:1mm 0 .5mm;font-size:11pt;font-weight:700}
+.mpl-baslik{font-size:15pt;font-weight:700;letter-spacing:.2mm}
+.mpl-alt{margin:.5mm 0 1mm;font-size:11pt;font-weight:700}
+.mpl-bilgi{display:flex;margin:0 0 4mm;border:.25mm solid var(--ka-report-border)}
+.mpl-kutu{flex:1 1 0;min-width:0;padding:1.6mm 3mm;text-align:center}
+.mpl-kutu+.mpl-kutu{border-inline-start:.25mm solid var(--ka-report-border)}
+.mpl-kutu small{display:block;color:var(--mpl-soluk);font-size:6.5pt;font-weight:700;letter-spacing:.1mm}
+.mpl-kutu b{font-size:10pt;font-weight:400}
+.mpl-tablo{width:100%;margin:0 0 5mm;border-collapse:collapse;table-layout:fixed}
+.mpl-tablo thead{display:table-header-group}
+.mpl-tablo tr{break-inside:avoid;page-break-inside:avoid}
+.mpl-tablo th,.mpl-tablo td{padding:1mm 1.6mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:8pt!important;font-weight:400!important;line-height:1.25!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
+.mpl-tablo th{background:var(--mpl-zemin)!important;font-size:7.5pt!important;font-weight:700!important;text-align:center!important}
+.mpl-tablo td.mpl-ay{font-weight:700!important;text-align:center!important}
+.mpl-tablo td.mpl-hafta{text-align:center!important}
+.mpl-tablo td small{display:block;color:var(--mpl-soluk)!important;font-size:6.5pt;font-style:italic}
+.mpl-tablo tr.mpl-ara td{background:var(--mpl-zemin)!important;font-weight:700!important;text-align:center!important}
+.mpl-belge--ilkokul .mpl-tablo col:nth-child(1){width:8%}
+.mpl-belge--ilkokul .mpl-tablo col:nth-child(2){width:11%}
+.mpl-belge--ilkokul .mpl-tablo col:nth-child(3),.mpl-belge--ilkokul .mpl-tablo col:nth-child(4){width:21%}
+.mpl-belge--ilkokul .mpl-tablo col:nth-child(5){width:19%}
+.mpl-belge--ilkokul .mpl-tablo col:nth-child(6){width:20%}
+.mpl-belge--ortaokul .mpl-tablo col:nth-child(1){width:8%}
+.mpl-belge--ortaokul .mpl-tablo col:nth-child(2){width:17%}
+.mpl-belge--ortaokul .mpl-tablo col:nth-child(3){width:22%}
+.mpl-belge--ortaokul .mpl-tablo col:nth-child(4){width:28%}
+.mpl-belge--ortaokul .mpl-tablo col:nth-child(5){width:25%}
+.mpl-esaslar{margin:0 0 5mm}
+.mpl-esaslar__baslik{margin:0 0 1.5mm;padding-bottom:1mm;border-bottom:.25mm solid var(--ka-report-border);font-size:9.5pt;font-weight:700;break-after:avoid;page-break-after:avoid}
+.mpl-madde{display:flex;gap:2mm;margin:0 0 1mm;font-size:8pt;break-inside:avoid;page-break-inside:avoid}
+.mpl-madde b{flex:0 0 5mm}
+.mpl-imzalar{display:flex;justify-content:space-around;align-items:flex-start;gap:6mm;margin-top:4mm;break-inside:avoid;page-break-inside:avoid}
+.mpl-imza{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.8mm;text-align:center;font-size:9.5pt;overflow-wrap:anywhere}
+.mpl-imza__yer{display:block;height:9mm}
+.mpl-imza b{font-size:8.5pt;font-weight:700}
+.mpl-imza .mpl-imza__etiket{font-size:10pt}
+
 /* ===== A4 — Ders Kesim Raporu (.dkr-*) =====
    js/modules/ders-kesim-core.js çıktısının kâğıt stili: başlık ortada, tablo tam genişlik (başlık satırı her sayfada tekrarlanır), tarih sağda, müdür solda / öğretmen sağda.
    Yalnız rapor belirteçleri ve mm. */
