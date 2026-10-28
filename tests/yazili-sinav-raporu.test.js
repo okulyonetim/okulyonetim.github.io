@@ -28,8 +28,10 @@ const t1=R.writtenReportDoc(R.writtenReportRows({}),{}),t2=R.writtenReportDoc(R.
 assert.strictEqual(t1.title,'Yazılı Sınav Takvimi');
 assert.strictEqual(t2.title,'5-A Sınıfı 1. Dönem 1. Yazılı Sınav Takvimi','Başlıkta "Yazılı" yinelenmez.');
 assert(t1.body.includes('Dönem / Yazılı')&&!t2.body.includes('Dönem / Yazılı'),'Dönem/Yazılı sütunu yalnız süzgeç tam değilken görünür.');
-assert(t1.body.includes('2026-2027 EĞİTİM ÖĞRETİM YILI')&&t1.body.includes('KORUK İLK - ORTAOKULU MÜDÜRLÜĞÜ')&&t1.body.includes('YAZILI SINAV TAKVİMİ'),'Başlık: eğitim yılı, okul müdürlüğü, rapor adı.');
-assert(t1.body.includes('<td class="kwr-orta">20.10.2026</td><td class="kwr-orta">Salı</td><td class="kwr-orta">1. ders</td>'),'Tarih, gün adı ve ders saati yazılır.');
+assert.strictEqual(t1.ustBaslik,'2026-2027 EĞİTİM ÖĞRETİM YILI','Üst başlık: eğitim öğretim yılı.');
+assert.strictEqual(t1.okulAdi,'KORUK İLK - ORTAOKULU MÜDÜRLÜĞÜ','Okul adı: müdürlük.');
+assert(!t1.body.includes('kwr-baslik')&&!t1.body.includes('EĞİTİM ÖĞRETİM YILI'),'Başlık gövdede değil, rapor motorunun (logolu, özelleştirilebilir) üst bilgisinde olur.');
+assert(t1.body.includes('<td class="kwr-orta kwr-nw">20.10.2026</td><td class="kwr-orta">Salı</td><td class="kwr-orta">1. ders</td>'),'Tarih, gün adı ve ders saati yazılır.');
 assert(t1.body.indexOf('Türkçe')<t1.body.indexOf('Matematik')&&t1.body.indexOf('Matematik')<t1.body.indexOf('İngilizce'),'Satırlar tarih sırasında.');
 assert(!t1.body.includes('<b>Bilimleri</b>')&&t1.body.includes('Fen &lt;b&gt;Bilimleri&lt;/b&gt;'),'Ders adı kaçışlanır.');
 assert((t1.body.match(/<tbody>[\s\S]*<\/tbody>/)[0].match(/<tr>/g)||[]).length===5,'Her sınav bir satır.');
@@ -40,12 +42,17 @@ assert(!/undefined|NaN|\[object/.test(t1.body+t2.body),'Çıktıda artık değer
 /* Sayfa düğmesi, bağlantı, yazdırma ayarları */
 assert(src.includes('data-written-print>Yazdır</button>')&&src.includes("out.querySelector('[data-written-print]')?.addEventListener('click',writtenReportModal)"),'Yazılı Sınavlar sayfasında Yazdır düğmesi olmalı ve rapor penceresini açmalı.');
 const pr=src.slice(src.indexOf('async function printWrittenReport('),src.indexOf('function writtenReportModal('));
-assert(/kenarBosluk:10/.test(pr)&&/akis:true/.test(pr)&&/yon:'dikey'/.test(pr)&&/ozellestirilebilir:false/.test(pr),'Rapor her sayfada 10 mm üst/alt boşlukla, kendi başlığıyla basılır.');
+assert(/kenarBosluk:10/.test(pr)&&/akis:true/.test(pr)&&/yon:'dikey'/.test(pr),'Rapor her sayfada 10 mm üst/alt boşlukla basılır.');
+assert(/logoGoster:true/.test(pr)&&/baslikGoster:true/.test(pr)&&/ustBaslik:doc\.ustBaslik/.test(pr)&&/okulAdi:doc\.okulAdi/.test(pr),'Rapor okul logolu üst bilgiyle basılır.');
+assert(!/ozellestirilebilir/.test(pr),'Rapor özelleştirme penceresi önizlemeden önce açılır.');
 assert(pr.includes('Seçilen ölçütlere uygun yazılı sınav yok.'),'Boş sonuçta uyarı verilir.');
 /* CSS: tasarım belirteçleri + mm; müdür sağda, yazılar blok içinde ortalı */
 const kwr=css.slice(css.indexOf('/* ===== A4 — Yazılı Sınav Takvimi (.kwr-*)'));
 assert(!/\d(?:\.\d+)?px/.test(kwr)&&!/#[0-9a-fA-F]{3,8}\b/.test(kwr),'Rapor stilleri sabit px / renk içermemeli.');
 assert(/\.kwr-imzalar\{[^}]*justify-content:flex-end/.test(kwr)&&/\.kwr-imza\{[^}]*align-items:center[^}]*text-align:center/.test(kwr),'Müdür bloğu sağ kenarda, yazılar blok içinde ortalı.');
 assert(/\.kwr-tablo thead\{display:table-header-group\}/.test(kwr),'Başlık satırı her sayfada tekrarlanır.');
-assert(loader.includes('academic.js?v=897')&&sw.includes('academic.js?v=897'),'academic.js sürümü yenilenmeli.');
+const mm=c=>Number((kwr.match(new RegExp('\\.'+c+'\\{width:([\\d.]+)mm\\}'))||[])[1]);
+assert(mm('kwr-c-tarih')>=22&&mm('kwr-c-sira')>=11,'Tarih (gg.aa.yyyy) ve Sıra sütunları tek satıra sığacak genişlikte.');
+assert(/\.kwr-tablo \.kwr-nw\{[^}]*white-space:nowrap/.test(kwr),'Tarih hücresi tek satırda kalır.');
+assert(loader.includes('academic.js?v=898')&&sw.includes('academic.js?v=898'),'academic.js sürümü yenilenmeli.');
 console.log('yazili-sinav-raporu: OK');

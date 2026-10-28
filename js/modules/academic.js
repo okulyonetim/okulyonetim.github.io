@@ -304,15 +304,16 @@ function writtenReportDoc(rows,f={}){
   const up=v=>String(v||'').toLocaleUpperCase('tr'),okul=up(scheduleSchoolInfo().okulAdi).trim(),karma=!f.donem||!f.yazili,NOKTA='………………………';
   const title=[f.sinif?`${f.sinif} Sınıfı`:'',f.donem,f.yazili||'Yazılı','Sınav Takvimi'].filter(Boolean).join(' ');
   const gun=v=>{const d=new Date(`${v}T00:00:00`);return Number.isNaN(d.getTime())?'':WRITTEN_GUNLER[d.getDay()]};
-  const satir=rows.map((x,i)=>`<tr><td class="kwr-orta">${i+1}</td><td class="kwr-orta">${esc(x.tarih?date(x.tarih):'')}</td><td class="kwr-orta">${esc(gun(x.tarih))}</td><td class="kwr-orta">${esc(x.dersSaati?`${x.dersSaati}. ders`:'')}</td><td>${esc(writtenClassList(x).join(', '))}</td><td>${esc(x.ders||'')}</td><td>${esc(x.ogretmenId?teacherName(x.ogretmenId):'')}</td>${karma?`<td class="kwr-orta">${esc([x.donem,x.yaziliSirasi].filter(Boolean).join(' · '))}</td>`:''}<td class="kwr-orta">${esc(x.senaryoNo||'')}</td></tr>`).join('');
+  const satir=rows.map((x,i)=>`<tr><td class="kwr-orta">${i+1}</td><td class="kwr-orta kwr-nw">${esc(x.tarih?date(x.tarih):'')}</td><td class="kwr-orta">${esc(gun(x.tarih))}</td><td class="kwr-orta">${esc(x.dersSaati?`${x.dersSaati}. ders`:'')}</td><td>${esc(writtenClassList(x).join(', '))}</td><td>${esc(x.ders||'')}</td><td>${esc(x.ogretmenId?teacherName(x.ogretmenId):'')}</td>${karma?`<td class="kwr-orta">${esc([x.donem,x.yaziliSirasi].filter(Boolean).join(' · '))}</td>`:''}<td class="kwr-orta">${esc(x.senaryoNo||'')}</td></tr>`).join('');
   const kolon=['kwr-c-sira','kwr-c-tarih','kwr-c-gun','kwr-c-saat','kwr-c-sinif','','kwr-c-ogr',...(karma?['kwr-c-donem']:[]),'kwr-c-senaryo'].map(c=>`<col${c?` class="${c}"`:''}>`).join('');
-  const body=`<article class="kwr-paper"><header class="kwr-baslik"><b>${esc(scheduleAcademicYear())} EĞİTİM ÖĞRETİM YILI</b><b>${esc(okul?(/MÜDÜRLÜĞÜ$/.test(okul)?okul:`${okul} MÜDÜRLÜĞÜ`):`${NOKTA} MÜDÜRLÜĞÜ`)}</b><b>${esc(up(title))}</b></header><table class="kwr-tablo"><colgroup>${kolon}</colgroup><thead><tr><th>Sıra</th><th>Tarih</th><th>Gün</th><th>Ders Saati</th><th>Sınıf</th><th>Ders</th><th>Öğretmen</th>${karma?'<th>Dönem / Yazılı</th>':''}<th>Senaryo No</th></tr></thead><tbody>${satir}</tbody></table><div class="kwr-imzalar"><div class="kwr-imza"><b>OLUR</b><span>${esc(date(today()))}</span><span>${esc(writtenPrincipalName()||NOKTA)}</span><b>Okul Müdürü</b></div></div></article>`;
-  return{title,body};
+  const body=`<article class="kwr-paper"><table class="kwr-tablo"><colgroup>${kolon}</colgroup><thead><tr><th class="kwr-nw">Sıra</th><th class="kwr-nw">Tarih</th><th>Gün</th><th>Ders Saati</th><th>Sınıf</th><th>Ders</th><th>Öğretmen</th>${karma?'<th>Dönem / Yazılı</th>':''}<th>Senaryo No</th></tr></thead><tbody>${satir}</tbody></table><div class="kwr-imzalar"><div class="kwr-imza"><b>OLUR</b><span>${esc(date(today()))}</span><span>${esc(writtenPrincipalName()||NOKTA)}</span><b>Okul Müdürü</b></div></div></article>`;
+  const ustBaslik=`${scheduleAcademicYear()} EĞİTİM ÖĞRETİM YILI`,okulAdi=okul?(/MÜDÜRLÜĞÜ$/.test(okul)?okul:`${okul} MÜDÜRLÜĞÜ`):`${NOKTA} MÜDÜRLÜĞÜ`;
+  return{title,body,ustBaslik,okulAdi};
 }
 async function printWrittenReport(f={}){
   const rows=writtenReportRows(f);if(!rows.length){toast?.('Seçilen ölçütlere uygun yazılı sınav yok.');return false}
   const engine=await ensureScheduleReportEngine(),doc=writtenReportDoc(rows,f);
-  return engine.printReport(doc.title,doc.body,{fileName:doc.title,yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',akis:true,kenarBosluk:10,ozellestirilebilir:false});
+  return engine.printReport(doc.title,doc.body,{fileName:doc.title,yon:'dikey',ustBaslik:doc.ustBaslik,okulAdi:doc.okulAdi,logoGoster:true,baslikGoster:true,tarihGoster:false,akis:true,kenarBosluk:10});
 }
 function writtenReportModal(){
   const exams=arr('sinavlar'),names=[...new Set([...classes().map(x=>x.ad),...exams.flatMap(writtenClassList)])].sort((a,b)=>a.localeCompare(b,'tr',{numeric:true}));
