@@ -114,7 +114,7 @@ function normSection(id){
 
 async function ensureEngine(){
   if(global.ReportEngine?.printReport)return;
-  await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=8');
+  await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
   if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
 }
 

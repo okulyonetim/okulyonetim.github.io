@@ -132,7 +132,7 @@ async function pdf(sort){
   if(!teachers().length)return global.toast?.('Çizelge için en az bir öğretmen ekleyin.');
   if(!selectedIds().size)return global.toast?.('En az bir evrak seçin.');
   try{
-    if(!global.ReportEngine?.printReport)await global.AppLoader.loadScript('js/modules/report-engine.js?v=8');
+    if(!global.ReportEngine?.printReport)await global.AppLoader.loadScript('js/modules/report-engine.js?v=9');
     const d=DONEMLER.find(x=>x[0]===state.donem)?.[1]||'',r=reportHtml(sort);
     return await global.ReportEngine.printReport(`EVRAK TESLİM İMZA ÇİZELGESİ — ${upper(d)}`,r.body,{fileName:`Evrak_Teslim_Imza_Cizelgesi_${state.donem}`,yon:'yatay',logoGoster:true,baslikGoster:true,tarihGoster:false,ustBaslik:`${egitimYili()} EĞİTİM ÖĞRETİM YILI`,okulAdi:schoolName()||undefined,extraHead:r.css});
   }catch(e){global.toast?.(e?.message||'Çizelge oluşturulamadı.')}
@@ -201,7 +201,7 @@ async function tebligYazdir(d){
   const v=tebligVeri(d);if(!v.secili)return global.toast?.('Önce çizelge sayfasında en az bir evrak işaretleyin.');
   const css=`<style>.ka-report .ev-l{font-family:"Times New Roman",Times,serif;font-size:12pt;line-height:1.35;color:#000}.ka-report .ev-l-head{display:grid;justify-items:center;text-align:center;margin:0 0 7mm}.ka-report .ev-l-meta{display:grid;margin:0 0 5mm}.ka-report .ev-l-p{margin:0 0 3mm;text-indent:12.5mm;text-align:justify}.ka-report .ev-l-g{margin:3mm 0 1.5mm 12.5mm;font-weight:700;break-after:avoid;page-break-after:avoid}.ka-report .ev-l-i{margin:0 0 1.2mm;text-indent:12.5mm;text-align:justify}.ka-report .ev-l-t{width:100%;border-collapse:collapse;margin:4mm 0}.ka-report .ev-l-t th,.ka-report .ev-l-t td{border:.3mm solid #000;padding:1.4mm 2mm;text-align:center;font-size:11pt;font-weight:400}.ka-report .ev-l-t th{font-weight:700}.ka-report .ev-l-t td.a{text-align:left}.ka-report .ev-l-sign{display:grid;justify-items:end;margin-top:9mm;text-align:right;break-inside:avoid}</style>`;
   try{
-    if(!global.ReportEngine?.printReport)await global.AppLoader.loadScript('js/modules/report-engine.js?v=8');
+    if(!global.ReportEngine?.printReport)await global.AppLoader.loadScript('js/modules/report-engine.js?v=9');
     return await global.ReportEngine.printReport(v.t.baslik,tebligKagit(v,false),{fileName:v.t.dosya,yon:'dikey',logoGoster:false,baslikGoster:false,tarihGoster:false,fontSize:12,okulAdi:v.okul,extraHead:css,akis:true});
   }catch(e){global.toast?.(e?.message||'Yazı oluşturulamadı.')}
 }

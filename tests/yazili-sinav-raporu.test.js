@@ -31,7 +31,7 @@ assert(t1.body.includes('Dönem / Yazılı')&&!t2.body.includes('Dönem / Yazıl
 assert.strictEqual(t1.ustBaslik,'2026-2027 EĞİTİM ÖĞRETİM YILI','Üst başlık: eğitim öğretim yılı.');
 assert.strictEqual(t1.okulAdi,'KORUK İLK - ORTAOKULU MÜDÜRLÜĞÜ','Okul adı: müdürlük.');
 assert(!t1.body.includes('kwr-baslik')&&!t1.body.includes('EĞİTİM ÖĞRETİM YILI'),'Başlık gövdede değil, rapor motorunun (logolu, özelleştirilebilir) üst bilgisinde olur.');
-assert(t1.body.includes('<td class="kwr-orta kwr-nw">20.10.2026</td><td class="kwr-orta">Salı</td><td class="kwr-orta">1. ders</td>'),'Tarih, gün adı ve ders saati yazılır.');
+assert(t1.body.includes('<td class="kwr-orta kwr-nw">20.10.2026</td><td class="kwr-orta kwr-nw">Salı</td><td class="kwr-orta">1. ders</td>'),'Tarih, gün adı ve ders saati yazılır.');
 assert(t1.body.indexOf('Türkçe')<t1.body.indexOf('Matematik')&&t1.body.indexOf('Matematik')<t1.body.indexOf('İngilizce'),'Satırlar tarih sırasında.');
 assert(!t1.body.includes('<b>Bilimleri</b>')&&t1.body.includes('Fen &lt;b&gt;Bilimleri&lt;/b&gt;'),'Ders adı kaçışlanır.');
 assert((t1.body.match(/<tbody>[\s\S]*<\/tbody>/)[0].match(/<tr>/g)||[]).length===5,'Her sınav bir satır.');
@@ -54,5 +54,5 @@ assert(/\.kwr-tablo thead\{display:table-header-group\}/.test(kwr),'Başlık sat
 const mm=c=>Number((kwr.match(new RegExp('\\.'+c+'\\{width:([\\d.]+)mm\\}'))||[])[1]);
 assert(mm('kwr-c-tarih')>=22&&mm('kwr-c-sira')>=11,'Tarih (gg.aa.yyyy) ve Sıra sütunları tek satıra sığacak genişlikte.');
 assert(/\.kwr-tablo \.kwr-nw\{[^}]*white-space:nowrap/.test(kwr),'Tarih hücresi tek satırda kalır.');
-assert(loader.includes('academic.js?v=898')&&sw.includes('academic.js?v=898'),'academic.js sürümü yenilenmeli.');
+assert(loader.includes('academic.js?v=899')&&sw.includes('academic.js?v=899'),'academic.js sürümü yenilenmeli.');
 console.log('yazili-sinav-raporu: OK');

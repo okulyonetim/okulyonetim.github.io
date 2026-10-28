@@ -72,8 +72,8 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     const root=ctx?.root||$('#v2ModuleRoot');
     if(!nav().tool('folder-spine')||!nav().toolAllowed(nav().tool('folder-spine'))){global.toast?.('Klasör Sırtlığı yalnızca admin ve yönetici rolündekiler içindir.');return false}
     global.DocumentsModule?.unmount?.();
-    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=8');
-    if(!global.FolderSpine?.open)await global.AppLoader?.loadScript?.('js/modules/folder-spine.js?v=6');
+    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+    if(!global.FolderSpine?.open)await global.AppLoader?.loadScript?.('js/modules/folder-spine.js?v=7');
     if(!global.FolderSpine?.open)throw new Error('folder-spine-load');
     return global.FolderSpine.open(root);
   });
@@ -395,7 +395,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     setBottomActive(bottom);global.AppLoader?.setActiveModule?.(name);setTitle(title||'Kurul ve Komisyonlar');
     try{
       const root=$('#v2ModuleRoot');
-      if(!global.CommitteesModule)await global.AppLoader?.loadScript?.('js/modules/committees.js?v=6');
+      if(!global.CommitteesModule)await global.AppLoader?.loadScript?.('js/modules/committees.js?v=7');
       if(!global.CommitteesModule?.mount)throw new Error('CommitteesModule hazır değil');
       if(routeToken!==routeEpoch)return false;
       root?.replaceChildren?.();
@@ -412,7 +412,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       const root=$('#v2ModuleRoot');
       if(!global.ReportsModule){
-        await global.AppLoader?.loadScript?.('js/modules/reports.js?v=7');
+        await global.AppLoader?.loadScript?.('js/modules/reports.js?v=23');
       }
       if(!global.ReportsModule){
         await new Promise((resolve,reject)=>{
@@ -659,7 +659,7 @@ function renderSearch({remember=true}={}){
     if(!rows.length){global.toast?.('Yazdırılacak arama sonucu bulunamadı.');return}
     button.disabled=true;
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=8');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
       if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
       const escPrint=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const filterParts=[];

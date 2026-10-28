@@ -15252,11 +15252,11 @@ html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);h
 .ka-report .kwr-tablo .kwr-nw{white-space:nowrap!important;overflow-wrap:normal!important}
 .ka-report .kwr-c-sira{width:11mm}
 .ka-report .kwr-c-tarih{width:22mm}
-.ka-report .kwr-c-gun{width:18mm}
+.ka-report .kwr-c-gun{width:23mm}
 .ka-report .kwr-c-saat{width:13mm}
 .ka-report .kwr-c-sinif{width:19mm}
 .ka-report .kwr-c-ogr{width:32mm}
-.ka-report .kwr-c-donem{width:26mm}
+.ka-report .kwr-c-donem{width:23mm}
 .ka-report .kwr-c-senaryo{width:15mm}
 .ka-report .kwr-imzalar{display:flex;justify-content:flex-end;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
 .ka-report .kwr-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:48mm;text-align:center}

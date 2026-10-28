@@ -34,9 +34,10 @@ function installStyle(){
  .ka-report-customizer__head h2{margin:0;font-size:var(--ka-fs-20)}.ka-report-customizer__head p{margin:var(--ka-sp-5) 0 0;color:var(--ka-text-muted,rgb(var(--k-gray-aa)));font-size:var(--ka-fs-13)}
  .ka-report-customizer__body{padding:var(--ka-sp-16) var(--ka-sp-20)}.ka-report-customizer__section{border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-33)));border-radius:var(--ka-ic-14);padding:var(--ka-sp-13);margin-bottom:var(--ka-sp-12)}
  .ka-report-customizer__section>strong{display:block;margin-bottom:var(--ka-sp-10)}.ka-report-customizer__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-10)}
- .ka-report-customizer label{display:flex;gap:var(--ka-sp-9);align-items:center;min-height:36px}.ka-report-customizer input[type=text],.ka-report-customizer select{width:100%;box-sizing:border-box;border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-44)));border-radius:var(--ka-ic-10);background:var(--ka-input-bg,rgb(var(--k-gray-11)));color:var(--ka-text,rgb(var(--k-white)));padding:var(--ka-sp-10);font:inherit}
+ .ka-report-customizer label{display:flex;gap:var(--ka-sp-9);align-items:center;min-height:36px}.ka-report-customizer input[type=text],.ka-report-customizer input[type=number],.ka-report-customizer select{width:100%;box-sizing:border-box;border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-44)));border-radius:var(--ka-ic-10);background:var(--ka-input-bg,rgb(var(--k-gray-11)));color:var(--ka-text,rgb(var(--k-white)));padding:var(--ka-sp-10);font:inherit}
  .ka-report-customizer__field{display:block}.ka-report-customizer__field span,.ka-report-customizer__hint{display:block;font-size:var(--ka-fs-12);color:var(--ka-text-muted,rgb(var(--k-gray-aa)));margin-bottom:var(--ka-sp-5)}
  .ka-report-customizer__list{display:flex;flex-direction:column;gap:var(--ka-sp-7)}.ka-report-customizer__item{display:grid;grid-template-columns:auto 1fr auto auto;gap:var(--ka-sp-7);align-items:center;padding:var(--ka-sp-7);border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-33)));border-radius:var(--ka-ic-10);background:var(--ka-surface,rgb(var(--k-gray-20)))}
+ .ka-report-customizer__item--col{grid-template-columns:auto 1fr 6.5rem auto auto}.ka-report-customizer__width{display:flex;align-items:center;gap:var(--ka-sp-4);min-height:0}.ka-report-customizer__width input{padding:var(--ka-sp-8);text-align:center}.ka-report-customizer__width span{color:var(--ka-text-muted,rgb(var(--k-gray-aa)))}.ka-report-customizer__sum{font-size:var(--ka-fs-12);color:var(--ka-text-muted,rgb(var(--k-gray-aa)));margin-top:var(--ka-sp-8)}.ka-report-customizer__sum[data-over]{color:var(--ka-danger)}
  .ka-report-customizer__item input[type=text]{padding:var(--ka-sp-8)}.ka-report-customizer__move{display:flex;gap:var(--ka-sp-4)}.ka-report-customizer__move button,.ka-report-customizer__remove{width:36px;height:36px;border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-44)));border-radius:var(--ka-ic-8);background:transparent;color:var(--ka-text,rgb(var(--k-white)));font-weight:var(--ka-fw-800);cursor:pointer}.ka-report-customizer__move button:disabled{opacity:.3}.ka-report-customizer__remove{font-size:var(--ka-fs-15)}
  .ka-report-customizer__sort{display:grid;grid-template-columns:1fr 1fr;gap:var(--ka-sp-8);margin-bottom:var(--ka-sp-8)}
  .ka-report-customizer__sortlabel{font-size:var(--ka-fs-12);color:var(--ka-text-muted,rgb(var(--k-gray-aa)));margin:var(--ka-sp-2) 0 var(--ka-sp-4)}
@@ -44,7 +45,7 @@ function installStyle(){
  .ka-report-customizer__footer{display:flex;gap:var(--ka-sp-8);justify-content:flex-end;padding:var(--ka-sp-14) var(--ka-sp-20);border-top:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-33)));position:sticky;bottom:0;background:var(--ka-card-bg,rgb(var(--k-gray-17)));z-index:2;flex-wrap:wrap}
  .ka-report-customizer__footer button{border:var(--ka-border-w) solid var(--ka-border,rgb(var(--k-gray-44)));border-radius:var(--ka-ic-10);padding:var(--ka-sp-10) var(--ka-sp-15);background:transparent;color:var(--ka-text,rgb(var(--k-white)));font-weight:var(--ka-fw-700)}.ka-report-customizer__footer button.primary{background:var(--ka-accent,rgb(var(--k-amber-ffc400)));color:rgb(var(--k-gray-11));border-color:var(--ka-accent,rgb(var(--k-amber-ffc400)))}
  .ka-report-customizer__footer [data-rc-reset]{margin-right:auto}
- @media(max-width:560px){.ka-report-customizer__grid,.ka-report-customizer__sort{grid-template-columns:1fr}.ka-report-customizer__item{grid-template-columns:auto 1fr}.ka-report-customizer__move{grid-column:2}.ka-report-customizer__remove{grid-column:2;justify-self:end;grid-row:1}}
+ @media(max-width:560px){.ka-report-customizer__grid,.ka-report-customizer__sort{grid-template-columns:1fr}.ka-report-customizer__item{grid-template-columns:auto 1fr}.ka-report-customizer__width{grid-column:2}.ka-report-customizer__move{grid-column:2}.ka-report-customizer__remove{grid-column:2;justify-self:end;grid-row:1}}
  `;
 }
 
@@ -138,6 +139,21 @@ function sortTable(table,rules){
 }
 
 /* ------------------------------------------------------------------ */
+/* Sütun genişliği — tablo genişliğinin yüzdesi                        */
+/* ------------------------------------------------------------------ */
+const WIDTH_MIN=3,WIDTH_MAX=90,AUTO_MIN=5;
+const cleanWidth=v=>{const n=Number(v);return Number.isFinite(n)&&n>0?Math.min(WIDTH_MAX,Math.max(WIDTH_MIN,Math.round(n*10)/10)):0};
+/* Yalnız genişlik girilen sütunlar değişir, girilmeyenler raporun kendi genişliğinde kalır; toplam taşacaksa girilenler orantılı küçülür. order: sütunların rapordaki (yeni) sırası; sütun/başlık hücreleri bu sırada dizilidir. */
+function applyColumnWidths(table,order,widths){
+ const map=new Map((Array.isArray(widths)?widths:[]).map(x=>[Number(x.index),cleanWidth(x.width)]).filter(([i,w])=>w>0&&order.includes(i)));
+ if(!map.size)return;
+ const auto=order.length-map.size,sum=[...map.values()].reduce((a,b)=>a+b,0),room=100-auto*AUTO_MIN,k=sum>room?room/sum:1;
+ const cols=[...(table.querySelector('colgroup')?.querySelectorAll('col')||[])];
+ const targets=cols.length===order.length?cols:headerCells(table);
+ order.forEach((i,pos)=>{const el=targets[pos];if(el&&map.has(i))el.style.width=`${Math.round(map.get(i)*k*10)/10}%`});
+}
+
+/* ------------------------------------------------------------------ */
 /* Seçimi uygulama                                                     */
 /* ------------------------------------------------------------------ */
 function applySelection(body,selection){
@@ -161,6 +177,7 @@ function applySelection(body,selection){
   });
   const cg=table.querySelector('colgroup');
   if(cg){const cols=[...cg.querySelectorAll('col')];if(cols.length===original.length){order.forEach(i=>cg.appendChild(cols[i]));cols.forEach((c,i)=>{if(!order.includes(i))c.remove()})}else cg.remove()}
+  applyColumnWidths(table,order,selection.columnWidths?.[ti]);
  });
  const selected=new Set(selection.selectedHeadings||[]),ht=new Map((selection.headingTitles||[]).map(x=>[Number(x.index),String(x.title||'')]));
  hs.forEach((h,i)=>{if(!selected.has(i)){h.remove();return}const title=ht.get(i);if(title)h.textContent=title});
@@ -199,7 +216,8 @@ function columnSection(table,ti,prefs){
  const items=order.map(i=>{
   const th=cells[i],m=meta.get(i),show=m?m.show!==false:true;
   const text=m&&typeof m.title==='string'&&m.title?m.title:(cellText(th)||`Sütun ${i+1}`);
-  return `<div class="ka-report-customizer__item" data-rc-col-item="${i}"${show?'':' data-rc-off="1"'}><input type="checkbox" ${show?'checked':''} data-rc-table="${ti}" data-rc-col="${i}" aria-label="Alanı göster"><input type="text" data-rc-col-text="${i}" value="${esc(text)}" aria-label="Alan başlığı"><div class="ka-report-customizer__move"><button type="button" data-rc-up title="Sütunu sola al">↑</button><button type="button" data-rc-down title="Sütunu sağa al">↓</button></div><button type="button" class="ka-report-customizer__remove" data-rc-remove title="Alanı kaldır">×</button></div>`;
+  const w=cleanWidth(m?.w);
+  return `<div class="ka-report-customizer__item ka-report-customizer__item--col" data-rc-col-item="${i}"${show?'':' data-rc-off="1"'}><input type="checkbox" ${show?'checked':''} data-rc-table="${ti}" data-rc-col="${i}" aria-label="Alanı göster"><input type="text" data-rc-col-text="${i}" value="${esc(text)}" aria-label="Alan başlığı"><label class="ka-report-customizer__width"><input type="number" inputmode="decimal" min="${WIDTH_MIN}" max="${WIDTH_MAX}" step="1" data-rc-col-width="${i}" value="${w||''}" placeholder="Oto." aria-label="Sütun genişliği (yüzde)"><span>%</span></label><div class="ka-report-customizer__move"><button type="button" data-rc-up title="Sütunu sola al">↑</button><button type="button" data-rc-down title="Sütunu sağa al">↓</button></div><button type="button" class="ka-report-customizer__remove" data-rc-remove title="Alanı kaldır">×</button></div>`;
  }).join('');
  let sortHtml;
  if(isSortableTable(table)){
@@ -214,7 +232,7 @@ function columnSection(table,ti,prefs){
  }else{
   sortHtml=`<div class="ka-report-customizer__note">Bu tablonun satırları özel yapıda olduğu için sıralama uygulanmaz; satırlar olduğu gibi korunur.</div>`;
  }
- return `<div class="ka-report-customizer__section"><strong>Tablo ${ti+1} — Sütunlar</strong><span class="ka-report-customizer__hint">İşaretli alanlar rapora girer. ↑ ↓ ile sütunların rapordaki sırasını değiştirin, başlıkları düzenleyin.</span><div class="ka-report-customizer__list" data-rc-table-list="${ti}">${items}</div></div>${sortHtml}`;
+ return `<div class="ka-report-customizer__section"><strong>Tablo ${ti+1} — Sütunlar</strong><span class="ka-report-customizer__hint">İşaretli alanlar rapora girer. ↑ ↓ ile sütunların rapordaki sırasını değiştirin, başlıkları düzenleyin. Genişlik kutusuna sütunun tablodaki payını (%) yazın; boş bırakılan sütunlar raporun varsayılan genişliğinde kalır.</span><div class="ka-report-customizer__list" data-rc-table-list="${ti}">${items}</div><div class="ka-report-customizer__sum" data-rc-width-sum="${ti}" aria-live="polite"></div></div>${sortHtml}`;
 }
 
 function ask(title,body,opts){
@@ -236,9 +254,19 @@ function ask(title,body,opts){
  document.body.appendChild(backdrop);
 
  const syncList=list=>{const items=[...list.querySelectorAll('.ka-report-customizer__item:not([hidden])')];items.forEach((item,index)=>{item.querySelector('[data-rc-up]').disabled=index===0;item.querySelector('[data-rc-down]').disabled=index===items.length-1})};
+ const syncWidths=list=>{
+  const out=backdrop.querySelector(`[data-rc-width-sum="${list.dataset.rcTableList}"]`);if(!out)return;
+  const active=[...list.children].filter(it=>!it.hidden&&it.querySelector('[data-rc-table]')?.checked);
+  const vals=active.map(it=>cleanWidth(it.querySelector('[data-rc-col-width]')?.value)).filter(Boolean);
+  if(!vals.length){out.textContent='Genişlikler otomatik ayarlanır.';out.removeAttribute('data-over');return}
+  const sum=Math.round(vals.reduce((a,b)=>a+b,0)*10)/10,auto=active.length-vals.length,over=sum+auto*AUTO_MIN>100;
+  out.textContent=`Girilen genişlikler toplamı %${sum}${over?'; tabloya sığmadığı için orantılı küçültülür.':auto?'; boş bırakılanlar varsayılan genişliğinde kalır.':'.'}`;
+  if(over)out.setAttribute('data-over','1');else out.removeAttribute('data-over');
+ };
  backdrop.querySelectorAll('[data-rc-table-list]').forEach(list=>{
   list.querySelectorAll('[data-rc-off]').forEach(it=>{it.hidden=true;it.querySelector('[data-rc-table]').checked=false});
-  syncList(list);
+  syncList(list);syncWidths(list);
+  ['click','input','change'].forEach(type=>list.addEventListener(type,()=>syncWidths(list)));
   list.addEventListener('click',e=>{
    const item=e.target.closest('[data-rc-col-item]');if(!item)return;
    if(e.target.closest('[data-rc-remove]')){item.querySelector('[data-rc-table]').checked=false;item.hidden=true;syncList(list);return}
@@ -263,14 +291,16 @@ function ask(title,body,opts){
   form.querySelector('[data-rc-reset]').addEventListener('click',()=>{clearPrefs(title);done(RESET)});
   form.addEventListener('submit',e=>{
    e.preventDefault();
-   const selectedColumns={},columnTitles={},sortRules={},tablePrefs={};
+   const selectedColumns={},columnTitles={},columnWidths={},sortRules={},tablePrefs={};
    ts.forEach((table,ti)=>{
     const list=form.querySelector(`[data-rc-table-list="${ti}"]`);
-    if(!list){selectedColumns[ti]=[];columnTitles[ti]=[];sortRules[ti]=[];return}
+    if(!list){selectedColumns[ti]=[];columnTitles[ti]=[];columnWidths[ti]=[];sortRules[ti]=[];return}
     const all=[...list.children];
     const colOf=item=>Number(item.querySelector('[data-rc-col]').dataset.rcCol);
     selectedColumns[ti]=all.filter(item=>!item.hidden&&item.querySelector('[data-rc-table]')?.checked).map(colOf);
     columnTitles[ti]=all.map(item=>({index:colOf(item),title:String(item.querySelector('[data-rc-col-text]').value||'').trim()}));
+    const widthOf=item=>cleanWidth(item.querySelector('[data-rc-col-width]')?.value);
+    columnWidths[ti]=all.filter(item=>!item.hidden&&item.querySelector('[data-rc-table]')?.checked).map(item=>({index:colOf(item),width:widthOf(item)})).filter(x=>x.width>0);
     const rules=[],used=new Set();
     form.querySelectorAll(`[data-rc-sort-row="${ti}"]`).forEach(row=>{
      const v=row.querySelector('[data-rc-sort-col]').value;
@@ -278,12 +308,12 @@ function ask(title,body,opts){
      rules.push({index:Number(v),dir:row.querySelector('[data-rc-sort-dir]').value==='desc'?'desc':'asc'});
     });
     sortRules[ti]=rules;
-    tablePrefs[ti]={sig:tableSignature(table),items:all.map(item=>({i:colOf(item),show:!item.hidden&&!!item.querySelector('[data-rc-table]')?.checked,title:String(item.querySelector('[data-rc-col-text]').value||'').trim()})),sort:rules.map(r=>({i:r.index,dir:r.dir}))};
+    tablePrefs[ti]={sig:tableSignature(table),items:all.map(item=>({i:colOf(item),show:!item.hidden&&!!item.querySelector('[data-rc-table]')?.checked,title:String(item.querySelector('[data-rc-col-text]').value||'').trim(),w:widthOf(item)||0})),sort:rules.map(r=>({i:r.index,dir:r.dir}))};
    });
    const selectedHeadings=[...form.querySelectorAll('[data-rc-heading]')].filter(x=>x.checked).map(x=>Number(x.dataset.rcHeading));
    const headingTitles=[...form.querySelectorAll('[data-rc-heading-text]')].map(x=>({index:Number(x.dataset.rcHeadingText),title:String(x.value||'').trim()}));
    savePrefs(title,{tables:tablePrefs});
-   done({title:String(form.title.value||title||'Rapor').trim()||'Rapor',ustBaslik:String(form.ustBaslik.value||'').trim(),okulAdi:String(form.okulAdi.value||'').trim(),fileName:String(form.fileName.value||title||'Koruk_Rapor').trim()||'Koruk_Rapor',baslikGoster:form.baslikGoster.checked,logoGoster:form.logoGoster.checked,tarihGoster:form.tarihGoster.checked,schoolGoster:form.schoolGoster.checked,selectedColumns,columnTitles,sortRules,selectedHeadings,headingTitles});
+   done({title:String(form.title.value||title||'Rapor').trim()||'Rapor',ustBaslik:String(form.ustBaslik.value||'').trim(),okulAdi:String(form.okulAdi.value||'').trim(),fileName:String(form.fileName.value||title||'Koruk_Rapor').trim()||'Koruk_Rapor',baslikGoster:form.baslikGoster.checked,logoGoster:form.logoGoster.checked,tarihGoster:form.tarihGoster.checked,schoolGoster:form.schoolGoster.checked,selectedColumns,columnTitles,columnWidths,sortRules,selectedHeadings,headingTitles});
   });
  });
 }
