@@ -15240,6 +15240,53 @@ html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);h
   html[data-theme] #v2ModuleRoot .rhb-madde{padding:var(--ka-sp-10) var(--ka-sp-12)}
 }
 
+/* ===== A4 — Yazılı Kâğıdı Teslim Tutanağı (.ytt-*) =====
+   js/modules/yazili-teslim-core.js çıktısının kâğıt stili: başlık ortada, başvuru imzası sağda, teslim eden solda / teslim alan sağda (yazılar blok içinde ortalı).
+   Yalnız rapor belirteçleri ve mm. */
+.ka-report .ytt-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt;line-height:1.4}
+.ka-report .ytt-baslik{margin:0 0 3mm;text-align:center;font-size:12.5pt;font-weight:700;letter-spacing:1.6mm}
+.ka-report .ytt-muhatap{margin:0 0 8mm;text-align:center;font-weight:700}
+.ka-report .ytt-govde{margin:0 0 2mm;text-indent:10mm;text-align:justify}
+.ka-report .ytt-basvuru{display:flex;justify-content:flex-end;margin:4mm 0 6mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .ytt-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:55mm;text-align:center}
+.ka-report .ytt-tablo{width:100%;margin:0 0 4mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .ytt-tablo thead{display:table-header-group}
+.ka-report .ytt-tablo tr{break-inside:avoid;page-break-inside:avoid}
+.ka-report .ytt-tablo th,.ka-report .ytt-tablo td{padding:1.2mm 2mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:10pt!important;font-weight:400!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
+.ka-report .ytt-tablo td{height:7.5mm}
+.ka-report .ytt-tablo th{font-size:9pt!important;font-weight:700!important;text-align:center!important}
+.ka-report .ytt-tablo td.ytt-orta{text-align:center!important}
+.ka-report .ytt-tablo td.ytt-sag{text-align:right!important}
+.ka-report .ytt-tablo .ytt-toplam td{font-weight:700!important}
+.ka-report .ytt-c-sira{width:13mm}
+.ka-report .ytt-c-sinif{width:20mm}
+.ka-report .ytt-c-top{width:26mm}
+.ka-report .ytt-ozet{margin:0 0 8mm}
+.ka-report .ytt-imzalar{display:flex;justify-content:space-between;align-items:flex-start;gap:20mm;break-inside:avoid;page-break-inside:avoid}
+
+/* ===== YAZILI KÂĞIDI TESLİM TUTANAĞI (ytt-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .ytt-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ytt-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .ytt-head p{margin:0}
+html[data-theme] #v2ModuleRoot .ytt-tablo-ekran{display:flex;flex-direction:column;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ytt-satir{display:grid;grid-template-columns:var(--ka-sp-24) minmax(0,1fr) minmax(0,2.4fr) minmax(0,1fr) minmax(0,1fr) var(--ka-sp-46) var(--ka-sp-42);align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .ytt-satir--baslik{color:var(--ka-text-muted);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ytt-toplamlar{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-6) var(--ka-sp-16);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .ytt-no,html[data-theme] #v2ModuleRoot .ytt-top{display:grid;place-items:center;color:var(--ka-text-muted);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .ytt-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ytt-eylem--yazdir .ka-btn{flex:1 1 auto}
+@media(max-width:767px){
+ html[data-theme] #v2ModuleRoot .ytt-satir{grid-template-columns:var(--ka-sp-24) minmax(0,1fr) minmax(0,1fr) var(--ka-sp-46) var(--ka-sp-42)}
+ html[data-theme] #v2ModuleRoot .ytt-satir--baslik{display:none}
+ html[data-theme] #v2ModuleRoot .ytt-satir>[data-k="ders"]{grid-column:2 / 6;grid-row:2}
+ html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-no{grid-column:1;grid-row:1}
+ html[data-theme] #v2ModuleRoot .ytt-satir>[data-k="sinif"]{grid-column:2 / 4;grid-row:1}
+ html[data-theme] #v2ModuleRoot .ytt-satir>[data-k="d1"]{grid-column:2;grid-row:3}
+ html[data-theme] #v2ModuleRoot .ytt-satir>[data-k="d2"]{grid-column:3;grid-row:3}
+ html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-top{grid-column:4;grid-row:3}
+ html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-sil{grid-column:5;grid-row:1}
+}
+
 /* ===== A4 — Yazılı Sınav Takvimi (.kwr-*) =====
    Tarih sırasıyla çizelge; yalnız rapor belirteçleri ve mm; müdür onayı sağ kenarda, yazılar blok içinde ortalı. */
 .ka-report .kwr-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.3}

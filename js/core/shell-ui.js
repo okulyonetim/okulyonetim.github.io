@@ -323,6 +323,22 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='yazili-teslim'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
+      if(!global.YaziliTeslimCore)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim-core.js?v=1');
+      if(!global.YaziliTeslimModule?.open)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim.js?v=1');
+      if(!global.YaziliTeslimModule?.open)throw new Error('Yazılı Kâğıdı Teslim Tutanağı modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Yazılı Kâğıdı Teslim Tutanağı');
+      if(!global.YaziliTeslimModule.open())throw new Error('Yazılı Kâğıdı Teslim Tutanağı açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Yazılı Kâğıdı Teslim Tutanağı'});
+    }catch(e){
+      console.error('[Shell/yazili-teslim]',e);global.toast?.('Yazılı Kâğıdı Teslim Tutanağı açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='ogretmen-dosyasi'){
     try{
       if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=4');
