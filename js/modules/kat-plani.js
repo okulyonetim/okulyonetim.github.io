@@ -1,8 +1,8 @@
 /* Koruk Asistan — Kat Planı / Acil Durum Tahliye Planı editörü
- * Okul › Kat Planı (yalnız admin ve yönetici). Kat projesini (PDF/görsel) altlık olarak alır; üzerine yangın söndürücü, alarm, elektrik panosu,
- * ilk yardım gibi işaretleri, yeşil kaçış yollarını ve "ŞU AN BURADASINIZ" noktalarını koydurur; A3/A4 PDF, JPEG (≤150 KB) ve yazdırma çıktısı verir.
+ * Okul › Kat Planı (yalnız admin ve yönetici). Kat projesini (PDF/görsel) altlık olarak alır; üzerine tahliye, yangın, ilk yardım, uyarı gibi işaretleri,
+ * kaçış güzergâhlarını, alanları, plan çizgilerini ve "ŞU AN BURADASINIZ" noktalarını koydurur; A3/A4 PDF, JPEG (≤150 KB) ve yazdırma çıktısı verir.
  *
- * Katmanlar: kat-plani-core.js (veri/geometri) · kat-plani-image.js (altlık hazırlama) · kat-plani-cizim.js (çizim/çıktı) · bu dosya (arayüz + kayıt).
+ * Katmanlar: kat-plani-core.js (veri/geometri) · kat-plani-simge.js (semboller, çizgi/alan biçimleri) · kat-plani-image.js (altlık hazırlama) · kat-plani-cizim.js (sayfa/çıktı) · bu dosya (arayüz + kayıt).
  * Kayıt yerel-öncelikli: DeviceData → IndexedDB; Firestore yalnız arka plan eşitlemesidir. Koleksiyon oy_katPlanlari:
  *   <katId> (kat belgesi, küçük) · <katId>__altlik (proje görüntüsü) · ayar (başlık, okul adı, onay bloğu).
  * Görünüm TAMAMEN merkezi CSS'tedir: css/design-system-base.css → ".kpl-" kuralları.
@@ -12,8 +12,8 @@
 if(global.KatPlani)return;
 const D=document;
 const TIP='katPlanlari';
-const SRC=['js/modules/kat-plani-core.js?v=2','js/modules/kat-plani-image.js?v=2','js/modules/kat-plani-cizim.js?v=2'];
-const core=()=>global.KatPlaniCore,Z=()=>global.KatPlaniCizim,IM=()=>global.KatPlaniImage;
+const SRC=['js/modules/kat-plani-core.js?v=3','js/modules/kat-plani-simge.js?v=3','js/modules/kat-plani-image.js?v=3','js/modules/kat-plani-cizim.js?v=3'];
+const core=()=>global.KatPlaniCore,G=()=>global.KatPlaniSimge,Z=()=>global.KatPlaniCizim,IM=()=>global.KatPlaniImage;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
@@ -48,9 +48,9 @@ const ayarEtkin=()=>({...S.ayar,okulAdi:S.ayar.okulAdi||okulAdi(),onayAd:S.ayar.
 
 /* ───────── yükleme / kayıt ───────── */
 async function bagimlilik(){
-  if(core()&&Z()&&IM())return;
+  if(core()&&G()&&Z()&&IM())return;
   for(const s of SRC)await global.AppLoader?.loadScript?.(s);
-  if(!(core()&&Z()&&IM()))throw new Error('Kat planı bileşenleri yüklenemedi.');
+  if(!(core()&&G()&&Z()&&IM()))throw new Error('Kat planı bileşenleri yüklenemedi.');
 }
 async function veriHazirla(){
   if(global.SyncEngine&&global.COL?.[TIP]){
@@ -153,25 +153,30 @@ function ciz(){
   if(S.taslak&&S.taslak.noktalar.length){
     const pts=S.taslak.noktalar.slice();
     if(S.hover&&S.arac==='yol')pts.push(yakala(k,S.hover,pts[pts.length-1]));
-    c.save();c.globalAlpha=.88;if(pts.length>=2)Z().yolCiz(c,k,{noktalar:pts});c.restore();
+    const tur=S.taslak.tur||S.yolTur;
+    c.save();c.globalAlpha=.88;if(pts.length>=2)G().yolCizLw(c,{tur,noktalar:pts},C.yolKalinlik(k,{tur,boy:S.taslak.boy||1}));c.restore();
     c.save();c.lineWidth=2*px;c.strokeStyle=acc;c.fillStyle='#fff';
     S.taslak.noktalar.forEach(p=>{c.beginPath();c.arc(p[0],p[1],6*px,0,Math.PI*2);c.fill();c.stroke()});c.restore();
   }else if(S.hover&&S.arac==='sembol'&&S.fare){
-    c.save();c.globalAlpha=.5;Z().sembolCiz(c,S.sembolTur,S.hover.x,S.hover.y,sp,0);c.restore();
+    c.save();c.globalAlpha=.5;G().sembolCiz(c,S.sembolTur,S.hover.x,S.hover.y,sp,0);c.restore();
   }
   /* seçim ve tutamaklar */
   c.save();c.lineWidth=2*px;c.strokeStyle=acc;c.setLineDash([6*px,4*px]);
   const s=S.sec;
   if(s){
     if(s.t==='oge'&&k.ogeler[s.i]){
-      const o=k.ogeler[s.i],a=C.ogeYari(k,o,Z().metinGenislik);
+      const o=k.ogeler[s.i],a=C.ogeYari(k,o,G().metinGenislik);
       if(o.tur==='etiket')c.strokeRect(o.x-a.hw-6*px,o.y-a.hh-6*px,2*a.hw+12*px,2*a.hh+12*px);
       else{c.beginPath();c.arc(o.x,o.y,a.s*.78,0,Math.PI*2);c.stroke()}
     }
     else if(s.t==='bur'&&k.buradasiniz[s.i]){const b=k.buradasiniz[s.i];c.beginPath();c.arc(b.x,b.y,sp*(b.boy||1)*.72,0,Math.PI*2);c.stroke()}
   }
   c.restore();
-  const yolSec=s&&(s.t==='yol'||s.t==='nokta')?s.yi:-1;
+  const yolSec=s&&(s.t==='yol'||s.t==='nokta')&&k.yollar[s.yi]?s.yi:-1;
+  if(yolSec>=0){                                         /* seçili hat/alan: ince çizgi ve kesikli çerçeve; ince duvarlar da fark edilir */
+    const y=k.yollar[yolSec],p=C.yolStil(y.tur).kapali?C.kapaliNoktalar(y.noktalar):y.noktalar;
+    c.save();c.lineWidth=2*px;c.strokeStyle=acc;c.setLineDash([6*px,4*px]);c.lineJoin='round';c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));if(C.yolStil(y.tur).kapali)c.closePath();c.stroke();c.restore();
+  }
   if(S.arac==='sec'||S.arac==='yol'){
     k.yollar.forEach((y,yi)=>{
       if(yi!==yolSec&&S.arac!=='yol')return;
@@ -191,26 +196,33 @@ function tabsCiz(){
     +'<button type="button" class="kpl-tab kpl-tab--add" data-act="katekle" aria-label="Kat ekle">'+ic('plus')+'</button>';
   const on=t.querySelector('.is-on');try{on?.scrollIntoView({block:'nearest',inline:'center'})}catch(_){}
 }
+/* Palet: "Sembol" aracında sembol grupları, "Hat / alan" aracında güzergâh · alan · plan çizgisi türleri */
 function palCiz(){
   const p=R('pal');if(!p)return;
-  p.hidden=S.arac!=='sembol';
+  const yol=S.arac==='yol';
+  p.hidden=S.arac!=='sembol'&&!yol;
   if(p.hidden)return;
-  const C=core();
-  if(!p.dataset.kur){
-    p.dataset.kur='1';
-    p.innerHTML=`<div class="kpl-pal__bas"><div class="kpl-gruplar" role="tablist" aria-label="Sembol grupları">${C.GRUPLAR.map(g=>`<button type="button" class="kpl-gchip" role="tab" data-act="grup" data-g="${g.id}">${esc(g.ad)}</button>`).join('')}</div>`
-      +`<span class="kpl-genel" role="group" aria-label="Tüm sembollerin boyutu"><button type="button" data-act="genelboy" data-d="-1" aria-label="Tüm sembolleri küçült">${ic('minus')}</button><output data-r="genelboy" title="Tüm sembollerin boyutu"></output><button type="button" data-act="genelboy" data-d="1" aria-label="Tüm sembolleri büyüt">${ic('plus')}</button></span></div>`
+  const C=core(),mod=yol?'yol':'sembol',grup=yol?S.yolGrup:S.grup,gruplar=yol?C.YOL_GRUPLARI:C.GRUPLAR;
+  if(p.dataset.kur!==mod){
+    p.dataset.kur=mod;
+    p.innerHTML=`<div class="kpl-pal__bas"><div class="kpl-gruplar" role="tablist" aria-label="${yol?'Hat ve alan grupları':'Sembol grupları'}">${gruplar.map(g=>`<button type="button" class="kpl-gchip" role="tab" data-act="grup" data-g="${g.id}">${esc(g.ad)}</button>`).join('')}</div>`
+      +(yol?'':`<span class="kpl-genel" role="group" aria-label="Tüm sembollerin boyutu"><button type="button" data-act="genelboy" data-d="-1" aria-label="Tüm sembolleri küçült">${ic('minus')}</button><output data-r="genelboy" title="Tüm sembollerin boyutu"></output><button type="button" data-act="genelboy" data-d="1" aria-label="Tüm sembolleri büyüt">${ic('plus')}</button></span>`)+'</div>'
       +'<div class="kpl-pal__liste" data-r="pallist"></div>';
   }
-  p.querySelectorAll('.kpl-gchip').forEach(b=>{const on=b.dataset.g===S.grup;b.classList.toggle('is-on',on);b.setAttribute('aria-selected',String(on))});
-  const l=R('pallist');
-  if(l.dataset.g!==S.grup){
-    l.dataset.g=S.grup;
-    l.innerHTML=C.SEMBOLLER.filter(s=>s.grup===S.grup).map(s=>`<button type="button" class="kpl-sym" data-act="sembol" data-tur="${s.id}" aria-label="${esc(s.ad)}"><canvas width="88" height="88" data-sym="${s.id}"></canvas><span>${esc(s.kisa)}</span></button>`).join('');
-    l.querySelectorAll('canvas[data-sym]').forEach(cv=>{const c=cv.getContext('2d');c.translate(44,44);Z().sembolCiz(c,cv.dataset.sym,0,0,64,0,'Aa')});
+  p.querySelectorAll('.kpl-gchip').forEach(b=>{const on=b.dataset.g===grup;b.classList.toggle('is-on',on);b.setAttribute('aria-selected',String(on))});
+  const l=R('pallist'),anahtar=mod+':'+grup;
+  if(l.dataset.g!==anahtar){
+    l.dataset.g=anahtar;
+    if(yol){
+      l.innerHTML=C.YOL_TURLERI.filter(t=>t.grup===grup).map(t=>`<button type="button" class="kpl-sym" data-act="yoltur" data-tur="${t.id}" aria-label="${esc(t.ad)}"><canvas width="88" height="88" data-yol="${t.id}"></canvas><span>${esc(t.kisa)}</span></button>`).join('');
+      l.querySelectorAll('canvas[data-yol]').forEach(cv=>{const c=cv.getContext('2d');c.fillStyle='#fff';G().rr(c,2,20,84,48,10);c.fill();c.translate(44,44);G().yolOrnek(c,cv.dataset.yol,0,0,58,30)});   /* beyaz zemin: koyu temada da koyu çizgiler (duvar) görünür */
+    }else{
+      l.innerHTML=C.SEMBOLLER.filter(s=>s.grup===grup).map(s=>`<button type="button" class="kpl-sym" data-act="sembol" data-tur="${s.id}" aria-label="${esc(s.ad)}"><canvas width="88" height="88" data-sym="${s.id}"></canvas><span>${esc(s.kisa)}</span></button>`).join('');
+      l.querySelectorAll('canvas[data-sym]').forEach(cv=>{const c=cv.getContext('2d');c.translate(44,44);G().sembolCiz(c,cv.dataset.sym,0,0,64,0,'Aa')});
+    }
     l.scrollLeft=0;
   }
-  l.querySelectorAll('.kpl-sym').forEach(b=>b.classList.toggle('is-on',b.dataset.tur===S.sembolTur));
+  l.querySelectorAll('.kpl-sym').forEach(b=>b.classList.toggle('is-on',b.dataset.tur===(yol?S.yolTur:S.sembolTur)));
   const o=R('genelboy');if(o)o.textContent=Math.round(aktif().sembolBoyut*100)+'%';
 }
 function aracCiz(){
@@ -219,23 +231,23 @@ function aracCiz(){
 }
 function ipucuCiz(){
   const el=R('hint');if(!el)return;
-  const sb=core().sembol(S.sembolTur);
+  const sb=core().sembol(S.sembolTur),st=core().yolStil(S.taslak?.tur||S.yolTur);
   const m={sec:'Nesneye dokunup sürükleyin; iki parmakla yakınlaştırın.',
     sembol:`${sb?sb.ad:'Sembol'}: yerleştirmek için plana dokunun.`,
-    yol:S.taslak&&S.taslak.noktalar.length?'Sonraki noktaya dokunun; bitirmek için "Bitti" ya da çift dokunun.':'Kaçış yolunun başlangıç noktasına dokunun.',
+    yol:S.taslak&&S.taslak.noktalar.length?(st.kapali?'Köşelere dokunun (iki nokta dikdörtgen olur); sonra "Bitti".':'Sonraki noktaya dokunun; bitirmek için "Bitti" ya da çift dokunun.'):`${st.ad}: başlangıç noktasına dokunun.`,
     bur:'"Şu an buradasınız" için plana dokunun.'};
   el.textContent=m[S.arac]||'';
   const k=aktif(),bos=!k.altlik&&!k.ogeler.length&&!k.yollar.length&&!k.buradasiniz.length;
   const e=R('empty');if(e)e.hidden=!bos;
 }
 /* Seçili sembolün/noktanın kendi boyutu (katın genel boyutuna ek çarpan) */
-const boyDenetimi=o=>`<label class="kpl-boyrow"><span>Boyut</span><input class="kpl-range" data-r="ogeboy" type="range" min="0.4" max="4" step="0.1" value="${o.boy||1}" aria-label="Seçili öğenin boyutu"></label>`;
+const boyDenetimi=(o,ad)=>`<label class="kpl-boyrow"><span>${ad||'Boyut'}</span><input class="kpl-range" data-r="ogeboy" type="range" min="0.4" max="4" step="0.1" value="${o.boy||1}" aria-label="Seçili öğenin ${ad?ad.toLocaleLowerCase('tr'):'boyutu'}"></label>`;
 function selCiz(){
   const el=R('sel');if(!el)return;
   const k=aktif(),s=S.sec;let h='';
   if(S.taslak){
     const n=S.taslak.noktalar.length;
-    h=`<span class="kpl-sel__t">Kaçış yolu çiziliyor · ${n} nokta</span>`
+    h=`<span class="kpl-sel__t">${esc(core().yolStil(S.taslak.tur||S.yolTur).kisa)} · ${n} nokta</span>`
       +`<button type="button" class="kpl-btn" data-act="sonnoktasil"${n?'':' disabled'}>${ic('undo')}Son noktayı sil</button>`
       +`<button type="button" class="kpl-btn" data-act="taslakiptal">Vazgeç</button>`
       +`<button type="button" class="kpl-btn kpl-pri" data-act="bitti"${n>=2?'':' disabled'}>${ic('check')}Bitti</button>`;
@@ -244,20 +256,22 @@ function selCiz(){
     h=`<span class="kpl-sel__t">${esc(sb?sb.ad:'Sembol')}</span>`
       +`<input class="kpl-inp" data-r="ogenot" list="kplOda" type="text" maxlength="60" placeholder="${yazi?'Oda adı (örn. Kazan Dairesi)':'Etiket (isteğe bağlı)'}" value="${esc(o.not)}" aria-label="${yazi?'Oda adı':'Sembol etiketi'}">`
       +boyDenetimi(o)
-      +(o.tur==='cikis'?`<button type="button" class="kpl-btn" data-act="dondur">${ic('dondur')}Döndür</button>`:'')
+      +(sb&&sb.don?`<button type="button" class="kpl-btn" data-act="dondur">${ic('dondur')}Döndür</button>`:'')
       +`<button type="button" class="kpl-btn kpl-dng" data-act="sil">${ic('sil')}Sil</button>`;
   }else if(s&&s.t==='bur'&&k.buradasiniz[s.i]){
     h=`<input class="kpl-inp" data-r="burad" type="text" maxlength="40" placeholder="Bu noktanın adı (örn. Ana giriş)" value="${esc(k.buradasiniz[s.i].ad)}" aria-label="Nokta adı">`
       +boyDenetimi(k.buradasiniz[s.i])
       +`<button type="button" class="kpl-btn kpl-dng" data-act="sil">${ic('sil')}Sil</button>`;
   }else if(s&&s.t==='nokta'){
-    h=`<span class="kpl-sel__t">Yol noktası</span>`
+    h=`<span class="kpl-sel__t">Köşe noktası</span>`
       +`<button type="button" class="kpl-btn" data-act="noktasil">${ic('sil')}Noktayı sil</button>`
-      +`<button type="button" class="kpl-btn kpl-dng" data-act="yolsil">Yolu sil</button>`;
-  }else if(s&&s.t==='yol'){
-    h=`<span class="kpl-sel__t">Kaçış yolu</span>`
-      +`<button type="button" class="kpl-btn" data-act="uzat">${ic('yol')}Uzat</button>`
-      +`<button type="button" class="kpl-btn kpl-dng" data-act="yolsil">${ic('sil')}Yolu sil</button>`;
+      +`<button type="button" class="kpl-btn kpl-dng" data-act="yolsil">Çizgiyi sil</button>`;
+  }else if(s&&s.t==='yol'&&k.yollar[s.yi]){
+    const y=k.yollar[s.yi],kapali=core().yolStil(y.tur).kapali;
+    h=`<select class="kpl-inp kpl-sel__tur" data-r="yoltur" aria-label="Hat / alan türü">${core().YOL_GRUPLARI.map(g=>`<optgroup label="${esc(g.ad)}">${core().YOL_TURLERI.filter(t=>t.grup===g.id).map(t=>`<option value="${t.id}"${t.id===y.tur?' selected':''}>${esc(t.ad)}</option>`).join('')}</optgroup>`).join('')}</select>`
+      +boyDenetimi(y,'Kalınlık')
+      +(kapali?'':`<button type="button" class="kpl-btn" data-act="uzat">${ic('yol')}Uzat</button>`)
+      +`<button type="button" class="kpl-btn kpl-dng" data-act="yolsil">${ic('sil')}Sil</button>`;
   }
   el.innerHTML=h;el.hidden=!h;
 }
@@ -291,9 +305,9 @@ function dokunBas(e){
   const k=aktif(),m=ekran2model(x,y),tol=16/S.g.z;
   const d={sx:x,sy:y,m0:m,hit:null,hareket:false,mod:'bekle',gx:S.g.x,gy:S.g.y};
   if(S.arac==='sec'){
-    let hit=core().isabet(k,m.x,m.y,tol,Z().metinGenislik);
-    if(hit&&hit.t==='yol'&&S.sec&&(S.sec.t==='yol'||S.sec.t==='nokta')&&S.sec.yi===hit.yi){   /* seçili yolun doğrusuna dokun: yeni köşe ekle */
-      const y=k.yollar[hit.yi],p=projeksiyon(m,y.noktalar[hit.ni-1],y.noktalar[hit.ni]);
+    let hit=core().isabet(k,m.x,m.y,tol,G().metinGenislik);
+    if(hit&&hit.t==='yol'&&!hit.ic&&S.sec&&(S.sec.t==='yol'||S.sec.t==='nokta')&&S.sec.yi===hit.yi){   /* seçili çizginin doğrusuna dokun: yeni köşe ekle (alanda kapanış kenarı dahil) */
+      const y=k.yollar[hit.yi],p=projeksiyon(m,y.noktalar[hit.ni-1],y.noktalar[hit.ni%y.noktalar.length]);
       degisim(k);y.noktalar.splice(hit.ni,0,[Math.round(p[0]*10)/10,Math.round(p[1]*10)/10]);hit={t:'nokta',yi:hit.yi,ni:hit.ni};d.eklendi=true;
     }
     if(hit){S.sec=hit;d.hit=hit;d.mod='tasi';d.anlikAlindi=!!d.eklendi;
@@ -360,7 +374,7 @@ function dokun(k,m,e){
     const simdi=performance.now(),cift=S.sonDokunus&&simdi-S.sonDokunus.t<340&&Math.hypot(e.clientX-S.sonDokunus.x,e.clientY-S.sonDokunus.y)<18;
     S.sonDokunus={t:simdi,x:e.clientX,y:e.clientY};
     if(cift&&S.taslak){taslakBitir();return}
-    if(!S.taslak)S.taslak={noktalar:[]};
+    if(!S.taslak)S.taslak={tur:S.yolTur,boy:1,noktalar:[]};
     const son=S.taslak.noktalar[S.taslak.noktalar.length-1];
     S.taslak.noktalar.push(yakala(k,m,son));
     selCiz();ipucuCiz();iste();
@@ -371,7 +385,7 @@ function taslakBitir(){
   if(t.noktalar.length>=2){
     degisim(k);
     if(t.yi!=null&&k.yollar[t.yi])k.yollar[t.yi].noktalar=t.noktalar.map(p=>[p[0],p[1]]);
-    else k.yollar.push(core().normalizeYol({noktalar:t.noktalar}));
+    else k.yollar.push(core().normalizeYol({tur:t.tur||S.yolTur,boy:t.boy||1,noktalar:t.noktalar}));
     S.taslak=null;S.sec=null;sonrasi(k);
   }else{S.taslak=null;selCiz();ipucuCiz();iste()}
 }
@@ -397,7 +411,7 @@ function secileniSil(){
   if(s.t==='oge')k.ogeler.splice(s.i,1);
   else if(s.t==='bur')k.buradasiniz.splice(s.i,1);
   else if(s.t==='yol')k.yollar.splice(s.yi,1);
-  else if(s.t==='nokta'){const y=k.yollar[s.yi];if(y.noktalar.length>2)y.noktalar.splice(s.ni,1);else k.yollar.splice(s.yi,1)}
+  else if(s.t==='nokta'){const y=k.yollar[s.yi],en=core().yolStil(y.tur).kapali?3:2;if(y.noktalar.length>en)y.noktalar.splice(s.ni,1);else k.yollar.splice(s.yi,1)}
   S.sec=null;sonrasi(k);
 }
 
@@ -707,7 +721,13 @@ function tikla(e){
     case'katsilonay':katSilOnay();break;
     case'arac':S.arac=b.dataset.a;S.taslak=null;S.sec=null;S.hover=null;aracCiz();selCiz();ipucuCiz();iste();break;
     case'sembol':S.sembolTur=b.dataset.tur;palCiz();ipucuCiz();break;
-    case'grup':{S.grup=b.dataset.g;if(core().sembol(S.sembolTur)?.grup!==S.grup)S.sembolTur=core().SEMBOLLER.find(x=>x.grup===S.grup)?.id||S.sembolTur;palCiz();ipucuCiz();break}
+    case'yoltur':S.yolTur=b.dataset.tur;palCiz();ipucuCiz();break
+    case'grup':{
+      const C=core();
+      if(S.arac==='yol'){S.yolGrup=b.dataset.g;if(C.yolStil(S.yolTur).grup!==S.yolGrup)S.yolTur=C.YOL_TURLERI.find(x=>x.grup===S.yolGrup)?.id||S.yolTur}
+      else{S.grup=b.dataset.g;if(C.sembol(S.sembolTur)?.grup!==S.grup)S.sembolTur=C.SEMBOLLER.find(x=>x.grup===S.grup)?.id||S.sembolTur}
+      palCiz();ipucuCiz();break;
+    }
     case'genelboy':{const k=aktif(),yeni=clamp(Math.round((k.sembolBoyut+(Number(b.dataset.d)||0)*.1)*10)/10,.5,2.5);if(yeni===k.sembolBoyut)break;degisim(k);k.sembolBoyut=yeni;sonrasi(k);palCiz();break}
     case'zoomin':zoomla(1.3);S.kameraDokunuldu=true;break;
     case'zoomout':zoomla(1/1.3);S.kameraDokunuldu=true;break;
@@ -716,8 +736,8 @@ function tikla(e){
       const k=aktif(),s=S.sec;if(!s)break;
       if(a==='yolsil'&&s.yi!=null){degisim(k);k.yollar.splice(s.yi,1);S.sec=null;sonrasi(k)}else secileniSil();break;
     }
-    case'dondur':{const k=aktif(),s=S.sec;if(s?.t==='oge'){degisim(k);const o=k.ogeler[s.i];o.aci=(o.aci+90)%360;sonrasi(k)}break}
-    case'uzat':{const k=aktif(),s=S.sec;if(!s||s.yi==null)break;S.taslak={yi:s.yi,noktalar:k.yollar[s.yi].noktalar.map(p=>[p[0],p[1]])};S.arac='yol';S.sec=null;aracCiz();selCiz();ipucuCiz();iste();break}
+    case'dondur':{const k=aktif(),s=S.sec,o=s?.t==='oge'&&k.ogeler[s.i],adim=o&&core().sembol(o.tur)?.don;if(adim){degisim(k);o.aci=(o.aci+adim)%360;sonrasi(k)}break}
+    case'uzat':{const k=aktif(),s=S.sec,y=s&&s.yi!=null&&k.yollar[s.yi];if(!y)break;S.taslak={yi:s.yi,tur:y.tur,boy:y.boy,noktalar:y.noktalar.map(p=>[p[0],p[1]])};S.arac='yol';S.sec=null;aracCiz();selCiz();ipucuCiz();iste();break}
     case'bitti':taslakBitir();break;
     case'sonnoktasil':taslakGeri();break;
     case'taslakiptal':S.taslak=null;selCiz();ipucuCiz();iste();break;
@@ -740,6 +760,11 @@ function degis(e){
   const t=e.target;
   if(t.matches('[data-r="dosya"]')){dosyaSecildi(t.files?.[0]);t.value='';return}
   if(t.matches('[data-r="ogenot"],[data-r="ogeboy"]')){S.duzenAlindi=false;return}
+  if(t.matches('[data-r="yoltur"]')){
+    const k=aktif(),y=S.sec?.t==='yol'&&k.yollar[S.sec.yi];
+    if(y&&y.tur!==t.value){degisim(k);y.tur=t.value;sonrasi(k)}
+    return;
+  }
   const w=t.dataset?.w;
   if(w&&S.W){
     const W=S.W;
@@ -751,7 +776,7 @@ function girdi(e){
   const t=e.target;
   if(t.matches('[data-r="burad"]')){const k=aktif(),s=S.sec;if(s?.t==='bur'&&k.buradasiniz[s.i]){k.buradasiniz[s.i].ad=t.value.slice(0,40);kirletKat(k)}return}
   if(t.matches('[data-r="ogenot"],[data-r="ogeboy"]')){             /* seçili öğenin etiketi / kendi boyutu: bir düzenleme oturumu tek geri alma adımıdır */
-    const k=aktif(),s=S.sec,o=s&&(s.t==='oge'?k.ogeler[s.i]:s.t==='bur'?k.buradasiniz[s.i]:null);if(!o)return;
+    const k=aktif(),s=S.sec,o=s&&(s.t==='oge'?k.ogeler[s.i]:s.t==='bur'?k.buradasiniz[s.i]:s.t==='yol'?k.yollar[s.yi]:null);if(!o)return;
     if(!S.duzenAlindi){degisim(k);S.duzenAlindi=true}
     if(t.dataset.r==='ogenot')o.not=t.value.slice(0,60);else o.boy=clamp(Math.round((Number(t.value)||1)*100)/100,.4,4);
     kirletKat(k);iste();return;
@@ -785,7 +810,7 @@ const KABUK=`<div class="kpl-app">
   <nav class="kpl-tools" aria-label="Araçlar">
     <button type="button" data-act="arac" data-a="sec" aria-pressed="true">${ic('sec')}<span>Seç</span></button>
     <button type="button" data-act="arac" data-a="sembol" aria-pressed="false">${ic('sembol')}<span>Sembol</span></button>
-    <button type="button" data-act="arac" data-a="yol" aria-pressed="false">${ic('yol')}<span>Kaçış yolu</span></button>
+    <button type="button" data-act="arac" data-a="yol" aria-pressed="false">${ic('yol')}<span>Hat / alan</span></button>
     <button type="button" data-act="arac" data-a="bur" aria-pressed="false">${ic('bur')}<span>Buradasınız</span></button>
   </nav>
   <datalist id="kplOda" data-r="odalar"></datalist>
@@ -799,7 +824,7 @@ async function ac_(opts){
   await veriHazirla();
   const {katlar,ayar}=await katlariKur();
   let accent='#2563eb';try{accent=getComputedStyle(D.documentElement).getPropertyValue('--t-accent').trim()||accent}catch(_){}
-  S={katlar,ayar,aktifId:katlar.find(k=>k.ad==='Zemin Kat')?.id||katlar[0].id,arac:'sec',grup:'yangin',sembolTur:'sondurucu',duzenAlindi:false,sec:null,taslak:null,hover:null,fare:false,
+  S={katlar,ayar,aktifId:katlar.find(k=>k.ad==='Zemin Kat')?.id||katlar[0].id,arac:'sec',grup:'yangin',sembolTur:'sondurucu',yolGrup:'guzergah',yolTur:'temel',duzenAlindi:false,sec:null,taslak:null,hover:null,fare:false,
     g:{x:0,y:0,z:1},fitZ:1,dpr:1,ptr:new Map(),drag:null,pinch:null,kirli:new Set(),silinen:new Set(),ayarKirli:false,kaydediyor:false,sheet:false,W:null,
     kapsam:'kat',accent,onClose:opts.onClose||null,kameraDokunuldu:false};
   root=D.createElement('div');root.className='kpl-root';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','Kat planı');root.setAttribute('data-kat-plani','');

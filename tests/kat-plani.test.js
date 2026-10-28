@@ -62,7 +62,7 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   const dolu=C.normalizeKat({w:2000,h:1500,ogeler:['sondurucu','alarm','pano','ilkyardim','hortum'].map((t,i)=>({tur:t,x:10*i,y:5})),yollar:[{noktalar:[[0,0],[9,9]]}],buradasiniz:[{x:1,y:1},{x:2,y:2}]});
   c=C.kontrol(dolu,{altlik:true});assert(c.every(x=>x.ok),'tam kat uyarısız');
   const l=C.lejant(dolu);
-  assert.strictEqual(l[0].id,'buradasiniz');assert.strictEqual(l[1].id,'yol');
+  assert.strictEqual(l[0].id,'buradasiniz');assert.strictEqual(l[1].id,'yol:temel','varsayılan çizgi türü temel kaçış yolu');
   eq(l.slice(2).map(x=>x.id),['sondurucu','hortum','alarm','ilkyardim','pano'],'lejantta yalnız kullanılan semboller, katalog sırasıyla');
   eq(C.lejant(k),[],'boş katın lejantı boş');
   eq(C.sayfalar(dolu),[0,1],'her buradasınız noktası bir sayfa');
@@ -73,12 +73,15 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
 /* --- sembol kataloğu: gruplar, benzersiz kimlik, renk/şekil, oda adı --- */
 {
   const L=C.SEMBOLLER,ids=L.map(x=>x.id),g=new Set(C.GRUPLAR.map(x=>x.id));
-  assert(L.length>=24,'katalog geniş olmalı (yangın, kaçış, uyarı, mekân, yazı)');
+  assert(L.length>=80,'katalog geniş olmalı (tahliye, yangın, sağlık, uyarı, tesis, ekipman, erişim, toplanma, plan, yazı)');
   assert.strictEqual(new Set(ids).size,ids.length,'sembol kimlikleri benzersiz');
   assert(L.every(x=>g.has(x.grup)&&x.ad&&x.kisa&&/^#[0-9a-f]{6}$/i.test(x.renk)),'her sembolün grubu, adı ve rengi var');
   C.GRUPLAR.forEach(x=>assert(L.some(y=>y.grup===x.id),'boş grup yok: '+x.id));
-  ['kazan','pano','asansor','wc','etiket','salter','dogalgaz','jenerator','aed','siginak','duman','ihbar'].forEach(id=>assert(ids.includes(id),'sembol eksik: '+id));
+  ['kazan','pano','asansor','wc','etiket','salter','dogalgaz','jenerator','aed','siginak','duman','ihbar','kosan','hidrant','sedye','radyasyon','biyolojik','su_vanasi','gorme_engelli','kat_gecisi','kapi_acilis','sutun','tahliye_noktasi'].forEach(id=>assert(ids.includes(id),'sembol eksik: '+id));
   assert(L.filter(x=>x.renk===C.RENK.sari).every(x=>x.sekil==='ucgen'),'sarı semboller üçgen (siyah işaret)');
+  assert(L.filter(x=>x.sekil==='beyaz'||x.sekil==='ham').every(x=>x.grup==='plan'),'beyaz fayanslı ve çıplak semboller yalnız plan grubunda');
+  assert(L.filter(x=>x.don).every(x=>[45,90].includes(x.don)),'dönme adımı 45 ya da 90 derece');
+  assert(C.sembol('cikis').don===90&&C.sembol('yon').don===45&&C.sembol('sondurucu').don===0,'yalnız yönlü semboller döner');
   assert(L.filter(x=>x.onerilen).length===4,'kılavuzun beklediği 4 sembol');
   /* oda adı lejanta girmez; metni model alanı `not` */
   const k=C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'etiket',x:100,y:100,not:'Kazan Dairesi'},{tur:'kazan',x:300,y:100,not:'Zemin'}]});
@@ -104,6 +107,44 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   assert(C.ogeYari(b,b.ogeler[0]).hw>a.hw*1.9,'yazı boyutu çarpanla büyür');
   /* kayıt döngüsü: boy ve yazı korunur */
   const r=C.normalizeKat(JSON.parse(JSON.stringify(C.katBelgesi(b))));assert.strictEqual(r.ogeler[0].boy,2);assert.strictEqual(r.ogeler[0].not,'Müdür Yardımcısı Odası');
+}
+
+/* --- çizgi ve alan türleri: güzergâh, alan, plan çizgisi --- */
+{
+  const T=C.YOL_TURLERI,ids=T.map(x=>x.id),g=new Set(C.YOL_GRUPLARI.map(x=>x.id));
+  assert.strictEqual(new Set(ids).size,ids.length,'tür kimlikleri benzersiz');
+  assert(T.every(x=>g.has(x.grup)&&x.ad&&x.kisa&&/^#[0-9a-f]{6}$/i.test(x.renk)),'her türün grubu, adı ve rengi var');
+  C.YOL_GRUPLARI.forEach(x=>assert(T.some(y=>y.grup===x.id),'boş grup yok: '+x.id));
+  ['temel','alternatif','yangin_ekibi','engelli','ilkyardim_ekibi','bolge','tehlikeli','guvenli','kapali','duvar','bolme','pencere'].forEach(id=>assert(ids.includes(id),'tür eksik: '+id));
+  assert(T.filter(x=>x.grup==='guzergah'&&x.id!=='bolge').every(x=>x.ok),'güzergâhların yön oku var');assert(T.filter(x=>x.kapali).every(x=>x.grup==='alan'),'kapalı şekiller alan grubunda');
+  assert.strictEqual(C.yolStil('bilinmeyen').id,'temel','bilinmeyen tür temel kaçış yoluna döner');
+  /* model: tür ve kalınlık normalleşir, kayıt düz dizi olarak yapılır ve geri okunur */
+  const k=C.normalizeKat({w:2000,h:1500,yollar:[{tur:'duvar',boy:2,noktalar:[[0,0],[50,0]]},{tur:'x',noktalar:[[0,0],[9,9]]},{tur:'guvenli',boy:99,noktalar:[[10,10],[90,60]]}]});
+  eq(k.yollar.map(y=>y.tur),['duvar','temel','guvenli'],'bilinmeyen tür temel olur');eq(k.yollar.map(y=>y.boy),[2,1,4],'kalınlık çarpanı sınırlanır');
+  const kb=C.katBelgesi(k);assert(kb.yollar.every(y=>y.tur&&y.p.every(v=>typeof v==='number')),'kayıtta tür var, noktalar düz dizi');
+  eq(C.normalizeKat(JSON.parse(JSON.stringify(kb))).yollar.map(y=>y.tur+y.boy),['duvar2','temel1','guvenli4'],'kayıt döngüsü');
+  /* kalınlık: türün çarpanı × çizginin kendi çarpanı */
+  const sp=C.sembolPx(k);assert(C.yolKalinlik(k,k.yollar[0])<C.yolKalinlik(k,k.yollar[1])*2,'duvar temel yoldan ince');assert(Math.abs(C.yolKalinlik(k)-sp*.26)<1e-9,'türsüz çağrıda temel kalınlık');
+  /* iki noktalı alan dikdörtgen olur, üç noktadan sonrası çokgen */
+  eq(C.kapaliNoktalar([[10,20],[50,80]]),[[10,20],[50,20],[50,80],[10,80]],'iki nokta → dikdörtgen');eq(C.kapaliNoktalar([[0,0],[9,0],[9,9]]),[[0,0],[9,0],[9,9]]);
+  assert(C.noktaIcinde(30,50,C.kapaliNoktalar([[10,20],[50,80]]))&&!C.noktaIcinde(60,50,C.kapaliNoktalar([[10,20],[50,80]])),'nokta içinde sınaması');
+  assert(C.noktaIcinde(5,3,[[0,0],[10,0],[0,10]])&&!C.noktaIcinde(8,8,[[0,0],[10,0],[0,10]]),'üçgenin içi / dışı');
+  /* isabet: alan kenarı, kapanış kenarı, içi (en düşük öncelik) */
+  const a=C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'alarm',x:300,y:300}],yollar:[{tur:'tehlikeli',noktalar:[[200,200],[600,200],[600,500],[200,500]]},{tur:'kapali',noktalar:[[900,200],[1200,300]]}]});
+  assert.deepStrictEqual({...C.isabet(a,400,201,4)},{t:'yol',yi:0,ni:1},'çokgenin kenarı');
+  assert.deepStrictEqual({...C.isabet(a,200,350,4)},{t:'yol',yi:0,ni:4},'kapanış kenarı son köşeden ilk köşeye');
+  assert.deepStrictEqual({...C.isabet(a,450,350,4)},{t:'yol',yi:0,ni:0,ic:true},'alanın içi');
+  assert.strictEqual(C.isabet(a,300,300,4).t,'oge','alanın içindeki sembol alandan önce seçilir');
+  assert.deepStrictEqual({...C.isabet(a,1050,200,4)},{t:'yol',yi:1,ni:0,ic:true},'dikdörtgenin kenarı: köşe eklenemez');
+  assert.deepStrictEqual({...C.isabet(a,1050,260,4)},{t:'yol',yi:1,ni:0,ic:true},'dikdörtgenin içi');
+  assert.strictEqual(C.isabet(a,1500,1200,4),null);
+  /* kontrol listesi: yalnız temel/alternatif güzergâh sayılır */
+  const duvarli=C.normalizeKat({w:2000,h:1500,yollar:[{tur:'duvar',noktalar:[[0,0],[9,9]]},{tur:'tehlikeli',noktalar:[[0,0],[9,9]]}]});
+  assert.strictEqual(C.kontrol(duvarli,{altlik:true}).find(x=>x.id==='yol').ok,false,'duvar ve alan kaçış yolu sayılmaz');
+  assert.strictEqual(C.kontrol(C.normalizeKat({w:2000,h:1500,yollar:[{tur:'alternatif',noktalar:[[0,0],[9,9]]}]}),{altlik:true}).find(x=>x.id==='yol').ok,true,'alternatif güzergâh sayılır');
+  /* lejant: buradasınız → kullanılan çizgi türleri (katalog sırası) → semboller */
+  const l=C.lejant(C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'alarm',x:1,y:1}],buradasiniz:[{x:1,y:1}],yollar:[{tur:'pencere',noktalar:[[0,0],[9,9]]},{tur:'temel',noktalar:[[0,0],[9,9]]},{tur:'pencere',noktalar:[[1,1],[9,9]]}]}));
+  eq(l.map(x=>x.id),['buradasiniz','yol:temel','yol:pencere','alarm'],'lejant: yinelenen tür tek satır, katalog sırası');
 }
 
 /* --- sayfa düzeni: her yönde 10 mm kenar boşluğu, bölümler içerik kutusuna sığar --- */
@@ -171,15 +212,18 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
 /* --- kaynak sözleşmesi: kabuk kaydı, depolama, baskı kenar boşluğu, dosya adı --- */
 {
   const oku=f=>fs.readFileSync(f,'utf8');
-  const mods=['kat-plani','kat-plani-core','kat-plani-image','kat-plani-cizim'].map(a=>[a,oku('js/modules/'+a+'.js')]);
+  const mods=['kat-plani','kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim'].map(a=>[a,oku('js/modules/'+a+'.js')]);
   for(const [a,src] of mods){
     assert(!/<style/i.test(src),a+': modülde <style olmamalı (CSS design-system-base.css içinde)');
     assert(!/localStorage\.setItem/.test(src),a+': localStorage.setItem yasak (yerel-öncelikli DeviceData kullanılır)');
   }
   const ed=oku('js/modules/kat-plani.js');
-  const cz=oku('js/modules/kat-plani-cizim.js');
-  C.SEMBOLLER.filter(x=>x.sekil!=='yazi').forEach(x=>assert(new RegExp('\\n  '+x.id+'\\(c').test(cz),'çizim işlevi eksik: '+x.id));
-  assert(/function etiketCiz/.test(cz)&&/function lejantDuzen/.test(cz),'oda adı kutusu ve uyarlanır lejant');
+  const cz=oku('js/modules/kat-plani-cizim.js'),sg=oku('js/modules/kat-plani-simge.js');
+  C.SEMBOLLER.filter(x=>x.sekil!=='yazi').forEach(x=>assert(new RegExp('\\n  '+x.id+'\\(c').test(sg),'çizim işlevi eksik: '+x.id));
+  assert(!/\n  sondurucu\(c/.test(cz),'semboller yalnız simge modülünde (çizim modülünde yinelenmez)');
+  assert(/function etiketCiz/.test(sg)&&/function yolCizLw/.test(sg)&&/function yolOrnek/.test(sg),'oda adı kutusu, çizgi/alan çizimi ve örnekleri');
+  assert(/function lejantDuzen/.test(cz)&&/yol:/.test(cz),'uyarlanır lejant çizgi türlerini de gösterir');
+  ['data-act="yoltur"','data-r="yoltur"','S.yolTur','S.yolGrup'].forEach(t=>assert(ed.includes(t),'editör: '+t));
   ['data-act="grup"','data-act="genelboy"','data-r="ogeboy"','data-r="ogenot"','kplOda'].forEach(t=>assert(ed.includes(t),'editör: '+t));
   assert(!/data-f="sembolBoyut"/.test(ed),'genel boyut yalnız palette (ayar sayfasında yinelenmez)');
   assert(/akis:true,kenarBosluk:10/.test(ed),'yazdırma: akış + 10 mm kenar boşluğu');
@@ -192,7 +236,8 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   assert(/match \/oy_katPlanlari\/\{/.test(oku('firestore.rules')),'firestore kuralı');
   assert(/\.kpl-root/.test(oku('css/design-system-base.css'))&&/\.kpl-gorsel/.test(oku('css/design-system-base.css')),'CSS bloğu');
   const sw=oku('service-worker.js');
-  for(const f of ['kat-plani-core','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=2'),'SW önbelleği: '+f);
+  for(const f of ['kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=3'),'SW önbelleği: '+f);
+  assert(/kat-plani\.js\?v=3/.test(oku('js/core/shell-ui.js')),'shell yükleyicisi sürümü');
   /* dosya adı dönüşümü (editör içinde özel; aynı kural burada denetlenir) */
   const m=ed.match(/const TR_ASCII=(\{[^}]*\});\s*const dosyaAdi=([^\n]*)\n/);assert(m,'dosyaAdi tanımı bulunamadı');
   const dosyaAdi=new Function('TR_ASCII','return '+m[2].replace(/;$/,''))(eval('('+m[1]+')'));

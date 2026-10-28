@@ -1,167 +1,18 @@
-/* Koruk Asistan — Kat Planı · çizim ve çıktı
+/* Koruk Asistan — Kat Planı · sayfa ve çıktı
  * Tek çizim yolu: editör ekranı, önizleme, JPEG, PDF ve yazdırma AYNI fonksiyonlarla çizilir (ekranda gördüğünüz çıktıdır).
- *   planCiz(ctx,kat,resim,opt)   model düzleminde: altlık + kaçış yolları + semboller + "şu an buradasınız"
+ * Semboller ve çizgi/alan türleri kat-plani-simge.js'dedir; burada onları bir araya getiren sayfa ve çıktı biçimleri vardır.
+ *   planCiz(ctx,kat,resim,opt)   model düzleminde: altlık + alanlar + plan çizgileri + güzergâhlar + semboller + "şu an buradasınız"
  *   sayfaCiz(kat,resim,ayar,i,o) başlıklı, lejantlı, onay bloklu tam sayfa tuvali (A3/A4 yatay içerik kutusu)
  *   jpegSigdir / pdfYap / yazdirGovde: çıktı biçimleri (sayfalar tek tek üretilir). Sayfa kenar boşluğu (10 mm) PDF ve yazdırmada sayfaya konurken eklenir.
  */
 (function(global){
 'use strict';
 if(global.KatPlaniCizim)return;
-const core=()=>global.KatPlaniCore;
+const core=()=>global.KatPlaniCore,G=()=>global.KatPlaniSimge;
 const JSPDF_SRC='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
 const upper=s=>String(s||'').toLocaleUpperCase('tr-TR');
-function rr(c,x,y,w,h,r){r=Math.min(r,w/2,h/2);c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+const rr=(...a)=>G().rr(...a),yazitipi=()=>G().yazitipi();
 
-/* ───────── semboller (model birimi; s = kenar uzunluğu) ─────────
- * Her simge ±.75 birimlik kutuda çizilir (1 birim = sembolün yarı kenarı): kare rozette beyaz, sarı üçgende siyah.
- * Yeni sembol eklemek: core.SEMBOLLER'e satır + aşağıdaki IC tablosuna aynı kimlikle bir çizim işlevi. */
-let _font=null;
-function yazitipi(){
-  if(_font)return _font;
-  try{_font=getComputedStyle(document.documentElement).getPropertyValue('--ka-font').trim()||null}catch(_){}
-  return _font||'system-ui,"Segoe UI",sans-serif';
-}
-let _olcu=null;
-/* Oda adı kutusunun genişliği için yazı ölçüsü (editördeki isabet sınaması ile çizim aynı ölçüyü kullanır) */
-function metinGenislik(t,fs){
-  try{_olcu=_olcu||document.createElement('canvas').getContext('2d');_olcu.font='800 '+fs+'px '+yazitipi();return _olcu.measureText(t).width}
-  catch(_){return String(t).length*fs*.6}
-}
-function rozet(c,s,renk){
-  rr(c,-s/2,-s/2,s,s,s*.14);c.fillStyle=renk;c.fill();
-  c.lineWidth=s*.05;c.strokeStyle='rgba(0,0,0,.45)';c.stroke();
-}
-function ucgen(c,u){
-  c.beginPath();c.moveTo(0,-u*1.0);c.lineTo(u*1.02,u*.82);c.lineTo(-u*1.02,u*.82);c.closePath();
-  c.fillStyle=core().RENK.sari;c.fill();c.lineWidth=u*.14;c.strokeStyle='#111';c.stroke();
-}
-const cizgi=(c,p)=>{c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke()};
-const dolgu=(c,p)=>{c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();c.fill()};
-const daire=(c,x,y,r)=>{c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill()};
-function ok(c,boy){                         /* sağa bakan ok */
-  c.beginPath();c.moveTo(-boy,0);c.lineTo(boy*.55,0);c.stroke();
-  c.beginPath();c.moveTo(boy,0);c.lineTo(boy*.25,-.34);c.lineTo(boy*.25,.34);c.closePath();c.fill();
-}
-function alev(c,k,bg){                      /* alev; bg: içindeki oyuğun rengi */
-  c.save();c.scale(k,k);
-  c.beginPath();c.moveTo(0,-.75);c.bezierCurveTo(.12,-.3,.55,-.1,.5,.3);c.bezierCurveTo(.45,.62,.2,.75,0,.75);c.bezierCurveTo(-.25,.75,-.5,.55,-.5,.25);c.bezierCurveTo(-.5,-.05,-.15,-.2,0,-.75);c.closePath();c.fill();
-  c.fillStyle=bg;c.beginPath();c.moveTo(.02,.1);c.bezierCurveTo(.2,.28,.26,.45,.14,.58);c.bezierCurveTo(.08,.64,-.18,.64,-.2,.42);c.bezierCurveTo(-.22,.26,-.04,.2,.02,.1);c.closePath();c.fill();
-  c.restore();
-}
-function merdivenIc(c){c.lineWidth=.16;cizgi(c,[[-.7,.62],[-.7,.3],[-.35,.3],[-.35,-.02],[0,-.02],[0,-.34],[.35,-.34],[.35,-.66],[.72,-.66]])}
-const IC={
-  sondurucu(c){
-    rr(c,-.34,-.02,.68,.86,.12);c.fill();c.fillRect(-.12,-.34,.24,.34);
-    c.lineWidth=.14;cizgi(c,[[-.12,-.36],[.3,-.42]]);
-    c.lineWidth=.1;c.beginPath();c.moveTo(.3,-.42);c.quadraticCurveTo(.62,-.1,.5,.3);c.stroke();
-  },
-  hortum(c){
-    c.lineWidth=.16;c.beginPath();c.arc(0,-.08,.5,0,Math.PI*2);c.stroke();daire(c,0,-.08,.16);
-    c.lineWidth=.1;c.beginPath();c.moveTo(.36,.28);c.quadraticCurveTo(.7,.56,.2,.7);c.stroke();
-  },
-  alarm(c){
-    daire(c,0,-.04,.3);c.lineWidth=.12;
-    c.beginPath();c.arc(0,-.04,.56,Math.PI*.8,Math.PI*1.2);c.stroke();
-    c.beginPath();c.arc(0,-.04,.56,-Math.PI*.2,Math.PI*.2);c.stroke();
-    c.fillRect(-.4,.5,.8,.16);
-  },
-  ihbar(c){
-    c.lineWidth=.12;rr(c,-.62,-.58,1.24,1.16,.1);c.stroke();
-    [-.3,0,.3].forEach(x=>daire(c,x,-.26,.08));c.fillRect(-.4,.02,.8,.13);c.fillRect(-.4,.28,.5,.1);
-  },
-  siren(c){
-    c.beginPath();c.moveTo(-.5,.32);c.quadraticCurveTo(-.5,-.55,0,-.55);c.quadraticCurveTo(.5,-.55,.5,.32);c.closePath();c.fill();
-    c.fillRect(-.64,.3,1.28,.14);daire(c,0,.62,.1);daire(c,0,-.64,.08);
-  },
-  duman(c){
-    c.lineWidth=.12;c.beginPath();c.arc(0,.1,.5,0,Math.PI*2);c.stroke();daire(c,0,.1,.16);
-    [-150,-90,-30].forEach(d=>{const a=d*Math.PI/180;cizgi(c,[[Math.cos(a)*.66,.1+Math.sin(a)*.66],[Math.cos(a)*.82,.1+Math.sin(a)*.82]])});
-  },
-  yangin_kapisi(c,bg){
-    c.lineWidth=.12;rr(c,-.44,-.72,.88,1.44,.06);c.stroke();
-    c.save();c.translate(0,.1);alev(c,.4,bg);c.restore();
-  },
-  cikis(c,bg,aci){
-    c.rotate((aci||0)*Math.PI/180);c.lineWidth=.2;ok(c,.62);
-    c.lineWidth=.14;cizgi(c,[[.74,-.58],[.74,.58]]);
-  },
-  yangin_merdiveni(c){merdivenIc(c)},
-  toplanma(c){
-    c.lineWidth=.14;
-    for(let i=0;i<4;i++){c.save();c.rotate(i*Math.PI/2);c.translate(-.04,-.08);c.rotate(Math.PI/2);c.translate(-.74,0);c.beginPath();c.moveTo(0,0);c.lineTo(.5,0);c.stroke();c.beginPath();c.moveTo(.72,0);c.lineTo(.38,-.24);c.lineTo(.38,.24);c.closePath();c.fill();c.restore()}
-  },
-  ilkyardim(c){c.fillRect(-.17,-.56,.34,1.12);c.fillRect(-.56,-.17,1.12,.34)},
-  aed(c,bg){
-    c.beginPath();c.moveTo(0,.68);c.bezierCurveTo(-.85,.08,-.62,-.62,0,-.22);c.bezierCurveTo(.62,-.62,.85,.08,0,.68);c.closePath();c.fill();
-    c.fillStyle=bg;dolgu(c,[[.1,-.3],[-.2,.12],[0,.12],[-.1,.5],[.22,0],[.02,0]]);
-  },
-  siginak(c,bg){
-    dolgu(c,[[0,-.68],[.72,-.02],[.52,-.02],[.52,.62],[-.52,.62],[-.52,-.02],[-.72,-.02]]);
-    c.fillStyle=bg;c.fillRect(-.14,.12,.28,.5);
-  },
-  pano(c){dolgu(c,[[.18,-.72],[-.4,.12],[-.04,.12],[-.2,.72],[.4,-.14],[.06,-.14]])},
-  salter(c){
-    c.lineWidth=.13;rr(c,-.46,-.7,.92,1.4,.1);c.stroke();
-    c.lineWidth=.16;cizgi(c,[[0,.36],[.18,-.34]]);daire(c,.18,-.42,.13);daire(c,0,.4,.1);
-  },
-  dogalgaz(c,bg){alev(c,.95,bg)},
-  kazan(c,bg){
-    c.lineWidth=.14;rr(c,-.46,-.55,.92,1.05,.2);c.stroke();
-    c.fillRect(-.12,-.78,.24,.22);c.fillRect(-.38,.5,.2,.22);c.fillRect(.18,.5,.2,.22);
-    alev(c,.34,bg);
-  },
-  jenerator(c){
-    c.lineWidth=.13;rr(c,-.7,-.42,1.4,.9,.12);c.stroke();
-    dolgu(c,[[.1,-.3],[-.24,.1],[-.02,.1],[-.1,.4],[.24,-.06],[.02,-.06]]);
-    c.fillRect(-.55,.46,.22,.18);c.fillRect(.33,.46,.22,.18);
-  },
-  kimyasal(c){
-    c.lineWidth=.13;cizgi(c,[[-.2,-.7],[-.2,-.2],[-.68,.52],[.68,.52],[.2,-.2],[.2,-.7]]);cizgi(c,[[-.32,-.7],[.32,-.7]]);
-    dolgu(c,[[-.44,.12],[.44,.12],[.68,.52],[-.68,.52]]);
-  },
-  asansor(c){
-    c.lineWidth=.12;rr(c,-.62,-.72,1.24,1.44,.1);c.stroke();
-    dolgu(c,[[-.24,-.5],[-.42,-.1],[-.06,-.1]]);dolgu(c,[[.24,.5],[.06,.1],[.42,.1]]);
-  },
-  merdiven(c){merdivenIc(c)},
-  wc(c){c.save();c.scale(.01,.01);c.font='800 66px '+yazitipi();c.textAlign='center';c.textBaseline='middle';c.fillText('WC',0,4);c.restore()},
-  engelli(c){
-    daire(c,-.12,-.56,.12);c.lineWidth=.12;
-    cizgi(c,[[-.12,-.32],[-.12,.12],[.28,.12],[.42,.5]]);cizgi(c,[[-.12,-.1],[.2,-.1]]);
-    c.beginPath();c.arc(-.08,.26,.38,Math.PI*.25,Math.PI*1.5);c.stroke();
-  },
-  su(c){
-    c.beginPath();c.moveTo(0,-.7);c.bezierCurveTo(.15,-.4,.55,.05,.55,.3);c.bezierCurveTo(.55,.62,.3,.78,0,.78);c.bezierCurveTo(-.3,.78,-.55,.62,-.55,.3);c.bezierCurveTo(-.55,.05,-.15,-.4,0,-.7);c.closePath();c.fill();
-  }
-};
-/* Oda adı: beyaz zeminli, koyu çerçeveli yazı kutusu. s: boyut (yazı yüksekliği s/2) */
-function etiketCiz(c,s,metin){
-  const fs=s*.5,t=metin||'Oda adı';
-  c.font='800 '+fs+'px '+yazitipi();c.textAlign='center';c.textBaseline='middle';
-  const bw=c.measureText(t).width+fs*.9,bh=fs*1.6;
-  rr(c,-bw/2,-bh/2,bw,bh,bh*.22);c.fillStyle='rgba(255,255,255,.94)';c.fill();c.lineWidth=fs*.09;c.strokeStyle='#111';c.stroke();
-  c.fillStyle='#111';c.fillText(t,0,fs*.04);
-}
-function sembolCiz(c,tur,x,y,s,aci,metin){
-  const sb=core().sembol(tur);if(!sb)return;
-  const u=s/2;
-  c.save();c.translate(x,y);c.lineCap='round';c.lineJoin='round';
-  if(sb.sekil==='yazi'){etiketCiz(c,s,metin);c.restore();return}
-  let bg;
-  if(sb.sekil==='ucgen'){ucgen(c,u);bg=sb.renk;c.fillStyle=c.strokeStyle='#111';c.translate(0,u*.24);c.scale(u*.62,u*.62)}
-  else{rozet(c,s,sb.renk);bg=sb.renk;c.fillStyle=c.strokeStyle='#fff';c.scale(u,u)}
-  if(IC[tur])IC[tur](c,bg,aci);
-  c.restore();
-}
-/* Plandaki bir öğe: sembol + (varsa) altında etiketi. s: bu öğenin boyutu (genel boyut × kendi çarpanı) */
-function ogeCiz(c,o,s){
-  sembolCiz(c,o.tur,o.x,o.y,s,o.aci,o.not);
-  if(o.tur==='etiket'||!o.not)return;
-  const fs=s*.36;
-  c.save();c.font='700 '+fs+'px '+yazitipi();c.textAlign='center';c.textBaseline='top';c.lineJoin='round';
-  c.lineWidth=fs*.34;c.strokeStyle='rgba(255,255,255,.95)';c.strokeText(o.not,o.x,o.y+s*.5+fs*.12);
-  c.fillStyle='#111';c.fillText(o.not,o.x,o.y+s*.5+fs*.12);c.restore();
-}
 /* "ŞU AN BURADASINIZ": kırmızı nokta + üstünde (sığmazsa altında) etiket */
 function buradasinizCiz(c,x,y,sp,font){
   const K=core().RENK,r=sp*.46;
@@ -178,18 +29,11 @@ function buradasinizCiz(c,x,y,sp,font){
   c.beginPath();c.moveTo(x-fs*.4,ust?by+bh:by);c.lineTo(x+fs*.4,ust?by+bh:by);c.lineTo(x,ust?y-r-sp*.04:y+r+sp*.04);c.closePath();c.fillStyle=K.kirmizi;c.fill();
   c.restore();
 }
-function yolCiz(c,k,y){
-  const K=core().RENK,lw=core().yolKalinlik(k),p=y.noktalar;
-  c.save();c.lineCap='round';c.lineJoin='round';
-  c.lineWidth=lw*1.5;c.strokeStyle='#fff';c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke();   /* beyaz zarf: altlık çizgileri üzerinde okunur */
-  c.lineWidth=lw;c.strokeStyle=K.yol;c.beginPath();p.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.stroke();
-  const boy=lw*2.9,gen=lw*2.5;
-  core().okNoktalari(p,lw*16).forEach(o=>{
-    c.save();c.translate(o.x,o.y);c.rotate(o.aci);if(o.uc)c.translate(-boy*.5,0);
-    c.beginPath();c.moveTo(boy*.5,0);c.lineTo(-boy*.5,-gen*.5);c.lineTo(-boy*.5,gen*.5);c.closePath();
-    c.fillStyle=K.yol;c.fill();c.lineWidth=lw*.22;c.strokeStyle='#fff';c.stroke();c.restore();
-  });
-  c.restore();
+/* Çizim sırası: alanlar (en altta) → plan çizgileri → güzergâhlar; semboller ve "buradasınız" üstte */
+const YOL_SIRA=['alan','plan','guzergah'];
+function yollariCiz(c,k){
+  const C=core();
+  YOL_SIRA.forEach(g=>k.yollar.forEach(y=>{if(C.yolStil(y.tur).grup===g)G().yolCizLw(c,y,C.yolKalinlik(k,y))}));
 }
 /* Model düzlemi. opt.bur: 'tum' (editör) | nokta sıra no | -1 (hiçbiri) */
 function planCiz(c,k,resim,opt){
@@ -202,8 +46,8 @@ function planCiz(c,k,resim,opt){
     for(let x=0;x<=k.w;x+=a){c.beginPath();c.moveTo(x,0);c.lineTo(x,k.h);c.stroke()}
     for(let y=0;y<=k.h;y+=a){c.beginPath();c.moveTo(0,y);c.lineTo(k.w,y);c.stroke()}
   }
-  k.yollar.forEach(y=>yolCiz(c,k,y));
-  k.ogeler.forEach(o=>ogeCiz(c,o,core().ogeBoyut(k,o)));
+  yollariCiz(c,k);
+  k.ogeler.forEach(o=>G().ogeCiz(c,o,core().ogeBoyut(k,o)));
   k.buradasiniz.forEach((b,i)=>{if(opt.bur==='tum'||opt.bur===i)buradasinizCiz(c,b.x,b.y,sp*(b.boy||1),font)});
   c.restore();
 }
@@ -216,13 +60,11 @@ function sigdirYazi(c,txt,maxW,px,agirlik,font){
 }
 function lejantIkon(c,id,cx,cy,s){
   const K=core().RENK;
-  if(id==='yol'){
-    c.save();c.lineCap='round';c.lineWidth=s*.22;c.strokeStyle=K.yol;c.beginPath();c.moveTo(cx-s*.45,cy);c.lineTo(cx+s*.12,cy);c.stroke();
-    c.beginPath();c.moveTo(cx+s*.5,cy);c.lineTo(cx+s*.06,cy-s*.3);c.lineTo(cx+s*.06,cy+s*.3);c.closePath();c.fillStyle=K.yol;c.fill();c.restore();
-  }else if(id==='buradasiniz'){
+  if(id.startsWith('yol:'))G().yolOrnek(c,id.slice(4),cx,cy,s*.95,s*.62);
+  else if(id==='buradasiniz'){
     c.save();c.beginPath();c.arc(cx,cy,s*.4,0,Math.PI*2);c.fillStyle=K.kirmizi;c.fill();c.lineWidth=s*.07;c.strokeStyle='#fff';c.stroke();
     c.beginPath();c.arc(cx,cy,s*.17,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.restore();
-  }else sembolCiz(c,id,cx,cy,s*.9,0);
+  }else G().sembolCiz(c,id,cx,cy,s*.9,0);
 }
 /* Lejant yerleşimi: tüm satırlar tek yazı boyutuyla çizilir. Madde çoksa satır sayısı artırılır (3–6); yazı en büyük kalan seçenek alınır. */
 function lejantDuzen(c,items,L,a4,font){
@@ -334,5 +176,5 @@ function resimYukle(veri){
   return new Promise((ok,no)=>{if(!veri){ok(null);return}const im=new Image();im.onload=()=>ok(im);im.onerror=()=>no(new Error('Altlık görüntüsü okunamadı.'));im.src=veri});
 }
 
-global.KatPlaniCizim={sembolCiz,ogeCiz,metinGenislik,buradasinizCiz,yolCiz,planCiz,sayfaCiz,jpegSigdir,pdfYap,yazdirGovde,resimYukle,yazitipi,rr};
+global.KatPlaniCizim={buradasinizCiz,planCiz,sayfaCiz,jpegSigdir,pdfYap,yazdirGovde,resimYukle};
 })(typeof window!=='undefined'?window:globalThis);
