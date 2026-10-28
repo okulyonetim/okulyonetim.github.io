@@ -82,26 +82,30 @@ async function dosyaKaydet(blob,ad,tur){
  a.href=url;a.download=ad;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();
  setTimeout(()=>global.URL.revokeObjectURL(url),1200);
 }
-async function formIndir(key,tur){
- const f=K().FORMLAR[key];if(!f)return;
+/* Hazır formu (Word: bilgiler doldurulur, PDF: olduğu gibi) hazırlayıp kaydeder. ek: form bilgisini ezer (okul, ad, mudur, yil…);
+ * Öğretmen Dosyası dışındaki sayfalar da (Projeler › Maarif'in Kalbinde Oyun) aynı yolu kullanır. Başarıda true, eksik veriyle durunca false döner. */
+async function formKaydet(key,tur,ek={}){
+ await ensureDeps();
+ const f=K().FORMLAR[key];if(!f)throw new Error('Form bulunamadı.');
  const satirlar=f.satir?SATIR_KAYNAKLARI[f.satir]():null;
- if(satirlar&&!satirlar.length)return toast('Ders saatleri tanımlı değil. Ayarlar › Ders Saatleri bölümünden ekleyin.');
+ if(satirlar&&!satirlar.length){toast('Ders saatleri tanımlı değil. Ayarlar › Ders Saatleri bölümünden ekleyin.');return false}
+ const dosya=tur==='docx'?f.docx:f.pdf,r=await global.fetch(`${K().DOSYA_KOKU}${dosya}`);
+ if(!r.ok)throw new Error(`Form dosyası alınamadı (${r.status}).`);
+ const b={...bilgi(),yil:S.yil||K().egitimYili(),...ek};
+ if(tur==='docx'){
+  const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(b),satirlar);
+  await dosyaKaydet(blob,C().dosyaAdi(f.ad,C().imzaAd(b.ad),'docx'),C().DOCX_TURU);
+ }else{
+  await dosyaKaydet(await r.blob(),C().dosyaAdi(f.ad,'','pdf'),C().PDF_TURU);
+ }
+ return true;
+}
+async function formIndir(key,tur){
  const kimlik=`form:${key}:${tur}`;
  if(S.mesgul.has(kimlik))return;
  S.mesgul.add(kimlik);render();
- try{
-  const dosya=tur==='docx'?f.docx:f.pdf;
-  const r=await global.fetch(`${K().DOSYA_KOKU}${dosya}`);
-  if(!r.ok)throw new Error(`Form dosyası alınamadı (${r.status}).`);
-  const ad=C().imzaAd(bilgi().ad);
-  if(tur==='docx'){
-   const blob=await C().docxDoldur(await r.arrayBuffer(),C().degerler(bilgi()),satirlar);
-   await dosyaKaydet(blob,C().dosyaAdi(f.ad,ad,'docx'),C().DOCX_TURU);
-  }else{
-   await dosyaKaydet(await r.blob(),C().dosyaAdi(f.ad,'','pdf'),C().PDF_TURU);
-  }
-  toast('Form indirildi.');
- }catch(e){console.warn('[Öğretmen Dosyası/form]',e);toast(String(e?.message||'').startsWith('Form dosyası')||String(e?.message||'').includes('Word')?e.message:'Form indirilemedi.')}
+ try{if(await formKaydet(key,tur))toast('Form indirildi.')}
+ catch(e){console.warn('[Öğretmen Dosyası/form]',e);toast(String(e?.message||'').startsWith('Form dosyası')||String(e?.message||'').includes('Word')?e.message:'Form indirilemedi.')}
  finally{S.mesgul.delete(kimlik);render()}
 }
 
@@ -281,7 +285,7 @@ function baglan(){
 /* ── hazırlık ve açılış ── */
 async function ensureDeps(){
  const L=global.AppLoader;
- if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=7');
+ if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=8');
  if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=3');
  if(!K()||!C())throw new Error('Öğretmen Dosyası bileşenleri yüklenemedi.');
 }
@@ -305,5 +309,5 @@ async function open(){
 }
 function unmount(){clearTimeout(pushT);temizle()}
 
-global.OgretmenDosyasi={open,render,unmount};
+global.OgretmenDosyasi={open,render,unmount,formKaydet};
 })(window);

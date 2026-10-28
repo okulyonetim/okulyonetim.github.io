@@ -75,7 +75,7 @@ const BASI=[
  ["kulup","Kulüp Bütçesi Evrakları"],
  ["kulup","Kulüp Görev Dağılım Çizelgesi"],
  ["kulup","Pano Çalışmaları Dosyası"],
- ["idari","Maarif'in Kalbinde Oyun Yıllık Planı",null,null,{f:["oyun-ilkokul","oyun-ortaokul"]}]
+ ["idari","Maarif'in Kalbinde Oyun Yıllık Planı",null,null,{f:["oyun-ilkokul","oyun-ortaokul"],a:["oyun-ilkokul","oyun-ortaokul"]}]
 ];
 const DONEM1=[
  ["idari","Her dersten iki yazılı notunu e-Okul'a işle","Her dersten iki yazılı sınav notunun e-Okul'a işlenmesi"],

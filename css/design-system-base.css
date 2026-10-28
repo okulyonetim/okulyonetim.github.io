@@ -15287,6 +15287,36 @@ html[data-theme] #v2ModuleRoot .ytt-eylem--yazdir .ka-btn{flex:1 1 auto}
  html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-sil{grid-column:5;grid-row:1}
 }
 
+/* ===== PROJELER › MAARİF'İN KALBİNDE OYUN (mok-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .mok-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .mok-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .mok-head p{margin:0}
+html[data-theme] #v2ModuleRoot .mok-sekmeler{padding:0}
+html[data-theme] #v2ModuleRoot .mok-ara{margin:var(--ka-sp-4) 0 0;font-size:var(--ka-fs-18)}
+html[data-theme] #v2ModuleRoot .mok-giris{margin:0;line-height:1.55}
+html[data-theme] #v2ModuleRoot .mok-kutu{padding:var(--ka-sp-10) var(--ka-sp-12);border-inline-start:var(--ka-sp-3) solid var(--ka-primary);border-radius:var(--ka-r-8);background:var(--ka-primary-soft);font-size:var(--ka-fs-13);line-height:1.5}
+html[data-theme] #v2ModuleRoot .mok-kart__baslik{font-size:var(--ka-fs-16)}
+html[data-theme] #v2ModuleRoot .mok-liste{margin:0;padding-inline-start:var(--ka-sp-18);display:flex;flex-direction:column;gap:var(--ka-sp-6);line-height:1.5}
+html[data-theme] #v2ModuleRoot .mok-tablo td,html[data-theme] #v2ModuleRoot .mok-tablo th{vertical-align:top;font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .mok-nw{white-space:nowrap}
+html[data-theme] #v2ModuleRoot .mok-oyunlar{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .mok-oyun{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .mok-oyun>summary{padding:var(--ka-sp-10) var(--ka-sp-12);cursor:pointer;line-height:1.4}
+html[data-theme] #v2ModuleRoot .mok-oyun__govde{display:flex;flex-direction:column;gap:var(--ka-sp-6);padding:0 var(--ka-sp-12) var(--ka-sp-12);line-height:1.55}
+html[data-theme] #v2ModuleRoot .mok-oyun__govde p{margin:0}
+html[data-theme] #v2ModuleRoot .mok-guvenlik{color:var(--ka-text-muted);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .mok-tekerleme{margin:0;font-style:italic}
+html[data-theme] #v2ModuleRoot .mok-belge{display:flex;align-items:center;gap:var(--ka-sp-10);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .mok-belge__metin{display:flex;flex:1 1 auto;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+html[data-theme] #v2ModuleRoot .mok-belge__metin strong{overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .mok-rozet{flex:0 0 auto;padding:var(--ka-sp-3) var(--ka-sp-6);border-radius:var(--ka-r-4);background:color-mix(in srgb,var(--ka-success) 16%,transparent);color:var(--ka-success);font-size:var(--ka-fs-10);font-weight:var(--ka-fw-800);letter-spacing:.04em}
+html[data-theme] #v2ModuleRoot .mok-kaynak{margin:0;color:var(--ka-text-muted);font-size:var(--ka-fs-12);line-height:1.5}
+html[data-theme] #v2ModuleRoot .mok-baglanti{padding:0;border:0;background:none;color:var(--ka-primary);font:inherit;text-decoration:underline;cursor:pointer}
+@media(max-width:767px){
+ html[data-theme] #v2ModuleRoot .mok-belge{flex-wrap:wrap}
+ html[data-theme] #v2ModuleRoot .mok-belge .ka-btn{margin-inline-start:auto}
+}
+
 /* ===== A4 — Yazılı Sınav Takvimi (.kwr-*) =====
    Tarih sırasıyla çizelge; yalnız rapor belirteçleri ve mm; müdür onayı sağ kenarda, yazılar blok içinde ortalı. */
 .ka-report .kwr-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.3}

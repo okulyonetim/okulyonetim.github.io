@@ -79,6 +79,7 @@ const GLYPHS={
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','class-seats':'🪑','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
 GLYPHS['bep-hazirla']='📝';
+GLYPHS['oyun-nedir']='🏅';GLYPHS['oyun-aylik']='📅';GLYPHS['oyun-ilkokul']='📋';GLYPHS['oyun-ortaokul']='📋';
 GLYPHS['idareci-pano']='🖥️';
 GLYPHS['tymm-olcek']='📏';
 GLYPHS['ogretmen-dosyasi']='📁';
@@ -143,6 +144,7 @@ const adminOrManager=()=>user().admin===true||global.PermissionService?.isManage
  *   öğrenci → Öğrenciler · sınav, not, ölçek → Sınav ve Not · plan ve teslim takibi → Planlar · zaman ve çizelge → Program ve Takvim
  *   resmî yazı, tutanak → Tutanak ve Evrak · personel hakları → Personel İşleri · gezi, kulüp, anma → Etkinlik ve Gezi
  *   servis, yemek → Servis ve Yemek · duyuru, mesaj → İletişim · dosya ve PDF aracı → Belgeler ve PDF
+ *   okul çapında proje ve kampanya (Maarif'in Kalbinde Oyun…) → Projeler
  *   okulun kendisi, kadro, kurul → Okul · hesap ve yardım → Ayarlar ve Yardım
  * Sayfa rengi menüsünün rengidir. */
 const KATALOG=[
@@ -215,6 +217,12 @@ const KATALOG=[
   ['form-belirli','Belirli Gün ve Haftalar','calendar','Belirli gün ve hafta etkinlikleri','tools','form-belirli'],
   ['dilimiz','Dilimizin Zenginlikleri','book','Atasözü ve deyim çalışması','documents','dilimiz']
  ]],
+ ['projeler','Projeler','award','violet',[
+  ['oyun-nedir',"Maarif'in Kalbinde Oyun",'award','Oyun yaklaşımı, okulda uygulama ve güvenlik','maarif-oyun','nedir'],
+  ['oyun-aylik','Ayın Oyunları (20 Oyun)','calendar','Ayın geleneksel oyunları ve nasıl oynanır','maarif-oyun','oyunlar'],
+  ['oyun-ilkokul','Oyun İlkokul Yıllık Planı','doc','1–4. sınıf haftalık oyun planı (Word)','maarif-oyun','ilkokul'],
+  ['oyun-ortaokul','Oyun Ortaokul Yıllık Planı','doc','5–8. sınıf aylık tema ve oyun planı (Word)','maarif-oyun','ortaokul']
+ ]],
  ['hizmet','Servis ve Yemek','bus','amber',[
   ['transport','Servisler','bus','Servisler ve güzergâhlar','transport','services',{y:1}],
   ['bus-seats','Servis Oturma Planı','bus','Servis oturma planı','transport','busSeats'],
@@ -273,8 +281,8 @@ const DIGER={id:'diger',ad:'Diğer sayfalar'};
 const BAR_FIXED=['home','program','tools','me'];                  /* yerleşik sayfalar; geri kalan yuvalar menü ya da tek sayfadır */
 /* Rolün menü sırası: her biri KATALOG'daki tüm menülerin bir sıralamasıdır; rolde sayfası olmayan menü gizlenir. */
 const MENU_SIRA={
-  ogretmen:['ogrenci','sinav','plan','program','evrak','etkinlik','hizmet','iletisim','belge','okul','personel','ayar'],
-  idareci:['okul','evrak','personel','ogrenci','sinav','plan','program','etkinlik','hizmet','iletisim','belge','ayar']
+  ogretmen:['ogrenci','sinav','plan','program','evrak','etkinlik','projeler','hizmet','iletisim','belge','okul','personel','ayar'],
+  idareci:['okul','evrak','personel','ogrenci','sinav','plan','program','etkinlik','projeler','hizmet','iletisim','belge','ayar']
 };
 const BAR_VARSAYILAN={ogretmen:['home','program','tools','menu:iletisim','me'],idareci:['home','menu:okul','tools','tool:idareci-pano','me']};
 const FAV_VARSAYILAN={ogretmen:['student-attendance','written','tutanak','plans'],idareci:[]};
@@ -296,6 +304,7 @@ const KEYWORDS={
   'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama deneme ve test sonuçları','grades':'not karne puan','homework':'ödev takip çizelgesi','rubric':'puan katılım rubrik ders etkinliği dağıtımı','project':'proje performans ölçek',
   'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan yıllık ve bep plan takibi','idareci-pano':'idareci pano dijital panosu müdür nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep hazırla bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
   'ogretmen-dosyasi':'öğretmen dosyası kapak evrak form kontrol listesi teslim dosya hazırlık',
+  'oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',
@@ -346,11 +355,18 @@ function legacyFav(r){
   try{const raw=store.get(legacyFavKey(r));if(raw!==null){const v=JSON.parse(raw);if(Array.isArray(v))return cleanIds(v)}}catch(_){}
   return null;
 }
-/* Sayfayı menülere yerleştirir: önce kendi menüsüne, o menü kullanıcıda yoksa "Diğer sayfalar"a. Yerleştirdiyse true. */
-function placeInto(menus,id){
+/* Sayfayı menülere yerleştirir: önce kendi menüsüne. Kendi menüsü kullanıcıda yoksa: menü kullanıcı için yeniyse (known: kullanıcının bildiği
+ * sayfalar; menüsündeki hiçbirini görmemiş) menü kullanıcının düzenine eklenir; değilse (menüyü bilerek silmiştir) "Diğer sayfalar"a girer.
+ * Yerleştirdiyse true. */
+function placeInto(menus,id,known=null){
   const t=TOOLS[id];
   if(!t||menus.some(m=>m.ids.includes(id)))return false;
-  let m=menus.find(x=>x.id===t.kat)||menus.find(x=>x.id===DIGER.id);
+  let m=menus.find(x=>x.id===t.kat);
+  if(!m&&known&&menus.length<MENU_MAX&&!Object.values(TOOLS).some(x=>x.kat===t.kat&&known.has(x.id))){
+    const k=MENU_TREE.find(x=>x.id===t.kat);
+    if(k){m={id:k.id,ad:k.ad,icon:k.icon,tone:k.tone,ids:[]};menus.push(m)}
+  }
+  m=m||menus.find(x=>x.id===DIGER.id);
   if(!m&&menus.length<MENU_MAX){m={id:DIGER.id,ad:DIGER.ad,icon:'grid',tone:'slate',ids:[]};menus.push(m)}
   if(!m||m.ids.length>=MENU_ITEMS_MAX)return false;
   m.ids.push(id);
@@ -370,7 +386,7 @@ function settle(r,o){
   const ids=scopeIds(r),known=new Set(Array.isArray(o.gorulen)?o.gorulen:[]);
   if(ids.every(id=>known.has(id)))return o;
   const menus=cleanMenus(o.menus);
-  ids.filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id));
+  ids.filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id,known));
   writeOverride(r,{menus,gorulen:ids},{silent:true});
   return readOverride(r);
 }
