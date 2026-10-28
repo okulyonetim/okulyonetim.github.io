@@ -11,26 +11,51 @@ const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
 const num=(v,d)=>{const n=Number(v);return Number.isFinite(n)?n:d};
 const str=(v,m)=>String(v??'').trim().slice(0,m);
 const r1=n=>Math.round(n*10)/10;
+const r2=n=>Math.round(n*100)/100;
+const BOY=v=>r2(clamp(num(v,1),.4,4));          /* tek sembolün/yazının boyut çarpanı (katın genel boyutuna ek) */
 const yeniId=p=>p+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-3);
 
 /* Altlıksız katın tuval boyutu (yatay A3 oranı) */
 const BOS={w:2400,h:1700};
 /* Güvenlik işaretleri ISO 7010 renkleridir; temaya göre değişmez. */
-const RENK={kirmizi:'#d32f2f',yesil:'#1b8a3a',sari:'#ffd400',yol:'#12a150',koyu:'#1f2933',gri:'#6b7280'};
+const RENK={kirmizi:'#d32f2f',yesil:'#1b8a3a',sari:'#ffd400',mavi:'#1d5fb8',yol:'#12a150',koyu:'#1f2933',gri:'#6b7280'};
 
-/* Sembol kataloğu. onerilen: kat planında bulunması beklenen (kontrol listesinde uyarı verir, engellemez). */
+/* Sembol kataloğu (palet bu gruplarla açılır). renk: yangın kırmızı · kaçış/ilk yardım yeşil · uyarı ve kesme noktaları sarı (üçgen, siyah işaret) · mekân mavi.
+   onerilen: kat planında bulunması beklenen (kontrol listesinde uyarı verir, engellemez). lejant:false: kendi yazısı olan öğe (oda adı) lejanta girmez. */
+const GRUPLAR=[{id:'yangin',ad:'Yangın'},{id:'kacis',ad:'Kaçış'},{id:'uyari',ad:'Uyarı'},{id:'mekan',ad:'Mekân'},{id:'yazi',ad:'Yazı'}];
+const sb=(id,ad,kisa,grup,renk,o)=>({id,ad,kisa,grup,renk,sekil:renk===RENK.sari?'ucgen':'kare',onerilen:false,lejant:true,...o});
 const SEMBOLLER=[
-  {id:'sondurucu',ad:'Yangın söndürücü',kisa:'Yangın söndürücü',renk:RENK.kirmizi,onerilen:true},
-  {id:'hortum',ad:'Yangın dolabı / hortum',kisa:'Yangın dolabı / hortum',renk:RENK.kirmizi,onerilen:false},
-  {id:'alarm',ad:'Yangın alarm butonu',kisa:'Alarm butonu',renk:RENK.kirmizi,onerilen:true},
-  {id:'pano',ad:'Elektrik panosu',kisa:'Elektrik panosu',renk:RENK.sari,onerilen:true},
-  {id:'ilkyardim',ad:'İlk yardım dolabı',kisa:'İlk yardım dolabı',renk:RENK.yesil,onerilen:true},
-  {id:'cikis',ad:'Acil çıkış kapısı',kisa:'Acil çıkış',renk:RENK.yesil,onerilen:false},
-  {id:'toplanma',ad:'Toplanma alanı yönü',kisa:'Toplanma alanı',renk:RENK.yesil,onerilen:false}
+  sb('sondurucu','Yangın söndürücü','Yangın söndürücü','yangin',RENK.kirmizi,{onerilen:true}),
+  sb('hortum','Yangın dolabı / hortum','Yangın dolabı / hortum','yangin',RENK.kirmizi),
+  sb('alarm','Yangın alarm butonu','Alarm butonu','yangin',RENK.kirmizi,{onerilen:true}),
+  sb('ihbar','Yangın ihbar paneli','İhbar paneli','yangin',RENK.kirmizi),
+  sb('siren','Alarm sireni / zil','Alarm sireni','yangin',RENK.kirmizi),
+  sb('duman','Duman dedektörü','Duman dedektörü','yangin',RENK.kirmizi),
+  sb('yangin_kapisi','Yangın kapısı','Yangın kapısı','yangin',RENK.kirmizi),
+  sb('cikis','Acil çıkış kapısı','Acil çıkış','kacis',RENK.yesil),
+  sb('yangin_merdiveni','Yangın merdiveni','Yangın merdiveni','kacis',RENK.yesil),
+  sb('toplanma','Toplanma alanı yönü','Toplanma alanı','kacis',RENK.yesil),
+  sb('ilkyardim','İlk yardım dolabı','İlk yardım dolabı','kacis',RENK.yesil,{onerilen:true}),
+  sb('aed','Defibrilatör (AED)','Defibrilatör','kacis',RENK.yesil),
+  sb('siginak','Sığınak / güvenli alan','Sığınak','kacis',RENK.yesil),
+  sb('pano','Elektrik panosu','Elektrik panosu','uyari',RENK.sari,{onerilen:true}),
+  sb('salter','Ana elektrik şalteri','Ana şalter','uyari',RENK.sari),
+  sb('dogalgaz','Doğalgaz kesme vanası','Doğalgaz vanası','uyari',RENK.sari),
+  sb('kazan','Kazan dairesi','Kazan dairesi','uyari',RENK.sari),
+  sb('jenerator','Jeneratör','Jeneratör','uyari',RENK.sari),
+  sb('kimyasal','Kimyasal / laboratuvar','Laboratuvar','uyari',RENK.sari),
+  sb('asansor','Asansör','Asansör','mekan',RENK.mavi),
+  sb('merdiven','Merdiven','Merdiven','mekan',RENK.mavi),
+  sb('wc','Tuvalet (WC)','WC','mekan',RENK.mavi),
+  sb('engelli','Engelli erişimi','Engelli erişimi','mekan',RENK.mavi),
+  sb('su','Su vanası / deposu','Su vanası','mekan',RENK.mavi),
+  sb('etiket','Oda adı / yazı','Oda adı','yazi',RENK.koyu,{sekil:'yazi',lejant:false})
 ];
 const SEMBOL_ID=new Set(SEMBOLLER.map(s=>s.id));
 const sembol=id=>SEMBOLLER.find(s=>s.id===id)||null;
 
+/* Oda adı / etiket önerileri (yazı kutusunda öneri listesi olarak çıkar; istenen her ad yazılabilir) */
+const ODA_ADLARI=['Müdür Odası','Müdür Yardımcısı Odası','Öğretmenler Odası','Rehberlik Servisi','Kazan Dairesi','Pano Odası','Jeneratör Odası','Depo','Arşiv','Kantin','Yemekhane','Kütüphane','Spor Salonu','Çok Amaçlı Salon','Fen Laboratuvarı','Bilişim Sınıfı','Anasınıfı','Revir','Sığınak','Hizmetli Odası','Nöbetçi Öğretmen','Ana Giriş','Bahçe Kapısı','Mescit','Tuvalet'];
 /* Hızlı kat adları ve doğal sıralama (bodrum < zemin < 1. kat …) */
 const KAT_ADLARI=['Bodrum Kat','Zemin Kat','1. Kat','2. Kat','3. Kat','4. Kat','Çatı Katı'];
 function katSira(ad){
@@ -45,7 +70,7 @@ function katSira(ad){
 /* ───────── model ───────── */
 function normalizeOge(o){
   if(!o||typeof o!=='object'||!SEMBOL_ID.has(o.tur))return null;
-  return{id:str(o.id,40)||yeniId('o'),tur:o.tur,x:r1(num(o.x,0)),y:r1(num(o.y,0)),aci:((Math.round(num(o.aci,0))%360)+360)%360,not:str(o.not,60)};
+  return{id:str(o.id,40)||yeniId('o'),tur:o.tur,x:r1(num(o.x,0)),y:r1(num(o.y,0)),aci:((Math.round(num(o.aci,0))%360)+360)%360,not:str(o.not,60),boy:BOY(o.boy)};
 }
 /* Bellekte noktalar [[x,y],…]; Firestore iç içe dizi kabul etmediği için kayıtta düz dizi p:[x0,y0,x1,y1,…] kullanılır. */
 function ciftlere(p){const o=[];if(Array.isArray(p))for(let i=0;i+1<p.length;i+=2)o.push([p[i],p[i+1]]);return o}
@@ -59,7 +84,7 @@ function normalizeBur(b){
   if(!b||typeof b!=='object')return null;
   const x=num(b.x,NaN),y=num(b.y,NaN);
   if(!Number.isFinite(x)||!Number.isFinite(y))return null;
-  return{id:str(b.id,40)||yeniId('b'),x:r1(x),y:r1(y),ad:str(b.ad,40)};
+  return{id:str(b.id,40)||yeniId('b'),x:r1(x),y:r1(y),ad:str(b.ad,40),boy:BOY(b.boy)};
 }
 function normalizeKat(x){
   x=x&&typeof x==='object'?x:{};
@@ -87,6 +112,16 @@ function katBelgesi(k){const n=normalizeKat(k);return{...n,yollar:n.yollar.map(y
 /* ───────── geometri ───────── */
 const sembolPx=k=>Math.max(k.w,k.h)*.026*(k.sembolBoyut||1);
 const yolKalinlik=k=>sembolPx(k)*.26;
+/* Tek öğenin boyutu: katın genel boyutu × kendi çarpanı. Oda adında yazı yüksekliği boyutun yarısıdır. */
+const ogeBoyut=(k,o)=>sembolPx(k)*(o.boy||1);
+const etiketMetni=o=>o.not||'Oda adı';
+/* Öğenin yarı genişlik/yükseklik kutusu. olcu(metin,punto): gerçek yazı ölçüsü (tuvalden); yoksa kaba tahmin. */
+function ogeYari(k,o,olcu){
+  const s=ogeBoyut(k,o);
+  if(o.tur!=='etiket')return{hw:s/2,hh:s/2,s};
+  const fs=s*.5,m=(olcu||((t,f)=>t.length*f*.6))(etiketMetni(o),fs);
+  return{hw:(m+fs*.9)/2,hh:fs*.8,s};
+}
 const uzaklik=(ax,ay,bx,by)=>Math.hypot(ax-bx,ay-by);
 function noktaSegMesafe(px,py,ax,ay,bx,by){
   const dx=bx-ax,dy=by-ay,l2=dx*dx+dy*dy;
@@ -110,11 +145,14 @@ function okNoktalari(pts,aralik){
   out.push({x:q[0],y:q[1],aci:Math.atan2(q[1]-p[1],q[0]-p[0]),uc:true});
   return out;
 }
-/* Dokunulan nesneyi bul: önce "buradasınız", sonra semboller, yol köşeleri, yol doğruları. tol: model birimi */
-function isabet(k,x,y,tol){
+/* Dokunulan nesneyi bul: önce "buradasınız", sonra semboller, yol köşeleri, yol doğruları. tol: model birimi; olcu: ogeYari'ye */
+function isabet(k,x,y,tol,olcu){
   const sp=sembolPx(k),t=Math.max(tol||0,sp*.15);
-  for(let i=k.buradasiniz.length-1;i>=0;i--){const b=k.buradasiniz[i];if(uzaklik(x,y,b.x,b.y)<=Math.max(t,sp*.7))return{t:'bur',i}}
-  for(let i=k.ogeler.length-1;i>=0;i--){const o=k.ogeler[i];if(uzaklik(x,y,o.x,o.y)<=Math.max(t,sp*.62))return{t:'oge',i}}
+  for(let i=k.buradasiniz.length-1;i>=0;i--){const b=k.buradasiniz[i];if(uzaklik(x,y,b.x,b.y)<=Math.max(t,sp*(b.boy||1)*.7))return{t:'bur',i}}
+  for(let i=k.ogeler.length-1;i>=0;i--){
+    const o=k.ogeler[i],a=ogeYari(k,o,olcu);
+    if(o.tur==='etiket'?(Math.abs(x-o.x)<=Math.max(t,a.hw)&&Math.abs(y-o.y)<=Math.max(t,a.hh)):uzaklik(x,y,o.x,o.y)<=Math.max(t,a.s*.62))return{t:'oge',i};
+  }
   for(let yi=k.yollar.length-1;yi>=0;yi--){const p=k.yollar[yi].noktalar;for(let ni=0;ni<p.length;ni++)if(uzaklik(x,y,p[ni][0],p[ni][1])<=Math.max(t,sp*.4))return{t:'nokta',yi,ni}}
   for(let yi=k.yollar.length-1;yi>=0;yi--){const p=k.yollar[yi].noktalar;for(let ni=1;ni<p.length;ni++)if(noktaSegMesafe(x,y,p[ni-1][0],p[ni-1][1],p[ni][0],p[ni][1])<=Math.max(t,yolKalinlik(k)*.9))return{t:'yol',yi,ni}}
   return null;
@@ -132,7 +170,7 @@ function kontrol(k,opt){
   return L;
 }
 function lejant(k){
-  const m=sayim(k),L=SEMBOLLER.filter(s=>m[s.id]>0).map(s=>({id:s.id,ad:s.kisa,renk:s.renk}));
+  const m=sayim(k),L=SEMBOLLER.filter(s=>s.lejant&&m[s.id]>0).map(s=>({id:s.id,ad:s.kisa,renk:s.renk}));
   if(k.yollar.length)L.unshift({id:'yol',ad:'Kaçış yolu',renk:RENK.yol});
   if(k.buradasiniz.length)L.unshift({id:'buradasiniz',ad:'Şu an buradasınız',renk:RENK.kirmizi});
   return L;
@@ -154,9 +192,9 @@ function sayfaDuzen(boyut){
 }
 function fitRect(w,h,r){const s=Math.min(r.w/w,r.h/h);return{s,x:r.x+(r.w-w*s)/2,y:r.y+(r.h-h*s)/2,w:w*s,h:h*s}}
 
-global.KatPlaniCore={BOS,RENK,SEMBOLLER,sembol,KAT_ADLARI,katSira,SAYFA_KENAR,
+global.KatPlaniCore={BOS,RENK,GRUPLAR,SEMBOLLER,sembol,KAT_ADLARI,ODA_ADLARI,katSira,SAYFA_KENAR,
   normalizeKat,normalizeOge,normalizeYol,normalizeBur,normalizeAyar,yeniKat,yeniId,altlikId,katBelgesi,
-  sembolPx,yolKalinlik,uzaklik,noktaSegMesafe,yolUzunluk,okNoktalari,isabet,
+  sembolPx,yolKalinlik,ogeBoyut,ogeYari,etiketMetni,uzaklik,noktaSegMesafe,yolUzunluk,okNoktalari,isabet,
   sayim,kontrol,lejant,sayfalar,sayfaDuzen,fitRect};
 if(typeof module!=='undefined'&&module.exports)module.exports=global.KatPlaniCore;
 })(typeof window!=='undefined'?window:globalThis);

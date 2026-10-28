@@ -63,11 +63,47 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   c=C.kontrol(dolu,{altlik:true});assert(c.every(x=>x.ok),'tam kat uyarısız');
   const l=C.lejant(dolu);
   assert.strictEqual(l[0].id,'buradasiniz');assert.strictEqual(l[1].id,'yol');
-  eq(l.slice(2).map(x=>x.id),['sondurucu','hortum','alarm','pano','ilkyardim'],'lejantta yalnız kullanılan semboller, katalog sırasıyla');
+  eq(l.slice(2).map(x=>x.id),['sondurucu','hortum','alarm','ilkyardim','pano'],'lejantta yalnız kullanılan semboller, katalog sırasıyla');
   eq(C.lejant(k),[],'boş katın lejantı boş');
   eq(C.sayfalar(dolu),[0,1],'her buradasınız noktası bir sayfa');
   eq(C.sayfalar(k),[-1],'nokta yoksa tek sayfa');
   assert.strictEqual(C.sayim(dolu).sondurucu,1);
+}
+
+/* --- sembol kataloğu: gruplar, benzersiz kimlik, renk/şekil, oda adı --- */
+{
+  const L=C.SEMBOLLER,ids=L.map(x=>x.id),g=new Set(C.GRUPLAR.map(x=>x.id));
+  assert(L.length>=24,'katalog geniş olmalı (yangın, kaçış, uyarı, mekân, yazı)');
+  assert.strictEqual(new Set(ids).size,ids.length,'sembol kimlikleri benzersiz');
+  assert(L.every(x=>g.has(x.grup)&&x.ad&&x.kisa&&/^#[0-9a-f]{6}$/i.test(x.renk)),'her sembolün grubu, adı ve rengi var');
+  C.GRUPLAR.forEach(x=>assert(L.some(y=>y.grup===x.id),'boş grup yok: '+x.id));
+  ['kazan','pano','asansor','wc','etiket','salter','dogalgaz','jenerator','aed','siginak','duman','ihbar'].forEach(id=>assert(ids.includes(id),'sembol eksik: '+id));
+  assert(L.filter(x=>x.renk===C.RENK.sari).every(x=>x.sekil==='ucgen'),'sarı semboller üçgen (siyah işaret)');
+  assert(L.filter(x=>x.onerilen).length===4,'kılavuzun beklediği 4 sembol');
+  /* oda adı lejanta girmez; metni model alanı `not` */
+  const k=C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'etiket',x:100,y:100,not:'Kazan Dairesi'},{tur:'kazan',x:300,y:100,not:'Zemin'}]});
+  eq(C.lejant(k).map(x=>x.id),['kazan'],'oda adı lejantta yok, kazan dairesi var');
+  assert.strictEqual(k.ogeler[0].not,'Kazan Dairesi');assert.strictEqual(C.etiketMetni(C.normalizeOge({tur:'etiket',x:1,y:1})),'Oda adı','boş yazı yer tutucu gösterir');
+}
+/* --- tek sembolün boyutu --- */
+{
+  const k=C.normalizeKat({w:2000,h:1500,sembolBoyut:1,ogeler:[{tur:'alarm',x:500,y:500},{tur:'alarm',x:900,y:500,boy:2},{tur:'alarm',x:1300,y:500,boy:99},{tur:'alarm',x:1700,y:500,boy:'x'},{tur:'alarm',x:100,y:500,boy:.01}],buradasiniz:[{x:10,y:10,boy:3}]});
+  eq(k.ogeler.map(o=>o.boy),[1,2,4,1,.4],'boy 0,4–4 aralığına sınırlanır, geçersizse 1');assert.strictEqual(k.buradasiniz[0].boy,3);
+  const sp=C.sembolPx(k);
+  assert.strictEqual(C.ogeBoyut(k,k.ogeler[1]),sp*2,'boyut = genel boyut × kendi çarpanı');
+  k.sembolBoyut=2;assert.strictEqual(C.ogeBoyut(k,k.ogeler[1]),C.sembolPx(k)*2);k.sembolBoyut=1;
+  /* büyütülmüş sembolün isabet alanı da büyür; küçük olan genel tolerans altına inmez */
+  const d=sp*1.1;assert.strictEqual(C.isabet(k,900+d,500,0)?.t,'oge','boy 2 → geniş isabet');assert.strictEqual(C.isabet(k,500+d,500,0),null,'boy 1 → dar isabet');
+  assert.strictEqual(C.isabet(k,100+sp*.14,500,0)?.i,4,'çok küçük sembol yine de seçilebilir');
+  /* oda adı: dikdörtgen isabet, yazı uzadıkça genişler; ölçü işlevi verilirse onu kullanır */
+  const e=C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'etiket',x:800,y:400,not:'Müdür Yardımcısı Odası'}]}),a=C.ogeYari(e,e.ogeler[0]);
+  assert(a.hw>a.hh*3,'uzun yazı yatay kutu');
+  assert.strictEqual(C.isabet(e,800+a.hw*.9,400,0)?.t,'oge');assert.strictEqual(C.isabet(e,800+a.hw*1.6,400,0),null);
+  assert.strictEqual(C.ogeYari(e,e.ogeler[0],()=>100).hw,(100+C.ogeBoyut(e,e.ogeler[0])*.5*.9)/2,'tuval ölçüsü kullanılır');
+  const b=C.normalizeKat({w:2000,h:1500,ogeler:[{tur:'etiket',x:800,y:400,not:'Müdür Yardımcısı Odası',boy:2}]});
+  assert(C.ogeYari(b,b.ogeler[0]).hw>a.hw*1.9,'yazı boyutu çarpanla büyür');
+  /* kayıt döngüsü: boy ve yazı korunur */
+  const r=C.normalizeKat(JSON.parse(JSON.stringify(C.katBelgesi(b))));assert.strictEqual(r.ogeler[0].boy,2);assert.strictEqual(r.ogeler[0].not,'Müdür Yardımcısı Odası');
 }
 
 /* --- sayfa düzeni: her yönde 10 mm kenar boşluğu, bölümler içerik kutusuna sığar --- */
@@ -141,6 +177,11 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
     assert(!/localStorage\.setItem/.test(src),a+': localStorage.setItem yasak (yerel-öncelikli DeviceData kullanılır)');
   }
   const ed=oku('js/modules/kat-plani.js');
+  const cz=oku('js/modules/kat-plani-cizim.js');
+  C.SEMBOLLER.filter(x=>x.sekil!=='yazi').forEach(x=>assert(new RegExp('\\n  '+x.id+'\\(c').test(cz),'çizim işlevi eksik: '+x.id));
+  assert(/function etiketCiz/.test(cz)&&/function lejantDuzen/.test(cz),'oda adı kutusu ve uyarlanır lejant');
+  ['data-act="grup"','data-act="genelboy"','data-r="ogeboy"','data-r="ogenot"','kplOda'].forEach(t=>assert(ed.includes(t),'editör: '+t));
+  assert(!/data-f="sembolBoyut"/.test(ed),'genel boyut yalnız palette (ayar sayfasında yinelenmez)');
   assert(/akis:true,kenarBosluk:10/.test(ed),'yazdırma: akış + 10 mm kenar boşluğu');
   assert(!/extraHead/.test(ed),'yazdırma: extraHead verilirse sayfa kenar boşluğu kaybolur');
   assert(/TR_ASCII/.test(ed),'dosya adları ASCII\'ye çevrilir');
@@ -151,7 +192,7 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   assert(/match \/oy_katPlanlari\/\{/.test(oku('firestore.rules')),'firestore kuralı');
   assert(/\.kpl-root/.test(oku('css/design-system-base.css'))&&/\.kpl-gorsel/.test(oku('css/design-system-base.css')),'CSS bloğu');
   const sw=oku('service-worker.js');
-  for(const f of ['kat-plani-core','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=1'),'SW önbelleği: '+f);
+  for(const f of ['kat-plani-core','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=2'),'SW önbelleği: '+f);
   /* dosya adı dönüşümü (editör içinde özel; aynı kural burada denetlenir) */
   const m=ed.match(/const TR_ASCII=(\{[^}]*\});\s*const dosyaAdi=([^\n]*)\n/);assert(m,'dosyaAdi tanımı bulunamadı');
   const dosyaAdi=new Function('TR_ASCII','return '+m[2].replace(/;$/,''))(eval('('+m[1]+')'));
