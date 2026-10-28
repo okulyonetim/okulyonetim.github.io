@@ -15317,6 +15317,50 @@ html[data-theme] #v2ModuleRoot .mok-baglanti{padding:0;border:0;background:none;
  html[data-theme] #v2ModuleRoot .mok-belge .ka-btn{margin-inline-start:auto}
 }
 
+/* ===== A4 — Ders Kesim Raporu (.dkr-*) =====
+   js/modules/ders-kesim-core.js çıktısının kâğıt stili: başlık ortada, tablo tam genişlik (başlık satırı her sayfada tekrarlanır), tarih sağda, müdür solda / öğretmen sağda.
+   Yalnız rapor belirteçleri ve mm. */
+.ka-report .dkr-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt;line-height:1.4}
+.ka-report .dkr-baslik{margin:0 0 3mm;text-align:center;font-size:13pt;font-weight:700;text-decoration:underline;letter-spacing:.6mm}
+.ka-report .dkr-muhatap{margin:0 0 8mm;text-align:center;font-weight:700}
+.ka-report .dkr-govde{margin:0 0 6mm;text-indent:10mm;text-align:justify}
+.ka-report .dkr-tablo{width:100%;margin:0 0 6mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .dkr-tablo thead{display:table-header-group}
+.ka-report .dkr-tablo tr{break-inside:avoid;page-break-inside:avoid}
+.ka-report .dkr-tablo th,.ka-report .dkr-tablo td{padding:1.2mm 2mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:10pt!important;font-weight:400!important;text-align:left!important;vertical-align:middle!important;overflow-wrap:anywhere}
+.ka-report .dkr-tablo td{height:7.5mm}
+.ka-report .dkr-tablo th{font-weight:700!important;text-align:center!important}
+.ka-report .dkr-tablo th.dkr-ust{font-size:10.5pt!important}
+.ka-report .dkr-tablo td.dkr-orta{text-align:center!important}
+.ka-report .dkr-c-sira{width:13mm}
+.ka-report .dkr-c-sinif{width:22mm}
+.ka-report .dkr-c-durum{width:62mm}
+.ka-report .dkr-tarih{margin:0 0 6mm;text-align:right;break-inside:avoid;page-break-inside:avoid}
+.ka-report .dkr-imzalar{display:flex;justify-content:space-between;align-items:flex-start;gap:20mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .dkr-imza{display:flex;flex-direction:column;align-items:center;gap:12mm;min-width:55mm;text-align:center}
+.ka-report .dkr-imza b{font-weight:400}
+
+/* ===== DERS KESİM RAPORU (dkr-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .dkr-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .dkr-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .dkr-head p{margin:0}
+html[data-theme] #v2ModuleRoot .dkr-tablo-ekran{display:flex;flex-direction:column;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .dkr-satir{display:grid;grid-template-columns:var(--ka-sp-24) minmax(0,1fr) minmax(0,2fr) minmax(0,3fr) var(--ka-sp-42);align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .dkr-satir--baslik{color:var(--ka-text-muted);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .dkr-no{display:grid;place-items:center;color:var(--ka-text-muted);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .dkr-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .dkr-eylem--yazdir .ka-btn{flex:1 1 auto}
+@media(max-width:767px){
+ html[data-theme] #v2ModuleRoot .dkr-satir{grid-template-columns:var(--ka-sp-24) minmax(0,1fr) var(--ka-sp-42)}
+ html[data-theme] #v2ModuleRoot .dkr-satir--baslik{display:none}
+ html[data-theme] #v2ModuleRoot .dkr-satir:not(.dkr-satir--baslik){padding-bottom:var(--ka-sp-8);border-bottom:var(--ka-border-w) solid var(--ka-border)}
+ html[data-theme] #v2ModuleRoot .dkr-satir>.dkr-no{grid-column:1;grid-row:1}
+ html[data-theme] #v2ModuleRoot .dkr-satir>[data-k="sinif"]{grid-column:2;grid-row:1}
+ html[data-theme] #v2ModuleRoot .dkr-satir>.dkr-sil{grid-column:3;grid-row:1}
+ html[data-theme] #v2ModuleRoot .dkr-satir>[data-k="ders"]{grid-column:1 / 4;grid-row:2}
+ html[data-theme] #v2ModuleRoot .dkr-satir>[data-k="durum"]{grid-column:1 / 4;grid-row:3}
+}
+
 /* ===== A4 — Yazılı Sınav Takvimi (.kwr-*) =====
    Tarih sırasıyla çizelge; yalnız rapor belirteçleri ve mm; müdür onayı sağ kenarda, yazılar blok içinde ortalı. */
 .ka-report .kwr-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.3}

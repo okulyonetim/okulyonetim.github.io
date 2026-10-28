@@ -339,6 +339,22 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='ders-kesim'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
+      if(!global.DersKesimCore)await global.AppLoader?.loadScript?.('js/modules/ders-kesim-core.js?v=1');
+      if(!global.DersKesimModule?.open)await global.AppLoader?.loadScript?.('js/modules/ders-kesim.js?v=1');
+      if(!global.DersKesimModule?.open)throw new Error('Ders Kesim Raporu modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Ders Kesim Raporu');
+      if(!global.DersKesimModule.open())throw new Error('Ders Kesim Raporu açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Ders Kesim Raporu'});
+    }catch(e){
+      console.error('[Shell/ders-kesim]',e);global.toast?.('Ders Kesim Raporu açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='maarif-oyun'){
     try{
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
