@@ -5,7 +5,7 @@
  * (giriş yapmış herkes okur) yüzünden cihaz dışına çıkar. Bu yüzden form yalnızca bu cihazın IndexedDB'sinde
  * (koruk-tanima-formu) tutulur; senkronize veri deposuna ve Firestore'a hiç yazılmaz. Yedek: settings.js.
  * Öğrenci kaydındaki bilgiler (ad, no, sınıf, TC, veli…) forma okunarak gelir; kopyalanıp ikinci kez saklanmaz.
- * Rapor: ReportEngine.printReport + mevcut .ka-report / pr-dl / bolum-baslik sınıfları (yeni stil yok).
+ * Rapor: ReportEngine.printReport (akis:true, kenarBosluk:10 → her sayfada üst/alt boşluk) + css/design-system-base.css içindeki `.ka-report .tif-*` kuralları; modül stil üretmez.
  */
 (function(global){
 'use strict';
@@ -223,13 +223,13 @@ function validate(work){
 }
 
 /* ====================================================================
-   A4 RAPOR — mevcut .ka-report sınıfları (pr-dl, bolum-baslik, pr-ck); yeni stil dosyası yok
+   A4 RAPOR — iki sabit tabaka, biçim css/design-system-base.css `.ka-report .tif-*`
    ==================================================================== */
-const chkHtml=on=>`<span class="pr-ck${on?' is-on':''}">${on?'✓':'□'}</span>`;
+const kutuBas=on=>`<i class="tif-kutu${on?' is-on':''}">${on?'✓':''}</i>`;
 const cellH=v=>v&&v.html!==undefined?v.html:esc(v==null?'':v);
 function dispVal(f,rec,ctx){
   const v=effVal(f,rec,ctx);
-  if(f.t==='chk')return{html:`${chkHtml(v)}${v?' Evet':''}`};
+  if(f.t==='chk')return{html:`${kutuBas(v)}${v?' Evet':''}`};
   if(isEmptyV(v))return'';
   if(f.t==='sel'){
     const l=lab(f.o,v)||String(v),dg=rec?.d?.[f.k+'Diger'];
@@ -239,158 +239,111 @@ function dispVal(f,rec,ctx){
   if(f.t==='date')return dateTR(v);
   return f.u?`${v} ${f.u}`:String(v);
 }
-function dl(pairs){
-  const rows=[];let cur=[];
-  pairs.forEach(p=>{
-    if(p.full){if(cur.length){rows.push(cur);cur=[]}rows.push([p])}
-    else{cur.push(p);if(cur.length===2){rows.push(cur);cur=[]}}
-  });
-  if(cur.length)rows.push(cur);
-  const td=(p,span)=>`<td${span?' colspan="3"':''} style="height:${p.tall?'16mm':'6.5mm'};white-space:pre-wrap;overflow-wrap:anywhere">${cellH(p.v)}</td>`;
-  return`<table class="pr-dl" style="table-layout:fixed"><tbody>${rows.map(r=>r.length===1&&r[0].full
-    ?`<tr style="break-inside:avoid"><th scope="row">${esc(r[0].l)}</th>${td(r[0],true)}</tr>`
-    :`<tr style="break-inside:avoid">${[0,1].map(i=>r[i]?`<th scope="row">${esc(r[i].l)}</th>${td(r[i])}`:'<th></th><td></td>').join('')}</tr>`).join('')}</tbody></table>`;
-}
-function grid(heads,widths,rows){
-  return`<table style="table-layout:fixed"><thead><tr>${heads.map((h,i)=>`<th style="width:${widths[i]}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr style="break-inside:avoid">${r.map(c=>`<td style="height:7mm;overflow-wrap:anywhere">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-}
-const h2=(no,t)=>`<h2 class="bolum-baslik" style="break-after:avoid;page-break-after:avoid">${no}. ${esc(t)}</h2>`;
 const pad=(rows,n,cols)=>{const o=rows.slice();while(o.length<n)o.push(Array(cols).fill(''));return o};
 
-/* Yazdırma şablonu: yüklenen iki sayfalı örneğin hücre yerleşimi ve sıralaması. */
-function pItem(k,span=1,label,rec,ctx){
-  const f=FIELD[k],cls=({veliAdres:'ti-address-cell',surekliAcik:'ti-health-note',saglikAcik:'ti-health-note',digerAcik:'ti-other-note',tasimaDiger:'ti-transport-note',genelAcik:'ti-general-cell'})[k]||'';
-  return{span,html:pCell(label||f?.l||k,f?dispVal(f,rec,ctx):'',span,cls)};
+/* Yazdırma şablonu: iki sabit A4 tabaka (.tif-sayfa). Biçim yalnız css/design-system-base.css içindeki `.ka-report .tif-*` kurallarındadır;
+   modül stil üretmez. Her hücrede etiket üstte, değer altta; satırlar 12 sütunlu ızgaraya oturur ve toplamı 12'ye tamamlanır. */
+const LISTE_KAP={yakinlar:4,kardesler:4};   /* çıktıya sığan en çok satır; fazlası başlıkta "+N kayıt" olarak belirtilir */
+const LISTE_MIN=3;
+/* Çıktıya sığan uzunluk: [satır başına karakter, en çok satır]. Çıktıdaki kısaltma (CSS) ve ekrandaki uyarı aynı tablodan beslenir. */
+const FIT={
+  dogumYeri:[30,1],uyruk:[13,1],pansiyon:[24,1],seyNo:[44,1],
+  veliAd:[45,1],veliEposta:[46,1],veliAdres:[70,2],
+  babaAd:[55,1],babaMeslek:[26,1],babaEposta:[55,1],babaCalisma:[56,2],babaAciklama:[56,2],
+  anneAd:[55,1],anneMeslek:[26,1],anneEposta:[55,1],anneCalisma:[56,2],anneAciklama:[56,2],
+  aileAciklama:[118,2],surekliAcik:[56,3],saglikAcik:[56,3],digerAcik:[68,2],tasimaDiger:[118,2],genelAcik:[118,13],
+  aileYapisiDiger:[20,1],velayetDiger:[20,1],surekliHastalikDiger:[20,1],hastalikDiger:[20,1],ilacDiger:[20,1],ameliyatDiger:[30,1],cihazDiger:[20,1],isinmaDiger:[20,1]
+};
+const LISTE_FIT={yakinlar:{ad:[34,2],yakinlik:[24,2],tel:[22,2],aciklama:[32,2]},kardesler:{tc:[11,1],ad:[25,2],dogumYeri:[16,2],okul:[27,2],sinif:[10,2]}};
+const LISTE_AD={yakinlar:'yakın',kardesler:'kardeş'};
+const satirSay=(t,cpl)=>String(t??'').split(/\r?\n/).reduce((a,p)=>a+Math.max(1,Math.ceil(p.length/cpl)),0);
+/* Engellemeyen uyarılar: kayıt kabul edilir, ama çıktıda kısaltılacak değerler bildirilir (metin sessizce kesilmez). */
+function fitUyari(work){
+  const w=[],d=work?.d||{};
+  Object.entries(FIT).forEach(([k,[cpl,n]])=>{
+    const v=d[k];if(isEmptyV(v))return;
+    const base=k.endsWith('Diger')?k.slice(0,-5):k;
+    if(satirSay(v,cpl)>n)w.push(`${FIELD[base]?.l||k}${base!==k?' (Diğer)':''} çıktıya sığmayacak kadar uzun, çıktıda kısaltılır`);
+  });
+  Object.entries(LISTE_FIT).forEach(([liste,cols])=>{
+    const rows=work?.[liste]||[];
+    if(rows.length>LISTE_KAP[liste])w.push(`Çıktıya en fazla ${LISTE_KAP[liste]} ${LISTE_AD[liste]} sığar (${rows.length} kayıt var)`);
+    rows.forEach((r,i)=>Object.entries(cols).some(([c,[cpl,n]])=>{
+      const t=c==='yakinlik'&&r.yakinlik==='Diğer'&&r.yakinlikDiger?`Diğer: ${r.yakinlikDiger}`:r[c];
+      if(!isEmptyV(t)&&satirSay(t,cpl)>n){w.push(`${i+1}. ${LISTE_AD[liste]} kaydındaki metin çıktıya sığmayacak kadar uzun, çıktıda kısaltılır`);return true}
+      return false;
+    }));
+  });
+  return w;
 }
-function pRaw(label,value,span=1,cls=''){return{span,html:pCell(label,value,span,cls)}}
-function pCell(label,value,span=1,cls=''){
-  return `<td colspan="${span}" class="${cls}"><table class="ti-pair"><tbody><tr><td class="ti-label-cell">${esc(label)}</td><td class="ti-answer-cell"><div class="ti-value">${cellH(value)||'&nbsp;'}</div></td></tr></tbody></table></td>`;
-}
-function pGrid(rows){
-  return `<table class="ti-grid-table"><colgroup>${Array.from({length:12},()=>'<col style="width:8.333%">').join('')}</colgroup><tbody>${rows.map(row=>{
-    let used=0;
-    const cells=row.map(item=>{const span=Math.max(1,Math.min(12-used,Number(item.span)||1));used+=span;return item.html.replace(/colspan="[^"]*"/, `colspan="${span}"`)}).join('');
-    return `<tr>${cells}${used<12?`<td colspan="${12-used}"><div class="ti-cell"><small>&nbsp;</small><div class="ti-value">&nbsp;</div></div></td>`:''}</tr>`;
-  }).join('')}</tbody></table>`;
-}
-function pCheck(k,label,span=4,rec,ctx){
-  const f=FIELD[k],v=f?!!effVal(f,rec,ctx):false;
-  const answer=`<span class="ti-box${v?' is-on':''}">${v?'✓':''}</span>${(k==='tasima'||k==='tasimaPlan')&&v?' <b>Evet</b>':''}`;
-  return{span,html:`<td colspan="${span}" class="ti-check-cell"><table class="ti-pair"><tbody><tr><td class="ti-label-cell">${esc(label||f?.l||k)}</td><td class="ti-answer-cell">${answer}</td></tr></tbody></table></td>`};
-}
-function pChecks(rows){return `<table class="ti-check-table"><colgroup>${Array.from({length:12},()=>'<col style="width:8.333%">').join('')}</colgroup><tbody>${rows.map(row=>`<tr>${row.map(x=>x.html).join('')}</tr>`).join('')}</tbody></table>`;}
-function pSection(no,title){return `<h2 class="ti-section-heading"><span>${no}</span><b>${esc(title)}</b></h2>`;}
-function pTable(heads,widths,rows){return `<table class="ti-list-table" style="table-layout:fixed"><colgroup>${widths.map(w=>`<col style="width:${w}">`).join('')}</colgroup><thead><tr>${heads.map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
-function formHtml(s,rec,{first=true}={}){
+function formHtml(s,rec){
   const ctx=ctxFor(s),r=rec||emptyWork(s.id),now=r.guncellenme||new Date().toISOString();
-  const adSoyad=s.ogrenciAdi||'',baslik=String(ctx.okulAdi).toLocaleUpperCase('tr');
-  const f=(k,span=1,label)=>pItem(k,span,label,r,ctx);
-  const raw=(label,value,span=1,cls='')=>pRaw(label,value,span,cls);
-  const ck=(k,label,span=4)=>pCheck(k,label,span,r,ctx);
-  const yak=pad((r.yakinlar||[]).map(y=>[y.ad||'',y.yakinlik==='Diğer'&&y.yakinlikDiger?`Diğer: ${y.yakinlikDiger}`:(y.yakinlik||''),y.tel||'',y.aciklama||'']),3,4).map((x,i)=>[String(i+1),...x]);
-  const kar=pad((r.kardesler||[]).map(k=>[k.tc||'',k.ad||'',dateTR(k.dogumTarihi),k.dogumYeri||'',k.okul||'',k.sinif||'']),3,6).map((x,i)=>[String(i+1),...x]);
+  const ad=s.ogrenciAdi||'',no=s.ogrenciNo||'',sinif=ctx.className||'',okul=String(ctx.okulAdi).toLocaleUpperCase('tr');
+  const yil=acYear(new Date(now)),tarih=dateTR(now.slice(0,10));
+  /* hücre = {n: sütun aralığı, h: html} */
+  const c=(label,value,n,cls='')=>({n,h:`<div class="tif-h tif-s${n}"><small>${esc(label)}</small><div class="tif-v${cls}">${cellH(value)}</div></div>`});
+  const f=(k,n,label)=>{const fd=FIELD[k],sat=FIT[k]?.[1]||1;return c(label||fd.l,dispVal(fd,r,ctx),n,sat>1?` tif-v--m tif-l${sat}`:'')};
+  const ck=(k,n,label)=>({n,h:`<div class="tif-ck tif-s${n}">${kutuBas(!!effVal(FIELD[k],r,ctx))}<span>${esc(label||FIELD[k].l)}</span></div>`});
+  const row=(h,...cells)=>{const t=cells.reduce((a,x)=>a+x.n,0);return `<div class="tif-r${h?` tif-r--${h}`:''}">${cells.map(x=>x.h).join('')}${t<12?`<div class="tif-h tif-s${12-t} tif-bos"></div>`:''}</div>`};
+  const grid=(...rows)=>`<div class="tif-g">${rows.join('')}</div>`;
+  const bolum=(sn,ek='')=>`<div class="tif-bolum"><i>${sn+1}</i><b>${esc(SEC[sn].t)}</b><span class="tif-cizgi"></span>${ek}</div>`;
+  const blk=(sn,body,{cls='',ek=''}={})=>`<section class="tif-b${cls}">${bolum(sn,ek)}${body}</section>`;
+  const liste=(tur,heads,rows)=>`<div class="tif-liste tif-liste--${tur}">${heads.map(x=>`<b>${esc(x)}</b>`).join('')}${rows.map((x,i)=>`<i>${i+1}</i>${x.map(v=>`<div><span>${esc(v)}</span></div>`).join('')}`).join('')}</div>`;
+  const listeSatir=(list,kap,cols,map)=>{const l=Array.isArray(list)?list:[];return{rows:pad(l.slice(0,kap).map(map),Math.max(LISTE_MIN,Math.min(kap,l.length)),cols),fazla:Math.max(0,l.length-kap)}};
+  const fazlaEk=n=>n?`<em class="tif-ek">+${n} kayıt çıktıya sığmadı</em>`:'';
+  const alt=n=>`<footer class="tif-alt"><span>Koruk Asistan · Öğrenci Tanıma Formu · ${esc(ad)}${sinif?` · ${esc(sinif)}`:''}${no?` · No: ${esc(no)}`:''}</span><span>Sayfa ${n} / 2</span></footer>`;
+  const yak=listeSatir(r.yakinlar,LISTE_KAP.yakinlar,4,y=>[y.ad||'',y.yakinlik==='Diğer'&&y.yakinlikDiger?`Diğer: ${y.yakinlikDiger}`:(y.yakinlik||''),y.tel||'',y.aciklama||'']);
+  const kar=listeSatir(r.kardesler,LISTE_KAP.kardesler,6,k=>[k.tc||'',k.ad||'',dateTR(k.dogumTarihi),k.dogumYeri||'',k.okul||'',k.sinif||'']);
+  const sube=effVal(FIELD.sube,r,ctx),sayi=effVal(FIELD.kardesSayisi,r,ctx),kacinci=effVal(FIELD.kacinciCocuk,r,ctx);
   const veliAd=effVal(FIELD.veliAd,r,ctx);
-  const header=`<header class="ti-header"><img src="assets/logo.png" alt="" class="ti-logo"><div class="ti-headcopy"><small>${esc(baslik)}</small><strong>ÖĞRENCİ TANIMA FORMU</strong><span>Öğrencinin kimlik, aile, sağlık, eğitim ve yaşam koşullarına ilişkin bilgiler</span></div><div class="ti-meta">Eğitim öğretim yılı: <b>${acYear(new Date(now))}-${acYear(new Date(now))+1}</b><br>Form tarihi: <b>${esc(dateTR(now.slice(0,10)))}</b></div><div class="ti-photo">Fotoğraf</div></header>`
-    +`<div class="ti-student-bar"><b>${esc(adSoyad)}</b><span>Okul no: ${esc(s.ogrenciNo||'')}</span><span>Sınıf/şube: ${esc(ctx.className||'')}</span><small>Kimlik ve aile bilgileri</small></div>`;
-  const pageOne=`<div class="ti-print-page ti-print-page--first">${header}`
-    +pSection(1,SEC[0].t)
-    +pGrid([[f('ad',6),f('tc',6)],[f('cinsiyet',2),f('dogumTarihi',4),f('dogumYeri',4),f('uyruk',2)],[f('kan',2),f('no',2),raw('Sınıfı / Şubesi',`${esc(effVal(FIELD.sinif,r,ctx))}${effVal(FIELD.sube,r,ctx)?` / ${esc(effVal(FIELD.sube,r,ctx))}`:''}`,2),f('yabanciDil',2),f('okul',4)]])
-    +pSection(2,SEC[1].t)
-    +pGrid([[f('veliAd',4),f('veliTc',4),f('veliTel',4)],[f('veliEposta',4),f('veliAdres',8)]])
-    +`<div class="ti-two"><div>${pSection(3,SEC[2].t)}${pGrid([[f('babaAd',12)],[f('babaTc',7),f('babaDurum',5)],[f('babaMeslek',6),f('babaTel',6)],[f('babaEposta',12)],[f('babaCalisma',12)],[f('babaAciklama',12)]])}</div><div>${pSection(4,SEC[3].t)}${pGrid([[f('anneAd',12)],[f('anneTc',7),f('anneDurum',5)],[f('anneMeslek',6),f('anneTel',6)],[f('anneEposta',12)],[f('anneCalisma',12)],[f('anneAciklama',12)]])}</div></div>`
-    +pSection(5,SEC[4].t)
-    +pGrid([[f('birlikte',3),f('aileYapisi',3),f('vasi',3),f('velayet',3)],[f('aileAciklama',12)]])
-    +pSection(6,SEC[5].t)
-    +pTable(['#','Adı soyadı','Yakınlık derecesi','Telefon numarası','Açıklama'],['5%','32%','19%','20%','24%'],yak)
-    +pSection(7,SEC[6].t)
-    +pGrid([[f('kardesSayisi',6),f('kacinciCocuk',6)]])
-    +pTable(['#','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf'],['4%','18%','22%','14%','14%','18%','10%'],kar)
-    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 1 / 2</span></footer></div>`;
-  const pageTwo=`<div class="ti-print-page ti-print-page--second"><div class="ti-continuation"><div><b>ÖĞRENCİ TANIMA FORMU · DEVAM</b><small>${esc(adSoyad)} · Okul no: ${esc(s.ogrenciNo||'')} · Sınıf/şube: ${esc(ctx.className||'')}</small></div><span>Sayfa 2 / 2</span></div>`
-    +pSection(8,SEC[7].t)
-    +pGrid([[f('surekliHastalik',3),f('ilac',3),f('hastalik',3),f('kaza',3)],[f('ameliyat',4),f('cihaz',4),f('ozelEgitim',4)],[f('surekliAcik',6),f('saglikAcik',6)]])
-    +pChecks([[ck('engelli',null,4),ck('rehberlik',null,4),ck('psikolojik',null,4)],[ck('sehitGazi',null,6),ck('deprem',null,6)]])
-    +pSection(9,SEC[8].t)
-    +pGrid([[f('gelir',3),f('ev',3),f('kiminle',3),f('oda',3)],[f('isinma',3),f('internet',3),f('okulaGelis',3),f('calisiyor',3)],[f('haneKisi',3),f('aileDisi',3),f('boy',3),f('kilo',3)],[f('pansiyon',12)]])
-    +`<div class="ti-transport"><div class="ti-transport-title">TAŞIMALI EĞİTİM</div>`
-    +pChecks([[ck('tasima','Taşıma kapsamında',6),ck('tasimaPlan','Taşıma planlamaya dahil edilsin',6)]])
-    +pGrid([[f('tasimaNeden',9),f('tasimaYil',3)],[f('tasimaYemek',12)]])+`</div>`
-    +pSection(10,SEC[9].t)
-    +pChecks([[ck('yurtdisi',null,4),ck('yatili',null,4),ck('burslu',null,4)],[ck('sporcu',null,4),ck('destekOda',null,4),ck('kanun',null,4)]])
-    +pGrid([[f('seyNo',12)],[f('digerAcik',12)],[f('tasimaDiger',12)]])
-    +pSection(11,SEC[10].t)
-    +pGrid([[raw('Genel açıklamalar',effVal(FIELD.genelAcik,r,ctx),12,'ti-general-cell')]])
-    +`<p class="ti-declaration"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
-    +`<table class="ti-signature"><colgroup><col style="width:34%"><col style="width:44%"><col style="width:22%"></colgroup><thead><tr><th>Veli adı soyadı</th><th>Veli imzası</th><th>Tarih</th></tr></thead><tbody><tr><td>${esc(veliAd)}</td><td></td><td>${esc(dateTR(now.slice(0,10)))}</td></tr></tbody></table>`
-    +`<footer class="ti-page-footer"><span>Koruk Asistan · Öğrenci Tanıma Formu</span><span>Sayfa 2 / 2</span></footer></div>`;
-  return `<section class="ti-form" data-ti-student="${esc(s.id)}" style="${first?'':'break-before:page;page-break-before:always'}">${pageOne+pageTwo}</section>`;
+  const ust=`<header class="tif-ust"><img class="tif-logo" src="assets/logo.png" alt=""><div class="tif-ust-baslik"><small>${esc(okul)}</small><strong>ÖĞRENCİ TANIMA FORMU</strong><span>Öğrencinin kimlik, aile, sağlık, eğitim ve yaşam koşullarına ilişkin bilgiler</span></div><div class="tif-ust-meta">Eğitim öğretim yılı: <b>${yil}-${yil+1}</b><br>Form tarihi: <b>${esc(tarih)}</b></div></header>`;
+  const ogr=`<section class="tif-b">${bolum(0)}<div class="tif-ogr">${grid(
+      row('ogr',f('ad',6),f('tc',3),f('cinsiyet',3)),
+      row('ogr',f('dogumTarihi',3),f('dogumYeri',4),f('uyruk',2),f('kan',3)),
+      row('ogr',f('no',2),c('Sınıfı / Şubesi',`${esc(effVal(FIELD.sinif,r,ctx))}${sube?` / ${esc(sube)}`:''}`,2),f('okul',5),f('yabanciDil',3))
+    )}<div class="tif-foto">Fotoğraf<br>25 × 30 mm</div></div></section>`;
+  const ebeveyn=(p,sn)=>blk(sn,grid(
+      row('',f(p+'Ad',12)),
+      row('',f(p+'Tc',7),f(p+'Durum',5)),
+      row('',f(p+'Meslek',6),f(p+'Tel',6)),
+      row('',f(p+'Eposta',12)),
+      row('y2',f(p+'Calisma',12)),
+      row('y2',f(p+'Aciklama',12))
+    ));
+  const sayfa1=`<div class="tif-sayfa tif-sayfa--1">${ust}${ogr}`
+    +blk(1,grid(row('',f('veliAd',5),f('veliTc',3),f('veliTel',4)),row('y2',f('veliEposta',5),f('veliAdres',7))))
+    +`<div class="tif-iki">${ebeveyn('baba',2)}${ebeveyn('anne',3)}</div>`
+    +blk(4,grid(row('',f('birlikte',3),f('aileYapisi',3),f('vasi',3),f('velayet',3)),row('y2',f('aileAciklama',12))))
+    +blk(5,liste('yakin',['#','Adı soyadı','Yakınlık derecesi','Telefon numarası','Açıklama'],yak.rows),{cls:' tif-b--esner',ek:fazlaEk(yak.fazla)})
+    +blk(6,liste('kardes',['#','T.C. kimlik no','Adı soyadı','Doğum tarihi','Doğum yeri','Okul / kurum','Sınıf'],kar.rows),{cls:' tif-b--esner',ek:`${fazlaEk(kar.fazla)}<span class="tif-ek">${esc(FIELD.kardesSayisi.l)}: <b class="tif-doldur">${esc(sayi)}</b> · Kaçıncı çocuk: <b class="tif-doldur">${esc(kacinci)}</b></span>`})
+    +alt(1)+`</div>`;
+  const sayfa2=`<div class="tif-sayfa tif-sayfa--2"><div class="tif-devam"><b>ÖĞRENCİ TANIMA FORMU · DEVAM</b><span>${esc(ad)}${no?` · Okul no: ${esc(no)}`:''}${sinif?` · Sınıf/şube: ${esc(sinif)}`:''}</span></div>`
+    +blk(7,grid(
+      row('',f('surekliHastalik',3),f('ilac',3),f('hastalik',3),f('kaza',3)),
+      row('',f('ameliyat',4),f('cihaz',3),f('ozelEgitim',5)),
+      row('y3',f('surekliAcik',6),f('saglikAcik',6)),
+      row('ck',ck('engelli',4),ck('rehberlik',4),ck('psikolojik',4)),
+      row('ck',ck('sehitGazi',6),ck('deprem',6))))
+    +blk(8,grid(
+      row('',f('gelir',3),f('ev',3,'Oturduğu ev'),f('kiminle',3),f('oda',3)),
+      row('',f('isinma',3),f('internet',3),f('okulaGelis',3),f('calisiyor',3)),
+      row('',f('haneKisi',2,'Hanedeki kişi sayısı'),f('aileDisi',3),f('boy',2),f('kilo',2),f('pansiyon',3))))
+    +`<section class="tif-b tif-tas"><div class="tif-tas-baslik">TAŞIMALI EĞİTİM</div>${grid(
+      row('',f('tasima',4),f('tasimaPlan',5),f('tasimaYil',3,'Planlanan eğitim öğretim yılı')),
+      row('',f('tasimaNeden',12)),
+      row('',f('tasimaYemek',12)),
+      row('y2',f('tasimaDiger',12,'Taşıma planlamasıyla ilgili diğer bilgiler')))}</section>`
+    +blk(9,grid(
+      row('ck',ck('yurtdisi',4),ck('yatili',4),ck('burslu',4)),
+      row('ck',ck('sporcu',3),ck('destekOda',4),ck('kanun',5)),
+      row('y2',f('seyNo',5),f('digerAcik',7,'Açıklama'))))
+    +`<section class="tif-b tif-b--esner">${bolum(10)}<div class="tif-genel"><small>${esc(FIELD.genelAcik.l)}</small><div class="tif-v tif-v--m tif-v--serbest">${cellH(effVal(FIELD.genelAcik,r,ctx))}</div></div>`
+    +`<p class="tif-beyan"><b>Veli beyanı:</b> Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.</p>`
+    +`<div class="tif-imza"><b>Veli adı soyadı</b><b>Veli imzası</b><b>Tarih</b><div>${esc(veliAd)}</div><div></div><div>${esc(tarih)}</div></div></section>`
+    +alt(2)+`</div>`;
+  return `<section class="tif-form" data-ti-student="${esc(s.id)}">${sayfa1}${sayfa2}</section>`;
 }
-const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,fontSize:8,kenarBosluk:7,compact:true,extraHead:`<style>
-.ti-form{font-size:7.2pt!important;line-height:1.12!important;color:#17221e!important;font-family:Arial,sans-serif!important}
-.ti-print-page{box-sizing:border-box;width:100%;position:relative;padding-bottom:5mm}
-.ti-print-page--second{break-before:page;page-break-before:always;padding-top:8mm}
-.ti-header{display:flex;align-items:center;gap:2.5mm;padding-bottom:2mm;margin-bottom:2mm;border-bottom:1.2mm solid #17684f}
-.ti-logo{width:14mm;height:14mm;object-fit:contain;flex:0 0 auto}
-.ti-headcopy{display:flex;flex-direction:column;min-width:0;flex:1}
-.ti-headcopy small{font-size:6.4pt;font-weight:700;color:#65766f;text-transform:uppercase;letter-spacing:.04em}
-.ti-headcopy strong{font-size:12pt;line-height:1.12;color:#17684f}
-.ti-headcopy span{margin-top:1mm;font-size:6.3pt;color:#384b43}
-.ti-meta{font-size:6.3pt;line-height:1.5;text-align:right;white-space:nowrap}
-.ti-photo{width:19mm;height:23mm;border:1px dashed #87948d;display:flex;align-items:center;justify-content:center;font-size:6.5pt;color:#78857f;text-align:center;flex:0 0 auto}
-.ti-student-bar{display:flex;align-items:center;gap:3mm;background:#10523f;color:#fff;border-radius:2mm;padding:2mm 3mm;margin-bottom:2mm;font-size:6.8pt}
-.ti-student-bar>b{font-size:8.5pt}.ti-student-bar small{margin-left:auto}.ti-student-bar span{white-space:nowrap}.ti-student-bar small{font-size:6pt}
-.ti-section-heading{display:flex;align-items:center;gap:1.5mm;margin:2.1mm 0 1mm!important;padding:0!important;border:0!important;background:transparent!important;color:#10523f!important;font-size:7.7pt!important;line-height:1.1!important;break-after:avoid;page-break-after:avoid}
-.ti-section-heading>span{width:5mm;height:5mm;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#17684f;color:#fff;font-size:6.5pt;flex:0 0 auto}
-.ti-section-heading>b{font-weight:800}
-.ti-grid-table,.ti-list-table,.ti-check-table,.ti-signature{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed;margin:0!important}
-.ti-grid-table td,.ti-list-table td,.ti-list-table th,.ti-check-table td,.ti-signature td,.ti-signature th{border:1px solid #aabbb2!important}
-.ti-grid-table td{padding:0!important;vertical-align:middle!important}
-.ti-pair{width:100%!important;border-collapse:collapse!important;border-spacing:0!important;table-layout:fixed!important;margin:0!important}
-.ti-pair td{border:0!important;vertical-align:middle!important;padding:1.3mm 1.5mm!important;overflow-wrap:anywhere;background:#fff!important}
-.ti-pair .ti-label-cell{width:38%;background:#fff!important;color:#303a34!important;font-size:6.1pt!important;font-weight:500!important;line-height:1.15!important;border-right:1px solid #c5cec8!important}
-.ti-pair .ti-answer-cell{width:62%;background:#fff!important;color:#17221e!important;font-size:7pt!important;line-height:1.15!important}
-.ti-value{font-size:7pt;font-weight:500;line-height:1.15;min-height:2.5mm;white-space:pre-wrap;overflow-wrap:anywhere}
-.ti-general-cell .ti-pair .ti-label-cell{width:25%}
-.ti-general-cell .ti-pair .ti-answer-cell{width:75%;vertical-align:top!important}
-.ti-general-cell .ti-pair .ti-answer-cell .ti-value{min-height:22mm}
-.ti-health-note .ti-pair .ti-answer-cell .ti-value{min-height:8mm}
-.ti-address-cell .ti-pair .ti-answer-cell .ti-value{min-height:5mm}
-.ti-check-table .ti-pair .ti-label-cell{width:78%;font-size:6.2pt!important;background:#fff!important;font-weight:500!important}
-.ti-check-table .ti-pair .ti-answer-cell{width:22%;text-align:center;font-size:6.5pt!important}
-.ti-check-table .ti-pair .ti-answer-cell .ti-box{margin:0}
-.ti-grid-table tr:nth-child(even) td{background:#f7faf8!important}
-.ti-grid-table .ti-other-note .ti-pair .ti-answer-cell .ti-value{min-height:7mm}
-.ti-grid-table .ti-transport-note .ti-pair .ti-answer-cell .ti-value{min-height:10mm}
-.ti-two{display:grid;grid-template-columns:1fr 1fr;gap:3mm}
-.ti-two>div{min-width:0}
-.ti-two .ti-section-heading{margin-top:2mm!important}
-.ti-two .ti-cell{min-height:6.8mm}
-.ti-check-table{margin-top:1.5mm!important;margin-bottom:1mm!important}
-.ti-check-cell{padding:1.4mm 1.5mm!important;font-size:6.5pt;line-height:1.1;vertical-align:middle}
-.ti-box{display:inline-flex;width:3.2mm;height:3.2mm;border:1px solid #71847a;border-radius:.5mm;align-items:center;justify-content:center;margin-right:1.2mm;font-size:7pt;vertical-align:middle}
-.ti-box.is-on{background:#17684f;color:#fff;border-color:#17684f}
-.ti-list-table th{background:#e8f0eb!important;color:#244b3b!important;font-size:5.8pt!important;text-align:left!important;padding:1.2mm!important;font-weight:800!important}
-.ti-list-table td{height:6.3mm;padding:1mm!important;font-size:6.1pt!important;line-height:1.05;overflow-wrap:anywhere;vertical-align:middle}
-.ti-transport{border:1px solid #17684f;border-radius:2mm;overflow:hidden;margin:2mm 0}
-.ti-transport-title{background:#17684f;color:#fff;font-weight:800;font-size:7pt;padding:1.5mm 2mm}
-.ti-transport .ti-check-table{margin:0!important}
-.ti-transport .ti-grid-table td{background:#fff!important}
-.ti-transport .ti-cell{min-height:7mm}
-.ti-continuation{display:flex;justify-content:space-between;gap:2mm;align-items:center;margin:0 0 2.5mm;padding:2mm 2.5mm;border:1px solid #c2d5ca;border-left:1.5mm solid #17684f;background:#f1f7f3;font-size:7.2pt;line-height:1.2}
-.ti-continuation>div{display:flex;flex-direction:column;gap:1mm;min-width:0}
-.ti-continuation small{font-size:6.5pt;color:#52635b}
-.ti-continuation span{white-space:nowrap;font-size:6.2pt}
-.ti-declaration{margin:2.5mm 0 1.5mm;padding:2mm 2.5mm;border-left:1mm solid #17684f;background:#eaf4ef;font-size:7pt;line-height:1.15}
-.ti-signature th{background:#e8f0eb!important;color:#244b3b!important;font-size:6pt!important;text-align:left!important;padding:1.2mm!important}
-.ti-signature td{height:28mm!important;vertical-align:top!important;padding:1.5mm!important;font-size:7pt!important}
-.ti-page-footer{display:flex;justify-content:space-between;border-top:1px solid #c7d2cc;margin-top:2mm;padding-top:1mm;font-size:5.7pt;color:#738078}
-@media print{
- .ti-print-page--second{break-before:page!important;page-break-before:always!important;padding-top:8mm!important}
- .ti-print-page{break-inside:avoid;page-break-inside:avoid}
- .ti-two{display:grid!important;grid-template-columns:1fr 1fr!important}
- .ti-grid-table tr,.ti-list-table tr,.ti-check-table tr,.ti-signature tr{break-inside:avoid;page-break-inside:avoid}
-}
-</style>`};
+const REPORT_OPTS={baslikGoster:false,logoGoster:false,tarihGoster:false,akis:true,kenarBosluk:10};
 async function ensureEngine(){
   if(global.ReportEngine?.printReport)return;
   await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
@@ -538,7 +491,8 @@ async function saveForm(id){
   try{askPersist();await store.put(rec)}
   catch(e){console.error('[StudentIntake/save]',e?.message||'hata');toast('Form kaydedilemedi; girdiğiniz bilgiler ekranda korunuyor.');return false}
   st.rec=rec;st.work={...clone(rec)};st.base=sig(st.work);
-  toast('Form bu cihaza kaydedildi.');
+  const uy=fitUyari(st.work);
+  toast(uy.length?`Form kaydedildi. Uyarı: ${uy[0]}${uy.length>1?` (+${uy.length-1} uyarı daha)`:''}.`:'Form bu cihaza kaydedildi.');
   return true;
 }
 async function openReport(id,{blank=false}={}){
@@ -631,7 +585,7 @@ const api={
   available:canUse,
   tabHtml:v=>`<div data-ti-mount="${esc(v.id)}"><p class="kpd-note">Form yükleniyor…</p></div>`,
   hydrate,openBulk,openReport,store,
-  _t:{O,SEC,FIELD,kanCode,splitClass,compact,sig,validate,formHtml,effVal,dispVal,emptyWork,dateTR,yearList,validRec}
+  _t:{O,SEC,FIELD,FIT,fitUyari,LISTE_KAP,kanCode,splitClass,compact,sig,validate,formHtml,effVal,dispVal,emptyWork,dateTR,yearList,validRec}
 };
 global.StudentIntake=api;
 })(window);

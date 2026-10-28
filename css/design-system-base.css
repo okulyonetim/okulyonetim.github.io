@@ -15247,6 +15247,86 @@ html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);h
 .ka-report .ytt-ozet{margin:0 0 8mm}
 .ka-report .ytt-imzalar{display:flex;justify-content:space-between;align-items:flex-start;gap:20mm;break-inside:avoid;page-break-inside:avoid}
 
+/* ===== A4 — Öğrenci Tanıma Formu (.tif-*) =====
+   js/modules/student-intake.js baskı çıktısı: iki sabit tabaka; her biri A4'ün 10 mm kenar boşluğu içine 275 mm yükseklikle oturur (277 mm'den 2 mm pay) (ReportEngine akis:true, kenarBosluk:10).
+   Hücre: üstte etiket, altta değer. Satırlar 12 sütunlu ızgara; kalan yükseklik yazılacak alanlara dağıtılır. Yalnız rapor belirteçleri ve mm. */
+.ka-report .tif-form{break-before:page;page-break-before:always}
+.ka-report .tif-form:first-child{break-before:auto;page-break-before:auto}
+.ka-report .tif-sayfa{box-sizing:border-box;display:flex;flex-direction:column;gap:1.8mm;width:100%;height:275mm;overflow:hidden;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:Arial,Helvetica,sans-serif;font-size:8.5pt;line-height:1.15;break-inside:avoid;page-break-inside:avoid}
+.ka-report .tif-sayfa+.tif-sayfa{break-before:page;page-break-before:always}
+.ka-report .tif-sayfa *{box-sizing:border-box}
+.ka-report .tif-sayfa b,.ka-report .tif-sayfa i,.ka-report .tif-sayfa em,.ka-report .tif-sayfa p{margin:0;font-style:normal}
+.ka-report .tif-ust{display:flex;flex:0 0 auto;align-items:center;gap:3mm;padding-bottom:1.5mm;border-bottom:var(--ka-report-people-bar) solid var(--ka-report-people-accent)}
+.ka-report .tif-logo{flex:0 0 auto;width:15mm;height:15mm;object-fit:contain}
+.ka-report .tif-ust-baslik{display:flex;flex:1 1 auto;flex-direction:column;gap:.6mm;min-width:0}
+.ka-report .tif-ust-baslik small{font-size:7pt;font-weight:700;letter-spacing:.04em;color:var(--ka-report-people-muted)}
+.ka-report .tif-ust-baslik strong{font-size:14pt;line-height:1.1;color:var(--ka-report-people-accent)}
+.ka-report .tif-ust-baslik span{font-size:7pt;color:var(--ka-report-people-muted)}
+.ka-report .tif-ust-meta{flex:0 0 auto;font-size:7pt;line-height:1.5;text-align:right;white-space:nowrap}
+.ka-report .tif-devam{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:3mm;height:9mm;padding:0 3mm;border-left:var(--ka-report-people-bar) solid var(--ka-report-people-accent);background:var(--ka-report-people-soft);font-size:8pt}
+.ka-report .tif-devam b{color:var(--ka-report-people-ink)}
+.ka-report .tif-devam span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--ka-report-people-muted)}
+.ka-report .tif-b{display:flex;flex:0 0 auto;flex-direction:column;min-width:0}
+.ka-report .tif-b--esner{flex:1 1 auto}
+.ka-report .tif-iki{display:grid;flex:0 0 auto;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4mm}
+.ka-report .tif-bolum{display:flex;flex:0 0 auto;align-items:center;gap:1.5mm;height:5mm;margin:0 0 .8mm;break-after:avoid;page-break-after:avoid}
+.ka-report .tif-bolum>i{display:grid;flex:0 0 auto;place-items:center;width:4.2mm;height:4.2mm;border-radius:50%;background:var(--ka-report-people-accent);color:var(--ka-report-people-on-accent);font-size:6.5pt;font-weight:700}
+.ka-report .tif-bolum>b{font-size:8.5pt;color:var(--ka-report-people-ink)}
+.ka-report .tif-cizgi{flex:1 1 auto;border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-rule)}
+.ka-report .tif-ek{flex:0 0 auto;font-size:7pt;color:var(--ka-report-people-muted)}
+.ka-report .tif-ek b{color:var(--ka-report-text)}
+.ka-report .tif-doldur{display:inline-block;min-width:8mm;border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line);text-align:center}
+.ka-report .tif-g{flex:0 0 auto;border-top:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .tif-r{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));height:9mm}
+.ka-report .tif-r--ogr{height:10mm}
+.ka-report .tif-r--y2{height:12mm}
+.ka-report .tif-r--y3{height:16mm}
+.ka-report .tif-r--ck{height:7mm}
+.ka-report .tif-h{display:flex;flex-direction:column;gap:.3mm;min-width:0;overflow:hidden;padding:.9mm 1.5mm 0;border-right:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .tif-h>small{flex:0 0 auto;overflow:hidden;font-size:7pt;line-height:1.1;white-space:nowrap;text-overflow:ellipsis;color:var(--ka-report-people-muted)}
+.ka-report .tif-v{min-height:0;overflow:hidden;font-weight:700;white-space:nowrap;text-overflow:ellipsis}
+.ka-report .tif-v--m{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:8pt;font-weight:400;white-space:pre-wrap;overflow-wrap:anywhere}
+.ka-report .tif-v--m.tif-l3{-webkit-line-clamp:3}
+.ka-report .tif-ck{display:flex;align-items:center;gap:1.8mm;min-width:0;overflow:hidden;padding:0 1.5mm;border-right:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line);font-size:7.5pt}
+.ka-report .tif-ck>span{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ka-report .tif-kutu{display:inline-grid;flex:0 0 auto;place-items:center;width:3.4mm;height:3.4mm;margin-right:1mm;border:.3mm solid var(--ka-report-people-ink);border-radius:.5mm;font-size:7pt;font-weight:700;vertical-align:middle}
+.ka-report .tif-ck .tif-kutu{margin-right:0}
+.ka-report .tif-kutu.is-on{background:var(--ka-report-people-accent);border-color:var(--ka-report-people-accent);color:var(--ka-report-people-on-accent)}
+.ka-report .tif-s1{grid-column:span 1}
+.ka-report .tif-s2{grid-column:span 2}
+.ka-report .tif-s3{grid-column:span 3}
+.ka-report .tif-s4{grid-column:span 4}
+.ka-report .tif-s5{grid-column:span 5}
+.ka-report .tif-s6{grid-column:span 6}
+.ka-report .tif-s7{grid-column:span 7}
+.ka-report .tif-s8{grid-column:span 8}
+.ka-report .tif-s9{grid-column:span 9}
+.ka-report .tif-s10{grid-column:span 10}
+.ka-report .tif-s11{grid-column:span 11}
+.ka-report .tif-s12{grid-column:span 12}
+.ka-report .tif-ogr{display:grid;flex:0 0 auto;grid-template-columns:minmax(0,1fr) 25mm}
+.ka-report .tif-foto{display:grid;place-items:center;border:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:0;font-size:6.5pt;line-height:1.4;text-align:center;color:var(--ka-report-people-muted)}
+.ka-report .tif-liste{display:grid;flex:1 1 auto;grid-template-rows:5.5mm;grid-auto-rows:minmax(7.2mm,1fr);border-top:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .tif-liste--yakin{grid-template-columns:6mm 56mm 40mm 36mm minmax(0,1fr)}
+.ka-report .tif-liste--kardes{grid-template-columns:6mm 28mm 42mm 22mm 28mm 44mm minmax(0,1fr)}
+.ka-report .tif-liste>*{display:flex;align-items:center;min-width:0;overflow:hidden;padding:.6mm 1.5mm;border-right:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line);font-size:8pt;line-height:1.1}
+.ka-report .tif-liste>b{background:var(--ka-report-people-soft);color:var(--ka-report-people-ink);font-size:6.5pt}
+.ka-report .tif-liste>i{justify-content:center;padding:0;color:var(--ka-report-people-muted);font-size:7pt}
+.ka-report .tif-liste>div>span{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:anywhere}
+.ka-report .tif-tas{border:var(--ka-report-people-hair) solid var(--ka-report-people-accent)}
+.ka-report .tif-tas-baslik{display:flex;align-items:center;height:5mm;padding:0 2mm;background:var(--ka-report-people-accent);color:var(--ka-report-people-on-accent);font-size:7.5pt;font-weight:700}
+.ka-report .tif-tas .tif-g{border:0}
+.ka-report .tif-tas .tif-r>:last-child{border-right:0}
+.ka-report .tif-tas .tif-r:last-child>*{border-bottom:0}
+.ka-report .tif-genel{display:flex;flex:1 1 0;flex-direction:column;gap:.3mm;min-height:20mm;overflow:hidden;padding:.9mm 1.5mm;border:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .tif-genel>small{flex:0 0 auto;font-size:7pt;line-height:1.1;color:var(--ka-report-people-muted)}
+.ka-report .tif-v--serbest{display:block;flex:1 1 auto}
+.ka-report .tif-beyan{flex:0 0 auto;margin:2mm 0 1.5mm;padding:1.5mm 2.5mm;border-left:var(--ka-report-people-bar) solid var(--ka-report-people-accent);background:var(--ka-report-people-soft);font-size:7.5pt}
+.ka-report .tif-imza{display:grid;flex:0 0 auto;grid-template-columns:34fr 44fr 22fr;grid-template-rows:5mm 18mm;border-top:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-left:var(--ka-report-people-hair) solid var(--ka-report-people-line)}
+.ka-report .tif-imza>*{padding:.9mm 1.5mm;border-right:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line);overflow:hidden}
+.ka-report .tif-imza>b{background:var(--ka-report-people-soft);color:var(--ka-report-people-ink);font-size:6.5pt}
+.ka-report .tif-alt{display:flex;flex:0 0 auto;justify-content:space-between;gap:3mm;margin-top:auto;padding-top:.8mm;border-top:var(--ka-report-people-hair) solid var(--ka-report-people-rule);font-size:6.5pt;color:var(--ka-report-people-muted)}
+
 /* ===== YAZILI KÂĞIDI TESLİM TUTANAĞI (ytt-*) — ekran ===== */
 html[data-theme] #v2ModuleRoot .ytt-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
 html[data-theme] #v2ModuleRoot .ytt-head h2{margin:0 0 var(--ka-sp-4)}

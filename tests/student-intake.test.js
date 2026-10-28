@@ -83,29 +83,50 @@ assert.strictEqual(T.validate({d:{tc:'12345678901',boy:'140',kilo:'35',kardesSay
 /* --- rapor --- */
 const full={ogrenciId:'s1',d:{babaAd:'Mehmet Demir',babaDurum:'Vefat etmiş',anneDurum:'Sağ',birlikte:'Ayrı',kaza:'2',ameliyat:'5',ameliyatDiger:'Bademcik',kiminle:'1',engelli:true,genelAcik:'Uzun\nçok satırlı açıklama',boy:'140'},yakinlar:[{ad:'Fatma Demir',yakinlik:'Diğer',yakinlikDiger:'Büyük teyze',tel:'0555 000 00 00',aciklama:'Gündüz evde'}],kardesler:[{ad:'Ali Demir',sinif:'2-B'}],guncellenme:'2026-10-14T09:30:00.000Z'};
 const h=T.formHtml(students[0],full);
-for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','Vefat etmiş','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','class="ti-signature"','ti-grid-table','ti-section-heading','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
-for(let n=1;n<=11;n++)assert(h.includes(`>${n}. `),`Bölüm ${n} başlığı eksik`);
+for(const m of ['ÖĞRENCİ TANIMA FORMU','assets/logo.png','Eğitim öğretim yılı: <b>2026-2027</b>','Form tarihi: <b>14.10.2026</b>','Ayşe Demir','Zeynep Demir','Vefat etmiş','Diğer: Bademcik','Diğer: Büyük teyze','Fatma Demir','Ev kazası','Annesiyle','Ayrı','140 cm','Bu formda yer alan bilgilerin doğru olduğunu beyan ederim.','Veli imzası','class="tif-imza"','tif-liste','Uzun\nçok satırlı açıklama'])assert(h.includes(m),'Rapor eksik: '+m);
+for(let n=1;n<=11;n++)assert(h.includes(`<i>${n}</i>`),`Bölüm ${n} başlığı eksik`);
 for(const bad of ['Öğrenci tipi','Öğrenci durumu','Kayıt durumu'])assert(!h.includes(bad));
 assert(!h.includes('Can '),'Başka öğrencinin verisi karışmamalı');
-const h2=T.formHtml(students[1],null,{first:false});
+const h2=T.formHtml(students[1],null);
 assert(h2.includes('Can &lt;b&gt;Yılmaz&lt;/b&gt;')&&!h2.includes('<b>Yılmaz'),'HTML kaçışı eksik');
 assert(!h2.includes('Mehmet Demir')&&!h2.includes('Fatma Demir'),'Öğrenciler arası sızıntı');
-assert(h2.includes('break-before:page'),'İkinci öğrenci yeni sayfada başlamalı');
-assert(h.includes('ti-print-page--first')&&h.includes('ti-print-page--second'),'Form iki sayfalık yerleşim bölümlerine ayrılmalı');
-assert(h.includes('ti-continuation'),'İkinci sayfada öğrenci tanımlayıcı başlık bulunmalı');
-assert(h.includes('class="ti-label-cell"')&&h.includes('class="ti-answer-cell"'),'Soru ve cevap ayrı hücrelerde olmalı');
-assert(h.includes('Adı soyadı')&&h.includes('Ayşe Demir'),'Soru ve cevap yan yana basılmalı');
-assert(h.indexOf('>8</span>')>h.indexOf('Sayfa 2 / 2'),'Sağlık bölümü ikinci sayfada yer almalı');
-assert(h.indexOf('>9</span>')>h.indexOf('>8</span>'),'Yaşam koşulları sağlık bölümünden sonra gelmeli');
+/* Yeni baskı: öğrenci başına tam iki sabit tabaka; 1–7. bölümler 1. sayfada, 8–11. bölümler 2. sayfada */
+const sayfalar=h.split('<div class="tif-sayfa ').slice(1);
+assert.strictEqual(sayfalar.length,2,'Form tam iki sayfa olmalı');
+assert(sayfalar[0].startsWith('tif-sayfa--1')&&sayfalar[1].startsWith('tif-sayfa--2'));
+for(let n=1;n<=7;n++)assert(sayfalar[0].includes(`<i>${n}</i>`)&&!sayfalar[1].includes(`<i>${n}</i><b>`),`Bölüm ${n} 1. sayfada olmalı`);
+for(let n=8;n<=11;n++)assert(sayfalar[1].includes(`<i>${n}</i>`)&&!sayfalar[0].includes(`<i>${n}</i><b>`),`Bölüm ${n} 2. sayfada olmalı`);
+assert(sayfalar[1].includes('tif-devam'),'İkinci sayfada öğrenci tanımlayıcı şerit bulunmalı');
+assert(!h.includes('ti-student-bar')&&!h.includes('ti-print-page'),'Eski şerit / eski sayfa sınıfları kalmamalı');
+for(const [i,sf] of sayfalar.entries()){const alt=sf.slice(sf.indexOf('<footer class="tif-alt">'));assert(alt.includes(`Sayfa ${i+1} / 2`)&&alt.includes('Ayşe Demir')&&alt.includes('No: 214')&&alt.includes('5-A'),`${i+1}. sayfa altbilgisi öğrenciyi tanımlamalı`)}
+assert(h.includes('<small>Adı soyadı</small>')&&h.includes('Ayşe Demir'),'Etiket üstte, değer altta basılmalı');
+assert(h.indexOf('<i>8</i>')>h.indexOf('Sayfa 1 / 2'),'Sağlık bölümü ikinci sayfada yer almalı');
+assert(h.indexOf('<i>9</i>')>h.indexOf('<i>8</i>'),'Yaşam koşulları sağlık bölümünden sonra gelmeli');
+/* her ızgara satırı 12 sütuna tamamlanır (kenarlık çizgisi bozulmaz) */
+for(const html of [h,h2,T.formHtml(students[0],null)])for(const seg of html.split('class="tif-r').slice(1)){const n=[...seg.slice(0,seg.indexOf('class="tif-bolum"')>0?seg.indexOf('class="tif-bolum"'):seg.length).matchAll(/tif-s(\d+)/g)].reduce((a,m)=>a+Number(m[1]),0);assert.strictEqual(n,12,'Izgara satırı 12 sütun etmeli')}
 const intakeSrc=fs.readFileSync('js/modules/student-intake.js','utf8');
-assert(intakeSrc.includes('border:1px solid #aabbb2'),'Hücre kenarlıkları belirgin olmalı');
-assert(intakeSrc.includes('page-break-before:always'),'İkinci sayfa yeni sayfadan başlamalı');
-assert(intakeSrc.includes('compact:true'),'Rapor sıkıştırılmış yazdırma düzenini kullanmalı');
-assert(!/class="ti-form"[^>]*style="break-before:page/.test(h),'İlk öğrenci boş sayfayla başlamamalı');
+assert(/const REPORT_OPTS=\{[^}]*akis:true[^}]*kenarBosluk:10[^}]*\}/.test(intakeSrc),'Baskı her sayfada kenar boşluğu veren akış yolunu kullanmalı (akis:true, kenarBosluk:10)');
+assert(!/extraHead|compact:true|fontSize:/.test(intakeSrc.slice(intakeSrc.indexOf('const REPORT_OPTS'),intakeSrc.indexOf('const REPORT_OPTS')+260)),'Baskı seçeneklerinde gömülü stil / sıkıştırma kalmamalı');
+assert(!/<style/.test(intakeSrc),'Modül stil üretmemeli; biçim css/design-system-base.css içinde');
+assert(!/break-before:page|page-break-before:always/.test(h),'Sayfa kesmesi CSS\'te; işaretlemede satır içi stil olmamalı');
+const cssSrc=fs.readFileSync('css/design-system-base.css','utf8'),tifCss=cssSrc.slice(cssSrc.indexOf('/* ===== A4 — Öğrenci Tanıma Formu (.tif-*)'),cssSrc.indexOf('/* ===== YAZILI KÂĞIDI TESLİM TUTANAĞI (ytt-*) — ekran'));
+assert(tifCss.length>2000&&tifCss.includes('.ka-report .tif-sayfa{')&&/\.tif-sayfa\{[^}]*height:27[0-7](\.\d+)?mm/.test(tifCss),'Tabaka yüksekliği A4 − 20 mm içinde (≤277 mm) olmalı');
+assert(!/#[0-9a-fA-F]{3,8}\b/.test(tifCss)&&!/\d\s*px\b/.test(tifCss)&&tifCss.includes('var(--ka-report-people-accent)'),'Baskı stili yalnız rapor belirteçleri ve mm kullanmalı');
+assert(/\.tif-form:first-child\{[^}]*break-before:auto/.test(tifCss)&&/\.tif-form\{[^}]*break-before:page/.test(tifCss),'İkinci öğrenci yeni sayfada, ilki sayfa başında başlamalı');
 const blank=T.formHtml(students[0],null);
 assert(blank.includes('Ayşe Demir')&&blank.includes('Zeynep Demir'),'Boş formda öğrenci kaydı bilgileri dolu olmalı');
 assert(!blank.includes('Vefat'),'Boş formda sağ/ölü seçili olmamalı');
-assert((blank.match(/<td>/g)||[]).length>=3*5+3*7,'Boş form el yazısı satırları');
+assert((blank.match(/<div><span><\/span><\/div>/g)||[]).length>=3*4+3*6,'Boş form el yazısı satırları (yakınlar 3×4 + kardeşler 3×6 hücre)');
+/* liste kapasitesi: fazlası sessizce atılmaz, başlıkta belirtilir; ekranda uyarı verilir */
+const cok={ogrenciId:'s1',d:{},yakinlar:Array.from({length:6},(_,i)=>({ad:'Yakın '+i})),kardesler:Array.from({length:3},(_,i)=>({ad:'Kardeş '+i}))};
+const hc=T.formHtml(students[0],cok);
+assert(hc.includes('+2 kayıt çıktıya sığmadı')&&hc.includes('Yakın 3')&&!hc.includes('Yakın 4'),'Kapasiteyi aşan yakın kaydı başlıkta belirtilmeli');
+assert(!T.formHtml(students[0],full).includes('çıktıya sığmadı'),'Sığan kayıtta uyarı olmamalı');
+assert.strictEqual(T.fitUyari(full).length,0,'Normal uzunlukta uyarı olmamalı');
+assert(T.fitUyari({d:{veliAdres:'x'.repeat(400)},yakinlar:[],kardesler:[]}).some(m=>m.includes('Veli adresi')),'Uzun adres için sığmama uyarısı');
+assert(T.fitUyari({d:{ameliyat:'5',ameliyatDiger:'y'.repeat(60)},yakinlar:[],kardesler:[]}).some(m=>m.includes('(Diğer)')),'Uzun Diğer metni için uyarı');
+assert(T.fitUyari(cok).some(m=>m.includes('en fazla 4 yakın')),'Liste kapasitesi aşımı uyarısı');
+assert.strictEqual(T.validate({d:{veliAdres:'x'.repeat(400)},yakinlar:[],kardesler:[]}).length,0,'Sığmama uyarısı kaydı engellememeli');
 
 /* --- cihaz deposu --- */
 (async()=>{
