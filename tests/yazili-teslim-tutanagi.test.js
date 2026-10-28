@@ -64,13 +64,22 @@ const cok=C.belge({satirlar:Array.from({length:30},(_,i)=>({sinif:'5-A',ders:'D'
 assert(cok.includes('Toplam <b>60</b> (altmış) top'),'Çok satırda toplam ve yazıyla.');
 assert(!/<tr><td class="ytt-orta">31<\/td><td><\/td>/.test(cok),'Yeterli satır varsa boş satır eklenmez.');
 
+/* miktar birimi: top (varsayılan) ya da adet */
+assert.strictEqual(C.birimNormal('adet'),'adet');assert.strictEqual(C.birimNormal('ADET'),'adet');assert.strictEqual(C.birimNormal('x'),'top');assert.strictEqual(C.birimNormal(undefined),'top');
+assert((h.match(/\(Top Sayısı\)/g)||[]).length===3,'Varsayılan birim top: üç sütun başlığı "Top Sayısı".');
+const ad=C.belge({...m,birim:'adet'});
+assert((ad.match(/\(Adet Sayısı\)/g)||[]).length===3&&!/Top Sayısı/.test(ad),'Adet seçilince üç sütun başlığı "Adet Sayısı".');
+assert(ad.includes('Toplam <b>4</b> (dört) adet sınav kâğıdı teslim edilmiştir.')&&!/ top sınav/.test(ad),'Adet seçilince özet cümlesi adet der.');
+assert(C.belge({birim:'adet'}).includes('(…………………) adet sınav kâğıdı'),'Boş formda da birim uygulanır.');
+assert(uiSrc.includes('data-ytt="birim"')&&/birim:s\.birim/.test(uiSrc),'Ekranda birim seçici var ve belgeye aktarılır.');
+
 /* uygulama bağlantıları */
 assert(/\['yazili-teslim','Yazılı Kâğıdı Teslim Tutanağı','doc'[^\]]*'yazili-teslim'\]/.test(nav),'Tutanak ve Evrak menüsünde yer almalı.');
 assert(nav.includes("'yazili-teslim':'📦'")&&nav.includes("'yazili-teslim':'yazılı kağıdı"),'Simge ve arama anahtar sözcükleri.');
-assert(/if\(name==='yazili-teslim'\)\{[\s\S]*?YaziliTeslimModule\.open\(\)/.test(shell)&&shell.includes("yazili-teslim-core.js?v=1")&&shell.includes("yazili-teslim.js?v=1"),'Rota modülü yükleyip açmalı.');
+assert(/if\(name==='yazili-teslim'\)\{[\s\S]*?YaziliTeslimModule\.open\(\)/.test(shell)&&shell.includes("yazili-teslim-core.js?v=2")&&shell.includes("yazili-teslim.js?v=2"),'Rota modülü yükleyip açmalı.');
 assert((katalog.match(/\{f:\["yazili-teslim"\],a:"yazili-teslim"\}/g)||[]).length===3,'Öğretmen Dosyası’ndaki üç yazılı kâğıdı maddesi sayfaya bağlanmalı.');
 assert(academic.includes('data-written-teslim>Teslim Tutanağı</button>')&&/AppNav\?\.tool\?\.\('yazili-teslim'\)/.test(academic),'Yazılı Sınavlar sayfasında Teslim Tutanağı düğmesi.');
-assert(sw.includes('yazili-teslim-core.js?v=1')&&sw.includes('yazili-teslim.js?v=1'),'Önbelleğe alınmalı.');
+assert(sw.includes('yazili-teslim-core.js?v=2')&&sw.includes('yazili-teslim.js?v=2'),'Önbelleğe alınmalı.');
 assert(!/localStorage\.setItem/.test(coreSrc+uiSrc)&&!/<style/i.test(coreSrc+uiSrc)&&!/style="/.test(coreSrc+uiSrc),'Modül depolama yazmaz, stil gömmez.');
 /* yazdırma: her sayfada üst/alt boşluk, özelleştirme penceresi açılmaz (resmî form) */
 const yz=uiSrc.slice(uiSrc.indexOf('function yazdir('),uiSrc.indexOf('function temizle('));

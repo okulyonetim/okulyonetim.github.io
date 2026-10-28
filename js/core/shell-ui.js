@@ -327,8 +327,8 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
-      if(!global.YaziliTeslimCore)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim-core.js?v=1');
-      if(!global.YaziliTeslimModule?.open)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim.js?v=1');
+      if(!global.YaziliTeslimCore)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim-core.js?v=2');
+      if(!global.YaziliTeslimModule?.open)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim.js?v=2');
       if(!global.YaziliTeslimModule?.open)throw new Error('Yazılı Kâğıdı Teslim Tutanağı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Yazılı Kâğıdı Teslim Tutanağı');
       if(!global.YaziliTeslimModule.open())throw new Error('Yazılı Kâğıdı Teslim Tutanağı açılamadı.');
