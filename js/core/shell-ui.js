@@ -323,6 +323,23 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='kat-plani'){
+    try{
+      const tool=nav().tool('kat-plani');
+      if(!tool||!nav().toolAllowed(tool)){global.toast?.('Kat Planı yalnızca admin ve yönetici rolündekiler içindir.');return false}
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.KatPlani?.open)await global.AppLoader?.loadScript?.('js/modules/kat-plani.js?v=1');
+      if(!global.KatPlani?.open)throw new Error('Kat Planı modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Kat Planı');
+      /* Editör tam ekran açılır; kapanınca bir önceki sayfaya (Menü) dönülür. */
+      await global.KatPlani.open({onClose:()=>global.ShellUI?.back?.()});
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Kat Planı'});
+    }catch(e){
+      console.error('[Shell/kat-plani]',e);global.toast?.('Kat Planı açılamadı.');
+      return false;
+    }
+    return true;
+  }
   if(name==='yazili-teslim'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');

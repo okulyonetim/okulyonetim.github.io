@@ -12952,6 +12952,110 @@ html[data-theme="dark"] .bsg-root{--bsg-chip-s:42%;--bsg-chip-l:23%;--bsg-chip-i
 @media (max-height:640px){.bsg-root .bsg-dock[data-open="1"]{height:62dvh}.bsg-root .bsg-stats{gap:var(--ka-sp-6)}}
 @media (prefers-reduced-motion:reduce){.bsg-root *,.bsg-root *::before,.bsg-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
+/* ═══════════ KAT PLANI / TAHLİYE PLANI EDİTÖRÜ (js/modules/kat-plani.js) — yalnız .kpl-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Plan çizimi tuvalde yapılır; güvenlik işaretlerinin renkleri ISO 7010'dur ve çizim modülündedir. ═══════════ */
+.kpl-root{
+  --kpl-bg:var(--ka-app-bg);--kpl-surface:var(--pp-solid);--kpl-surface-2:var(--ka-muted-bg);
+  --kpl-ink:var(--ka-text);--kpl-muted:var(--ka-text-muted);
+  --kpl-line:var(--ka-border);--kpl-line-strong:var(--ka-border-strong);
+  --kpl-accent:var(--t-accent);--kpl-accent-text:var(--t-accent-text);--kpl-accent-soft:var(--ka-primary-soft);
+  --kpl-danger:var(--ka-danger);--kpl-ok:var(--ka-success);
+  --kpl-scrim:var(--ka-overlay);--kpl-shadow:var(--ka-shadow-modal);
+  position:fixed;inset:0;z-index:1250;display:flex;justify-content:center;background:var(--kpl-bg);color:var(--kpl-ink);font-family:var(--ka-font);font-size:var(--ka-fs-14);line-height:var(--ka-lh-1-4);-webkit-text-size-adjust:100%;overscroll-behavior:contain
+}
+.kpl-root *{box-sizing:border-box}
+.kpl-root [hidden]{display:none!important}
+.kpl-root button,.kpl-root input{font:inherit;color:inherit}
+.kpl-root button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.kpl-root :focus-visible{outline:calc(var(--ka-border-w) * 2) solid var(--kpl-accent);outline-offset:var(--ka-ring-offset)}
+.kpl-root .kpl-ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.kpl-root .kpl-app{position:relative;width:100%;height:100%;max-width:1400px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.kpl-root .kpl-top{flex:none;display:flex;align-items:center;gap:var(--ka-sp-2);padding:max(var(--ka-sp-8),var(--ka-safe-top)) var(--ka-sp-8) var(--ka-sp-6) var(--ka-sp-6)}
+.kpl-root .kpl-ttl{flex:1;min-width:0;padding-left:var(--ka-sp-4)}
+.kpl-root .kpl-ttl h1{margin:0;font-size:var(--ka-fs-18);font-weight:var(--ka-fw-750);letter-spacing:var(--ka-ls-n015);line-height:var(--ka-lh-1-2)}
+.kpl-root .kpl-ttl small{display:block;color:var(--kpl-muted);font-size:var(--ka-fs-12);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpl-root .kpl-ibtn{width:42px;height:42px;display:grid;place-items:center;flex:none;padding:0;border:0;border-radius:var(--ka-r-3);background:transparent}
+.kpl-root .kpl-ibtn:hover{background:var(--kpl-surface-2)}
+.kpl-root .kpl-ibtn[disabled]{opacity:.32;cursor:default;background:transparent}
+.kpl-root .kpl-btn{min-height:38px;padding:0 var(--ka-sp-14);display:inline-flex;align-items:center;justify-content:center;gap:var(--ka-sp-8);border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-4);background:var(--kpl-surface);color:var(--kpl-ink);font-weight:var(--ka-fw-650);font-size:var(--ka-fs-13-5)}
+.kpl-root .kpl-btn:hover{border-color:var(--kpl-ink)}
+.kpl-root .kpl-btn.kpl-pri{background:var(--ka-btn-primary-bg);border-color:var(--ka-btn-primary-edge);color:var(--ka-btn-primary-ink);text-shadow:var(--ka-btn-primary-ink-shadow)}
+.kpl-root .kpl-btn.kpl-pri:hover{background:var(--ka-btn-primary-bg-hover);border-color:var(--ka-btn-primary-edge)}
+.kpl-root .kpl-btn.kpl-dng{color:var(--kpl-danger);border-color:var(--kpl-danger)}
+.kpl-root .kpl-btn[disabled]{opacity:.45;cursor:default}
+.kpl-root .kpl-savebtn{min-height:36px;margin-inline:var(--ka-sp-4) var(--ka-sp-2);flex:none}
+.kpl-root .kpl-savebtn:not(.is-dirty){background:var(--kpl-surface);border-color:var(--kpl-line-strong);color:var(--kpl-muted);text-shadow:none}
+.kpl-root .kpl-tabs{flex:none;display:flex;gap:var(--ka-sp-6);padding:var(--ka-sp-2) var(--ka-sp-12) var(--ka-sp-6);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.kpl-root .kpl-tabs::-webkit-scrollbar{display:none}
+.kpl-root .kpl-tab{flex:none;min-height:36px;padding:0 var(--ka-sp-14);display:inline-flex;align-items:center;justify-content:center;border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-10);background:var(--kpl-surface);font-weight:var(--ka-fw-650);font-size:var(--ka-fs-13)}
+.kpl-root .kpl-tab.is-on{background:var(--kpl-accent-soft);border-color:var(--kpl-accent);color:var(--kpl-accent-text)}
+.kpl-root .kpl-tab--add{padding:0 var(--ka-sp-10);color:var(--kpl-muted)}
+.kpl-root .kpl-hint{flex:none;margin:0;padding:0 var(--ka-sp-16) var(--ka-sp-6);color:var(--kpl-muted);font-size:var(--ka-fs-12-5);line-height:var(--ka-lh-1-4);min-height:calc(var(--ka-fs-12-5) * 1.4);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpl-root .kpl-stage{position:relative;flex:1 1 auto;min-height:0;overflow:hidden;background:var(--kpl-surface-2);border-block:var(--ka-border-w) solid var(--kpl-line)}
+.kpl-root .kpl-cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.kpl-root .kpl-zoom{position:absolute;top:var(--ka-sp-8);right:var(--ka-sp-8);display:flex;flex-direction:column;border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-3);background:var(--kpl-surface);overflow:hidden;box-shadow:var(--ka-shadow-sm)}
+.kpl-root .kpl-zoom button{width:40px;height:40px;display:grid;place-items:center;padding:0;border:0;background:transparent}
+.kpl-root .kpl-zoom button+button{border-top:var(--ka-border-w) solid var(--kpl-line)}
+.kpl-root .kpl-empty{position:absolute;left:50%;top:50%;width:min(320px,86%);transform:translate(-50%,-50%);display:grid;gap:var(--ka-sp-8);justify-items:center;padding:var(--ka-sp-16);text-align:center;border:var(--ka-border-w) dashed var(--kpl-line-strong);border-radius:var(--ka-r-6);background:var(--kpl-surface)}
+.kpl-root .kpl-empty p{margin:0;color:var(--kpl-muted);font-size:var(--ka-fs-13)}
+.kpl-root .kpl-float{position:absolute;left:var(--ka-sp-8);right:var(--ka-sp-8);bottom:var(--ka-sp-8);display:grid;gap:var(--ka-sp-6);pointer-events:none;z-index:5}
+.kpl-root .kpl-float>*{pointer-events:auto;border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-5);background:var(--kpl-surface);box-shadow:var(--ka-shadow-md)}
+.kpl-root .kpl-sel{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-8);padding:var(--ka-sp-8) var(--ka-sp-12)}
+.kpl-root .kpl-sel__t{flex:1 1 auto;min-width:120px;font-weight:var(--ka-fw-700)}
+.kpl-root .kpl-sel .kpl-inp{flex:1 1 160px}
+.kpl-root .kpl-pal{display:flex;gap:var(--ka-sp-6);padding:var(--ka-sp-8);overflow-x:auto;scrollbar-width:none}
+.kpl-root .kpl-pal::-webkit-scrollbar{display:none}
+.kpl-root .kpl-sym{flex:none;width:78px;display:grid;justify-items:center;gap:var(--ka-sp-3);padding:var(--ka-sp-6) var(--ka-sp-4);border:var(--ka-border-w) solid var(--kpl-line);border-radius:var(--ka-r-4);background:var(--kpl-surface-2)}
+.kpl-root .kpl-sym canvas{width:44px;height:44px}
+.kpl-root .kpl-sym span{font-size:var(--ka-fs-10-5);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-15);text-align:center}
+.kpl-root .kpl-sym.is-on{border-color:var(--kpl-accent);background:var(--kpl-accent-soft)}
+.kpl-root .kpl-tools{flex:none;display:grid;grid-template-columns:repeat(4,1fr);gap:var(--ka-sp-4);padding:var(--ka-sp-6) var(--ka-sp-8) calc(var(--ka-sp-8) + var(--ka-safe-bottom));background:var(--kpl-surface);border-top:var(--ka-border-w) solid var(--kpl-line)}
+.kpl-root .kpl-tools button{min-height:54px;display:grid;justify-items:center;align-content:center;gap:var(--ka-sp-2);padding:var(--ka-sp-4);border:0;border-radius:var(--ka-r-4);background:transparent;font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-650);color:var(--kpl-muted)}
+.kpl-root .kpl-tools button.is-on{background:var(--kpl-accent-soft);color:var(--kpl-accent-text)}
+.kpl-root .kpl-scrim{position:absolute;inset:0;z-index:40;background:var(--kpl-scrim);opacity:0;visibility:hidden;transition:opacity var(--ka-dur-220),visibility var(--ka-dur-220)}
+.kpl-root .kpl-scrim[data-on="1"]{opacity:1;visibility:visible}
+.kpl-root .kpl-sheet{position:absolute;z-index:41;left:0;right:0;bottom:0;max-width:640px;max-height:90%;margin-inline:auto;display:flex;flex-direction:column;border-radius:var(--ka-r-8) var(--ka-r-8) 0 0;background:var(--kpl-surface);color:var(--kpl-ink);box-shadow:var(--kpl-shadow);outline:0;padding-bottom:var(--ka-safe-bottom)}
+.kpl-root .kpl-sheet--tam{height:92%}
+.kpl-root .kpl-sh-head{flex:none;display:flex;align-items:center;gap:var(--ka-sp-8);padding:var(--ka-sp-8) var(--ka-sp-8) var(--ka-sp-4) var(--ka-sp-16)}
+.kpl-root .kpl-sh-head b{flex:1;font-size:var(--ka-fs-16);font-weight:var(--ka-fw-750)}
+.kpl-root .kpl-sh-body{flex:1 1 auto;min-height:0;overflow-y:auto;padding:var(--ka-sp-4) var(--ka-sp-16) var(--ka-sp-16);display:grid;gap:var(--ka-sp-10);align-content:start;-webkit-overflow-scrolling:touch}
+.kpl-root .kpl-sh-body p{margin:0}
+.kpl-root .kpl-sh-foot{display:flex;justify-content:flex-end;gap:var(--ka-sp-8);padding-top:var(--ka-sp-6)}
+.kpl-root .kpl-sh-foot--col{flex-direction:column;align-items:stretch}
+.kpl-root .kpl-wiz+.kpl-sh-foot,.kpl-root .kpl-sheet>.kpl-sh-foot{flex:none;padding:var(--ka-sp-8) var(--ka-sp-16) var(--ka-sp-12);border-top:var(--ka-border-w) solid var(--kpl-line)}
+.kpl-root .kpl-menu{gap:var(--ka-sp-6)}
+.kpl-root .kpl-row{width:100%;display:flex;align-items:center;gap:var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-12);border:var(--ka-border-w) solid var(--kpl-line);border-radius:var(--ka-r-4);background:var(--kpl-surface-2);text-align:left}
+.kpl-root .kpl-row span{display:grid;gap:var(--ka-sp-1);min-width:0}
+.kpl-root .kpl-row small{color:var(--kpl-muted);font-size:var(--ka-fs-12)}
+.kpl-root .kpl-row:hover{border-color:var(--kpl-line-strong)}
+.kpl-root .kpl-row--dng{color:var(--kpl-danger)}
+.kpl-root .kpl-chips{display:flex;flex-wrap:wrap;gap:var(--ka-sp-6)}
+.kpl-root .kpl-chip{min-height:38px;padding:0 var(--ka-sp-14);border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-10);background:var(--kpl-surface-2);font-weight:var(--ka-fw-650)}
+.kpl-root .kpl-lbl{display:grid;gap:var(--ka-sp-4);font-size:var(--ka-fs-12-5);font-weight:var(--ka-fw-650);color:var(--kpl-muted)}
+.kpl-root .kpl-inp{width:100%;min-height:40px;padding:0 var(--ka-sp-12);border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-4);background:var(--kpl-surface);color:var(--kpl-ink)}
+.kpl-root .kpl-inline{display:flex;gap:var(--ka-sp-8)}
+.kpl-root .kpl-range{width:100%;accent-color:var(--kpl-accent)}
+.kpl-root .kpl-muted{color:var(--kpl-muted);font-size:var(--ka-fs-12-5)}
+.kpl-root .kpl-busy{color:var(--kpl-muted);font-size:var(--ka-fs-13)}
+.kpl-root .kpl-chklist{list-style:none;margin:0;padding:0;display:grid;gap:var(--ka-sp-6)}
+.kpl-root .kpl-chk{display:flex;align-items:center;gap:var(--ka-sp-8)}
+.kpl-root .kpl-chk.is-ok{color:var(--kpl-ok)}
+.kpl-root .kpl-chk.is-eksik{color:var(--kpl-danger)}
+.kpl-root .kpl-chk span{color:var(--kpl-ink)}
+.kpl-root .kpl-seg{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-6)}
+.kpl-root .kpl-seg>span{flex:0 0 100%;font-size:var(--ka-fs-12-5);font-weight:var(--ka-fw-650);color:var(--kpl-muted)}
+.kpl-root .kpl-seg button{min-height:36px;padding:0 var(--ka-sp-12);border:var(--ka-border-w) solid var(--kpl-line-strong);border-radius:var(--ka-r-10);background:var(--kpl-surface-2);font-size:var(--ka-fs-13);font-weight:var(--ka-fw-600)}
+.kpl-root .kpl-seg button.is-on{background:var(--kpl-accent-soft);border-color:var(--kpl-accent);color:var(--kpl-accent-text)}
+.kpl-root .kpl-chkrow{display:flex;align-items:center;gap:var(--ka-sp-8);font-weight:var(--ka-fw-600)}
+.kpl-root .kpl-crop{position:sticky;top:0;z-index:3;display:grid;justify-items:center;background:var(--kpl-surface-2);border:var(--ka-border-w) solid var(--kpl-line);border-radius:var(--ka-r-4);padding:var(--ka-sp-4)}
+.kpl-root .kpl-crop canvas{display:block;max-width:100%;touch-action:none;cursor:crosshair}
+.kpl-root .kpl-ctl{display:grid;gap:var(--ka-sp-10)}
+@media (min-width:900px){
+  .kpl-root .kpl-sheet{top:50%;bottom:auto;left:50%;right:auto;width:min(560px,92vw);margin:0;max-height:86%;border-radius:var(--ka-r-7);transform:translate(-50%,-50%);padding-bottom:0}
+  .kpl-root .kpl-sheet--tam{width:min(760px,94vw);height:90%}
+  .kpl-root .kpl-tools{justify-content:center;grid-template-columns:repeat(4,minmax(0,150px))}
+}
+@media (prefers-reduced-motion:reduce){.kpl-root *,.kpl-root *::before,.kpl-root *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 /* ═══════════ SINIF OTURMA IZGARASI (js/modules/class-seating-grid.js) — kabuk (üst şerit, durum, alt çekmece, sayfalar, bildirim) servis editörüyle ortaktır ve yukarıdaki .bsg-root kurallarından gelir; burada yalnız sınıfa özgü parçalar var. Her kural .bsg-root altında; renk, köşe, yazı, boşluk ve süre değerleri tema merkezi basamaklarından. Web arayüzü bölümünden ÖNCE durmalı. ═══════════ */
 .bsg-root.csg-root{--csg-girl:rgb(var(--k-pink-c15b84));--csg-boy:rgb(var(--k-cyan-4580b7))}
 
@@ -15326,6 +15430,14 @@ html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);h
 .ka-report .tif-imza>*{padding:.9mm 1.5mm;border-right:var(--ka-report-people-hair) solid var(--ka-report-people-line);border-bottom:var(--ka-report-people-hair) solid var(--ka-report-people-line);overflow:hidden}
 .ka-report .tif-imza>b{background:var(--ka-report-people-soft);color:var(--ka-report-people-ink);font-size:6.5pt}
 .ka-report .tif-alt{display:flex;flex:0 0 auto;justify-content:space-between;gap:3mm;margin-top:auto;padding-top:.8mm;border-top:var(--ka-report-people-hair) solid var(--ka-report-people-rule);font-size:6.5pt;color:var(--ka-report-people-muted)}
+
+/* ===== A4 — Kat Planı / Tahliye Planı (.kpl-form) =====
+   js/modules/kat-plani.js yazdırma çıktısı: her sayfa tek bir A4 YATAY tabaka; 10 mm kenar boşluğu içine (277 × 190 mm) 188 mm yükseklikle oturur
+   (ReportEngine akis:true, kenarBosluk:10, yon:'yatay'). Görüntü kat-plani-cizim.js'te çizilir; burada yalnız yerleşim vardır. */
+.ka-report .kpl-form{margin:0;padding:0}
+.ka-report .kpl-sayfa{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;height:188mm;overflow:hidden;background:var(--ka-report-bg);break-after:page;page-break-after:always;break-inside:avoid;page-break-inside:avoid}
+.ka-report .kpl-sayfa:last-child{break-after:auto;page-break-after:auto}
+.ka-report .kpl-gorsel{display:block;width:100%;height:100%;object-fit:contain}
 
 /* ===== YAZILI KÂĞIDI TESLİM TUTANAĞI (ytt-*) — ekran ===== */
 html[data-theme] #v2ModuleRoot .ytt-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}

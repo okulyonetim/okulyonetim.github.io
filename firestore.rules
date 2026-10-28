@@ -186,6 +186,12 @@ service cloud.firestore {
       allow create, update, delete: if moduluDuzenleyebilir('siniflar') || kendiSinifiMi(sinifId);
     }
 
+    /* Kat planı / acil durum tahliye planı: kat belgeleri, kat projesi görüntüleri (<kat>__altlik) ve ayar. Okuma herkese açık; yazma yalnız admin ve yönetici. */
+    match /oy_katPlanlari/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if adminMi() || yoneticiMi();
+    }
+
     match /oy_veliler/{id} {
       allow read: if girisYapmis();
       allow create: if moduluDuzenleyebilir('siniflar') || moduluDuzenleyebilir('ogrenciler');

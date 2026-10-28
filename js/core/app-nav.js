@@ -73,7 +73,7 @@ function icon(name,size=20,sw=2){
 const GLYPHS={
   'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
   'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','veli-toplantisi':'👨‍👩‍👧','yazili-teslim':'📦','ders-kesim':'📝','sinif-rehberlik':'🧩','form-rehberlik':'🧭',
-  'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️',
+  'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️','kat-plani':'🏢',
   'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','class-seats':'🪑','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
@@ -125,7 +125,7 @@ const roleLabel=r=>r==='idareci'?'İdareci':'Öğretmen';
 
 /* ── sayfa kapıları ── */
 /* Öğretmen hesabına (PermissionService.isTeacherAccount) kapalı sayfalar; rol arayüzünden bağımsızdır. */
-const TEACHER_HIDDEN=new Set(['idareci-pano:','committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','transport:services','transport:','food:audit']);
+const TEACHER_HIDDEN=new Set(['idareci-pano:','committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','kat-plani:','transport:services','transport:','food:audit']);
 const isTeacherUser=()=>global.PermissionService?.isTeacherAccount?.()===true;
 const pageAllowed=(name,page='')=>!isTeacherUser()||!TEACHER_HIDDEN.has(`${name}:${page||''}`);
 function moduleAllowed(name){
@@ -248,6 +248,7 @@ const KATALOG=[
   ['school-info','Okul bilgileri ve kurulum','school','Okul adı, kademeler, tatiller','settings','school',{y:1}],
   ['reports','Okul Raporları','chart','Okul raporları ve listeler','reports','home',{y:1}],
   ['committees','Kurul ve Komisyonlar','shield','Kurul ve komisyon görevleri','committees','home',{y:1}],
+  ['kat-plani','Kat Planı','map','Acil durum kaçış ve yangın tahliye planı','kat-plani','',{y:1,need:adminOrManager}],
   ['teachers','Öğretmenler','users','Öğretmen kadrosu','people','teachers'],
   ['staff','Personeller','briefcase','Personel kadrosu','management','staff',{y:1}],
   ['map','Harita','map','Okul ve servis haritası','tools','map']
@@ -308,7 +309,7 @@ const KEYWORDS={
   'oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
-  'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket',
+  'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
   'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
   'tasks':'aylık iş işler görev periyodik','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste oluşturucu',
