@@ -134,13 +134,33 @@ const setOf=o=>JSON.parse(o);
   eq(M.placeOrphans('idareci'),0,'Eklenecek sayfa kalmadıysa 0.');
 }
 {
+  /* katalogda başka menüye taşınan sayfa: kayıtlı düzende bir kez taşınır, sonra kullanıcı nereye koyarsa orada kalır */
+  const eskiMenuler=defMenus.map(m=>m.id==='sinav'?{...m,ids:m.ids.filter(id=>id!=='yazili-teslim')}:m.id==='evrak'?{...m,ids:[...m.ids.slice(0,2),'yazili-teslim',...m.ids.slice(2)]}:m);
+  const gor=N.scopeIds('idareci');
+  const cur={v:N.LAYOUT_SURUM,menus:eskiMenuler,bar:N.defaultLayout('idareci').bar,gorulen:gor,t:1};
+  const {N:M,ls}=loadNav({store:{[K]:JSON.stringify(cur)}});
+  const L=M.layoutRaw('idareci'),where=id=>L.menus.filter(m=>m.ids.includes(id)).map(m=>m.id);
+  eq(where('yazili-teslim'),['sinav'],'Eski menüsünde duran taşınan sayfa yeni menüye geçer.');
+  const sinav=L.menus.find(m=>m.id==='sinav').ids;
+  eq(sinav[sinav.indexOf('written')+1],'yazili-teslim','Yeni menüde katalogdaki sırasına girer.');
+  assert(setOf(ls.get(K)).gorulen.includes('tasi:yazili-teslim>sinav'),'Taşıma görülen listesine işaretlenir.');
+  /* kullanıcı geri koyar ve kaydeder: yeniden taşınmaz */
+  const geri={...L,menus:L.menus.map(m=>m.id==='sinav'?{...m,ids:m.ids.filter(id=>id!=='yazili-teslim')}:m.id==='evrak'?{...m,ids:[...m.ids,'yazili-teslim']}:m)};
+  M.saveLayout(geri,'idareci');
+  eq(M.layoutRaw('idareci').menus.filter(m=>m.ids.includes('yazili-teslim')).map(m=>m.id),['evrak'],'Kullanıcının yerleşimi korunur; tekrar taşınmaz.');
+  /* yeni menüsü olmayan kullanıcıda sayfa olduğu yerde kalır */
+  const sinavsiz=eskiMenuler.filter(m=>m.id!=='sinav');
+  const {N:Q}=loadNav({store:{[K]:JSON.stringify({...cur,menus:sinavsiz,gorulen:gor.filter(id=>id!=='written'&&id!=='trial')})}});
+  eq(Q.layoutRaw('idareci').menus.find(m=>m.id==='evrak').ids.includes('yazili-teslim'),true,'Yeni menü kullanıcıda yoksa taşınmaz.');
+}
+{
   /* saveLayout: sürüm ve görülen sayfaları yazar; kullanıcı düzeni sonraki okumada aynen gelir */
   const {N:M,ls}=loadNav();
   const L=M.layoutRaw('idareci');
   L.menus=L.menus.map(m=>m.id==='okul'?{...m,ad:'Okulum'}:m);
   M.saveLayout(L,'idareci');
   const saved=setOf(ls.get(K));
-  eq([saved.v,saved.gorulen.length],[M.LAYOUT_SURUM,M.scopeIds('idareci').length]);
+  eq([saved.v,saved.gorulen.filter(x=>!x.startsWith('tasi:')).length],[M.LAYOUT_SURUM,M.scopeIds('idareci').length]);
   eq(M.layoutRaw('idareci').menus.find(m=>m.id==='okul').ad,'Okulum','Kullanıcının menü adı korunur.');
   eq(M.layoutRaw('idareci').custom,true);
   M.resetLayout('idareci');

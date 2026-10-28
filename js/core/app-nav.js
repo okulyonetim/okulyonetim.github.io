@@ -161,6 +161,7 @@ const KATALOG=[
  ]],
  ['sinav','Sınav ve Not','clip','violet',[
   ['written','Yazılı Sınavlar','edit','Yazılı sınav planı ve tutanağı','academic','written'],
+  ['yazili-teslim','Yazılı Kâğıdı Teslim Tutanağı','doc','Yazılı sınav kâğıtlarını teslim tutanağı','yazili-teslim'],
   ['trial','Deneme Sınavları','clip','Deneme sınavı ve süre sayacı','academic','trial'],
   ['results','Sınav Sonuçları','chart','Deneme ve test sonuç listeleri, sıralamalar','academic','results'],
   ['grades','Not Çizelgesi','chart','Dönem not çizelgesi','tools','grades'],
@@ -188,7 +189,6 @@ const KATALOG=[
  ['evrak','Tutanak ve Evrak','pen','orange',[
   ['ogretmen-dosyasi','Öğretmen Dosyası','folder','Evrak listesi, hazır formlar ve teslim takibi','ogretmen-dosyasi'],
   ['veli-toplantisi','Veli Toplantısı','users','Dilekçe, tutanak, imza sirküsü ve davet pusulası','veli-toplantisi'],
-  ['yazili-teslim','Yazılı Kâğıdı Teslim Tutanağı','doc','Yazılı sınav kâğıtlarını teslim tutanağı','yazili-teslim'],
   ['ders-kesim','Ders Kesim Raporu','doc','Dönem ve yıl sonu ders kesim durumu raporu','ders-kesim'],
   ['sinif-rehberlik','Sınıf Rehberlik','users','Yıllık plan, aylık ve yıl sonu raporları, risk haritası, kazanımlar','sinif-rehberlik'],
   ['tutanak','Tutanak Hazırla','pen','Toplantı ve olay tutanakları','tutanak'],
@@ -376,6 +376,19 @@ function placeInto(menus,id,known=null){
 /* Kayıtlı (özelleştirilmiş) düzeni güncel katalogla uzlaştırır:
  *   • düzen sürümü eski/eksikse menüler ve alt çubuk yeni varsayılana döner (sık kullandıklar korunur), bir kez haber verilir;
  *   • katalogdaki yeni sayfa kullanıcının "gorulen" listesinde yoksa menüsüne eklenir; kullanıcının bilerek çıkardığı sayfa geri gelmez. */
+/* Katalogda başka menüye taşınan sayfalar: [sayfa, eski menü, yeni menü]. Kullanıcının kayıtlı düzeninde bir kez taşınır
+ * (yapıldığı `gorulen` içinde "tasi:sayfa>yeni" ile işaretlenir; sonra kullanıcı sayfayı istediği yere koyabilir).
+ * Taşıma, sayfa eski menüdeyse ve yeni menü kullanıcıda varsa olur; sayfa yeni menüde katalogdaki sırasına girer. */
+const TASINANLAR=[['yazili-teslim','evrak','sinav']];
+const tasiIsareti=([id,,yeni])=>`tasi:${id}>${yeni}`;
+const gorulenListesi=r=>[...scopeIds(r),...TASINANLAR.map(tasiIsareti)];
+function tasi(menus,[id,eski,yeni]){
+  const a=menus.find(m=>m.id===eski),b=menus.find(m=>m.id===yeni);
+  if(!a||!b||!a.ids.includes(id)||b.ids.includes(id))return;
+  a.ids=a.ids.filter(x=>x!==id);
+  const sira=Object.values(TOOLS).filter(t=>t.kat===yeni).map(t=>t.id),onceki=sira[sira.indexOf(id)-1],i=b.ids.indexOf(onceki);
+  b.ids.splice(i<0?b.ids.length:i+1,0,id);
+}
 function settle(r,o){
   if(!o||!(o.menus||o.bar))return o;
   if((Number(o.v)||0)<LAYOUT_SURUM){
@@ -385,10 +398,12 @@ function settle(r,o){
   }
   if(!o.menus)return o;
   const ids=scopeIds(r),known=new Set(Array.isArray(o.gorulen)?o.gorulen:[]);
-  if(ids.every(id=>known.has(id)))return o;
+  const tasinacak=TASINANLAR.filter(t=>!known.has(tasiIsareti(t)));
+  if(ids.every(id=>known.has(id))&&!tasinacak.length)return o;
   const menus=cleanMenus(o.menus);
+  tasinacak.forEach(t=>tasi(menus,t));
   ids.filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id,known));
-  writeOverride(r,{menus,gorulen:ids},{silent:true});
+  writeOverride(r,{menus,gorulen:gorulenListesi(r)},{silent:true});
   return readOverride(r);
 }
 /* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı varsayılandan gelir. */
@@ -414,7 +429,7 @@ function writeOverride(r,patch,{reset=false,silent=false}={}){
 /* Düzeni kaydeder: tek yer, tüm düzenleme buradan geçer. Kullanıcının gördüğü sayfalar `gorulen`'e yazılır. */
 function saveLayout(next,r=role(),{silent=false}={}){
   const menus=cleanMenus(next?.menus);
-  writeOverride(r,{v:LAYOUT_SURUM,menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav),gorulen:scopeIds(r)},{silent});
+  writeOverride(r,{v:LAYOUT_SURUM,menus,bar:cleanBar(next?.bar,menus,r),fav:cleanIds(next?.fav??layoutRaw(r).fav),gorulen:gorulenListesi(r)},{silent});
   return layoutRaw(r);
 }
 const resetLayout=(r=role())=>writeOverride(r,null,{reset:true});

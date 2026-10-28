@@ -74,7 +74,7 @@ assert(C.belge({birim:'adet'}).includes('(…………………) adet sınav kâ
 assert(uiSrc.includes('data-ytt="birim"')&&/birim:s\.birim/.test(uiSrc),'Ekranda birim seçici var ve belgeye aktarılır.');
 
 /* uygulama bağlantıları */
-assert(/\['yazili-teslim','Yazılı Kâğıdı Teslim Tutanağı','doc'[^\]]*'yazili-teslim'\]/.test(nav),'Tutanak ve Evrak menüsünde yer almalı.');
+assert(/\['written','Yazılı Sınavlar'[^\]]*\],\s*\['yazili-teslim','Yazılı Kâğıdı Teslim Tutanağı','doc'[^\]]*'yazili-teslim'\],\s*\['trial'/.test(nav),'Sınav ve Not menüsünde, Yazılı Sınavlar’ın hemen altında yer almalı (Tutanak ve Evrak’ta değil).');
 assert(nav.includes("'yazili-teslim':'📦'")&&nav.includes("'yazili-teslim':'yazılı kağıdı"),'Simge ve arama anahtar sözcükleri.');
 assert(/if\(name==='yazili-teslim'\)\{[\s\S]*?YaziliTeslimModule\.open\(\)/.test(shell)&&shell.includes("yazili-teslim-core.js?v=2")&&shell.includes("yazili-teslim.js?v=2"),'Rota modülü yükleyip açmalı.');
 assert((katalog.match(/\{f:\["yazili-teslim"\],a:"yazili-teslim"\}/g)||[]).length===3,'Öğretmen Dosyası’ndaki üç yazılı kâğıdı maddesi sayfaya bağlanmalı.');
