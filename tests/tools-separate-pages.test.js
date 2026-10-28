@@ -15,6 +15,6 @@ assert(tools.includes("for(const tip of FORM_TYPES)"),'Kontrol Listeleri bağlı
 assert(!tools.includes('MutationObserver'),'Tools canonical ekranı MutationObserver parity katmanı kullanmamalı.');
 assert(shell.includes("name==='tools'&&['checklists','map','attendance'].includes(page)"),'Shell Tools ana sayfalarını doğrudan route etmeli.');
 assert(shell.includes('ToolsModule?.openPage?.(page,title)'),'Shell Tools tab click yerine openPage kullanmalı.');
-assert(shell.includes("ToolsModule?.openPage?.('forms',title)"),'Form sayfaları gizli Tools sekmesi yerine forms openPage kullanmalı.');
+assert(shell.includes("ToolsModule?.openPage?.('forms',wanted)"),'Form sayfaları gizli Tools sekmesi yerine forms openPage kullanmalı (menü etiketiyle değil, kanonik çizelge adıyla).');
 assert(!shell.includes('[data-tools-tab='),'Shell Tools tab selector kullanmamalı.');
 console.log('Tools ayrı sayfa + tek-sahip Çizelgeler routing sözleşmesi başarılı.');
