@@ -145,7 +145,7 @@ function installNativePullRefreshScrollGuard(){
     if(!nestedScrollable)blocked=Number(document.scrollingElement?.scrollTop||0)>1;
     try{native.setChildCanScrollUp(!!blocked)}catch(_){ }
   };
-  const interactiveSelector='button,a,input,textarea,select,summary,[role="button"],[role="link"],[contenteditable="true"],[data-sbe-merge],[data-sbe-unmerge],[data-sbe-delete],[data-sbe-table-add-row],[data-sbe-table-del-row],[data-sbe-table-add-col],[data-sbe-table-del-col]';
+  const interactiveSelector='button,a,input,textarea,select,summary,[role="button"],[role="link"],[contenteditable="true"],[data-sbe-merge],[data-sbe-unmerge],[data-sbe-delete],[data-sbe-table-add-row],[data-sbe-table-del-row],[data-sbe-table-add-col],[data-sbe-table-del-col],[data-ptr-block]';
   const setInteractive=active=>{
     try{native.setInteractiveTouch?.(!!active)}catch(_){}
   };

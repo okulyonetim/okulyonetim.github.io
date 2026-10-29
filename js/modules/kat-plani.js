@@ -12,7 +12,7 @@
 if(global.KatPlani)return;
 const D=document;
 const TIP='katPlanlari';
-const SRC=['js/modules/kat-plani-core.js?v=3','js/modules/kat-plani-simge.js?v=3','js/modules/kat-plani-image.js?v=3','js/modules/kat-plani-cizim.js?v=3'];
+const SRC=['js/modules/kat-plani-core.js?v=4','js/modules/kat-plani-simge.js?v=4','js/modules/kat-plani-image.js?v=4','js/modules/kat-plani-cizim.js?v=4'];
 const core=()=>global.KatPlaniCore,G=()=>global.KatPlaniSimge,Z=()=>global.KatPlaniCizim,IM=()=>global.KatPlaniImage;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
@@ -827,7 +827,7 @@ async function ac_(opts){
   S={katlar,ayar,aktifId:katlar.find(k=>k.ad==='Zemin Kat')?.id||katlar[0].id,arac:'sec',grup:'yangin',sembolTur:'sondurucu',yolGrup:'guzergah',yolTur:'temel',duzenAlindi:false,sec:null,taslak:null,hover:null,fare:false,
     g:{x:0,y:0,z:1},fitZ:1,dpr:1,ptr:new Map(),drag:null,pinch:null,kirli:new Set(),silinen:new Set(),ayarKirli:false,kaydediyor:false,sheet:false,W:null,
     kapsam:'kat',accent,onClose:opts.onClose||null,kameraDokunuldu:false};
-  root=D.createElement('div');root.className='kpl-root';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','Kat planı');root.setAttribute('data-kat-plani','');
+  root=D.createElement('div');root.className='kpl-root';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','Kat planı');root.setAttribute('data-kat-plani','');root.setAttribute('data-ptr-block','');   /* APK: tuval kaydırması / çizimi çekip-yenileyi tetiklemesin (mobile-runtime-fixes.js) */
   root.innerHTML=KABUK;R('odalar').innerHTML=core().ODA_ADLARI.map(a=>`<option value="${esc(a)}"></option>`).join('');(opts.host||D.body).appendChild(root);
   try{D.body.classList.add('modal-open')}catch(_){}
   try{const r=global.KorukPlatformAdapter?.setPullToRefreshEnabled?.(false);if(r?.catch)r.catch(()=>{})}catch(_){}

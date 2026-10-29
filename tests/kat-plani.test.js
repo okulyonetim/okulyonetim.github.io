@@ -226,6 +226,7 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   ['data-act="yoltur"','data-r="yoltur"','S.yolTur','S.yolGrup'].forEach(t=>assert(ed.includes(t),'editör: '+t));
   ['data-act="grup"','data-act="genelboy"','data-r="ogeboy"','data-r="ogenot"','kplOda'].forEach(t=>assert(ed.includes(t),'editör: '+t));
   assert(!/data-f="sembolBoyut"/.test(ed),'genel boyut yalnız palette (ayar sayfasında yinelenmez)');
+  assert(/data-ptr-block/.test(ed)&&/\[data-ptr-block\]/.test(oku('js/core/platform/mobile-runtime-fixes.js')),'APK: editör kaydırması çekip-yenileyi tetiklemez');
   assert(/akis:true,kenarBosluk:10/.test(ed),'yazdırma: akış + 10 mm kenar boşluğu');
   assert(!/extraHead/.test(ed),'yazdırma: extraHead verilirse sayfa kenar boşluğu kaybolur');
   assert(/TR_ASCII/.test(ed),'dosya adları ASCII\'ye çevrilir');
@@ -236,8 +237,8 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   assert(/match \/oy_katPlanlari\/\{/.test(oku('firestore.rules')),'firestore kuralı');
   assert(/\.kpl-root/.test(oku('css/design-system-base.css'))&&/\.kpl-gorsel/.test(oku('css/design-system-base.css')),'CSS bloğu');
   const sw=oku('service-worker.js');
-  for(const f of ['kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=3'),'SW önbelleği: '+f);
-  assert(/kat-plani\.js\?v=3/.test(oku('js/core/shell-ui.js')),'shell yükleyicisi sürümü');
+  for(const f of ['kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=4'),'SW önbelleği: '+f);
+  assert(/kat-plani\.js\?v=4/.test(oku('js/core/shell-ui.js')),'shell yükleyicisi sürümü');
   /* dosya adı dönüşümü (editör içinde özel; aynı kural burada denetlenir) */
   const m=ed.match(/const TR_ASCII=(\{[^}]*\});\s*const dosyaAdi=([^\n]*)\n/);assert(m,'dosyaAdi tanımı bulunamadı');
   const dosyaAdi=new Function('TR_ASCII','return '+m[2].replace(/;$/,''))(eval('('+m[1]+')'));
