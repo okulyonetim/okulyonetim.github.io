@@ -1509,7 +1509,7 @@ function open(opts){
   if(editable&&calc(S).total===0)S.mode='edit';
   S.saved=dirtyKey();
   if(seeded||(editable&&S.dropped.length))S.saved='';   /* yeni oluşturulan ya da temizlenen plan: kaydedilmemiş sayılsın */
-  root=document.createElement('div');root.className='bsg-root csg-root';root.id='classSeatingGrid';root.setAttribute('data-class-seating-overlay','');
+  root=document.createElement('div');root.className='bsg-root csg-root';root.id='classSeatingGrid';root.setAttribute('data-class-seating-overlay','');root.setAttribute('data-ptr-block','');   /* APK: tuval kaydırması çekip-yenileyi tetiklemesin (mobile-runtime-fixes.js) */
   root.innerHTML=SKELETON;
   (opts.host||document.body).appendChild(root);
   try{document.body.classList.add('modal-open')}catch(_){}

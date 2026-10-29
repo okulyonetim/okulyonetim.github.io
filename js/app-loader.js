@@ -26,7 +26,7 @@ define('people',['js/modules/people.js','js/modules/people-import.js','js/module
 define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=2','js/modules/yillik-plan-word.js?v=2','js/modules/yillik-plan-excel.js?v=1','js/modules/yillik-plan-dialog.js?v=1','js/modules/yillik-plan-ui.js?v=2','js/modules/academic.js?v=901']);
 define('management',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/management.js?v=899']);
 define('communication',['js/modules/communication.js?v=841','js/modules/assistant.js']);
-define('transport',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/transport.js?v=955']);
+define('transport',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/transport.js?v=956']);
 define('food',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/food-menu.js?v=1040']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/reports.js?v=23']);

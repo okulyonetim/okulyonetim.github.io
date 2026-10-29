@@ -181,7 +181,7 @@ assert(bridge.includes('const isTeacherUser=()=>activeUser().admin!==true&&!!act
 assert(bridge.includes('global.SinifOturmaService.planKaydet(id,payload)')&&bridge.includes('global.SinifOturmaService.planGetir(id)'),'Okuma ve yazma canonical local-first servisten geçmeli.');
 assert(gridSrc.includes("setAttribute('data-class-seating-overlay'"),'Geri tuşu (transport.back) katmanı tanıyabilmeli.');
 const sw=fs.readFileSync('service-worker.js','utf8');
-assert(sw.includes("'./js/modules/class-seating-grid.js?v=2'")&&sw.includes("'./js/modules/class-seating.js'"),'Yeni motor ve köprü offline kabukta olmalı.');
+assert(sw.includes("'./js/modules/class-seating-grid.js?v=3'")&&sw.includes("'./js/modules/class-seating.js'"),'Yeni motor ve köprü offline kabukta olmalı.');
 const css=fs.readFileSync('css/design-system-base.css','utf8');
 const a=css.indexOf('SINIF OTURMA IZGARASI (js/modules/class-seating-grid.js)'),b=css.indexOf('/* ===== SINIFLAR — liste ve detay (kcl-*)');
 assert(a>-1&&b>a,'Sınıf oturma ızgarası CSS bölümü olmalı.');

@@ -866,7 +866,7 @@ function gridEditorOpen(){return !!window.BusSeatingGrid?.isOpen?.()}
 async function openGridEditor(s){
   if(gridOpening||gridEditorOpen())return;gridOpening=true;
   try{
-    if(!window.BusSeatingGrid?.open)await window.AppLoader?.loadScript?.('js/modules/bus-seating-grid.js?v=3');
+    if(!window.BusSeatingGrid?.open)await window.AppLoader?.loadScript?.('js/modules/bus-seating-grid.js?v=4');
     if(!window.BusSeatingGrid?.open)throw new Error('bus-seating-grid-load');
     const servisId=s.id,p=currentPlan(servisId)||{},raw=window.soPlanElementleriGetir?.(p,p.sablon||'ducato')||[],v2=Number(p.layout?.table?.editorVersion)===2,elements=v2?raw:sbeNormalize(raw);
     const list=students(servisId).map(v=>({id:v.id,name:v.ogrenciAdi||'',className:className(v.sinifId,v.sinifAdi),classId:v.sinifId||'',guardian:v.veliAdi||''}));

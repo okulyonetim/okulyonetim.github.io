@@ -196,7 +196,7 @@ assert.strictEqual(P.pickTemplate(500),'otobus');
 function runWiring(){
   const tr=fs.readFileSync('js/modules/transport.js','utf8'),loader=fs.readFileSync('js/app-loader.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8');
   const css=fs.readFileSync('css/design-system-base.css','utf8'),entry=fs.readFileSync('css/design-system.css','utf8'),idx=fs.readFileSync('index.html','utf8'),bundles=fs.readFileSync('scripts/build-client-bundles.mjs','utf8');
-  assert(/async function openGridEditor\(s\)/.test(tr)&&tr.includes("js/modules/bus-seating-grid.js?v=3"),'transport.js yeni editörü tembel yüklemeli');
+  assert(/async function openGridEditor\(s\)/.test(tr)&&tr.includes("js/modules/bus-seating-grid.js?v=4"),'transport.js yeni editörü tembel yüklemeli');
   assert((tr.match(/function openBusEditor\([\s\S]*?function openLegacyBusEditor/)||[''])[0].includes('openGridEditor(s)'),'openBusEditor yeni editörü açmalı');
   assert(tr.includes('function openLegacyBusEditor(')&&tr.includes('openLegacyBusEditor(s.id)'),'yükleme hatasında eski editöre düşülmeli');
   assert(tr.includes('planTableKaydet(servisId,payload.sablon,payload.elements,payload.layout,payload.planAdi)'),'kayıt ServisOturmaService.planTableKaydet ile yapılmalı');
@@ -206,7 +206,7 @@ function runWiring(){
   assert(tr.includes('SABLON_AD[p?.sablon]'),'servis oturma listesi şablon adlarını okunur göstermeli');
   const tv=loader.match(/js\/modules\/transport\.js\?v=(\d+)/)[1],stv=sw.match(/js\/modules\/transport\.js\?v=(\d+)/)[1];
   assert.strictEqual(tv,stv,'transport.js sürümü yükleyici ve service worker’da aynı olmalı');
-  assert(sw.includes("./js/modules/bus-seating-grid.js?v=3"),'service worker yeni modülü önbelleğe almalı');
+  assert(sw.includes("./js/modules/bus-seating-grid.js?v=4"),'service worker yeni modülü önbelleğe almalı');
   const dsv=idx.match(/css\/design-system\.css\?v=(\d+)/)[1];assert(sw.includes(`./css/design-system.css?v=${dsv}`),'service worker CSS sürümü index.html ile aynı olmalı');
   assert(/design-system-base\.css\?v=\d+/.test(entry));
   assert(bundles.includes("'js/modules/bus-seating-grid.js'"),'derleme betiği yeni modülü transport paketine eklemeli');
