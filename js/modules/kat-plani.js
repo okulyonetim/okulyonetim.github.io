@@ -33,7 +33,7 @@ const ICONS={
 };
 const ic=n=>`<svg class="kpl-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]||''}</svg>`;
 
-let S=null,root=null,ac=null,ro=null,raf=0;
+let S=null,root=null,ac=null,ro=null,raf=0,unl=null;
 const R=n=>root?.querySelector(`[data-r="${n}"]`);
 
 /* ───────── kimlik / yetki / okul bilgisi ───────── */
@@ -59,6 +59,36 @@ async function veriHazirla(){
   }
 }
 const satirlar=()=>{try{return global.DeviceData?.list?.(TIP)||[]}catch(_){return[]}};
+/* Kayıt imzası: belge kimliği → son değişiklik damgası. Başka cihazdan gelen değişiklik imzayı değiştirir; kendi kaydımız (kaydet) imzaya işlenir. */
+function damga(r){
+  const v=r?.guncellenmeTarihi;
+  if(v==null)return String(r?.guncellendi||'');
+  if(typeof v.toMillis==='function')return String(v.toMillis());
+  if(v.seconds!=null)return v.seconds+'.'+(v.nanoseconds||0);
+  if(v instanceof Date)return String(v.getTime());
+  return String(v);
+}
+const imzaHarita=()=>{const m={};for(const r of satirlar())if(r&&r.id)m[r.id]=damga(r);return m};
+const imzaMetni=m=>Object.keys(m||{}).sort().map(i=>i+'='+m[i]).join('|');
+const sagaDoguMu=()=>!root||!S||kirliMi()||S.kaydediyor||S.drag||S.sheet||S.pinch||S.taslak||S.W;
+/* Başka cihazda (web ↔ APK) kaydedilen plan, editör açıkken de görünür: elde kaydedilmemiş değişiklik yoksa katlar yeniden kurulur. */
+async function yenidenKur(){
+  if(sagaDoguMu())return false;
+  const im=imzaHarita();if(imzaMetni(im)===imzaMetni(S.imza))return false;
+  const yeni=await katlariKur();
+  if(sagaDoguMu())return false;
+  const onceki=S.aktifId;
+  S.katlar=yeni.katlar;S.ayar=yeni.ayar;S.imza=im;S.sec=null;
+  S.aktifId=S.katlar.some(k=>k.id===onceki)?onceki:S.katlar[0].id;
+  tabsCiz();selCiz();ipucuCiz();durumGuncelle();
+  if(onceki!==S.aktifId)sigdir();else iste();
+  return true;
+}
+/* Sunucudaki son hali çeker (zorla: 24 saatlik bayatlık süresi beklenmez); yalnız değişen belgeler iner. */
+function uzaktanCek(){
+  if(!global.SyncEngine?.sync||navigator.onLine===false)return Promise.resolve(false);
+  return global.SyncEngine.sync([TIP],{force:true}).then(()=>yenidenKur()).catch(()=>false);
+}
 async function katlariKur(){
   const C=core(),rows=satirlar(),alt=new Map();
   rows.filter(r=>r&&r.tur==='altlik'&&r.katId).forEach(r=>alt.set(r.katId,r));
@@ -77,6 +107,18 @@ async function katlariKur(){
 }
 function kirletKat(k){S.kirli.add(k.id);k.guncellendi=new Date().toISOString();durumGuncelle()}
 const kirliMi=()=>S&&(S.kirli.size>0||S.silinen.size>0||S.ayarKirli);
+/* Yerel kayıt sunucuya gitmezse (ör. firestore.rules yayınlanmamış) başka cihaz planı göremez; sessiz kalmak yerine kullanıcıya söylenir. */
+async function sunucuyaGonder(){
+  try{
+    const SE=global.SyncEngine,LF=global.KorukLocalFirst,u=kullanici().uid;
+    if(!SE?.flush||!LF?.pending||!u||navigator.onLine===false)return;
+    await SE.flush();
+    const bekleyen=(await LF.pending(u)||[]).filter(op=>op&&(op.dataType===TIP||op.collection===global.COL?.[TIP])&&op.lastError);
+    if(!bekleyen.length)return;
+    const izin=/permission|unauthorized|insufficient/i.test(bekleyen[0].lastError);
+    toast(izin?'Bu cihaza kaydedildi ama sunucuya yazma izni yok: firestore.rules yayınlanmalı, aksi halde başka cihazda görünmez.':'Bu cihaza kaydedildi; sunucuya gönderilemedi, sonra yeniden denenecek.');
+  }catch(_){}
+}
 async function kaydet(){
   if(!S||S.kaydediyor)return false;
   if(!kirliMi())return true;
@@ -86,19 +128,22 @@ async function kaydet(){
     const DD=global.DeviceData,COLN=global.COL?.[TIP];
     if(!DD||!COLN)throw new Error('Cihaz deposu hazır değil.');
     const C=core();
+    const yazilan=new Set(),silinenler=new Set();
     for(const id of [...S.kirli]){
       const k=S.katlar.find(x=>x.id===id);if(!k)continue;
-      await DD.set(TIP,COLN,k.id,C.katBelgesi(k),{merge:false});
+      await DD.set(TIP,COLN,k.id,C.katBelgesi(k),{merge:false});yazilan.add(k.id);
       if(k.altlikKirli){
-        if(k.altlik)await DD.set(TIP,COLN,C.altlikId(k.id),{tur:'altlik',katId:k.id,w:k.altlik.w,h:k.altlik.h,veri:k.altlik.veri},{merge:false});
-        else await DD.remove(TIP,COLN,C.altlikId(k.id));
+        if(k.altlik){await DD.set(TIP,COLN,C.altlikId(k.id),{tur:'altlik',katId:k.id,w:k.altlik.w,h:k.altlik.h,veri:k.altlik.veri},{merge:false});yazilan.add(C.altlikId(k.id))}
+        else{await DD.remove(TIP,COLN,C.altlikId(k.id));silinenler.add(C.altlikId(k.id))}
         k.altlikKirli=false;
       }
     }
-    for(const id of [...S.silinen]){await DD.remove(TIP,COLN,id);await DD.remove(TIP,COLN,C.altlikId(id))}
-    if(S.ayarKirli)await DD.set(TIP,COLN,'ayar',{tur:'ayar',...S.ayar},{merge:false});
+    for(const id of [...S.silinen]){await DD.remove(TIP,COLN,id);await DD.remove(TIP,COLN,C.altlikId(id));silinenler.add(id);silinenler.add(C.altlikId(id))}
+    if(S.ayarKirli){await DD.set(TIP,COLN,'ayar',{tur:'ayar',...S.ayar},{merge:false});yazilan.add('ayar')}
     S.kirli.clear();S.silinen.clear();S.ayarKirli=false;
-    try{global.SyncEngine?.schedule?.(0)}catch(_){}
+    /* kendi yazdıklarım imzaya işlenir (yeniden kurulup geri-al geçmişi/seçim kaybolmasın); başka belgelerdeki uzak değişiklik imzada farklı kalır */
+    const im=imzaHarita();for(const id of yazilan)if(im[id]!=null)S.imza[id]=im[id];for(const id of silinenler)delete S.imza[id];
+    sunucuyaGonder();
     toast('Kaydedildi.');return true;
   }catch(e){console.error('[KatPlani/kaydet]',e);toast('Kaydedilemedi: '+(e?.message||e));return false}
   finally{S.kaydediyor=false;durumGuncelle()}
@@ -826,7 +871,7 @@ async function ac_(opts){
   let accent='#2563eb';try{accent=getComputedStyle(D.documentElement).getPropertyValue('--t-accent').trim()||accent}catch(_){}
   S={katlar,ayar,aktifId:katlar.find(k=>k.ad==='Zemin Kat')?.id||katlar[0].id,arac:'sec',grup:'yangin',sembolTur:'sondurucu',yolGrup:'guzergah',yolTur:'temel',duzenAlindi:false,sec:null,taslak:null,hover:null,fare:false,
     g:{x:0,y:0,z:1},fitZ:1,dpr:1,ptr:new Map(),drag:null,pinch:null,kirli:new Set(),silinen:new Set(),ayarKirli:false,kaydediyor:false,sheet:false,W:null,
-    kapsam:'kat',accent,onClose:opts.onClose||null,kameraDokunuldu:false};
+    kapsam:'kat',accent,onClose:opts.onClose||null,kameraDokunuldu:false,imza:imzaHarita()};
   root=D.createElement('div');root.className='kpl-root';root.setAttribute('role','dialog');root.setAttribute('aria-modal','true');root.setAttribute('aria-label','Kat planı');root.setAttribute('data-kat-plani','');root.setAttribute('data-ptr-block','');   /* APK: tuval kaydırması / çizimi çekip-yenileyi tetiklemesin (mobile-runtime-fixes.js) */
   root.innerHTML=KABUK;R('odalar').innerHTML=core().ODA_ADLARI.map(a=>`<option value="${esc(a)}"></option>`).join('');(opts.host||D.body).appendChild(root);
   try{D.body.classList.add('modal-open')}catch(_){}
@@ -846,21 +891,18 @@ async function ac_(opts){
   if(typeof ResizeObserver==='function'){ro=new ResizeObserver(()=>{if(!root)return;boyutla();if(S.W)wKirpCiz()});ro.observe(R('stage'))}
   tabsCiz();aracCiz();selCiz();ipucuCiz();durumGuncelle();
   requestAnimationFrame(()=>{boyutla();sigdir()});
-  /* başka cihazdaki kayıtlar: arka planda çekilir; kullanıcı henüz değişiklik yapmadıysa yenilenir */
+  /* başka cihazdaki (web ↔ APK) kayıtlar: açılışta ve uygulamaya dönüldüğünde zorla çekilir; gelen değişiklik editör açıkken de yansır */
   try{
-    if(global.SyncEngine?.sync&&navigator.onLine!==false)global.SyncEngine.sync([TIP]).then(async()=>{
-      if(!root||!S||kirliMi()||S.drag||S.sheet)return;
-      const yeni=await katlariKur(),onceki=S.aktifId;
-      if(!root||kirliMi())return;
-      S.katlar=yeni.katlar;S.ayar=yeni.ayar;S.aktifId=S.katlar.some(k=>k.id===onceki)?onceki:S.katlar[0].id;
-      tabsCiz();selCiz();ipucuCiz();durumGuncelle();sigdir();
-    }).catch(()=>{});
+    let t=0;
+    unl=global.DeviceData?.listen?.(TIP,()=>{clearTimeout(t);t=setTimeout(()=>{yenidenKur().catch(()=>{})},250)})||null;
+    D.addEventListener('visibilitychange',()=>{if(!D.hidden)uzaktanCek()},sg);
+    uzaktanCek();
   }catch(_){}
   return true;
 }
 function kapat(sessiz){
   if(!root)return;
-  try{ac?.abort()}catch(_){}ac=null;try{ro?.disconnect()}catch(_){}ro=null;if(raf){cancelAnimationFrame(raf);raf=0}
+  try{ac?.abort()}catch(_){}ac=null;try{ro?.disconnect()}catch(_){}ro=null;try{unl?.()}catch(_){}unl=null;if(raf){cancelAnimationFrame(raf);raf=0}
   const cb=S?.onClose;
   root.remove();root=null;S=null;
   try{D.body.classList.remove('modal-open')}catch(_){}

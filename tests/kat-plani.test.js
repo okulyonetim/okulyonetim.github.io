@@ -237,8 +237,15 @@ assert(C&&C.normalizeKat&&C.okNoktalari&&C.sayfaDuzen,'KatPlaniCore API eksik');
   assert(/match \/oy_katPlanlari\/\{/.test(oku('firestore.rules')),'firestore kuralı');
   assert(/\.kpl-root/.test(oku('css/design-system-base.css'))&&/\.kpl-gorsel/.test(oku('css/design-system-base.css')),'CSS bloğu');
   const sw=oku('service-worker.js');
-  for(const f of ['kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim','kat-plani'])assert(sw.includes('./js/modules/'+f+'.js?v=4'),'SW önbelleği: '+f);
-  assert(/kat-plani\.js\?v=4/.test(oku('js/core/shell-ui.js')),'shell yükleyicisi sürümü');
+  for(const f of ['kat-plani-core','kat-plani-simge','kat-plani-image','kat-plani-cizim'])assert(sw.includes('./js/modules/'+f+'.js?v=4'),'SW önbelleği: '+f);
+  assert(sw.includes('./js/modules/kat-plani.js?v=5'),'SW önbelleği: kat-plani');
+  assert(/kat-plani\.js\?v=5/.test(oku('js/core/shell-ui.js')),'shell yükleyicisi sürümü');
+  /* web ↔ APK eşitleme: açılışta zorla çekim (bayatlık süresi beklenmez), editör açıkken gelen değişiklik yansır, kendi kaydım editörü yeniden kurmaz, sunucuya gitmeyen kayıt sessiz kalmaz */
+  assert(/SyncEngine\.sync\(\[TIP\],\{force:true\}\)/.test(ed),'açılışta/dönüşte sunucudan zorla çekim');
+  assert(/DeviceData\?\.listen\?\.\(TIP/.test(ed)&&/unl\?\.\(\)/.test(ed),'uzak değişiklik dinleyicisi açılır ve kapanışta bırakılır');
+  assert(/addEventListener\('visibilitychange'/.test(ed),'uygulamaya dönüşte çekim');
+  assert(/async function yenidenKur\(\)[\s\S]*?if\(sagaDoguMu\(\)\)return false/.test(ed)&&/const sagaDoguMu=\(\)=>[^\n]*kirliMi\(\)/.test(ed),'kaydedilmemiş değişiklik uzak veriyle ezilmez');
+  assert(/async function sunucuyaGonder\(\)/.test(ed)&&/firestore\.rules yayınlanmalı/.test(ed),'sunucuya gitmeyen kayıt kullanıcıya bildirilir');
   /* dosya adı dönüşümü (editör içinde özel; aynı kural burada denetlenir) */
   const m=ed.match(/const TR_ASCII=(\{[^}]*\});\s*const dosyaAdi=([^\n]*)\n/);assert(m,'dosyaAdi tanımı bulunamadı');
   const dosyaAdi=new Function('TR_ASCII','return '+m[2].replace(/;$/,''))(eval('('+m[1]+')'));
