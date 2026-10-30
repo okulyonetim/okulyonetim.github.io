@@ -10,7 +10,8 @@ if(g.TerfiCore)return;
 const ISO=/^(\d{4})-(\d{2})-(\d{2})/;
 const pad=n=>String(n).padStart(2,'0');
 const num=v=>{const m=String(v??'').match(/\d+/),n=m?Number(m[0]):NaN;return Number.isFinite(n)&&n>0?n:NaN};
-const isoOnly=v=>ISO.test(String(v||''))?String(v).slice(0,10):'';
+/* DD.MM.YYYY veya DD/MM/YYYY formatını ISO'ya çevirir; zaten ISO ise olduğu gibi döner */
+const isoOnly=v=>{const s=String(v||'');if(ISO.test(s))return s.slice(0,10);const dmy=/^(\d{2})[./](\d{2})[./](\d{4})/.exec(s);return dmy?`${dmy[3]}-${dmy[2]}-${dmy[1]}`:'';};
 
 /* 29 Şubat'ta alınan terfi, artık olmayan yılda 28 Şubat sayılır. */
 function birYilSonra(iso){
