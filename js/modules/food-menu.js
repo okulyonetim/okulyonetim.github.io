@@ -12,6 +12,27 @@ function toast(msg){global.toast?.(msg)}
 
 const FOOD_DATA_TYPE='yemekMenuleri';
 
+/* 2026 Kasım Ortak Yemek Listesi — yalnızca Kasım 2026 menüsü boşsa ilk kurulum verisi olarak kullanılır. */
+const OFFICIAL_FOOD_MENU_2026_11=Object.freeze({
+  2:['Tavuklu Bahçıvan Kebabı','Bulgur Pilavı','Ayran','Ekmek(75 g)'],
+  3:['Kıymalı Kabak Musakka','Soslu Makarna','Şekerpare','Ekmek(75 g)'],
+  4:['Mercimek Çorbası','Etli Patates Oturtma','Mandalina','Ekmek(75 g)'],
+  5:['Etli Nohut','Pirinç Pilavı','Yoğurt','Ekmek(75 g)'],
+  6:['Sebzeli Tavuk','Bulgur Pilavı','Salata','Ekmek(75 g)'],
+  9:['Et Sote','Soslu Makarna','Ayran','Ekmek(75 g)'],
+  10:['Yayla Çorbası','Kıymalı Patates','Elma','Ekmek(75 g)'],
+  11:['Sebzeli Tavuk','Soslu Makarna','Şekerpare','Ekmek(75 g)'],
+  12:['Güveç','Şehriyeli Pirinç Pilavı','Ayran','Ekmek(75 g)'],
+  13:['İzmir Köfte','Soslu Makarna','Salata','Ekmek(75 g)'],
+  /* 16-20 Kasım Ara Tatil */
+  23:['Etli Kuru Fasulye','Pirinç Pilavı','Yoğurt','Ekmek(75 g)'],
+  24:['Etli Patates Oturtma','Salçalı Bulgur Pilavı','Kek/Kurabiye','Ekmek(75 g)'],
+  25:['Tavuk Haşlama','Soslu Makarna','Ayran','Ekmek(75 g)'],
+  26:['Etli Türlü','Mercimek Çorbası','Salata','Ekmek(75 g)'],
+  27:['Patlıcan Musakka','Pirinç Pilavı','Ayran','Ekmek(75 g)'],
+  30:['Tavuk Sote','Bulgur Pilavı','Mandalina','Ekmek(75 g)']
+});
+
 /* 2026 Ekim Ortak Yemek Listesi — yalnızca Ekim 2026 menüsü boşsa ilk kurulum verisi olarak kullanılır. */
 const OFFICIAL_FOOD_MENU_2026_10=Object.freeze({
   1:['Kıymalı Kabak Musakka','Bulgur Pilavı','Ayran','Ekmek(75 g)'],
@@ -57,6 +78,19 @@ async function seedOfficialOctober2026(){
  all[key]=menu;
  const saved=await foodMenuLocalSave();
  if(saved)console.info('[FoodMenu] 2026 Ekim ortak yemek listesi cihaza aktarıldı.');
+ return saved;
+}
+async function seedOfficialNovember2026(){
+ const key='2026-11';
+ const all=foodMenuLoad();
+ const existing=all[key]||{};
+ const hasExisting=Object.values(existing).some(v=>foodDayItems(v).length);
+ if(hasExisting)return false;
+ const menu={};
+ for(let day=1;day<=30;day++)menu[day]={items:Array.isArray(OFFICIAL_FOOD_MENU_2026_11[day])?[...OFFICIAL_FOOD_MENU_2026_11[day]]:[]};
+ all[key]=menu;
+ const saved=await foodMenuLocalSave();
+ if(saved)console.info('[FoodMenu] 2026 Kasım ortak yemek listesi cihaza aktarıldı.');
  return saved;
 }
 let foodMenuHydrated=false,foodSelfSaving=false,foodSaveSeq=0,foodMenuStoreRef=null;
@@ -413,6 +447,7 @@ async function prepareLocal(){
  global.SyncEngine.register?.('yemekMenuleri',global.COL?.yemekMenuleri);
  await global.SyncEngine.localHydrate?.(['yemekMenuleri']);
  await seedOfficialOctober2026();
+ await seedOfficialNovember2026();
  if(global.navigator?.onLine&&typeof global.SyncEngine.sync==='function'){
   try{await global.SyncEngine.sync(['yemekMenuleri'])}
   catch(e){console.warn('[FoodMenu] Uzak menü senkronizasyonu başarısız:',e?.message||e);global.SyncEngine.schedule?.(100)}
