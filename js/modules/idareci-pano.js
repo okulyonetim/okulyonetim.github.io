@@ -30,12 +30,13 @@ const KARTLAR=[
  {id:'gunler',ad:'Belirli gün ve haftalar',w:4,ico:'flag'},
  {id:'dilimiz',ad:'Dilimizin Zenginlikleri',w:6,ico:'book'},
  {id:'yaklasan',ad:'Yaklaşanlar',w:4,ico:'bell'},
+ {id:'gununsozleri',ad:'Günün Ayeti / Hadisi / Özlü Sözü',w:6,ico:'quote'},
  {id:'rehber',ad:'Sınıf rehber öğretmenleri',w:12,ico:'users'}
 ];
 const KIDS=KARTLAR.map(k=>k.id);
 const KMAP=Object.fromEntries(KARTLAR.map(k=>[k.id,k]));
 const SURELER=[10,20,30,60];
-const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi'],['ogretmenler','dilimiz','rehber']];
+const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi'],['ogretmenler','dilimiz','gununsozleri'],['rehber']];
 
 const P='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
 const svg=(d,s=18)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" ${P}>${d}</svg>`;
@@ -62,7 +63,8 @@ const ICON={
  up:svg('<path d="M6 15l6-6 6 6"/>',16),
  down:svg('<path d="M6 9l6 6 6-6"/>',16),
  close:svg('<path d="M6 6l12 12M18 6L6 18"/>'),
- x:svg('<path d="M6 6l12 12M18 6L6 18"/>',14)
+ x:svg('<path d="M6 6l12 12M18 6L6 18"/>',14),
+ quote:svg('<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1zm12 0c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>')
 };
 
 /* ── durum ── */
@@ -240,7 +242,16 @@ function rehberHtml(){
  const seg=[['tum','Tümü'],['ilk','İlkokul'],['orta','Ortaokul']].map(([k,l])=>`<button type="button" data-ip-act="rehber-kademe" data-k="${k}" aria-pressed="${S.rehberK===k}">${l}</button>`).join('');
  return card('rehber',`<div class="ka-ip-bar2"><div class="ka-ip-seg" role="group" aria-label="Kademe">${seg}</div><input type="search" class="ka-ip-input" data-ip-rehber-q aria-label="Sınıf ya da öğretmen ara" placeholder="Sınıf ya da öğretmen ara… (ör. 7/B)" value="${esc(S.rehberQ)}"></div><div class="ka-ip-tiles is-small" data-ip-rehber-grid>${rehberKartlari()}</div>`,{right:`${all.length} şube${bos?` · ${bos} boş`:''}`});
 }
-const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,rehber:rehberHtml};
+/* Günün ayeti / hadisi / özlü sözü: GununSozleri modülünden her gün için seçilen sözleri gösterir. */
+function gununSozleriHtml(){
+ const G=global.GununSozleri,pool=global.AppConfig?.get?.()?.sozHavuzu;
+ if(!G)return card('gununsozleri',empty('Söz modülü yüklenemedi.'));
+ const turler=G.TURLER.map(t=>({t,pick:G.bugun(t.key,pool)})).filter(x=>x.pick);
+ if(!turler.length)return card('gununsozleri',empty('Bugün için söz bulunamadı.'));
+ const items=turler.map(({t,pick})=>`<div class="ka-ip-soz"><div class="ka-ip-soz__tur">${esc(t.baslik)}</div><blockquote class="ka-ip-soz__metin">${esc(pick.metin)}</blockquote>${pick.kaynak?`<p class="ka-ip-soz__kaynak">${esc(pick.kaynak)}</p>`:''}</div>`).join('');
+ return card('gununsozleri',`<div class="ka-ip-soz-list">${items}</div>`);
+}
+const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,rehber:rehberHtml};
 
 /* ── sayfa ── */
 function strip(){
