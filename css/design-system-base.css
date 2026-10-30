@@ -14928,12 +14928,17 @@ html[data-theme] #v2ModuleRoot .ka-ip-tv-dots small{margin-left:var(--ka-sp-6);f
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx__t b{font-size:var(--ka-fs-86)}
   html[data-theme] #v2ModuleRoot .ka-ip-tv .ka-ip-wx small{font-size:var(--ka-fs-24)}
 }
-/* ── Günün sözleri kartı (.ka-ip-soz-*) ── */
-html[data-theme] #v2ModuleRoot .ka-ip-soz-list{display:flex;flex-direction:column;gap:var(--ka-sp-16)}
-html[data-theme] #v2ModuleRoot .ka-ip-soz{display:flex;flex-direction:column;gap:var(--ka-sp-6);padding:var(--ka-sp-14) var(--ka-sp-16);border-radius:var(--ka-card-radius);background:var(--gl-layer)}
+/* ── Günün sözleri kartı — carousel (.ka-ip-soz-*) ── */
+html[data-theme] #v2ModuleRoot .ka-ip-soz-stage{position:relative;overflow:hidden;min-height:var(--ka-sp-80)}
+html[data-theme] #v2ModuleRoot .ka-ip-soz{display:none;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .ka-ip-soz.is-active{display:flex;animation:ka-ip-soz-in .35s ease}
+@keyframes ka-ip-soz-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 html[data-theme] #v2ModuleRoot .ka-ip-soz__tur{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-900);letter-spacing:var(--ka-ls-12);color:var(--t-accent-ink);text-transform:uppercase}
-html[data-theme] #v2ModuleRoot .ka-ip-soz__metin{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-5);color:var(--gl-fg);font-style:normal}
-html[data-theme] #v2ModuleRoot .ka-ip-soz__kaynak{margin:var(--ka-sp-4) 0 0;font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .ka-ip-soz__metin{margin:0;font-size:var(--ka-fs-15);font-weight:var(--ka-fw-600);line-height:var(--ka-lh-1-5);color:var(--gl-fg);font-style:italic}
+html[data-theme] #v2ModuleRoot .ka-ip-soz__kaynak{margin:var(--ka-sp-4) 0 0;font-size:var(--ka-fs-12);color:var(--t-accent-ink);font-weight:var(--ka-fw-700);font-style:normal}
+html[data-theme] #v2ModuleRoot .ka-ip-soz-dots{display:flex;gap:var(--ka-sp-6);margin-top:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .ka-ip-soz-dot{appearance:none;margin:0;padding:0;border:none;background:var(--gl-edge);border-radius:var(--ka-r-10);width:var(--ka-sp-8);height:var(--ka-sp-8);cursor:pointer;transition:background .2s,width .2s}
+html[data-theme] #v2ModuleRoot .ka-ip-soz-dot.is-active{background:var(--t-accent-ink);width:var(--ka-sp-20)}
 
 /* ===== TYMM İLKOKUL ÖLÇEKLERİ (.ka-tm-*) — js/modules/tymm-olcek.js ===== */
 html[data-theme] #v2ModuleRoot .ka-tm{display:flex;flex-direction:column;gap:var(--ka-sp-12)}

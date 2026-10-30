@@ -68,7 +68,7 @@ const ICON={
 };
 
 /* ── durum ── */
-const S={cfg:null,notes:null,prog:{tur:'ogretmen',id:''},calY:0,calM:0,calSel:'',rehberK:'tum',rehberQ:'',noteDraft:'',draft:null,tv:false,tvFs:false,tvPage:0,liveKey:'',readAt:null};
+const S={cfg:null,notes:null,prog:{tur:'ogretmen',id:''},calY:0,calM:0,calSel:'',rehberK:'tum',rehberQ:'',noteDraft:'',draft:null,tv:false,tvFs:false,tvPage:0,liveKey:'',readAt:null,sozAt:0,sozTimer:0};
 let mounted=null,timer=0,tvTimer=0,renderQ=0,unsubs=[],wake=null,M=null;
 
 /* ── tercihler (KaPrefs: cihaz + hesap) ── */
@@ -242,14 +242,19 @@ function rehberHtml(){
  const seg=[['tum','Tümü'],['ilk','İlkokul'],['orta','Ortaokul']].map(([k,l])=>`<button type="button" data-ip-act="rehber-kademe" data-k="${k}" aria-pressed="${S.rehberK===k}">${l}</button>`).join('');
  return card('rehber',`<div class="ka-ip-bar2"><div class="ka-ip-seg" role="group" aria-label="Kademe">${seg}</div><input type="search" class="ka-ip-input" data-ip-rehber-q aria-label="Sınıf ya da öğretmen ara" placeholder="Sınıf ya da öğretmen ara… (ör. 7/B)" value="${esc(S.rehberQ)}"></div><div class="ka-ip-tiles is-small" data-ip-rehber-grid>${rehberKartlari()}</div>`,{right:`${all.length} şube${bos?` · ${bos} boş`:''}`});
 }
-/* Günün ayeti / hadisi / özlü sözü: GununSozleri modülünden her gün için seçilen sözleri gösterir. */
-function gununSozleriHtml(){
+/* Günün ayeti / hadisi / özlü sözü: carousel — anasayfadaki gibi tek alanda sırayla değişir. */
+function sozSlides(){
  const G=global.GununSozleri,pool=global.AppConfig?.get?.()?.sozHavuzu;
- if(!G)return card('gununsozleri',empty('Söz modülü yüklenemedi.'));
- const turler=G.TURLER.map(t=>({t,pick:G.bugun(t.key,pool)})).filter(x=>x.pick);
- if(!turler.length)return card('gununsozleri',empty('Bugün için söz bulunamadı.'));
- const items=turler.map(({t,pick})=>`<div class="ka-ip-soz"><div class="ka-ip-soz__tur">${esc(t.baslik)}</div><blockquote class="ka-ip-soz__metin">${esc(pick.metin)}</blockquote>${pick.kaynak?`<p class="ka-ip-soz__kaynak">${esc(pick.kaynak)}</p>`:''}</div>`).join('');
- return card('gununsozleri',`<div class="ka-ip-soz-list">${items}</div>`);
+ if(!G)return[];
+ return G.TURLER.map(t=>({t,pick:G.bugun(t.key,pool)})).filter(x=>x.pick);
+}
+function gununSozleriHtml(){
+ const slides=sozSlides();
+ if(!slides.length)return card('gununsozleri',empty('Bugün için söz bulunamadı.'));
+ const at=S.sozAt%slides.length;
+ const stage=slides.map((x,i)=>`<figure class="ka-ip-soz${i===at?' is-active':''}" data-soz-slide="${i}" ${i===at?'':'aria-hidden="true"'}><div class="ka-ip-soz__tur">${esc(x.t.baslik)}</div><blockquote class="ka-ip-soz__metin">${esc(x.pick.metin)}</blockquote>${x.pick.kaynak?`<p class="ka-ip-soz__kaynak">${esc(x.pick.kaynak)}</p>`:''}</figure>`).join('');
+ const dots=slides.length>1?`<div class="ka-ip-soz-dots" role="tablist" aria-label="Söz türü">${slides.map((x,i)=>`<button type="button" role="tab" class="ka-ip-soz-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x.t.baslik)}" data-ip-act="soz-dot" data-soz-i="${i}"></button>`).join('')}</div>`:'';
+ return card('gununsozleri',`<div class="ka-ip-soz-stage" data-soz-carousel>${stage}</div>${dots}`);
 }
 const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,rehber:rehberHtml};
 
@@ -362,11 +367,20 @@ function alive(){return !!mounted&&mounted.isConnected&&!!mounted.querySelector(
 const liveKey=()=>{const l=global.SchoolLiveStatus?.status?.(new Date())||{};return`${l.mode}|${l.period||''}|${l.nextPeriod||''}|${C().isoOf(new Date())}`};
 
 /* her saniye: saat + canlı şerit; ders dilimi değişince tüm pano yenilenir */
+function sozTick(){
+ const slides=sozSlides();if(slides.length<2)return;
+ if(Date.now()<S.sozTimer)return;
+ S.sozAt=(S.sozAt+1)%slides.length;
+ const card=mounted?.querySelector('[data-soz-carousel]');if(!card)return;
+ card.querySelectorAll('[data-soz-slide]').forEach((el,i)=>{const on=i===S.sozAt;el.classList.toggle('is-active',on);on?el.removeAttribute('aria-hidden'):el.setAttribute('aria-hidden','true')});
+ const dots=mounted?.querySelectorAll('[data-ip-act="soz-dot"]');dots?.forEach((d,i)=>{d.classList.toggle('is-active',i===S.sozAt);d.setAttribute('aria-selected',i===S.sozAt?'true':'false')});
+}
 function tick(){
  if(!alive()){destroy();return}
  const now=new Date();
  mounted.querySelectorAll('[data-ip-hm]').forEach(e=>{e.textContent=hm(now)});
  mounted.querySelectorAll('[data-ip-ss]').forEach(e=>{e.textContent=':'+pad(now.getSeconds())});
+ if(now.getSeconds()%8===0)sozTick();
  const w=wxView();
  mounted.querySelectorAll('[data-ip-wx]').forEach(e=>{if(e.dataset.wxSig===w.sig)return;e.dataset.wxSig=w.sig;e.innerHTML=w.html;e.hidden=!w.sig});
  const key=liveKey();
@@ -434,6 +448,7 @@ const ACT={
  gun:b=>{S.calSel=b.dataset.iso;const d=C().parseIso(S.calSel);if(d&&(d.getMonth()!==S.calM||d.getFullYear()!==S.calY)){S.calY=d.getFullYear();S.calM=d.getMonth()}refreshCard('takvim')},
  'not-sil':b=>{const g=S.notes.g[S.calSel]||[],i=g.findIndex(n=>n.id===b.dataset.id);if(i>=0){g.splice(i,1);saveNotes();refreshCard('takvim')}},
  'rehber-kademe':b=>{S.rehberK=b.dataset.k;refreshCard('rehber')},
+ 'soz-dot':b=>{S.sozAt=Number(b.dataset.sozI)||0;S.sozTimer=Date.now()+15000;refreshCard('gununsozleri')},
  git:async b=>{if(S.tv)tvClose();await global.ShellUI?.routeModule?.(b.dataset.route,{page:b.dataset.page||'',title:b.dataset.title||''})}
 };
 function bind(r){
