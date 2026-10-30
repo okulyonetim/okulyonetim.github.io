@@ -353,6 +353,25 @@ test('zorla çekme gerçekten uygular (pull force)',async()=>{
   assert.strictEqual(ids(B.data('hatirlaticilar')),JSON.stringify(['h1']),'force çekme veriyi uygulamalı');
 });
 
+test('sürmekte olan eşitleme istenen tipi kapsamıyorsa: istek beklenir ve kendi tipini yine çeker (başkasının sonucu dönmez)',async()=>{
+  const server=makeServer();seedBasic(server);
+  const{B}=await twoDevices(server);
+  server.seed(COL.hatirlaticilar,'h2',{ad:'Hatırlat 2',guncellenmeTarihi:new Date(world.now)});
+  const p1=B.win.SyncEngine.sync(['ogretmenler'],{force:true});          /* sürüyor */
+  const p2=B.win.SyncEngine.sync(['hatirlaticilar'],{force:true});       /* kapsanmıyor */
+  await advance(2000);
+  const r1=await p1,r2=await p2;
+  assert.ok(r1.fetched.includes('ogretmenler')&&!r1.fetched.includes('hatirlaticilar'),'ilk istek yalnız kendi tipini çeker');
+  assert.ok(r2.fetched.includes('hatirlaticilar'),'ikinci istek kendi tipini çekmiş olmalı');
+  assert.strictEqual(ids(B.data('hatirlaticilar')),JSON.stringify(['h2']),'veri uygulanmalı');
+  /* kapsanan istek aynı eşitlemeyi paylaşır (ikinci ağ çekimi yok) */
+  const before=B.server.log.length;
+  const q1=B.win.SyncEngine.sync(['ogretmenler','duyurular'],{force:true}),q2=B.win.SyncEngine.sync(['ogretmenler'],{force:true});
+  await advance(2000);await q1;await q2;
+  const q=B.server.log.slice(before).filter(l=>l.dev==='B'&&l.op==='query'&&l.col===COL.ogretmenler);
+  assert.strictEqual(q.length,1,'kapsanan istek ayrı sorgu açmamalı');
+});
+
 test('hız sınırı: art arda değişiklikler birleşir, tip başına en çok 20 sn\'de bir çekilir, sonunda hepsi gelir',async()=>{
   const server=makeServer();seedBasic(server);
   const{A,B}=await twoDevices(server);

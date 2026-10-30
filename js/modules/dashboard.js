@@ -454,7 +454,16 @@ function scanChecklists(id,days){const out=[];for(const list of arr('kontrolList
 function periodicEditor(){return !!(window.PermissionService?.can?.('management.periodic.edit','edit')||window.PermissionService?.can?.('management.periodic','edit')||globalThis.duzenleyebilir?.('periyodikIsler'))}
 function scanPeriodic(days){if(!periodicEditor())return[];return arr('periyodikIsler').filter(x=>!x.tamamlandi&&(x.bitis||x.baslangic)).map(x=>({x,diff:dayDiff(x.bitis||x.baslangic),hg:Number.isFinite(Number(x.hatirlatGun))?Number(x.hatirlatGun):3})).filter(r=>r.hg>0&&r.diff>=-90&&r.diff<=Math.max(r.hg,days>6?days:0)).map(r=>exactReminder('periyodik',`Aylık İş: ${r.x.isAdi||'İş'}`,`Son gün: ${String(r.x.bitis||r.x.baslangic).slice(0,10).split('-').reverse().join('.')}`,r.diff))}
 let periodicAutoDone='';
-async function periodicAutoGenerate(){const ay=isoToday().slice(0,7);if(periodicAutoDone===ay||!periodicEditor()||!window.AppStore?.get?.('meta.lastRemoteSyncAt'))return;const d=arr('periyodikSablon').find(x=>x.id==='sablon'),rules=Array.isArray(d?.gorevler)?d.gorevler:[];if(!rules.length)return;const n=new Date().getMonth()+1,need=rules.some(g=>g.isAdi&&g.aktif!==false&&(!Array.isArray(g.aylar)||!g.aylar.length||g.aylar.map(Number).includes(n))&&!arr('periyodikIsler').some(p=>p.isAdi===g.isAdi&&(p.ay||String(p.bitis||p.baslangic||'').slice(0,7))===ay));if(!need){periodicAutoDone=ay;return}try{await window.AppLoader?.load?.('management');if(window.PeriyodikService?.otomatikOlustur){await window.PeriyodikService.otomatikOlustur(rules,arr('periyodikIsler'),d?.engellenen||[]);periodicAutoDone=ay}}catch(e){console.warn('[Aylık işler]',e?.message||e)}}
+async function periodicAutoGenerate(){
+  const ay=isoToday().slice(0,7);
+  if(periodicAutoDone===ay||!periodicEditor())return;
+  try{
+    /* Üretim/birleştirme tek yerde (PeriyodikService): önce sunucudaki güncel şablon ve işler çekilir; çekilemezse üretilmez, sonraki denemede yeniden bakılır. */
+    await window.AppLoader?.load?.('management');
+    const r=await window.PeriyodikService?.otomatikCalistir?.();
+    if(r?.taze)periodicAutoDone=ay;
+  }catch(e){console.warn('[Aylık işler]',e?.message||e)}
+}
 function collectRemindersRaw(daysOverride=null){const id=teacherId(),days=Number.isFinite(Number(daysOverride))?Math.max(0,Number(daysOverride)):(Number(reminderSettings().gunSayisi)||3);if(!id)return scanPeriodic(days).sort((a,b)=>a.gunFarki-b.gunFarki);return[...scanTasks(id,days),...scanDocuments(id,days),...scanDuty(id),...scanMonthly(id,days),...scanPeriods(id,days),...scanOneOff(id,days),...scanSpecialDays(id,days),...scanExams(id,days),...scanChecklists(id,days),...scanPeriodic(days)].filter(x=>Number.isFinite(x.gunFarki)).sort((a,b)=>a.gunFarki-b.gunFarki)}
 function collectReminders(daysOverride=null){const days=Number.isFinite(Number(daysOverride))?Math.max(0,Number(daysOverride)):(Number(reminderSettings().gunSayisi)||3),list=collectRemindersRaw(daysOverride);return window.KorukTeacherReminderAcademicYear?.normalizeList?.(list,days)||list}
 function holidayMode(){return window.SchoolLiveStatus?.status?.()?.mode==='holiday'}
