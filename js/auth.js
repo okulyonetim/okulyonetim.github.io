@@ -17,10 +17,17 @@ if(global.IstatistikService?.__localFirst)return;
 let mode='',preparing=null,sessionStart=Date.now(),sessionActive=!document.hidden,trackingBound=false;
 const type='kullaniciIstatistikleri';
 function me(){const u=global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user');if(!u?.uid)return null;return{uid:u.uid,ad:u.ad||u.adSoyad||u.kullaniciAdi||'Kullanıcı'}}
+/* Kapsam genişleyince (yalnız kendi kaydım -> tüm kullanıcılar) sunucudan ZORUNLU ve tam çekim gerekir: yerel kopya yalnız kendi belgemden ibaret olabilir
+   ve 24 saatlik bayatlık kuralı normal çekimi atlatırdı (yönetici diğer kullanıcıların giriş sayısı/konumunu göremezdi).
+   Çekim sırasında yerel yazım (sayfa ziyareti/süre) olursa sonuç düşürülür; o durumda kısa beklemeyle yeniden denenir. */
+async function tumunuCek(){
+  let r=null;for(let i=0;i<3;i++){r=await SyncEngine.sync([type],{force:true,full:true});if(!r||r.skipped||!(r.skippedLocal>0)||r.updated>0)break;await new Promise(res=>setTimeout(res,500))}
+  return r;
+}
 async function prepare(all=false){
   const ben=me();if(!ben||!global.SyncEngine||!global.DeviceData||!global.COL?.kullaniciIstatistikleri)return false;
-  const wanted=all?'all':'self';if(mode===wanted)return true;if(preparing){await preparing;if(mode===wanted)return true;return prepare(all);}
-  preparing=(async()=>{const opts=all?{}:{query:q=>q.where(firebase.firestore.FieldPath.documentId(),'==',ben.uid)};SyncEngine.register(type,COL.kullaniciIstatistikleri,opts);await SyncEngine.localHydrate([type]);if(navigator.onLine)await SyncEngine.pull([type]);mode=wanted;return true})().catch(e=>{console.warn('[İstatistik hazırlama]',e?.message||e);return false}).finally(()=>{preparing=null});return preparing;
+  const wanted=all?'all':'self';if(mode==='all'||mode===wanted)return true;if(preparing){await preparing;if(mode==='all'||mode===wanted)return true;return prepare(all);}
+  preparing=(async()=>{const opts=all?{}:{query:q=>q.where(firebase.firestore.FieldPath.documentId(),'==',ben.uid)};SyncEngine.register(type,COL.kullaniciIstatistikleri,opts);await SyncEngine.localHydrate([type]);if(navigator.onLine){if(all)await tumunuCek();else await SyncEngine.pull([type])}mode=wanted;return true})().catch(e=>{console.warn('[İstatistik hazırlama]',e?.message||e);return false}).finally(()=>{preparing=null});return preparing;
 }
 async function mutate(fn){
   const ben=me();if(!ben)return null;await prepare(false);const old=DeviceData.get(type,ben.uid)||{id:ben.uid,uid:ben.uid,ad:ben.ad};const next=fn({...old,uid:ben.uid,ad:ben.ad})||old;next.guncellenmeTarihi=new Date().toISOString();return DeviceData.set(type,COL.kullaniciIstatistikleri,ben.uid,next,{merge:false});

@@ -206,7 +206,7 @@ async function prepareStatisticsData(force=false){
   try{
     if(window.SyncEngine&&window.COL?.kullanicilar){window.SyncEngine.register('kullanicilar',COL.kullanicilar);await window.SyncEngine.localHydrate(['kullanicilar']);if(navigator.onLine)await window.SyncEngine.pull(['kullanicilar'])}
     if(window.IstatistikService?.prepare){await window.IstatistikService.prepare(admin());if(admin())await window.IstatistikService.prepare(true)}
-    if(force&&navigator.onLine&&window.SyncEngine)await window.SyncEngine.pull(['kullaniciIstatistikleri'])
+    if(force&&navigator.onLine&&window.SyncEngine)await window.SyncEngine.sync(['kullaniciIstatistikleri'],{force:true,full:true})
   }catch(e){console.warn('[Kullanıcı İstatistikleri]',e?.message||e)}finally{statisticsRefreshing=false;if(mounted&&active==='statistics')render()}
 }
 function statisticsIdentity(row){const u=row.__user||{},photo=userPhoto(u),name=row.ad||userName(u)||u.email||'Bilinmeyen kullanıcı',handle=u.kullaniciAdi?`@${u.kullaniciAdi}`:(u.email||''),role=u.id||u.uid?userRole(u):(row.__orphan?'Silinmiş hesap':'Kullanıcı'),initials=userInitials(u)||String(name).trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toLocaleUpperCase('tr')||'K';return{u,photo,name,handle,role,initials}}
