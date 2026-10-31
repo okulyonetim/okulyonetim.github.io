@@ -10,5 +10,6 @@
     android:initialLayout="@layout/widget_okul"
     android:description="@string/widget_acik_akis"
     android:configure="com.koruk.okul.WidgetThemeConfigActivity"
+    android:widgetFeatures="reconfigurable"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen" />

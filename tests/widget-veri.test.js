@@ -77,9 +77,9 @@ const veri={
   await y.win.KorukWidgetAdapter.update();
   const yz=y.cagrilar.find(c=>c[0]==='zil')[1];assert.deepStrictEqual(yz.hafta,{});assert.deepStrictEqual(yz.nobet,[]);
 
-  /* widget dokunuşu: widgetSayfaAc olayı shell sayfasını açar; bilinmeyen sayfa açılmaz */
-  const acilan=[];win.ShellUI={openPage:id=>acilan.push(id)};
+  /* widget dokunuşu: widgetSayfaAc olayı araç sayfasını (openTab 'tool:<id>') açar; bilinmeyen sayfa açılmaz */
+  const acilan=[];win.ShellUI={openTab:key=>acilan.push(key)};
   dinleyiciler.widgetSayfaAc({detail:{page:'duty'}});dinleyiciler.widgetSayfaAc({detail:{page:'calendar'}});dinleyiciler.widgetSayfaAc({detail:{page:'../hack'}});
-  assert.deepStrictEqual(acilan,['duty','calendar']);
+  assert.deepStrictEqual(acilan,['tool:duty','tool:calendar']);
   console.log('Widget veri sözleşmesi başarılı.');
 })().catch(e=>{console.error(e);process.exit(1)});

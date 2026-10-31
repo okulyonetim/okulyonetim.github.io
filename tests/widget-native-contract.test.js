@@ -39,6 +39,7 @@ for(const m of man.matchAll(/<receiver[^>]*android:name="\.(\w+)"[\s\S]*?android
   const x=oku(res+'xml/'+info+'.xml');
   assert(x.includes('android:configure="com.koruk.okul.WidgetThemeConfigActivity"'),`${info}: tema seçici (configure) bağlı olmalı`);
   assert(/android:description="@string\/\w+"/.test(x),`${info}: widget açıklaması olmalı`);
+  assert(x.includes('android:widgetFeatures="reconfigurable"'),`${info}: uzun basınca tema ayarı için reconfigurable olmalı`);
   assert(/android:targetCellWidth/.test(x)&&/android:resizeMode="horizontal\|vertical"/.test(x),`${info}: hücre boyutu ve yeniden boyutlandırma tanımlı olmalı`);
 }
 assert(/<service[^>]*android:name="\.OkulAkisServisi"[^>]*BIND_REMOTEVIEWS|<service[^>]*BIND_REMOTEVIEWS[^>]*android:name="\.OkulAkisServisi"/.test(man.replace(/\s+/g,' ')),'OkulAkisServisi BIND_REMOTEVIEWS izniyle tanımlı olmalı');

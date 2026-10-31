@@ -243,26 +243,40 @@ public final class WidgetCizici {
             if (bugun) kutuCerceve(r, 14 * d, p.vurgu, 2 * d);
             float cx = x + kw / 2f;
             String kisa = g.optString("kisa", "");
-            Paint pk = yaziBoya(p.soluk, 12, false);
             boolean nobet = g.optBoolean("nobet");
-            float kisaW = pk.measureText(kisa);
-            float kalkanW = nobet ? 14 * d : 0;
-            float bx = cx - (kisaW + kalkanW) / 2f;
-            yazOrta(kisa, bx, ust + kutuH * 0.2f, pk, Paint.Align.LEFT);
-            if (nobet) yazOrta("🛡", bx + kisaW + 2 * d, ust + kutuH * 0.2f, yaziBoya(p.soluk, 10, false), Paint.Align.LEFT);
-            Paint pn = yaziBoya(bugun ? p.vurguYazi : p.yazi, 20, true);
-            yazOrta(String.valueOf(g.optInt("no")), cx, ust + kutuH * 0.5f, pn, Paint.Align.CENTER);
             int ders = g.optInt("ders"), toplam = Math.max(g.optInt("toplam"), ders);
-            if (toplam > 0 && kutuH >= 52 * d) {
+
+            // Dikey yığın: gün adı, tarih, ders noktaları. Satır yükseklikleri yazı boyundan hesaplanır;
+            // sığmazsa önce yazılar biraz küçülür, sonra noktalar düşer (gün adı ile tarih asla çakışmaz).
+            float ic = kutuH - 8 * d;
+            float olcek = 1f;
+            boolean noktalar = toplam > 0;
+            float noktaCap = Math.max(3 * d, Math.min(6 * d, (kw - 12 * d) / (Math.min(toplam, 9) * 1.6f + 0.001f)));
+            while (yigin(olcek, noktalar, noktaCap) > ic) {
+                if (olcek > 0.8f) olcek -= 0.05f;
+                else if (noktalar) { noktalar = false; olcek = 1f; }
+                else if (olcek > 0.6f) olcek -= 0.05f;
+                else break;
+            }
+            float toplamH = yigin(olcek, noktalar, noktaCap);
+            float y0 = ust + (kutuH - toplamH) / 2f;
+            Paint pk = yaziBoya(p.soluk, 12 * olcek, false);
+            Paint pn = yaziBoya(bugun ? p.vurguYazi : p.yazi, 20 * olcek, true);
+            float tabanK = y0 + pk.getTextSize() * 0.72f;
+            float tabanN = tabanK + pk.getTextSize() * 0.24f + 3 * d + pn.getTextSize() * 0.72f;
+            pk.setTextAlign(Paint.Align.CENTER);
+            pn.setTextAlign(Paint.Align.CENTER);
+            c.drawText(sigdir(kisa, pk, kw - 4 * d), cx, tabanK, pk);
+            c.drawText(String.valueOf(g.optInt("no")), cx, tabanN, pn);
+            if (nobet) c.drawCircle(x + kw - 5 * d, ust + 5 * d, 2.5f * d, boya(p.vurgu));
+            if (noktalar) {
                 int adet = Math.min(toplam, 9);
-                float dd = Math.min(6 * d, (kw - 12 * d) / (adet * 1.6f));
-                float aralik = dd * 0.6f;
-                float toplamW = adet * dd + (adet - 1) * aralik;
+                float aralik = noktaCap * 0.6f;
+                float toplamW = adet * noktaCap + (adet - 1) * aralik;
                 float dx = cx - toplamW / 2f;
-                float dy = ust + kutuH * 0.8f;
+                float dy = tabanN + 5 * d + noktaCap / 2f;
                 for (int k = 0; k < adet; k++) {
-                    Paint dp = boya(k < ders ? p.vurgu : p.iz);
-                    c.drawCircle(dx + dd / 2f + k * (dd + aralik), dy, dd / 2f, dp);
+                    c.drawCircle(dx + noktaCap / 2f + k * (noktaCap + aralik), dy, noktaCap / 2f, boya(k < ders ? p.vurgu : p.iz));
                 }
             }
         }
@@ -270,6 +284,12 @@ public final class WidgetCizici {
             Paint po = yaziBoya(p.soluk, 12, false);
             yaz("📅 " + olay, pad, ortaTaban(po, h - pad - altSatir / 2f + 2 * d), po, w - 2 * pad, Paint.Align.LEFT);
         }
+    }
+
+    /** Hafta kutusundaki yığının toplam yüksekliği: gün adı (+ cedilla payı), boşluk, tarih, isteğe bağlı noktalar. */
+    private float yigin(float olcek, boolean noktalar, float noktaCap) {
+        float k = 12 * olcek * fs, n = 20 * olcek * fs;
+        return k * 0.72f + k * 0.24f + 3 * d + n * 0.72f + (noktalar ? 5 * d + noktaCap : 0);
     }
 
     private String haftaOlayi(JSONArray gunler, JSONObject etkinlik) {
