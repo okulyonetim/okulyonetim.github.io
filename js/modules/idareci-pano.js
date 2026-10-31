@@ -31,6 +31,7 @@ const KARTLAR=[
  {id:'dilimiz',ad:'Dilimizin Zenginlikleri',w:6,ico:'book'},
  {id:'yaklasan',ad:'Yaklaşanlar',w:4,ico:'bell'},
  {id:'gununsozleri',ad:'Günün Ayeti / Hadisi / Özlü Sözü',w:6,ico:'quote'},
+ {id:'sinavsayac',ad:'Sınav Geri Sayımı',w:6,ico:'clock'},
  {id:'rehber',ad:'Sınıf rehber öğretmenleri',w:12,ico:'users'}
 ];
 const KIDS=KARTLAR.map(k=>k.id);
@@ -256,7 +257,30 @@ function gununSozleriHtml(){
  const dots=slides.length>1?`<div class="ka-ip-soz-dots" role="tablist" aria-label="Söz türü">${slides.map((x,i)=>`<button type="button" role="tab" class="ka-ip-soz-dot${i===at?' is-active':''}" aria-selected="${i===at}" aria-label="${esc(x.t.baslik)}" data-ip-act="soz-dot" data-soz-i="${i}"></button>`).join('')}</div>`:'';
  return card('gununsozleri',`<div class="ka-ip-soz-stage" data-soz-carousel>${stage}</div>${dots}`);
 }
-const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,rehber:rehberHtml};
+/* ── sınav geri sayım kartı — anasayfadaki examCountdownSection ile aynı mantık ── */
+function cdParts(target,now){
+ if(!target||target<=now)return null;
+ let months=(target.getFullYear()-now.getFullYear())*12+target.getMonth()-now.getMonth(),anchor=new Date(now);
+ anchor.setMonth(now.getMonth()+months);if(anchor>target){months--;anchor=new Date(now);anchor.setMonth(now.getMonth()+months)}
+ let ms=target-anchor;const days=Math.floor(ms/864e5);ms-=days*864e5;const h=Math.floor(ms/36e5);ms-=h*36e5;const m=Math.floor(ms/6e4);ms-=m*6e4;
+ return{months,days,h,m,s:Math.floor(ms/1e3),totalDays:Math.max(0,Math.ceil((target-now)/864e5)-1)};
+}
+const CD_PARTS=[['months','Ay'],['days','Gün'],['h','Saat'],['m','Dakika'],['s','Saniye']];
+function cdTarget(x){const t=new Date(`${x.tarih}T${x.saat||'23:59'}:00`);return Number.isNaN(t.getTime())?null:t}
+function sinavSayacHtml(){
+ const now=new Date(),list=(global.AppConfig?.get?.()?.examCountdowns||[])
+  .filter(x=>x.goster!==false&&/^\d{4}-\d{2}-\d{2}$/.test(x.tarih))
+  .map(x=>({...x,target:cdTarget(x)})).filter(x=>x.target&&x.target>now)
+  .sort((a,b)=>a.target-b.target).slice(0,4);
+ if(!list.length)return card('sinavsayac',empty('Sınav geri sayımı için Ayarlar › Anasayfa bölümünden sınav tarihleri eklenebilir.'));
+ const fmt=t=>new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long',year:'numeric'}).format(t);
+ const items=list.map(x=>{
+  const p=cdParts(x.target,now);
+  return `<div class="ka-ip-cd" data-ip-cd="${x.target.getTime()}" data-ip-cd-name="${esc(x.ad)}"><span class="ka-ip-cd__ad">${esc(x.ad)}</span><b class="ka-ip-cd__tarih">${esc(fmt(x.target))}${x.saat?` · ${esc(x.saat)}`:''}</b><div class="ka-ip-cd__parts">${CD_PARTS.map(([k,l],i)=>`${i?'<i class="ka-ip-cd__sep" aria-hidden="true">:</i>':''}<span class="ka-ip-cd__part"><b data-ip-cd-val="${k}">${pad(p?.[k]??0)}</b><small>${l}</small></span>`).join('')}</div></div>`;
+ }).join('');
+ return card('sinavsayac',`<div class="ka-ip-cds">${items}</div>`);
+}
+const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,sinavsayac:sinavSayacHtml,rehber:rehberHtml};
 
 /* ── sayfa ── */
 function strip(){
@@ -381,6 +405,10 @@ function tick(){
  mounted.querySelectorAll('[data-ip-hm]').forEach(e=>{e.textContent=hm(now)});
  mounted.querySelectorAll('[data-ip-ss]').forEach(e=>{e.textContent=':'+pad(now.getSeconds())});
  if(now.getSeconds()%8===0)sozTick();
+ mounted.querySelectorAll('[data-ip-cd]').forEach(el=>{
+  const p=cdParts(new Date(Number(el.dataset.ipCd)),now);if(!p)return;
+  el.querySelectorAll('[data-ip-cd-val]').forEach(b=>{const v=pad(p[b.dataset.ipCdVal]??0);if(b.textContent!==v)b.textContent=v});
+ });
  const w=wxView();
  mounted.querySelectorAll('[data-ip-wx]').forEach(e=>{if(e.dataset.wxSig===w.sig)return;e.dataset.wxSig=w.sig;e.innerHTML=w.html;e.hidden=!w.sig});
  const key=liveKey();

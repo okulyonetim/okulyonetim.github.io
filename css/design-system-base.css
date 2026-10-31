@@ -14940,6 +14940,17 @@ html[data-theme] #v2ModuleRoot .ka-ip-soz-dots{display:flex;gap:var(--ka-sp-6);m
 html[data-theme] #v2ModuleRoot .ka-ip-soz-dot{appearance:none;margin:0;padding:0;border:none;background:var(--gl-edge);border-radius:var(--ka-r-10);width:var(--ka-sp-8);height:var(--ka-sp-8);cursor:pointer;transition:background .2s,width .2s}
 html[data-theme] #v2ModuleRoot .ka-ip-soz-dot.is-active{background:var(--t-accent-ink);width:var(--ka-sp-20)}
 
+/* ===== SINAV GERİ SAYIM KARTI (.ka-ip-cd*) — js/modules/idareci-pano.js ===== */
+html[data-theme] #v2ModuleRoot .ka-ip-cds{display:flex;flex-direction:column;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .ka-ip-cd{display:grid;gap:var(--ka-sp-4);padding:var(--ka-sp-14) var(--ka-sp-16);border-radius:var(--ka-r-10);background:var(--gl-sunken)}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__ad{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800);color:var(--gl-fg)}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__tarih{font-size:var(--ka-fs-11-5);font-weight:var(--ka-fw-600);color:var(--gl-sub);font-style:normal}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__parts{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--ka-sp-2);padding-top:var(--ka-sp-10);border-top:var(--ka-border-w) solid var(--gl-edge)}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__part{display:grid;justify-items:center;gap:var(--ka-sp-2);min-width:0;flex:1 1 0}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__part b{font-size:var(--ka-fs-24);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-1);font-variant-numeric:tabular-nums;color:var(--ac-ink)!important}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__part small{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-800);color:var(--gl-sub)!important}
+html[data-theme] #v2ModuleRoot .ka-ip-cd__sep{font-style:normal;font-size:var(--ka-fs-18);font-weight:var(--ka-fw-900);line-height:var(--ka-lh-1-1);color:var(--gl-sub)!important;align-self:flex-start;padding-top:var(--ka-sp-2)}
+
 /* ===== TYMM İLKOKUL ÖLÇEKLERİ (.ka-tm-*) — js/modules/tymm-olcek.js ===== */
 html[data-theme] #v2ModuleRoot .ka-tm{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
 html[data-theme] #v2ModuleRoot .ka-tm-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-10)}
