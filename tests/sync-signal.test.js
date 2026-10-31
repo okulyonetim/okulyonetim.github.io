@@ -372,6 +372,37 @@ test('sürmekte olan eşitleme istenen tipi kapsamıyorsa: istek beklenir ve ken
   assert.strictEqual(q.length,1,'kapsanan istek ayrı sorgu açmamalı');
 });
 
+test('modülün yerelden açtığı tip: zamanlı eşitleme (schedule) bayatsa sunucudan çeker; yalnız kayıtlı tip çekilmez',async()=>{
+  const server=makeServer();seedBasic(server);
+  const{B}=await twoDevices(server);
+  server.seed('oy_periyodikIsler','p1',{isAdi:'Yangın tatbikatı',guncellenmeTarihi:new Date(old)});
+  server.seed('oy_belirliGunler','b1',{ad:'Sadece kayıtlı',guncellenmeTarihi:new Date(old)});
+  B.win.SyncEngine.register('periyodikIsler','oy_periyodikIsler');
+  B.win.SyncEngine.register('belirliGunler','oy_belirliGunler');                 /* yalnız kayıt (hydrate yok) */
+  await B.win.SyncEngine.localHydrate(['periyodikIsler']);                          /* modül yerelden açtı */
+  B.win.SyncEngine.schedule(100);
+  await advance(3000);
+  assert.strictEqual(ids(B.data('periyodikIsler')),JSON.stringify(['p1']),'hydrate edilen tip sunucudan gelmeli');
+  assert.strictEqual(B.data('belirliGunler').length,0,'yalnız kayıtlı (hydrate edilmemiş) tip toplu çekilmemeli');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('değişim işareti yoksa (kural yayınlanmamış) süre 10 dk: ön plana dönünce başka cihazdaki değişiklik gelir; işaret varken 24 saat',async()=>{
+  for(const reddet of [true,false]){
+    const server=makeServer();seedBasic(server);if(reddet)server.deny.add('oy_senkron');
+    const{B}=await twoDevices(server);
+    server.seed('oy_periyodikIsler','p1',{isAdi:'Eski ad',guncellenmeTarihi:new Date(old)});
+    B.win.SyncEngine.register('periyodikIsler','oy_periyodikIsler');await B.win.SyncEngine.localHydrate(['periyodikIsler']);
+    B.win.SyncEngine.schedule(100);await advance(3000);
+    assert.strictEqual(B.data('periyodikIsler')[0].isAdi,'Eski ad');
+    server.seed('oy_periyodikIsler','p1',{isAdi:'Yeni ad',guncellenmeTarihi:new Date(world.now)});   /* başka cihaz sessizce değiştirdi */
+    jump(11*60*1000);B.hide();B.show();await advance(6000);
+    const ad=B.data('periyodikIsler')[0].isAdi;
+    assert.strictEqual(ad,reddet?'Yeni ad':'Eski ad',reddet?'işaret yokken 10 dk sonra çekilmeli':'işaret açıkken 24 saatlik süre geçerli (işaret yetkili)');
+    B.stop();
+  }
+});
+
 test('hız sınırı: art arda değişiklikler birleşir, tip başına en çok 20 sn\'de bir çekilir, sonunda hepsi gelir',async()=>{
   const server=makeServer();seedBasic(server);
   const{A,B}=await twoDevices(server);
