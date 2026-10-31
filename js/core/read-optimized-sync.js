@@ -31,7 +31,7 @@ global.__KA_READ_OPTIMIZED_SYNC__=true;
 })();
 
 const CRITICAL_TYPES=[
-  'ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler',
+  'okulBilgileri','ogretmenler','dersProgrami','dersSaatleri','siniflar','ogrenciler','veliler','servisler',
   'nobetAtamalari','nobetYerleri','servisOturma','sinavlar','denemeSinavlari',
   'ogretmenIzinleri','notlar','yemekMenuleri'
 ];
