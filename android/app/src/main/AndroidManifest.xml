@@ -50,19 +50,39 @@
         </activity>
 
         <receiver
-            android:name=".ModernDersZiliWidget"
+            android:name=".DersZiliWidget"
             android:exported="true"
-            android:label="Ders Zili • Modern">
+            android:label="Şimdi • Ders Zili">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/modern_ders_zili_widget_info" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/ders_zili_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".BugunumWidget"
+            android:exported="true"
+            android:label="Bugünüm • Ders Çizelgesi">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/bugunum_widget_info" />
+        </receiver>
+
+        <receiver
+            android:name=".OkulWidget"
+            android:exported="true"
+            android:label="Okul Akışı">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/okul_widget_info" />
         </receiver>
 
         <receiver
             android:name=".EtkinliklerWidget"
             android:exported="true"
-            android:label="Etkinlikler">
+            android:label="Hafta">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -72,7 +92,7 @@
         <receiver
             android:name=".HavaZilWidget"
             android:exported="true"
-            android:label="Hava + Sonraki Zil">
+            android:label="Zil Halkası">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -80,24 +100,39 @@
         </receiver>
 
         <receiver
-            android:name=".OkulWidget"
+            android:name=".ModernDersZiliWidget"
             android:exported="true"
-            android:label="Okul Widget">
+            android:label="Zil Şeridi">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/okul_widget_info" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/modern_ders_zili_widget_info" />
         </receiver>
 
         <receiver
-            android:name=".DersZiliWidget"
+            android:name=".NobetimWidget"
             android:exported="true"
-            android:label="Ders Zili Geri Sayım">
+            android:label="Nöbetim">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data android:name="android.appwidget.provider" android:resource="@xml/ders_zili_widget_info" />
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/nobetim_widget_info" />
         </receiver>
+
+        <receiver
+            android:name=".YemekWidget"
+            android:exported="true"
+            android:label="Bugün Yemekte">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/yemek_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".OkulAkisServisi"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <service android:name=".OkulFirebaseMessagingService" android:exported="false">
             <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT" /></intent-filter>

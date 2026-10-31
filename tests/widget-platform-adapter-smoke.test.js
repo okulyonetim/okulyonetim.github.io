@@ -13,9 +13,9 @@ assert(src.includes("SyncEngine.register('dersSaatleri',COL.dersSaatleri)"),'Der
 assert(src.includes("SyncEngine.register('okulBilgileri',COL.okulBilgileri)"),'Okul ayarları local-first SyncEngine sözleşmesine bağlı olmalı.');
 assert(src.includes("SyncEngine.localHydrate(types)"),'Native widget ilk veriyi cihazdan hydrate etmeli.');
 assert(!src.includes('db.collection'),'Platform adaptörü Firestore\'a doğrudan erişmemeli.');
-assert(src.includes('p.sayfalariGuncelle'),'Ana Android widget plugin metodu korunmalı.');
+assert(src.includes('p.okulVerisiGuncelle'),'Okul Akışı/ortak widget verisi plugin metodu korunmalı.');
 assert(src.includes('p.dersZiliGuncelle'),'Ders zili widget plugin metodu korunmalı.');
-for(const key of ['okul:','etkinlikJson:','notJson:','nobetJson:','haberJson:','havaIkon:','havaSicaklik:','havaAciklama:'])assert(src.includes(key),`Widget payload alanı korunmalı: ${key}`);
+for(const key of ['okul:','akisJson:','etkinlikJson:','yemekJson:','havaIkon:','havaSicaklik:','havaAciklama:'])assert(src.includes(key),`Widget payload alanı korunmalı: ${key}`);
 assert(src.includes("bas:s.baslangic||s.bas||''")&&src.includes("bit:s.bitis||s.bit||''"),'oy_dersSaatleri dersler başlangıç/bitiş sözleşmesi native segmente çevrilmeli.');
 assert(src.includes("global.addEventListener('koruk:app-ready'"),'Widget uygulama local-first bootstrap tamamlanınca yenilenmeli.');
 assert(src.includes("document.addEventListener('visibilitychange'"),'Arka plandan dönüşte widget yenilenmeli.');

@@ -1,55 +1,30 @@
 package com.koruk.okul;
 
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.widget.RemoteViews;
+import android.graphics.Bitmap;
+
 import org.json.JSONObject;
+
 import java.util.Calendar;
 
-public class HavaZilWidget extends AppWidgetProvider {
-    @Override public void onUpdate(Context c,AppWidgetManager m,int[] ids){for(int id:ids)updateWidget(c,m,id);}
-    @Override public void onAppWidgetOptionsChanged(Context c,AppWidgetManager m,int id,Bundle b){updateWidget(c,m,id);}
-    public static void updateWidget(Context c,AppWidgetManager m,int id){
-        SharedPreferences op=c.getSharedPreferences(OkulWidget.PREFS_NAME,Context.MODE_PRIVATE);
-        SharedPreferences dp=c.getSharedPreferences(DersZiliWidget.PREFS_NAME,Context.MODE_PRIVATE);
-        RemoteViews v=new RemoteViews(c.getPackageName(),R.layout.widget_hava_zil);
-        WidgetTheme.style(v,c,id,R.id.modern_hava_root,R.id.modern_hava_weather,R.id.modern_hava_bell);
-        int fg=WidgetTheme.text(c,id),muted=WidgetTheme.muted(c,id),accent=WidgetTheme.accent(c,id);
-        v.setTextColor(R.id.hava_icon,fg);v.setTextColor(R.id.hava_temp,fg);v.setTextColor(R.id.hava_desc,muted);
-        v.setTextColor(R.id.hava_next_label,muted);v.setTextColor(R.id.hava_next,fg);v.setTextColor(R.id.hava_next_time,accent);
-        v.setTextColor(R.id.hava_title,fg);
-        v.setTextViewText(R.id.hava_icon,op.getString(OkulWidget.KEY_HAVA_IKON,"⛅"));
-        v.setTextViewText(R.id.hava_temp,temizSicaklik(op.getString(OkulWidget.KEY_HAVA_SICAKLIK,"")));
-        v.setTextViewText(R.id.hava_desc,temizMetin(op.getString(OkulWidget.KEY_HAVA_ACIKLAMA,"")));
-        try{
-            String s=dp.getString(DersZiliWidget.KEY_JSON,"{}");
-            JSONObject raw=new JSONObject(s==null?"{}":s);
-            Calendar now=Calendar.getInstance();
-            JSONObject d=DersZiliHesaplayici.hesapla(raw,now.get(Calendar.HOUR_OF_DAY)*60+now.get(Calendar.MINUTE),now.getTimeInMillis());
-            String next=d.optString("sonrakiBaslik","—"), place=d.optString("sonrakiYer","");
-            v.setTextViewText(R.id.hava_next,(next+(place.isEmpty()?"":" "+place)).trim());
-            v.setTextViewText(R.id.hava_next_time,temizMetin(d.optString("sonrakiSaat","")));
-        }catch(Exception e){v.setTextViewText(R.id.hava_next,"—");}
-        Intent open=new Intent(c,MainActivity.class).putExtra("kategori","dersProgrami").setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        v.setOnClickPendingIntent(R.id.modern_hava_root,PendingIntent.getActivity(c,id+400,open,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE));
-        m.updateAppWidget(id,v);
+/** HavaZilWidget — "Zil Halkası" (2×2): kalan süre halkası, güncel ders ve hava durumu. */
+public class HavaZilWidget extends GorselWidget {
+
+    @Override protected Bitmap ciz(Context c, int id, WidgetTheme.Palet p, float d, float fs, int w, int h, Calendar simdi) {
+        android.content.SharedPreferences op = okulPrefs(c);
+        return WidgetCizici.halka(p, d, fs, DersZiliHesaplayici.hesapla(ham(c), simdi),
+                op.getString(OkulWidget.KEY_HAVA_IKON, ""), op.getString(OkulWidget.KEY_HAVA_SICAKLIK, ""),
+                op.getString(OkulWidget.KEY_HAVA_ACIKLAMA, ""), w, h);
     }
-    private static String temizSicaklik(String s){
-        if(s==null) return "—";
-        s=s.trim();
-        if(s.isEmpty()||"--°".equals(s)||"--".equals(s)||"null".equalsIgnoreCase(s)) return "—";
-        return s;
+
+    @Override protected String sozlu(Context c, Calendar simdi) {
+        JSONObject s = DersZiliHesaplayici.hesapla(ham(c), simdi);
+        return "Zil halkası. " + s.optString("baslik", "") + ". " + s.optString("rozet", "");
     }
-    private static String temizMetin(String s){
-        if(s==null) return "";
-        s=s.trim();
-        return ("—".equals(s)||"--".equals(s)||"--:--".equals(s)||"null".equalsIgnoreCase(s))?"":s;
-    }
-    public static void updateAll(Context c){AppWidgetManager m=AppWidgetManager.getInstance(c);for(int id:m.getAppWidgetIds(new ComponentName(c,HavaZilWidget.class)))updateWidget(c,m,id);}
+
+    @Override protected String hedefSayfa() { return "schedule"; }
+    @Override protected int istekKodu() { return 4; }
+    @Override protected int varsayilanGenislik() { return 130; }
+    @Override protected int varsayilanYukseklik() { return 130; }
+    @Override protected long alarmMs() { return 60_000L; }
 }

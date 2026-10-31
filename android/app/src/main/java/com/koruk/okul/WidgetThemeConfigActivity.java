@@ -73,10 +73,10 @@ public class WidgetThemeConfigActivity extends Activity {
             AppWidgetManager mgr=AppWidgetManager.getInstance(this);
             ComponentName p=mgr.getAppWidgetInfo(widgetId).provider;
             if(p!=null){
-                String n=p.getClassName();
-                if(n.endsWith("ModernDersZiliWidget"))ModernDersZiliWidget.updateWidget(this,mgr,widgetId);
-                else if(n.endsWith("EtkinliklerWidget"))EtkinliklerWidget.updateWidget(this,mgr,widgetId);
-                else if(n.endsWith("HavaZilWidget"))HavaZilWidget.updateWidget(this,mgr,widgetId);
+                /* Seçilen tema hemen uygulansın: ilgili widget'a güncelleme yayını gönder. */
+                Intent up=new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE).setComponent(p)
+                        .putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,new int[]{widgetId});
+                sendBroadcast(up);
             }
             Intent result=new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,widgetId);
             setResult(RESULT_OK,result);finish();

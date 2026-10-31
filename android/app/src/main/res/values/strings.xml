@@ -3,4 +3,12 @@
     <string name="app_name">Koruk Okul</string>
     <string name="widget_description">Bugünün nöbet, ders ve belge bilgileri</string>
     <string name="title_activity_main">Koruk Okul</string>
+    <string name="widget_acik_simdi">Şimdi: aktif ders ya da teneffüs için geri sayım halkası; gün bitince bir sonraki dersin zamanı</string>
+    <string name="widget_acik_bugunum">Bugünüm: günün ders çizelgesi, şu anki ders vurgulu, nöbet rozeti</string>
+    <string name="widget_acik_akis">Okul Akışı: nöbetçiler, duyuru, görev, takvim, not ve haberler tek kaydırılabilir listede</string>
+    <string name="widget_acik_hafta">Hafta: Pazartesi–Cuma ders sayısı, nöbet günü, hava ve yaklaşan etkinlik</string>
+    <string name="widget_acik_halka">Zil Halkası: sıradaki zile kalan süre ve hava durumu</string>
+    <string name="widget_acik_serit">Zil Şeridi: tek satırda ders, ilerleme ve kalan süre</string>
+    <string name="widget_acik_nobetim">Nöbetim: bugünkü ya da sıradaki nöbet günü ve yeri</string>
+    <string name="widget_acik_yemek">Bugün Yemekte: günün yemek menüsü</string>
 </resources>

@@ -60,8 +60,40 @@ public final class WidgetTheme {
         return isDark(c,id) ? R.drawable.widget_theme_card_dark : R.drawable.widget_theme_card_light;
     }
 
+    /** Liste satırı gibi tek bir görünüme tema kartı arka planı verir. */
+    public static void kart(RemoteViews v,Context c,int id,int view){
+        v.setInt(view,"setBackgroundResource",cardBackground(c,id));
+    }
+
     public static void style(RemoteViews v,Context c,int id,int root,int... cards){
         v.setInt(root,"setBackgroundResource",rootBackground(c,id));
         for(int card:cards)v.setInt(card,"setBackgroundResource",cardBackground(c,id));
+    }
+
+    /** Bitmap ile çizilen widget'ların renk paleti: tek tasarım dili (antrasit/beyaz zemin + sarı vurgu), açık/koyu/yarı saydam. */
+    public static final class Palet {
+        public boolean koyu, saydam;
+        public int bg, kart, yazi, soluk, vurgu, vurguYazi, vurguUstu, iz, cerceve;
+    }
+
+    public static Palet palet(Context c,int id){
+        boolean koyu=isDark(c,id),saydam=isTransparent(c,id);
+        return palet(koyu,saydam);
+    }
+
+    /** Context gerektirmeyen çekirdek (önizleme/test için de kullanılır). */
+    public static Palet palet(boolean koyu,boolean saydam){
+        Palet p=new Palet();
+        p.koyu=koyu;p.saydam=saydam;
+        p.bg=koyu?(saydam?Color.argb(0x80,20,20,20):Color.rgb(20,23,26)):(saydam?Color.argb(0x80,247,247,247):Color.WHITE);
+        p.kart=koyu?(saydam?Color.argb(0x66,30,34,38):Color.rgb(30,34,38)):(saydam?Color.argb(0x99,255,255,255):Color.rgb(241,243,245));
+        p.yazi=koyu?Color.WHITE:Color.rgb(21,23,26);
+        p.soluk=koyu?Color.rgb(184,190,196):Color.rgb(95,101,108);
+        p.vurgu=Color.rgb(255,196,0);
+        p.vurguYazi=koyu?Color.rgb(255,196,0):Color.rgb(166,112,0);
+        p.vurguUstu=Color.rgb(17,17,17);
+        p.iz=koyu?Color.rgb(42,48,54):Color.rgb(224,227,231);
+        p.cerceve=koyu?Color.argb(140,255,196,0):Color.rgb(210,173,43);
+        return p;
     }
 }

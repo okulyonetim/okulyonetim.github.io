@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Bitmap ile çizilen tüm widget'ların ortak kabuğu (bkz. GorselWidget / WidgetCizici). -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/widget_dz_gorsel"
+        android:id="@+id/widget_gorsel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:contentDescription="Ders Zili Geri Sayım" />
+        android:contentDescription="@string/app_name" />
 
 </FrameLayout>
