@@ -6,9 +6,10 @@ new Function(src);
 for(const token of ["A4 landscape","A4 portrait","data-report-minus","data-report-plus","data-report-fit","data-report-100","Yazdır / PDF","PrintPlugin","assets/logo.png","ÇĞİÖŞÜçğıöşü","kenarBosluk","fontSize"]){
   assert(src.includes(token),`Rapor motoru sözleşmesi eksik: ${token}`);
 }
-for(const token of ['imagesToPdf','mergePdfs','previewPdfBlob','savePdfBlob','archivePdf','openPdfTools','jspdf.umd.min.js','pdf-lib@1.17.1','PDFDocument.load','copyPages','data-pdf-mode="images"','data-pdf-mode="merge"']){
+for(const token of ['imagesToPdf','mergePdfs','previewPdfBlob','savePdfBlob','archivePdf','openPdfTools','jspdf.umd.min.js','pdf-lib@1.17.1','PDFDocument.load','copyPages']){
   assert(src.includes(token),`PDF araçları tek motor sözleşmesi eksik: ${token}`);
 }
+assert(!src.includes('data-pdf-mode="images"')&&!src.includes('data-pdf-orientation'),'Resimden PDF arayüzü ReportEngine içinde kalmamalı; Belge Tarayıcı kullanılır (imagesToPdf yalnız rapor görüntüleri için kalır).');
 assert(src.includes("AppLoader?.loadScript"),'PDF kütüphaneleri ayrı yerel loader/yama dosyası yerine merkezi AppLoader üzerinden lazy-load edilmeli.');
 assert(src.includes("global.ReportEngine={")&&src.includes('imagesToPdf,mergePdfs'),'PDF araçları ReportEngine kanonik API içinde yaşamalı.');
 assert(src.includes("DokumanlarService?.dokumanEkle"),'Hazır PDF doğrudan mevcut Dökümanlar arşivine kaydedilebilmeli.');

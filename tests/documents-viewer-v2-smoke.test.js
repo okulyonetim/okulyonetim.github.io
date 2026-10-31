@@ -35,8 +35,7 @@ const toolbarBlock=(documents.match(/function renderToolbar\(\)\{[\s\S]*?\}\nfun
 assert(toolbarBlock&&!toolbarBlock.includes('data-document-images')&&!toolbarBlock.includes('data-document-merge')&&!toolbarBlock.includes('ka-documents-pdf-actions'),'Doküman listesi içinde PDF araçları tekrar gösterilmemeli; araçlar menüde kalmalı.');
 for(const marker of ['data-document-open','data-document-download','data-document-visibility','data-document-delete']) assert(documents.includes(marker),`Documents aksiyonu eksik: ${marker}`);
 assert(documents.includes("arr('dokumanlarAcik')")&&documents.includes("arr('dokumanlarBenim')"),'Normal kullanıcı local-first açık/benim cache lerini kullanmalı.');
-assert(documents.includes('window.DocumentsPdfTools'),'Menüdeki PDF araçları mevcut DocumentsPdfTools çalışma alanını kullanmalı.');
-assert(documents.includes('tools.PAGE_IMAGES')&&documents.includes('tools.PAGE_MERGE'),'Resimden PDF ve PDF Birleştir mevcut sayfalara gitmeli.');
+assert(!documents.includes('window.DocumentsPdfTools'),'Menüdeki PDF araçları Documents içindeki eski çalışma alanını kullanmamalı.');
 assert(!documents.includes('classic-document-tools.js'),'İkinci eski belge işleme motoru yüklenmemeli.');
 
 // Former global visual patch behavior is owned by shell/index/design-system, not Documents.
@@ -46,18 +45,10 @@ assert(shell.includes('const reuseModule=moduleRouteMounted(name)')&&shell.inclu
 for(const token of ['.ka-menu-card{position:relative;height:146px;min-height:146px','[data-transport-module]{width:100%;max-width:760px','[data-transport-denetim],#transportContent [data-transport-takip]{display:none!important}','[data-service-edit],#transportContent [data-service-delete]{width:34px']) assert(design.includes(token),`Kompakt mobil görünüm merkezi CSS içinde korunmalı: ${token}`);
 assert(design.includes('.ka-document-row{')&&documents.includes('class="evrak-row ka-document-row"'),'Doküman satır yoğunluğu merkezi CSS ile korunmalı.');
 
-// Current advanced image->PDF / PDF merge workspace remains intact until ReportEngine migration package.
-assert(documents.includes('if(global.DocumentsPdfTools)return'),'DocumentsPdfTools capability geçiş sırasında tek olmalı.');
-assert(documents.includes("const JSPDF_SRC='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'"),'Resimden PDF jsPDF lazy capability kullanmalı.');
-assert(documents.includes("const PDFLIB_SRC='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js'"),'PDF Birleştir pdf-lib lazy capability kullanmalı.');
-for(const fn of ['function exifOrientation(file)','function perspectiveCanvas(img,corners)','function autoCorners(img)','function openEditor(i)']) assert(documents.includes(fn),`Gelişmiş PDF çalışma alanı eksik: ${fn}`);
-for(const label of ['Belge Modu','Gri Tonlama','Siyah-Beyaz Metin','Parlaklık','Kontrast','Gölge Giderme','Sıcaklık','Beyazlık','Metin Netliği','Netlik','Hareli (Moiré) Giderme','Gürültü Giderme','Otomatik Algıla','Köşeleri Sıfırla','Kırp','Döndür','Paylaş']) assert(documents.includes(label),`Görsel aracı eksik: ${label}`);
-assert(documents.includes('accept="image/*" multiple data-pdf-images'),'Çoklu görsel seçimi korunmalı.');
-assert(documents.includes('accept="application/pdf,.pdf" multiple data-pdf-files'),'Çoklu PDF seçimi korunmalı.');
-assert(documents.includes('await PDFDocument.load')&&documents.includes('out.copyPages(src,idx)'),'PDF birleştirme rasterize etmeden pdf-lib copyPages kullanmalı.');
-assert(documents.includes('await global.uygulamaDosyaKaydet'),'İndir/Paylaş platform kaydetme köprüsünü kullanmalı.');
-assert(documents.includes('await global.DokumanlarService.dokumanEkle'),'PDF arşivleme DokumanlarService üzerinden kalmalı.');
-assert(documents.includes('global.DocumentsPdfTools={open,cleanup,renderImages,renderMerge,cleanPdfName,PAGE_IMAGES,PAGE_MERGE}'),'Public PDF tools API geçiş boyunca korunmalı.');
+// Resimden PDF artık Belge Tarayıcı'dır (kamera + galeri + perspektif/renk ayarı); eski Documents içi PDF çalışma alanı kaldırıldı, PDF Birleştir ReportEngine'dedir.
+assert(!documents.includes('DocumentsPdfTools')&&!documents.includes('launchPdfTool'),'Documents içinde ikinci (eski) PDF çalışma alanı kalmamalı.');
+assert(!documents.includes('data-pdf-images')&&!documents.includes('function openEditor(i)'),'Eski Resimden PDF düzenleyicisi Documents içinde kalmamalı.');
+assert(shell.includes("registerPageRoute('pdf-images'")&&shell.includes('js/modules/belge-tarayici.js'),'Resimden PDF menü sayfası Belge Tarayıcı modülünü yüklemeli.');
 
 // Evrak tracking remains local-first with the real model.
 assert(documents.includes("PermissionService?.can?.('documents.tracking','read')"),'Evrak görüntüleme merkezi yetkiyi kullanmalı.');

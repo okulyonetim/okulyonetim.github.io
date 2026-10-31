@@ -57,17 +57,26 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     if(!global.GradebookPage?.open)throw new Error('Çizelge modülü yüklenemedi.');
     return global.GradebookPage.open(page);
   };
-  /* PDF araçları ve Klasör Sırtlığı gerçek birer documents sayfası değildir; rapor motoru ilk kullanımda yüklenir. */
-  const openPdfTool=mode=>async(ctx)=>{
+  /* Belge Tarayıcı (Resimden PDF), PDF Birleştir ve Klasör Sırtlığı gerçek birer documents sayfası değildir; modüller ilk kullanımda yüklenir. */
+  const clearDocumentsRoot=ctx=>{
     global.DocumentsModule?.unmount?.();global.EvrakTakipPage?.close?.();
     (ctx?.root||$('#v2ModuleRoot'))?.replaceChildren?.();
+  };
+  registerPageRoute('pdf-images',async(ctx)=>{
+    clearDocumentsRoot(ctx);
+    if(!global.BelgeTarayici?.open)await global.AppLoader?.loadScript?.('js/modules/belge-tarayici.js?v=1');
+    if(!global.BelgeTarayici?.open)throw new Error('Belge Tarayıcı hazır değil.');
+    /* Tarayıcı tam ekran açılır; kapanınca bir önceki sayfaya (Menü) dönülür. */
+    await global.BelgeTarayici.open({onClose:()=>global.ShellUI?.back?.()});
+    return true;
+  });
+  registerPageRoute('pdf-merge',async(ctx)=>{
+    clearDocumentsRoot(ctx);
     if(!global.ReportEngine?.openPdfTools)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
     if(!global.ReportEngine?.openPdfTools)throw new Error('PDF araçları hazır değil.');
-    global.ReportEngine.openPdfTools(mode);
+    global.ReportEngine.openPdfTools();
     return true;
-  };
-  registerPageRoute('pdf-images',openPdfTool('images'));
-  registerPageRoute('pdf-merge',openPdfTool('merge'));
+  });
   registerPageRoute('folder-spine',async(ctx)=>{
     const root=ctx?.root||$('#v2ModuleRoot');
     if(!nav().tool('folder-spine')||!nav().toolAllowed(nav().tool('folder-spine'))){global.toast?.('Klasör Sırtlığı yalnızca admin ve yönetici rolündekiler içindir.');return false}

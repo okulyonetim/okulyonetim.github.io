@@ -238,7 +238,7 @@ const KATALOG=[
  ]],
  ['belge','Belgeler ve PDF','folder','amber',[
   ['documents','Dökümanlar','folder','Okul dökümanları','documents'],
-  ['pdf-images','Resimden PDF Oluştur','doc','Fotoğraflardan PDF yap','documents','pdf-images'],
+  ['pdf-images','Belge Tarayıcı (Resimden PDF)','doc','Kamerayla tara veya fotoğraftan PDF yap','documents','pdf-images'],
   ['pdf-merge','PDF Birleştir','doc','PDF dosyalarını tek dosyada topla','documents','pdf-merge'],
   ['checklists','Kontrol Listeleri','check','Kontrol listeleri ve tamamlama','tools','checklists'],
   ['folder-spine','Klasör Sırtlığı Oluşturucu','folder','Sırtlık tasarla, seri üret, yazdır','documents','folder-spine',{y:1,need:adminOrManager}]
@@ -309,7 +309,7 @@ const KEYWORDS={
   'oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
-  'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
+  'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto tara tarayıcı kamera scanner camscanner belge','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
   'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
   'tasks':'aylık iş işler görev periyodik','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste oluşturucu',
