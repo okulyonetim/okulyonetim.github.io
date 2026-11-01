@@ -11,6 +11,8 @@ for(const [label,page] of [['Taşıma İşlemleri','services'],['Servis Oturma',
 assert(shell.includes("name==='transport'&&['services','busSeats','classSeats'].includes(page)"),'ShellUI Transport alt sayfalarını doğrudan çözmeli.');
 assert(transport.includes('function openPage(page,title=')&&transport.includes('window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openClassSeating,openPage,back}'),'TransportModule public openPage / seating / back API sunmalı.');
 assert(!transport.includes('data-transport-tab'),'Transport içinde ikinci bir sekme navigasyonu kalmamalı.');
+assert(transport.includes("heroTitle.textContent=isClassSeats?'Sınıf Oturma Planları'")&&transport.includes("heroIcon.textContent=isClassSeats?'🪑'"),'Sınıf oturma planı sayfası taşıma başlığı yerine kendi başlığını ve simgesini göstermeli.');
+assert(transport.includes('if(stats)stats.hidden=isClassSeats')&&transport.includes('if(tabs)tabs.hidden=isClassSeats'),'Sınıf oturma sayfasında servis istatistikleri ve servis sekmeleri gizlenmeli.');
 
 assert(transport.includes("const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId()"),'Transport UI öğretmen kullanıcısını bağlı öğretmen kimliğiyle ayırmalı.');
 assert(transport.includes("const canEditBusSeats=()=>!uiTeacher()"),'Öğretmen servis oturma planında düzenleme yetkisi alamamalı.');
