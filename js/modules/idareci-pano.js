@@ -418,7 +418,8 @@ function tick(){
  const now=new Date();
  mounted.querySelectorAll('[data-ip-hm]').forEach(e=>{e.textContent=hm(now)});
  mounted.querySelectorAll('[data-ip-ss]').forEach(e=>{e.textContent=':'+pad(now.getSeconds())});
- /* Günün sözü otomatik değiştirilmez; ekran titremesini önlemek için seçim kullanıcıya bırakılır. */
+ /* Söz kartını 8 saniyede bir değiştir; elle seçim yapıldıysa 15 saniye bekle. */
+ if(now.getSeconds()%8===0)sozTick();
  mounted.querySelectorAll('[data-ip-cd]').forEach(el=>{
   const p=cdParts(new Date(Number(el.dataset.ipCd)),now);if(!p)return;
   el.querySelectorAll('[data-ip-cd-val]').forEach(b=>{const v=pad(p[b.dataset.ipCdVal]??0);if(b.textContent!==v)b.textContent=v});
