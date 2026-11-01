@@ -9,7 +9,7 @@ if(global.LoginSecurityFeature)return;
 const STATS_TYPE='kullaniciIstatistikleri';
 const LEAFLET_JS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
 const LEAFLET_CSS='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-let locationAttempted=false,locationSaving=false,locationSaved=false,leafletPromise=null,loginMap=null,locationLayer=null,loginMarkers=[],lastMapSignature='',locationUnsub=null,observer=null,locationRendering=false;
+let locationAttempted=false,locationSaving=false,locationSaved=false,leafletPromise=null,loginMap=null,locationLayer=null,loginMarkers=[],lastMapSignature='',savedMapView=null,locationUnsub=null,observer=null,locationRendering=false;
 let loginLocationShowAll=false;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const user=()=>global.AKTIF_KULLANICI||global.AppStore?.get?.('session.user')||null;
@@ -139,7 +139,7 @@ function locationListHtml(records){
   const limit=12,showAll=loginLocationShowAll||records.length<=limit,rows=showAll?records:records.slice(0,limit);if(!rows.length)return'<div class="ka-empty">Henüz konum izni verilmiş bir giriş kaydı bulunmuyor.</div>';
   return rows.map((r,i)=>`<article class="ka-card ka-list-card"><div class="ka-card__body ka-row"><span class="ka-avatar" aria-hidden="true">${String(r.platform||'').includes('android')?'📱':String(r.platform||'').includes('ios')?'📱':'🌐'}</span><div class="ka-grow"><strong>${esc(r.displayName)}</strong><div class="ka-muted">${esc(platformLabel(r.platform))} · ${esc(dateText(r.timestamp))}</div><small class="ka-muted">${Number(r.lat).toFixed(5)}, ${Number(r.lng).toFixed(5)}</small></div><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-login-location-focus="${i}">Haritada Göster</button></div></article>`).join('')+(records.length>limit?`<div class="ka-row" style="justify-content:center"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-login-location-toggle>${showAll?'Daha az göster':'Tümünü göster'} (${records.length})</button></div>`:'');
 }
-function bindLocationFocus(section,records){section.querySelectorAll('[data-login-location-focus]').forEach(b=>b.addEventListener('click',()=>{const index=Number(b.dataset.loginLocationFocus),r=records[index];if(!r||!loginMap)return;const mapEl=section.querySelector('[data-login-location-map]');mapEl?.scrollIntoView?.({behavior:'smooth',block:'center'});requestAnimationFrame(()=>{loginMap?.invalidateSize?.({pan:false});loginMap?.setView([Number(r.lat),Number(r.lng)],17,{animate:true});const marker=loginMarkers.find(x=>x.index===index)?.marker;if(marker){marker.setZIndexOffset?.(1000);marker.openPopup?.()} });}));section.querySelector('[data-login-location-toggle]')?.addEventListener('click',()=>{loginLocationShowAll=!loginLocationShowAll;const list=section.querySelector('[data-login-location-list]');if(list)list.innerHTML=locationListHtml(records);bindLocationFocus(section,records)});}
+function bindLocationFocus(section,records){section.querySelectorAll('[data-login-location-focus]').forEach(b=>b.addEventListener('click',()=>{const index=Number(b.dataset.loginLocationFocus),r=records[index];if(!r||!loginMap)return;const mapEl=section.querySelector('[data-login-location-map]');mapEl?.scrollIntoView?.({behavior:'smooth',block:'center'});requestAnimationFrame(()=>{loginMap?.invalidateSize?.({pan:false});loginMap?.setView([Number(r.lat),Number(r.lng)],17,{animate:true});savedMapView={center:[Number(r.lat),Number(r.lng)],zoom:17};const marker=loginMarkers.find(x=>x.index===index)?.marker;if(marker){marker.setZIndexOffset?.(1000);marker.openPopup?.()} });}));section.querySelector('[data-login-location-toggle]')?.addEventListener('click',()=>{loginLocationShowAll=!loginLocationShowAll;const list=section.querySelector('[data-login-location-list]');if(list)list.innerHTML=locationListHtml(records);bindLocationFocus(section,records)});}
 function ensureLoginMapStyles(){
   let style=document.getElementById('ka-login-map-contrast-v2');
   if(!style){style=document.createElement('style');style.id='ka-login-map-contrast-v2';}
@@ -193,17 +193,25 @@ async function drawLoginMap(section,records){
   const el=section.querySelector('[data-login-location-map]');if(!el)return;
   ensureLoginMapStyles();
   if(!records.length){
-    if(loginMap){try{loginMap.remove()}catch(_){}loginMap=null;locationLayer=null;loginMarkers=[];lastMapSignature=''}
+    if(loginMap){try{const c=loginMap.getCenter?.();const z=loginMap.getZoom?.();if(c&&Number.isFinite(z))savedMapView={center:[c.lat,c.lng],zoom:z};loginMap.remove()}catch(_){}loginMap=null;locationLayer=null;loginMarkers=[];lastMapSignature=''}
     el.innerHTML='<div class="ka-map-loading">Gösterilecek konum kaydı yok.</div>';return;
   }
   try{
     await ensureLeaflet();if(!el.isConnected)return;
     const signature=mapSignature(records);
     if(!loginMap||loginMap.getContainer?.()!==el){
-      if(loginMap){try{loginMap.remove()}catch(_){}}
+      if(loginMap){try{const c=loginMap.getCenter?.();const z=loginMap.getZoom?.();if(c&&Number.isFinite(z))savedMapView={center:[c.lat,c.lng],zoom:z};loginMap.remove()}catch(_){}}
       loginMap=global.L.map(el,{zoomControl:true,tap:true,scrollWheelZoom:false});
       global.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(loginMap);
       locationLayer=global.L.layerGroup().addTo(loginMap);lastMapSignature='';
+      if(savedMapView?.center&&Number.isFinite(savedMapView.zoom)){
+        loginMap.setView(savedMapView.center,savedMapView.zoom,{animate:false});
+      }
+      loginMap.on('moveend zoomend',()=>{
+        if(!loginMap)return;
+        const c=loginMap.getCenter(),z=loginMap.getZoom();
+        if(c&&Number.isFinite(z))savedMapView={center:[c.lat,c.lng],zoom:z};
+      });
     }
     if(signature!==lastMapSignature){
       updateLoginMarkers(records);lastMapSignature=signature;
