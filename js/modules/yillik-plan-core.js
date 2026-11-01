@@ -30,9 +30,9 @@ const BASLIKLAR={
 const TAKMA={
  'tema':'unite_tema','theme':'unite_tema','unite tema':'unite_tema','unit theme':'unite_tema','unite':'unite_tema',
  'konu':'icerik_cercevesi','icerik cercevesi':'icerik_cercevesi','konu icerik cercevesi':'icerik_cercevesi','content frame':'icerik_cercevesi',
- 'ogrenme ciktilari':'ogrenme_ciktilari','learning outcomes':'ogrenme_ciktilari','learning skills and learning outcome':'ogrenme_ciktilari',
+ 'ogrenme ciktilari':'ogrenme_ciktilari','learning outcomes':'ogrenme_ciktilari','learning skills and learning outcome':'ogrenme_ciktilari','language skills and learning outcomes':'ogrenme_ciktilari',
  'surec becerileri':'surec_becerileri','surec bilesenleri':'surec_bilesenleri','kazanim':'kazanim','kazanim aciklamasi':'kazanim_aciklamasi',
- 'olcme ve degerlendirme':'olcme_degerlendirme','assessment and evaluation':'olcme_degerlendirme','ogrenme kanitlari':'olcme_degerlendirme',
+ 'olcme ve degerlendirme':'olcme_degerlendirme','assessment and evaluation':'olcme_degerlendirme','evaluation':'olcme_degerlendirme','ogrenme kanitlari':'olcme_degerlendirme',
  'sosyal duygusal ogrenme becerileri':'sosyal_duygusal','social emotional learning skills':'sosyal_duygusal','degerler':'degerler','values':'degerler',
  'okuryazarlik becerileri':'okuryazarlik','literacy skills':'okuryazarlik','belirli gun ve haftalar':'belirli_gunler','national celebrations and important days':'belirli_gunler',
  'farklilastirma':'farklilastirma','differentiation':'farklilastirma','okul temelli planlama':'okul_temelli','school based planning':'okul_temelli',
@@ -231,8 +231,11 @@ function docxAyristir(documentXml,secenek={}){
  const baslikMetni=ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line).find(s=>/YILLIK PLAN/i.test(s.toLocaleUpperCase('tr')))||'';
  const bilgi=baslikBilgi(baslikMetni),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
  const ilkHafta=tablo.findIndex(s=>s[0]&&HAFTA_RE.test(s[0].metin));
- if(ilkHafta<2)throw new Error('Plan tablosunda başlık satırları veya hafta satırları bulunamadı.');
- const kolonlar=kolonTanimlari(tablo[ilkHafta-2],tablo[ilkHafta-1]),
+ if(ilkHafta<1)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
+ /* MEB planları tek satırlı (Date | Hours | Theme...) veya iki katmanlı birleşik başlıklı olabilir. */
+ const kolonlar=ilkHafta===1
+  ? tablo[ilkHafta-1].map(c=>({...c,ad:c.metin,grup:''}))
+  : kolonTanimlari(tablo[ilkHafta-2],tablo[ilkHafta-1]),
   icerik=kolonlar.slice(2).map(k=>({...k,...baslikBilgisi(k.ad,k.grup,k.kolon)})),
   haftaK=kolonlar[0],saatK=kolonlar[1];
  if(!haftaK||!saatK||!icerik.length)throw new Error('Plan tablosunun sütunları tanınamadı.');
