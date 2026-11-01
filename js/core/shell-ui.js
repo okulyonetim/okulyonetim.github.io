@@ -105,7 +105,7 @@ function setBottomActive(tab){activeAction=tab||'';$$('[data-ka-tab]').forEach(b
 function syncShellBack(){const bs=[...document.querySelectorAll('[data-ka-shell-back]')],bar=document.querySelector('[data-ka-shell-backbar]');if(!bs.length)return;const show=navStack.length>1;bs.forEach(b=>{b.hidden=!show;b.setAttribute('aria-hidden',String(!show))});if(bar)bar.hidden=!show;try{global.dispatchEvent(new CustomEvent('koruk:shell-route',{detail:{view:currentView(),canBack:show}}))}catch(_){}}
 function suspendModuleForShellSurface(){global.AppLoader?.suspendActiveModule?.()}
 const moduleAllowed=name=>nav().moduleAllowed(name);
-function closeHeaderPopover(){headerPopover?.remove();headerPopover=null;document.removeEventListener('pointerdown',outsideHeaderPopover,true)}
+function closeHeaderPopover(){headerPopover?.remove();document.querySelectorAll('.ka-notification-popover').forEach(el=>el.remove());headerPopover=null;document.removeEventListener('pointerdown',outsideHeaderPopover,true)}
 function outsideHeaderPopover(e){if(!headerPopover)return;if(headerPopover.contains(e.target)||e.target.closest('[data-ka-header-notification]'))return;closeHeaderPopover()}
 function popoverBase(anchor,width=330){closeHeaderPopover();const r=anchor.getBoundingClientRect(),el=document.createElement('div'),w=Math.min(width,innerWidth-20),right=Math.max(10,Math.min(innerWidth-r.right,innerWidth-w-10));el.className='ka-card ka-header-popover';el.setAttribute('role','dialog');el.style.cssText=`position:fixed;z-index:1100;top:${Math.max(r.bottom+10,70)}px;right:${right}px;width:${w}px;max-height:calc(100dvh - ${Math.max(r.bottom+24,88)}px);overflow:auto;`;document.body.appendChild(el);headerPopover=el;setTimeout(()=>document.addEventListener('pointerdown',outsideHeaderPopover,true),0);return el}
 function cleanupFormPage(){global.__kaFormPageObserver?.disconnect?.();global.__kaFormPageObserver=null}
@@ -686,7 +686,7 @@ function notificationTone(r){
 }
 function openNotifications(){
   /* Bildirim penceresi açıksa zil düğmesine ikinci basışta kapat. */
-  if(headerPopover?.classList.contains('ka-notification-popover')){closeHeaderPopover();return;}
+  if(document.querySelector('.ka-notification-popover')){closeHeaderPopover();return;}
   const anchor=$('[data-ka-header-notification]');if(!anchor)return;
   const p=popoverBase(anchor,332),rows=notificationRows(),count=rows.reduce((n,r)=>n+Math.max(1,Number(r.count)||1),0),upcomingCount=rows.filter(r=>r.kind==='upcoming').length;
   p.classList.add('ka-notification-popover');
