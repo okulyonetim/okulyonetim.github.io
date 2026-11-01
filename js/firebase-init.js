@@ -116,9 +116,18 @@ window.firebaseStorageHazirla = firebaseStorageHazirla;
       const path=img.dataset.supabasePath||'';
       if(!path||img.dataset.supabaseResolved===path)return;
       img.dataset.supabaseResolved=path;
-      url(path,img.dataset.fallbackUrl||'').then(fresh=>{
-        if(img.isConnected&&img.dataset.supabasePath===path&&fresh)img.src=fresh;
-      }).catch(()=>{img.dataset.supabaseResolved='';});
+      /* Eski imzalı URL'yi başarılı çözüm gibi işaretleme: oturum henüz hazır değilse
+         auth-state değişiminde Supabase'den yeniden istenebilmesi için hata boş dönmeli. */
+      url(path,'').then(fresh=>{
+        if(img.isConnected&&img.dataset.supabasePath===path&&fresh){
+          img.src=fresh;
+          img.dataset.supabaseResolved=path;
+        }else{
+          img.dataset.supabaseResolved='';
+        }
+      }).catch(()=>{
+        if(img.dataset.supabasePath===path)img.dataset.supabaseResolved='';
+      });
     });
   }
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(scan)}
