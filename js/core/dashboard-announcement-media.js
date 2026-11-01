@@ -19,8 +19,8 @@ function safeUrl(value){
 }
 function imagesOf(item){
   return(Array.isArray(item?.resimler)?item.resimler:[])
-    .map((r,index)=>({index,url:safeUrl(r?.url)}))
-    .filter(r=>r.url);
+    .map((r,index)=>({index,url:safeUrl(r?.url),storagePath:String(r?.storagePath||'')}))
+    .filter(r=>r.url||r.storagePath);
 }
 function readersOf(item){
   return Object.entries(item?.okuyanlar||{}).map(([uid,entry])=>({
@@ -157,12 +157,12 @@ function openHomeViewer(item,startIndex=0){
   box.className='ka-home-announcement-lightbox';
   box.dataset.homeAnnouncementLightbox='';
   box.setAttribute('role','dialog');box.setAttribute('aria-modal','true');
-  box.innerHTML=`<header class="ka-home-announcement-lightbox__head"><div><small>DUYURU GÖRSELLERİ</small><strong>${esc(item.baslik||'Duyuru')}</strong></div><span data-home-lightbox-counter></span><button type="button" data-home-lightbox-close aria-label="Kapat">×</button></header><div class="ka-home-announcement-lightbox__stage" data-home-lightbox-stage><button type="button" class="is-prev" data-home-lightbox-prev aria-label="Önceki görsel">‹</button><img data-home-lightbox-image alt=""><button type="button" class="is-next" data-home-lightbox-next aria-label="Sonraki görsel">›</button><div class="ka-announcement-zoom-controls"><button type="button" data-home-zoom-out aria-label="Uzaklaştır">−</button><button type="button" data-home-zoom-reset aria-label="Yakınlaştırmayı sıfırla"><span data-home-zoom-label>100%</span></button><button type="button" data-home-zoom-in aria-label="Yakınlaştır">＋</button></div></div>${images.length>1?`<footer class="ka-home-announcement-lightbox__thumbs">${images.map((r,i)=>`<button type="button" data-home-lightbox-thumb="${i}" aria-label="${i+1}. görsel"><img src="${esc(r.url)}" alt=""></button>`).join('')}</footer>`:''}`;
+  box.innerHTML=`<header class="ka-home-announcement-lightbox__head"><div><small>DUYURU GÖRSELLERİ</small><strong>${esc(item.baslik||'Duyuru')}</strong></div><span data-home-lightbox-counter></span><button type="button" data-home-lightbox-close aria-label="Kapat">×</button></header><div class="ka-home-announcement-lightbox__stage" data-home-lightbox-stage><button type="button" class="is-prev" data-home-lightbox-prev aria-label="Önceki görsel">‹</button><img data-home-lightbox-image alt=""><button type="button" class="is-next" data-home-lightbox-next aria-label="Sonraki görsel">›</button><div class="ka-announcement-zoom-controls"><button type="button" data-home-zoom-out aria-label="Uzaklaştır">−</button><button type="button" data-home-zoom-reset aria-label="Yakınlaştırmayı sıfırla"><span data-home-zoom-label>100%</span></button><button type="button" data-home-zoom-in aria-label="Yakınlaştır">＋</button></div></div>${images.length>1?`<footer class="ka-home-announcement-lightbox__thumbs">${images.map((r,i)=>`<button type="button" data-home-lightbox-thumb="${i}" aria-label="${i+1}. görsel"><img src="${esc(r.url)}" data-fallback-url="${esc(r.url)}" data-supabase-path="${esc(r.storagePath)}" alt=""></button>`).join('')}</footer>`:''}`;
   document.body.appendChild(box);document.body.classList.add('ka-announcement-overlay-open');
   const img=box.querySelector('[data-home-lightbox-image]'),stage=box.querySelector('[data-home-lightbox-stage]'),counter=box.querySelector('[data-home-lightbox-counter]'),prev=box.querySelector('[data-home-lightbox-prev]'),next=box.querySelector('[data-home-lightbox-next]'),zoomLabel=box.querySelector('[data-home-zoom-label]');
   const go=delta=>{const target=index+delta;if(target<0||target>=images.length)return;index=target;paint()};
   const zoom=attachZoomSurface(img,stage,{onSwipe:go,onScale:s=>{if(zoomLabel)zoomLabel.textContent=`${Math.round(s*100)}%`}});
-  const paint=()=>{const current=images[index];img.src=current.url;img.alt=`${item.baslik||'Duyuru'} — görsel ${index+1}`;counter.textContent=`${index+1} / ${images.length}`;prev.disabled=index===0;next.disabled=index===images.length-1;box.querySelectorAll('[data-home-lightbox-thumb]').forEach(b=>b.classList.toggle('is-active',Number(b.dataset.homeLightboxThumb)===index));zoom?.reset()};
+  const paint=()=>{const current=images[index];img.dataset.fallbackUrl=current.url||'';img.dataset.supabasePath=current.storagePath||'';img.src=current.url||'';img.alt=`${item.baslik||'Duyuru'} — görsel ${index+1}`;counter.textContent=`${index+1} / ${images.length}`;prev.disabled=index===0;next.disabled=index===images.length-1;box.querySelectorAll('[data-home-lightbox-thumb]').forEach(b=>b.classList.toggle('is-active',Number(b.dataset.homeLightboxThumb)===index));zoom?.reset()};
   box.querySelector('[data-home-lightbox-close]')?.addEventListener('click',closeHomeViewer);
   box.addEventListener('click',e=>{if(e.target===box)closeHomeViewer()});
   prev.addEventListener('click',()=>go(-1));next.addEventListener('click',()=>go(1));
@@ -184,7 +184,7 @@ function bindGallery(gallery){
 }
 function renderGallery(item){
   const images=imagesOf(item);if(!images.length)return'';
-  return `<section class="kh-announcement-media" data-home-announcement-gallery="${esc(item.id||'')}"><div class="kh-announcement-media__track" data-home-announcement-track>${images.map((r,i)=>`<button type="button" class="kh-announcement-media__slide" data-home-announcement-image="${esc(item.id||'')}" data-home-announcement-image-index="${i}" aria-label="Duyuru görseli ${i+1} tam ekran aç"><img src="${esc(r.url)}" alt="Duyuru görseli ${i+1}" loading="lazy">${images.length>1?`<span>${i+1}/${images.length}</span>`:''}</button>`).join('')}</div>${images.length>1?`<div class="kh-announcement-media__dots">${images.map((_,i)=>`<i data-home-announcement-dot class="${i===0?'is-active':''}"></i>`).join('')}</div>`:''}</section>`;
+  return `<section class="kh-announcement-media" data-home-announcement-gallery="${esc(item.id||'')}"><div class="kh-announcement-media__track" data-home-announcement-track>${images.map((r,i)=>`<button type="button" class="kh-announcement-media__slide" data-home-announcement-image="${esc(item.id||'')}" data-home-announcement-image-index="${i}" aria-label="Duyuru görseli ${i+1} tam ekran aç"><img src="${esc(r.url)}" data-fallback-url="${esc(r.url)}" data-supabase-path="${esc(r.storagePath)}" alt="Duyuru görseli ${i+1}" loading="lazy">${images.length>1?`<span>${i+1}/${images.length}</span>`:''}</button>`).join('')}</div>${images.length>1?`<div class="kh-announcement-media__dots">${images.map((_,i)=>`<i data-home-announcement-dot class="${i===0?'is-active':''}"></i>`).join('')}</div>`:''}</section>`;
 }
 function enhanceCommunicationLightbox(box){
   if(!box||box.dataset.dashboardZoomEnhanced==='1')return;
