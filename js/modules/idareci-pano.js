@@ -30,6 +30,7 @@ const KARTLAR=[
  {id:'gunler',ad:'Belirli gün ve haftalar',w:4,ico:'flag'},
  {id:'dilimiz',ad:'Dilimizin Zenginlikleri',w:6,ico:'book'},
  {id:'yaklasan',ad:'Yaklaşanlar',w:4,ico:'bell'},
+ {id:'duyurular',ad:'Duyurular',w:6,ico:'megaphone'},
  {id:'gununsozleri',ad:'Günün Ayeti / Hadisi / Özlü Sözü',w:6,ico:'quote'},
  {id:'sinavsayac',ad:'Sınav Geri Sayımı',w:6,ico:'clock'},
  {id:'rehber',ad:'Sınıf rehber öğretmenleri',w:12,ico:'users'}
@@ -37,7 +38,7 @@ const KARTLAR=[
 const KIDS=KARTLAR.map(k=>k.id);
 const KMAP=Object.fromEntries(KARTLAR.map(k=>[k.id,k]));
 const SURELER=[10,20,30,60];
-const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi'],['ogretmenler','dilimiz','gununsozleri'],['rehber']];
+const TV_SAYFALAR=[['sunan','nobet','siniflar','gelmeyen','gunler'],['takvim','yaklasan','terfi','duyurular'],['ogretmenler','dilimiz','gununsozleri'],['rehber']];
 
 const P='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
 const svg=(d,s=18)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" ${P}>${d}</svg>`;
@@ -52,6 +53,7 @@ const ICON={
  flag:svg('<path d="M5 21V4m0 0h12l-2 4 2 4H5"/>'),
  book:svg('<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 21V5M9 8h6M9 12h6"/>'),
  bell:svg('<path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/>'),
+ megaphone:svg('<path d="m3 11 18-5v12L3 14v-3Z"/><path d="M11.6 16.5 13 21H7l-1.2-6"/>'),
  warn:svg('<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',16),
  cup:svg('<path d="M4 8h12v5a5 5 0 01-5 5H9a5 5 0 01-5-5z"/><path d="M16 9h2a2 2 0 010 4h-2M7 3v2M11 3v2"/>'),
  full:svg('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
@@ -233,6 +235,18 @@ function yaklasanHtml(){
  const body=(l.length?l.map(y=>row(y.ad,y.zaman,chip(y.kalan,'blue'))).join(''):empty('Önümüzdeki 14 günde kayıtlı etkinlik yok.'))+(cd?note(`<span>${esc(cd.ad)}</span><b>${cd.gun===0?'Bugün':cd.gun+' gün'}</b>`,'blue'):'');
  return card('yaklasan',body,{right:'14 gün'});
 }
+function duyurularHtml(){
+ const list=rows('duyurular').filter(x=>x&&!x.arsivlendi&&x.aktif!==false&&!x.pasif)
+  .sort((a,b)=>String(b.tarih||b.eklenmeTarihi||'').localeCompare(String(a.tarih||a.eklenmeTarihi||''))).slice(0,4);
+ const items=list.map(x=>{
+  const raw=String(x.icerik||x.aciklama||'').replace(/<[^>]*>/g,'').replace(/\\s+/g,' ').trim();
+  const short=raw.length>150?raw.slice(0,149).trimEnd()+'…':raw;
+  const dt=x.tarih||x.eklenmeTarihi||'';
+  const date=dt?(()=>{const d=new Date(dt);return Number.isNaN(d.getTime())?String(dt):d.toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'})})():'';
+  return `<div class="ka-ip-row"><div class="ka-ip-row__main"><b>${esc(x.baslik||x.title||'Duyuru')}</b>${short?`<small>${esc(short)}</small>`:''}${date?`<small>${esc(date)}</small>`:''}</div></div>`;
+ }).join('');
+ return card('duyurular',`${items||empty('Aktif duyuru bulunmuyor.')}<button type="button" class="ka-ip-link" ${route('communication','announcements','Duyurular')}>Tüm duyuruları aç ›</button>`,{right:`${list.length} duyuru`});
+}
 function rehberKartlari(){
  const q=C().fold(S.rehberQ);
  return C().rehberler(M.data).filter(r=>(S.rehberK==='tum'||r.kademe===S.rehberK)&&(!q||C().fold(r.sinif+' '+r.ad).includes(q)))
@@ -280,7 +294,7 @@ function sinavSayacHtml(){
  }).join('');
  return card('sinavsayac',`<div class="ka-ip-cds">${items}</div>`);
 }
-const RENDER={sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,sinavsayac:sinavSayacHtml,rehber:rehberHtml};
+const RENDER={duyurular:duyurularHtml,sunan:sunanHtml,nobet:nobetHtml,gelmeyen:gelmeyenHtml,siniflar:sinifHtml,ogretmenler:ogretmenHtml,program:programHtml,takvim:takvimHtml,terfi:terfiHtml,gunler:gunlerHtml,dilimiz:dilimizHtml,yaklasan:yaklasanHtml,gununsozleri:gununSozleriHtml,sinavsayac:sinavSayacHtml,rehber:rehberHtml};
 
 /* ── sayfa ── */
 function strip(){
