@@ -685,6 +685,8 @@ function notificationTone(r){
   return 'default';
 }
 function openNotifications(){
+  /* Bildirim penceresi açıksa zil düğmesine ikinci basışta kapat. */
+  if(headerPopover?.classList.contains('ka-notification-popover')){closeHeaderPopover();return;}
   const anchor=$('[data-ka-header-notification]');if(!anchor)return;
   const p=popoverBase(anchor,332),rows=notificationRows(),count=rows.reduce((n,r)=>n+Math.max(1,Number(r.count)||1),0),upcomingCount=rows.filter(r=>r.kind==='upcoming').length;
   p.classList.add('ka-notification-popover');
