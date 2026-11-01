@@ -5,6 +5,7 @@ const ui=fs.readFileSync('js/core/shell-ui.js','utf8');
 const design=fs.readFileSync('css/design-system.css','utf8');
 const index=fs.readFileSync('index.html','utf8');
 const sw=fs.readFileSync('service-worker.js','utf8');
+assert(ui.includes("if(headerPopover?.classList.contains('ka-notification-popover')){closeHeaderPopover();return;}"),'Bildirim ziline ikinci basış açık pencereyi kapatmalı.');
 const start=ui.indexOf('function notificationTone(r)');
 const end=ui.indexOf('\nfunction norm',start);
 assert(start>=0&&end>start,'Bildirim renderer bulunmalı.');
