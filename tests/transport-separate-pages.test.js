@@ -12,7 +12,8 @@ assert(shell.includes("name==='transport'&&['services','busSeats','classSeats'].
 assert(transport.includes('function openPage(page,title=')&&transport.includes('window.TransportModule={mount,unmount,render,prepareLocal,openBusEditor,openClassSeating,openPage,back}'),'TransportModule public openPage / seating / back API sunmalı.');
 assert(!transport.includes('data-transport-tab'),'Transport içinde ikinci bir sekme navigasyonu kalmamalı.');
 assert(transport.includes("heroTitle.textContent=isClassSeats?'Sınıf Oturma Planları'")&&transport.includes("heroIcon.textContent=isClassSeats?'🪑'"),'Sınıf oturma planı sayfası taşıma başlığı yerine kendi başlığını ve simgesini göstermeli.');
-assert(transport.includes("stats.style.display=isClassSeats?'none':''")&&transport.includes("tabs.style.display=isClassSeats?'none':''"),'Sınıf oturma sayfasında CSS display kurallarına rağmen servis istatistikleri ve servis sekmeleri gizlenmeli.');
+assert(transport.includes("tabs.remove()")&&transport.includes("root?.querySelectorAll('.ka-transport-page-tabs').forEach(el=>el.remove())"),'Sınıf oturma sayfasında servis sekmeleri DOM üzerinden kaldırılmalı.');
+assert(transport.includes("stats.style.setProperty('display',isClassSeats?'none':'','important')"),'Sınıf oturma sayfasında servis istatistikleri önemli öncelikle gizlenmeli.');
 
 assert(transport.includes("const uiTeacher=()=>uiUser().admin!==true&&!!uiTeacherId()"),'Transport UI öğretmen kullanıcısını bağlı öğretmen kimliğiyle ayırmalı.');
 assert(transport.includes("const canEditBusSeats=()=>!uiTeacher()"),'Öğretmen servis oturma planında düzenleme yetkisi alamamalı.');
