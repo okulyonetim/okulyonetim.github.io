@@ -13,6 +13,8 @@ const eq=(a,b,m)=>assert.strictEqual(JSON.stringify(a),JSON.stringify(b),m);
 const w=load(['js/modules/dilimiz.js','js/modules/terfi-core.js','js/modules/idareci-pano-core.js']);
 const C=w.IdareciPanoCore;
 assert(C,'IdareciPanoCore yüklenmeli.');
+const panoSource=fs.readFileSync('js/modules/idareci-pano.js','utf8');
+assert(panoSource.includes("id:'duyurular'")&&panoSource.includes('function duyurularHtml()')&&panoSource.includes("route('communication','announcements','Duyurular')"),'İdareci panoda duyuru kartı ve Duyurular sayfası bağlantısı bulunmalı.');
 
 /* 26 Ekim 2026 Pazartesi 10:48 — 3. ders (10:30–11:10) */
 const NOW=new Date(2026,9,26,10,48,12),TODAY='2026-10-26';
