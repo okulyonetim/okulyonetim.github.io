@@ -16,7 +16,7 @@ assert(C,'IdareciPanoCore yüklenmeli.');
 const panoSource=fs.readFileSync('js/modules/idareci-pano.js','utf8');
 assert(panoSource.includes("id:'duyurular'")&&panoSource.includes('function duyurularHtml()')&&panoSource.includes("route('communication','announcements','Duyurular')"),'İdareci panoda duyuru kartı ve Duyurular sayfası bağlantısı bulunmalı.');
 assert(panoSource.includes('DashboardAnnouncementMedia?.renderGallery?.(x)'),'İdareci Pano duyuru kartı duyuru görsellerini de göstermeli.');
-assert(panoSource.includes('Günün sözü otomatik değiştirilmez'),'Günün sözü kartı otomatik geçişle yanıp sönmemeli.');
+assert(panoSource.includes('if(now.getSeconds()%8===0)sozTick()'),'Günün sözü kartı 8 saniyede bir otomatik değişmeli.');
 
 /* 26 Ekim 2026 Pazartesi 10:48 — 3. ders (10:30–11:10) */
 const NOW=new Date(2026,9,26,10,48,12),TODAY='2026-10-26';
