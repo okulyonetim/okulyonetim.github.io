@@ -108,7 +108,7 @@ window.firebaseStorageHazirla = firebaseStorageHazirla;
     inFlight.set(key,task);
     try{return await task}catch(error){if(fallback)return fallback;throw error}
   }
-  window.SupabaseDosyaUrlService={url,clear:path=>path?cache.delete(String(path)):cache.clear()};
+  window.SupabaseDosyaUrlService={url,refresh:schedule,clear:path=>path?cache.delete(String(path)):cache.clear()};
   let queued=false;
   function scan(){
     queued=false;
@@ -149,7 +149,7 @@ function firebaseyiBaslat(){
   if(yapilandirmaEksikMi()){baglantiUyarisiGoster();return false}
   try{
     if(typeof firebase==='undefined')throw new Error('firebase is not defined');
-    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.firestore(); db.settings({experimentalAutoDetectLongPolling:true,merge:true}); auth=firebase.auth(); storage=dosyaDeposuHazirla(); firebaseHazir=true;
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig); db=firebase.firestore(); db.settings({experimentalAutoDetectLongPolling:true,merge:true}); auth=firebase.auth(); auth.onAuthStateChanged(()=>window.SupabaseDosyaUrlService?.refresh?.()); storage=dosyaDeposuHazirla(); firebaseHazir=true;
     window.db=db; window.auth=auth; window.storage=storage; window.firebaseHazir=true;
     db.enablePersistence({synchronizeTabs:true}).catch(err=>{if(err.code==='failed-precondition')console.warn('Offline destek: birden fazla sekme açık, sadece ilk sekmede etkin.');else if(err.code==='unimplemented')console.warn('Offline destek: bu tarayıcı desteklemiyor.');else console.warn('Offline destek etkinleştirilemedi:',err)});
     try{if(firebase.messaging.isSupported()) messaging=firebase.messaging(); window.messaging=messaging}catch(e){console.warn('Bu tarayıcı push bildirimlerini desteklemiyor.',e)}
@@ -165,7 +165,7 @@ function firebaseyiBaslat(){
 (function scheduleDataIntegrityFeatureLoad(){if(document.querySelector('script[data-schedule-data-integrity]'))return;const script=document.createElement('script');script.src='js/core/schedule-data-integrity.js?v=917';script.async=false;script.dataset.scheduleDataIntegrity='';document.head.appendChild(script)})();
 (function scheduleReportRedesignFeatureLoad(){if(document.querySelector('script[data-schedule-report-redesign]'))return;const script=document.createElement('script');script.src='js/core/schedule-report-redesign.js?v=942';script.async=false;script.dataset.scheduleReportRedesign='';document.head.appendChild(script)})();
 (function scheduleReportColumnZebraFeatureLoad(){if(document.querySelector('script[data-schedule-report-column-zebra]'))return;const script=document.createElement('script');script.src='js/core/schedule-report-column-zebra.js?v=940';script.async=false;script.dataset.scheduleReportColumnZebra='';document.head.appendChild(script)})();
-(function dashboardAnnouncementMediaFeatureLoad(){if(document.querySelector('script[data-dashboard-announcement-media]'))return;const script=document.createElement('script');script.src='js/core/dashboard-announcement-media.js?v=921';script.async=false;script.dataset.dashboardAnnouncementMedia='';document.head.appendChild(script)})();
+(function dashboardAnnouncementMediaFeatureLoad(){if(document.querySelector('script[data-dashboard-announcement-media]'))return;const script=document.createElement('script');script.src='js/core/dashboard-announcement-media.js?v=922';script.async=false;script.dataset.dashboardAnnouncementMedia='';document.head.appendChild(script)})();
 (function studentExamResultDetailsFeatureLoad(){if(document.querySelector('script[data-student-exam-result-details]'))return;const script=document.createElement('script');script.src='js/core/student-exam-result-details.js?v=925';script.async=false;script.dataset.studentExamResultDetails='';document.head.appendChild(script)})();
 (function adminPasswordResetFeatureLoad(){if(document.querySelector('script[data-admin-password-reset]'))return;const script=document.createElement('script');script.src='js/core/admin-password-reset.js?v=949';script.async=false;script.dataset.adminPasswordReset='';document.head.appendChild(script)})();
 (function teacherReminderAcademicYearFeatureLoad(){if(document.querySelector('script[data-teacher-reminder-academic-year]'))return;const script=document.createElement('script');script.src='js/core/teacher-reminder-academic-year.js?v=953';script.async=false;script.dataset.teacherReminderAcademicYear='';document.head.appendChild(script)})();
