@@ -145,6 +145,16 @@ html,body{min-height:100dvh}
 
 /* Merkezi dashboard görsel stilleri */
 /* Ana sayfa duyuru medya galerisi + okuyan popover + tam ekran zoom */
+/* İdareci pano duyuru görselleri: ana sayfa galerisi stillerinden bağımsız, kontrollü boyut */
+.ka-ip .kh-announcement-media{display:block;width:100%;max-width:100%;min-width:0;margin:var(--ka-sp-8) 0 var(--ka-sp-10);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-4);overflow:hidden;background:color-mix(in srgb,var(--ka-muted-bg) 72%,var(--ka-card-bg));box-sizing:border-box}
+.ka-ip .kh-announcement-media__track{display:flex;width:100%;max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pinch-zoom}
+.ka-ip .kh-announcement-media__track::-webkit-scrollbar{display:none}
+.ka-ip .kh-announcement-media__slide{position:relative;flex:0 0 100%;width:100%;min-width:100%;min-height:110px;max-height:230px;padding:0;border:0;background:transparent;display:grid;place-items:center;overflow:hidden;scroll-snap-align:center;cursor:zoom-in;box-sizing:border-box}
+.ka-ip .kh-announcement-media__slide img{display:block;width:100%;max-width:100%;height:auto;max-height:220px;object-fit:contain;object-position:center;margin:auto}
+.ka-ip .kh-announcement-media__slide>span{position:absolute;right:8px;top:8px;min-width:32px;height:24px;padding:0 var(--ka-sp-8);border-radius:var(--ka-radius-pill);background:rgba(var(--k-green-030d09),.72);color:var(--ka-text-inverse);display:grid;place-items:center;font-size:var(--ka-fs-9);font-weight:var(--ka-fw-850)}
+.ka-ip .kh-announcement-media__dots{height:18px;display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-5);border-top:var(--ka-border-w) solid var(--ka-border);background:var(--ka-card-bg)}
+.ka-ip .kh-announcement-media__dots i{width:5px;height:5px;border-radius:var(--ka-radius-pill);background:var(--ka-border-strong)}
+.ka-ip .kh-announcement-media__dots i.is-active{width:15px;background:var(--ka-primary)}
 .ka-home .kh-announcement-media{margin:var(--ka-sp-2) var(--ka-sp-9) var(--ka-sp-9);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);overflow:hidden;background:color-mix(in srgb,var(--ka-muted-bg) 72%,var(--ka-card-bg))}
 .ka-home .kh-announcement-media__track{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x pinch-zoom}
 .ka-home .kh-announcement-media__track::-webkit-scrollbar{display:none}
