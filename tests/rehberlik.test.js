@@ -286,6 +286,7 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   M.riskAcik='';M.riskGorunum='tablo';M.render();
   assert((kok.innerHTML.match(/class="rhb-rt__bas"/g)||[]).length===36&&(kok.innerHTML.match(/data-rhb-risk=/g)||[]).length===72,'Tabloda 36 sütun × 2 öğrenci kutu.');
   assert(kok.innerHTML.indexOf('Ali Yılmaz')<kok.innerHTML.indexOf('Zeynep Aydın'),'Öğrenciler okul numarasına göre sıralı.');
+  assert(kok.innerHTML.includes('role="table"')&&kok.innerHTML.includes('grid-template-columns:260px 48px repeat(36,56px)'),'Risk tablosu sabit sütunlu CSS Grid yapısında oluşturulmalı.');
   assert(kok.innerHTML.includes('table-layout:fixed;width:2324px')&&kok.innerHTML.includes('min-width:260px')&&kok.innerHTML.includes('min-width:56px'),'Risk tablosunda öğrenci adı ve risk kutuları sabit genişlikte ayrı sütunlarda kalmalı.');
   dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbRisk:'v2|0'},checked:true}});
   dinleyiciler.change({target:{closest:q=>q==='[data-rhb-page]'?{}:null,dataset:{rhbRisk:'v2|35'},checked:true}});
