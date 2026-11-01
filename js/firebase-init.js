@@ -91,7 +91,7 @@ window.firebaseStorageHazirla = firebaseStorageHazirla;
 (function kurSupabaseDosyaUrlCozucu(){
   const cache=new Map(),inFlight=new Map(),TTL=4*60*1000;
   async function url(path,fallback){
-    const key=String(path||'').replace(/^\\/+/, '');
+    const key=String(path||'').replace(/^\/+/, '');
     if(!key)return fallback||'';
     const hit=cache.get(key);if(hit&&hit.expires>Date.now())return hit.url;
     if(inFlight.has(key))return inFlight.get(key);
@@ -101,7 +101,7 @@ window.firebaseStorageHazirla = firebaseStorageHazirla;
       const store=window.storage||window.firebaseStorageHazirla?.();
       if(!store)throw new Error('Supabase dosya servisi hazır değil.');
       const fresh=await store.ref(key).getDownloadURL();
-      if(!/^https?:\\/\\//i.test(String(fresh||'')))throw new Error('Dosya bağlantısı geçersiz.');
+      if(!/^https?:\/\//i.test(String(fresh||'')))throw new Error('Dosya bağlantısı geçersiz.');
       cache.set(key,{url:fresh,expires:Date.now()+TTL});
       return fresh;
     })().finally(()=>inFlight.delete(key));
