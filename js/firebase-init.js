@@ -86,6 +86,49 @@ function firebaseStorageHazirla(){
   storage = dosyaDeposuHazirla(); window.storage = storage; return storage;
 }
 window.firebaseStorageHazirla = firebaseStorageHazirla;
+
+/* Supabase Storage kalıcı yol çözücü: Firestore'daki eski/geçici imzalı URL'lere bağımlı kalma. */
+(function kurSupabaseDosyaUrlCozucu(){
+  const cache=new Map(),inFlight=new Map(),TTL=4*60*1000;
+  async function url(path,fallback){
+    const key=String(path||'').replace(/^\\/+/, '');
+    if(!key)return fallback||'';
+    const hit=cache.get(key);if(hit&&hit.expires>Date.now())return hit.url;
+    if(inFlight.has(key))return inFlight.get(key);
+    const task=(async()=>{
+      const current=window.auth?.currentUser;
+      if(!current||typeof current.getIdToken!=='function')throw new Error('Dosya bağlantısı için oturum gerekli.');
+      const store=window.storage||window.firebaseStorageHazirla?.();
+      if(!store)throw new Error('Supabase dosya servisi hazır değil.');
+      const fresh=await store.ref(key).getDownloadURL();
+      if(!/^https?:\\/\\//i.test(String(fresh||'')))throw new Error('Dosya bağlantısı geçersiz.');
+      cache.set(key,{url:fresh,expires:Date.now()+TTL});
+      return fresh;
+    })().finally(()=>inFlight.delete(key));
+    inFlight.set(key,task);
+    try{return await task}catch(error){if(fallback)return fallback;throw error}
+  }
+  window.SupabaseDosyaUrlService={url,clear:path=>path?cache.delete(String(path)):cache.clear()};
+  let queued=false;
+  function scan(){
+    queued=false;
+    document.querySelectorAll('img[data-supabase-path]').forEach(img=>{
+      const path=img.dataset.supabasePath||'';
+      if(!path||img.dataset.supabaseResolved===path)return;
+      img.dataset.supabaseResolved=path;
+      url(path,img.dataset.fallbackUrl||'').then(fresh=>{
+        if(img.isConnected&&img.dataset.supabasePath===path&&fresh)img.src=fresh;
+      }).catch(()=>{img.dataset.supabaseResolved='';});
+    });
+  }
+  function schedule(){if(queued)return;queued=true;requestAnimationFrame(scan)}
+  if(typeof MutationObserver!=='undefined'){
+    new MutationObserver(schedule).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['data-supabase-path']});
+    document.addEventListener('DOMContentLoaded',scan,{once:true});
+    window.addEventListener('koruk:firebase-ready',schedule);
+    schedule();
+  }
+})();
 function baglantiUyarisiGoster(mesaj){
   const uyari = document.getElementById('configWarning');
   if(uyari){ uyari.classList.remove('ka-hidden'); uyari.classList.add('active'); const govde = uyari.querySelector('.ka-card__body p'); if(govde && mesaj) govde.textContent = mesaj; }
