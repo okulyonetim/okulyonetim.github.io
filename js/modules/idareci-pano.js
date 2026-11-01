@@ -243,7 +243,7 @@ function duyurularHtml(){
   const short=raw.length>150?raw.slice(0,149).trimEnd()+'…':raw;
   const dt=x.tarih||x.eklenmeTarihi||'';
   const date=dt?(()=>{const d=new Date(dt);return Number.isNaN(d.getTime())?String(dt):d.toLocaleDateString('tr-TR',{day:'numeric',month:'short',year:'numeric'})})():'';
-  return `<div class="ka-ip-row"><div class="ka-ip-row__main"><b>${esc(x.baslik||x.title||'Duyuru')}</b>${short?`<small>${esc(short)}</small>`:''}${date?`<small>${esc(date)}</small>`:''}</div></div>`;
+  return `<div class="ka-ip-announcement"><div class="ka-ip-row"><div class="ka-ip-row__main"><b>${esc(x.baslik||x.title||'Duyuru')}</b>${short?`<small>${esc(short)}</small>`:''}${date?`<small>${esc(date)}</small>`:''}</div></div>${global.DashboardAnnouncementMedia?.renderGallery?.(x)||''}</div>`;
  }).join('');
  return card('duyurular',`${items||empty('Aktif duyuru bulunmuyor.')}<button type="button" class="ka-ip-link" ${route('communication','announcements','Duyurular')}>Tüm duyuruları aç ›</button>`,{right:`${list.length} duyuru`});
 }
@@ -418,7 +418,7 @@ function tick(){
  const now=new Date();
  mounted.querySelectorAll('[data-ip-hm]').forEach(e=>{e.textContent=hm(now)});
  mounted.querySelectorAll('[data-ip-ss]').forEach(e=>{e.textContent=':'+pad(now.getSeconds())});
- if(now.getSeconds()%8===0)sozTick();
+ /* Günün sözü otomatik değiştirilmez; ekran titremesini önlemek için seçim kullanıcıya bırakılır. */
  mounted.querySelectorAll('[data-ip-cd]').forEach(el=>{
   const p=cdParts(new Date(Number(el.dataset.ipCd)),now);if(!p)return;
   el.querySelectorAll('[data-ip-cd-val]').forEach(b=>{const v=pad(p[b.dataset.ipCdVal]??0);if(b.textContent!==v)b.textContent=v});
