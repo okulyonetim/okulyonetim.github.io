@@ -54,6 +54,7 @@ for(const token of [
 ]) assert(css.includes(token),`Duyuru galeri/popup/zoom stili eksik: ${token}`);
 
 assert(dashboard.includes('data-duyuru-id=')&&dashboard.includes('button type=\"button\" class=\"kh-read-count\"'),'Dashboard mevcut duyuru kartı entegrasyon kancalarını korumalı.');
+assert(dashboard.includes('DashboardAnnouncementMedia?.renderGallery?.(d)'),'Ana sayfa duyuru kartı görsel galerisini üretmeli.');
 assert(init.includes('dashboard-announcement-media.js?v=921'),'Duyuru medya runtime dosyası v921 ile yüklenmeli.');
 const cache=sw.match(/const CACHE_ADI='oy-cache-v(\d+)'/);
 assert(cache&&Number(cache[1])>=921,'Service Worker cache sürümü duyuru medya sürümünden geri olmamalı.');
