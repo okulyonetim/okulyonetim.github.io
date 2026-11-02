@@ -13,7 +13,7 @@ const SB=global.SinifBaglam,K=global.KulupCore;
 const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=3';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const S={yil:'',kulupId:'',istenenId:'',takipId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
+const S={yil:'',kulupId:'',istenenId:'',takipId:'',katalog:null,katalogHata:false,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
 let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,yazT=0;
 
 /* ── bağlam: kulüpler, danışmanlar, üyeler ── */
@@ -46,7 +46,8 @@ async function jsonAl(yol){
 }
 async function katalogYukle(){
  if(S.katalog)return;
- try{S.katalog=await jsonAl('./data/kulup/katalog.json')}catch(e){console.warn('[Sosyal Kulüpler/katalog]',e?.message||e);S.katalog={kulupler:[]}}
+ /* Hata kalıcı sayılmaz: katalog null kalır, kulüp sayfası her açılışta yeniden dener. */
+ try{S.katalog=await jsonAl('./data/kulup/katalog.json');S.katalogHata=false}catch(e){console.warn('[Sosyal Kulüpler/katalog]',e?.message||e);S.katalogHata=true}
 }
 function katalogKaydi(){
  const k=kulup();if(!k||!S.katalog)return null;
@@ -133,7 +134,7 @@ function duzenleyici(kod,paket){
 function evrakKarti({k:kod,ad,aciklama,katalog},sira){
  const hazir=!katalog||!!S.paket;
  const alt=hazir?`${ciktilar(kod,S.paket||{})}${duzenleyici(kod,S.paket)}`
-  :`<p class="ka-muted">${S.yukleniyor?'Evrak hazırlanıyor…':'Bu kulüp için henüz hazır değil.'}</p>`;
+  :`<p class="ka-muted">${S.yukleniyor||(!S.katalog&&!S.katalogHata)?'Evrak hazırlanıyor…':S.katalogHata?'Katalog yüklenemedi; sayfayı yeniden açın.':'Bu kulüp için henüz hazır değil.'}</p>`;
  return `<article class="ka-card klp-evrak${hazir?'':' klp-evrak--yok'}" data-klp-evrak="${kod}"><div class="ka-card__body ka-stack"><div class="klp-evrak__ust"><span class="klp-no" aria-hidden="true">${sira}</span><div><strong>${esc(ad)}</strong><small>${esc(aciklama)}</small></div></div>${alt}</div></article>`;
 }
 
@@ -164,7 +165,8 @@ function takipKarti(){
 /* Katalogda karşılığı olmayan kulüp: hazır evrakları olan bir kulüple elle eşleştirilebilir. */
 function eslesmeKarti(){
  const l=S.katalog?.kulupler||[];
- if(S.paket||S.yukleniyor||!kulup())return '';
+ if(S.paket||S.yukleniyor||!kulup()||(!S.katalog&&!S.katalogHata))return '';
+ if(S.katalogHata)return `<article class="ka-card klp-uyari"><div class="ka-card__body ka-stack"><strong>Hazır evrak kataloğu yüklenemedi</strong><p class="ka-muted">Üye listesi, toplantı tutanağı ve denetleme kurulu raporu hazırlanır. Kulübün iç tüzük, yıllık plan, toplum hizmeti ve raporları için bağlantınızı kontrol edip sayfayı yeniden açın.</p></div></article>`;
  const secenek=l.map(x=>`<option value="${esc(x.id)}">${esc(x.ad)}</option>`).join('');
  return `<article class="ka-card klp-uyari"><div class="ka-card__body ka-stack"><strong>Bu kulübün hazır evrakları henüz eklenmedi</strong><p class="ka-muted">Üye listesi, toplantı tutanağı ve denetleme kurulu raporu hemen hazırlanır. İç tüzük, yıllık plan, toplum hizmeti ve raporlar için kulübün evrakları kataloğa eklenmelidir.</p>${l.length?field('Hazır evrakları olan bir kulüple eşleştir',`<select class="ka-input" data-klp-alan="eslesme"><option value="">Seçiniz</option>${secenek}</select>`):''}</div></article>`;
 }

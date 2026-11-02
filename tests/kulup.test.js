@@ -184,7 +184,7 @@ const gizli=nav.match(/const TEACHER_HIDDEN=new Set\(\[([^\]]*)\]/)[1];
 assert(!/'tools:form-kulup'/.test(gizli)&&gizli.includes("'tools:form-kulup-kayit'"),'Öğretmen yeni Sosyal Kulüpler sayfasını görür; klasik kayıt tablosu öğretmenden gizli kalır.');
 assert(nav.includes("['form-kulup','Sosyal Kulüpler','star'")&&nav.includes("'tools','form-kulup'],"),'Menü aracı aynı rotada kalır.');
 assert(/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup-kayit':'Sosyal Kulüpler'/.test(shell)&&!/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup':/.test(shell),'Klasik tablo form-kulup-kayit sayfasına taşınır.');
-assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=3')&&shell.includes('kulup.js?v=5'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
+assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=3')&&shell.includes('kulup.js?v=6'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
 assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
 /* Öğretmen görünürlüğü ve gizlilik: sayfa rol matrisine takılmaz, yalnız kendi kulübünü görür, profilde "Sosyal kulübüm" bölümü açar */
 {const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
@@ -202,7 +202,7 @@ assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
 {const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
  assert(ui.includes('data-klp-act="takip">Evrak takibi</button>')&&!ui.includes('Kulüp kayıtları')&&ui.includes('S.takipId=S.kulupId')&&ui.includes('takipKulubu:()=>S.takipId'),'Sekme “Evrak takibi” olur ve seçili kulübü takip sayfasına bildirir.');
  assert(cz.includes('global.KulupModule?.takipKulubu?.()')&&cz.includes("tek?'Evrak Takibi':c.title")&&cz.includes('all.find(x=>String(x.id)===tek)')&&cz.includes('tek?\'\':kind===\'bep\''),'Klasik kulüp çizelgesi kapsam varsa yalnız o kulübü çizer (özet ve araç çubuğu yok).');}
-['kulup-core.js?v=3','kulup.js?v=5','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+['kulup-core.js?v=3','kulup.js?v=6','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
 assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=3'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
 fs.readdirSync('assets/kulup/sablon').forEach(f=>assert(sw.includes(`./assets/kulup/sablon/${f}`),`${f} çevrimdışı için önbelleğe alınmalı.`));
 assert.deepStrictEqual(fs.readdirSync('assets/kulup/sablon').sort(),['denetleme.docx','donem-sonu.docx','tutanak.docx','uye-listesi.docx','yil-sonu.docx'],'Ortak şablonlar: kulübe bağlı olmayan beş evrak.');
@@ -212,6 +212,11 @@ for(const f of ['kulup','kulup-core','kulup-dosya']){
  const k=fs.readFileSync(`js/modules/${f}.js`,'utf8');
  assert(!/localStorage\s*\.\s*setItem/.test(k)&&!/<style|createElement\('style'\)/.test(k),`${f}.js depolamaya yazmaz, stil gömmez.`);
 }
+/* APK: data/ klasörü uygulamaya girmezse kulüp kataloğu telefonda hiç yüklenmez; katalog hatası da kalıcı olmaz */
+{const wf=fs.readFileSync('.github/workflows/build-apk.yml','utf8'),ui=fs.readFileSync('js/modules/kulup.js','utf8');
+ assert(wf.includes('cp -r data www/')&&wf.includes("- 'data/**'"),'APK derlemesi data/ klasörünü www/ içine kopyalar ve veri değişince yeniden derlenir.');
+ assert(/catch\(e\)\{[^}]*S\.katalogHata=true\}/.test(ui)&&!ui.includes('S.katalog={kulupler:[]}'),'Katalog yüklenemezse boş katalog kalıcı yazılmaz; açılışta yeniden denenir.');
+ assert(ui.includes('Hazır evrak kataloğu yüklenemedi')&&ui.includes('(!S.katalog&&!S.katalogHata)'),'Hata ve yükleniyor durumu “henüz eklenmedi” diye gösterilmez.');}
 assert(css.includes('#v2ModuleRoot .klp-page')&&css.includes('#v2ModuleRoot .klp-evrak__ust'),'Stiller tasarım sistemi CSS dosyasında olmalı.');
 assert(!/color:\s*#fff[^;]*;[^}]*background[^}]*warning/.test(css.slice(css.indexOf('/* ===== SOSYAL KULÜPLER'),css.indexOf('/* ===== A4 — Yazılı Kâğıdı'))),'Sarı dolgu üzerine beyaz yazı olmaz.');
 console.log('kulup.test.js OK');

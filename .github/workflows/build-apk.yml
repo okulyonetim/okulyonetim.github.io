@@ -11,6 +11,7 @@ on:
       - 'css/**'
       - 'js/**'
       - 'assets/**'
+      - 'data/**'
       - 'manifest.json'
       - 'service-worker.js'
       - 'capacitor.config.json'
@@ -59,6 +60,8 @@ jobs:
           cp -r css www/ 2>/dev/null || true
           cp -r js www/ 2>/dev/null || true
           cp -r assets www/ 2>/dev/null || true
+          # Hazır evrak katalogları (Sosyal Kulüpler, BEP, TYMM, Yıllık Plan) uygulama içinden data/ yoluyla okunur
+          cp -r data www/ 2>/dev/null || true
           cp manifest.json www/ 2>/dev/null || true
           cp service-worker.js www/ 2>/dev/null || true
 
