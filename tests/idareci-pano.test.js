@@ -166,6 +166,8 @@ assert(TC,'TerfiCore yüklenmeli.');
 const sn=(derece,kademeNo,sonTerfiTarihi)=>TC.sonraki({derece,kademeNo,sonTerfiTarihi});
 eq(TC.birYilSonra('2024-02-29'),'2025-02-28','29 Şubat artık olmayan yılda 28 Şubat olur.');
 eq(TC.birYilSonra('2026-10-26'),'2027-10-26','Sonraki terfi 1 yıl sonradır.');
+eq(TC.sonraki({derece:4,kademeNo:1,sonTerfiTarihi:'14 Ekim 2025'}).tarih,'2026-10-14','Türkçe ay adıyla kaydedilen son terfi tarihi ISO tarihe çevrilmeli.');
+eq(TC.sonraki({derece:4,kademeNo:1,sonTerfiTarihi:'14.10.2025'}).tarih,'2026-10-14','Noktalı tarih biçimi korunmalı.');
 eq(TC.birYilSonra(''),'');
 let r=sn(5,2,'2025-09-01');
 eq([r.durum,r.tarih,r.sonra,r.dereceDegisir],['var','2026-09-01',{derece:5,kademe:3},false],'Kademe her yıl 1 artar.');
