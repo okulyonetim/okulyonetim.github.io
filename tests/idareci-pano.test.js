@@ -312,4 +312,18 @@ const NK='ka-nav-layout:u1:idareci';
   assert(/hava:\(\)=>\{global\.SchoolLiveStatus\?\.openWeather\?\.\(\)\}/.test(pano),'Hava çipine dokununca hava ayrıntıları açılmalı.');
 }
 
+/* ── tam ekran pano duyuru görseli kart sınırları içinde kalmalı ── */
+{
+  const css=fs.readFileSync('css/design-system.css','utf8');
+  for(const token of [
+    '.ka-ip-tv .ka-ip-tv-body .ka-ip-announcement .kh-announcement-media{',
+    '.ka-ip-tv .ka-ip-tv-body .ka-ip-announcement .kh-announcement-media__track{',
+    '.ka-ip-tv .ka-ip-tv-body .ka-ip-announcement .kh-announcement-media__slide img{',
+    'max-width:100%',
+    'object-fit:contain'
+  ]) assert(css.includes(token),'Tam ekran pano duyuru görseli kart sınırlarında kalmalı: '+token);
+  const html=fs.readFileSync('index.html','utf8');
+  assert(html.includes('css/design-system.css?v=1211'),'Duyuru görseli düzeltmesi için tasarım sistemi önbelleği yenilenmeli.');
+}
+
 console.log('İdareci Pano çekirdek testi geçti.');
