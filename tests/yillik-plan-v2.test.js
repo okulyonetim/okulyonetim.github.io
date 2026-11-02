@@ -144,6 +144,7 @@ assert.deepStrictEqual(J(C.satirGunleri(sutunsuz,havuz,C.satirGorunumu(sutunsuz)
 assert.strictEqual(C.dersAnahtari('Beden Eğitimi ve Spor Dersi'),C.dersAnahtari('BEDEN EĞİTİMİ'));
 assert.strictEqual(C.dersAnahtari('Fen Bilimleri'),C.dersAnahtari('FEN BİLİMLERİ DERSİ'));
 assert.strictEqual(C.dersAnahtari('English'),C.dersAnahtari('İngilizce'));
+assert.strictEqual(C.dersAnahtari('Yabancı Dil'),C.dersAnahtari('İngilizce'));assert.strictEqual(C.dersAnahtari('Yabancı Dil (İngilizce)'),C.dersAnahtari('İngilizce'));assert.notStrictEqual(C.dersAnahtari('Yabancı Dil (Almanca)'),C.dersAnahtari('İngilizce'));
 assert.strictEqual(C.dersAnahtari('Bilişim Teknolojileri ve Yazılım'),C.dersAnahtari('Bilişim Teknolojileri'));
 assert.notStrictEqual(C.dersAnahtari('Matematik'),C.dersAnahtari('Fen Bilimleri'));
 /* "Bu hafta": yalnız bugün satırın tarih aralığındaysa; tatil dışı boşlukta -1 */

@@ -418,6 +418,7 @@ const dersAnahtari=v=>{
  if(k.includes('bilisim teknolojileri'))return'bilisim_teknolojileri';
  if(k.includes('fen bilimleri'))return'fen_bilimleri';
  if(k.includes('ingilizce')||k.includes('english'))return'ingilizce';
+ if(/^yabanci dil( |$)/.test(k)&&!/almanca|fransizca|arapca|ispanyolca|rusca|italyanca|japonca|cince|korece/.test(k))return'ingilizce';   /* "Yabancı Dil" (dil belirtilmemiş) = İngilizce */
  return k;
 };
 const sinifSayisi=v=>{const m=String(v||'').match(/\d+/);return m?Number(m[0]):null};

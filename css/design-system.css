@@ -75,15 +75,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 [data-schedule-save]:disabled,[data-schedule-save][disabled]{background:var(--ka-muted-bg)!important;color:var(--ka-text-muted)!important;border-color:var(--ka-border)!important;opacity:1!important}
 [data-schedule-save]:disabled svg,[data-schedule-save][disabled] svg,[data-schedule-save]:disabled i,[data-schedule-save][disabled] i{color:var(--ka-text-muted)!important;stroke:currentColor!important}
 
-#kaAcademicScheduleModal .ka-modal__body>div:first-child{background:var(--ka-card-bg)!important;color:var(--ka-text)!important;border-color:var(--ka-border)!important}
-#kaAcademicScheduleModal .ka-modal__body>div:first-child h1,
-#kaAcademicScheduleModal .ka-modal__body>div:first-child h2,
-#kaAcademicScheduleModal .ka-modal__body>div:first-child h3,
-#kaAcademicScheduleModal .ka-modal__body>div:first-child p,
-#kaAcademicScheduleModal .ka-modal__body>div:first-child span{color:var(--ka-text)!important}
-#kaAcademicScheduleModal .ka-modal__body>div:first-child svg{color:var(--ka-button-text)!important;stroke:var(--ka-button-text)!important}
-#kaAcademicScheduleModal .ka-modal__body>div:first-child> :first-child{background:var(--ka-primary)!important;color:var(--ka-button-text)!important;border-color:var(--ka-primary)!important}
-
 /* ===== TAŞIMA — SERVİS ADI ===== */
 .ka-transport-service-card__main,.ka-transport-service-card__title,.ka-transport-service-card__name{border-color:transparent!important;box-shadow:none!important}
 .ka-transport-service-card__main,.ka-transport-service-card__title,.ka-transport-service-card__name{background:transparent!important;color:var(--ka-text)!important}
