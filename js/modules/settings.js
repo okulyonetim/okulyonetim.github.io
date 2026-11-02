@@ -259,6 +259,12 @@ function storage(){
   <div class="ka-stack">${sablonRows}</div>
 </div></article>
 
+<article class="ka-card"><div class="ka-card__body ka-stack" data-sync-status>
+  <div><strong>🔄 Eşitleme Durumu</strong><div class="ka-muted">Bu cihazın diğer cihazlarla (telefon, bilgisayar, uygulama) veri eşitlemesi.</div></div>
+  <div class="ka-stack" data-sync-status-body><div class="ka-muted">Okunuyor…</div></div>
+  <div class="ka-row ka-wrap"><button class="ka-btn ka-btn--primary ka-btn--sm" type="button" data-sync-now>Şimdi eşitle</button></div>
+</div></article>
+
 ${admin()&&window.KorukAutoBackup?`<article class="ka-card"><div class="ka-card__body ka-stack" data-autobackup>
   <div><strong>🛡️ Otomatik Yedek</strong><div class="ka-muted">Uygulama açıldığında günde bir kez, bu cihazda son ${window.KorukAutoBackup.KEEP} yedek saklanır. İnternet ya da sunucu gerekmez.</div></div>
   <label class="ka-check"><input type="checkbox" data-autobackup-toggle ${window.KorukAutoBackup.enabled()?'checked':''}> Otomatik yedek açık</label>
@@ -328,7 +334,49 @@ async function renderAutoBackup(out){
   box.innerHTML=(rows.length?rows.map(r=>`<div class="ka-row ka-row--between ka-wrap" style="padding:8px 10px;border:1px solid var(--ka-border);border-radius:10px"><span><strong>${esc(new Date(r.ts).toLocaleString('tr-TR'))}</strong><small class="ka-muted" style="display:block">${r.count} kayıt · ${autoBackupBytes(r.bytes)}${r.manuel?' · elle':''}</small></span><span class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-autobackup-dl="${r.id}">İndir</button><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-autobackup-restore="${r.id}">Geri yükle</button></span></div>`).join(''):'<div class="ka-muted">Henüz yedek yok. Uygulama açık kaldıkça ilk yedek otomatik alınır; isterseniz "Şimdi yedekle"ye dokunun.</div>')+(err?`<div class="ka-muted">Son otomatik yedek alınamadı: ${esc(err)}</div>`:'');
   box.querySelectorAll('[data-autobackup-dl]').forEach(b=>b.addEventListener('click',async()=>{try{const json=await B.get(b.dataset.autobackupDl),url=URL.createObjectURL(new Blob([json],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download=`koruk-asistan-otomatik-yedek-${new Date(Number(b.dataset.autobackupDl)).toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);toast?.('Yedek dosyası indirildi.')}catch(e){toast?.('Yedek indirilemedi: '+(e?.message||e))}}));
   box.querySelectorAll('[data-autobackup-restore]').forEach(b=>b.addEventListener('click',async()=>{try{const json=await B.get(b.dataset.autobackupRestore);if(!json)throw new Error('yedek-bos');await importBackupData(new File([json],'otomatik-yedek.json',{type:'application/json'}))}catch(e){toast?.('Geri yükleme başarısız: '+(e?.message||e))}}))}
+/* ── Eşitleme durumu: anlık eşitleme açık mı, yazılamayan kayıt var mı, hangi sürüm çalışıyor ── */
+const SYNC_SIGNAL_TEXT={acik:['Açık','success'],baglaniyor:['Bağlanıyor…','warning'],kapali:['Kapalı','warning'],reddedildi:['Kapalı (Firebase kuralı yayınlı değil)','danger']};
+function syncAgo(ts){if(!ts)return 'henüz yok';const m=Math.round(Math.max(0,Date.now()-ts)/60000);return m<1?'az önce':m<60?m+' dk önce':new Date(ts).toLocaleString('tr-TR')}
+let syncVerPromise=null;
+/* Sürüm bir kez okunur: uygulamada (APK) gömülü sürüm bilgisi, web'de Service Worker önbellek adı. */
+function syncVersionText(){
+  return syncVerPromise||(syncVerPromise=(async()=>{
+    try{const b=await window.KorukAppUpdateManager?.currentBuild?.();if(b)return `Uygulama ${b.name} (${b.build})`}catch(_){}
+    try{const k=(await caches.keys()).find(x=>/^oy-cache-/.test(x));if(k)return 'Web sürümü '+k.replace(/^oy-cache-/,'')}catch(_){}
+    return '—';
+  })());
+}
+async function renderSyncStatus(out){
+  const box=out.querySelector('[data-sync-status-body]'),E=window.SyncEngine;if(!box)return;
+  if(!E?.status){box.innerHTML='<div class="ka-muted">Eşitleme motoru henüz hazır değil.</div>';return}
+  let st;try{st=await E.status()}catch(_){box.innerHTML='<div class="ka-muted">Eşitleme durumu okunamadı.</div>';return}
+  if(!box.isConnected)return;
+  const [sigText,sigTone]=SYNC_SIGNAL_TEXT[st.signal]||SYNC_SIGNAL_TEXT.kapali,ver=await syncVersionText();
+  const row=(label,value)=>`<div class="ka-row ka-row--between ka-wrap"><span>${label}</span>${value}</div>`;
+  const hint=st.signal==='reddedildi'?(admin()?'Anlık eşitleme için güncel firestore.rules dosyasını Firebase Console › Firestore › Kurallar bölümünde yayınlayın. O zamana dek cihazlar en geç 10 dakikada bir eşitlenir.':'Anlık eşitleme şu an kapalı; cihazlar en geç 10 dakikada bir eşitlenir. Sürerse yöneticiye bildirin.'):'';
+  box.innerHTML=
+    row('Anlık eşitleme',`<span class="ka-badge ka-badge--${sigTone}">${esc(sigText)}</span>`)
+    +row('Bağlantı',`<span class="ka-badge ka-badge--${st.online?'success':'warning'}">${st.online?'Çevrimiçi':'Çevrimdışı'}</span>`)
+    +row('Gönderilmeyi bekleyen kayıt',`<strong>${st.pending}</strong>`)
+    +row('Sunucuya yazılamayan kayıt',`<span class="ka-badge ka-badge--${st.failed?'danger':'success'}">${st.failed}</span>`)
+    +(st.failed?`<div class="ka-muted">${esc(String(st.failedItems.at(-1)?.error||'').slice(0,180))} · Bu kayıtlar yalnız bu cihazda görünür.</div><div class="ka-row"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-sync-retry>Yeniden gönder</button></div>`:'')
+    +row('Son sunucu eşitlemesi',`<span>${esc(syncAgo(st.lastSyncAt))}</span>`)
+    +row('Sürüm',`<span>${esc(ver)}</span>`)
+    +(hint?`<div class="ka-muted">${esc(hint)}</div>`:'')
+    +'<div class="ka-muted">Cihazlarda aynı sürüm çalışmalı: eski sürüm, diğer cihazlardaki değişiklikleri geç görür ya da geç bildirir.</div>';
+}
+function bindSyncStatus(out){
+  const card=out.querySelector('[data-sync-status]');if(!card)return;
+  renderSyncStatus(out);
+  const timer=setInterval(()=>{if(!card.isConnected){clearInterval(timer);return}renderSyncStatus(out)},5000);
+  card.addEventListener('click',async e=>{
+    const E=window.SyncEngine,now=e.target.closest('[data-sync-now]'),retry=e.target.closest('[data-sync-retry]');
+    if(now){now.disabled=true;try{await E?.flush?.();await E?.sync?.(undefined,{force:true,manual:true});toast?.('Eşitlendi.')}catch(err){toast?.('Eşitlenemedi: '+(err?.message||err))}now.disabled=false;renderSyncStatus(out)}
+    else if(retry){retry.disabled=true;try{const n=await E?.retryFailed?.();toast?.(n?`${n} kayıt yeniden gönderiliyor.`:'Yeniden gönderilecek kayıt yok.');await E?.flush?.()}catch(err){toast?.('Gönderilemedi: '+(err?.message||err))}renderSyncStatus(out)}
+  });
+}
 function bindStorage(out){
+  bindSyncStatus(out);
   if(out.querySelector('[data-autobackup]')){
     renderAutoBackup(out);
     out.querySelector('[data-autobackup-toggle]')?.addEventListener('change',e=>{window.KorukAutoBackup?.setEnabled?.(e.target.checked);toast?.(e.target.checked?'Otomatik yedek açıldı.':'Otomatik yedek kapatıldı.')});

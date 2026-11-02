@@ -44,7 +44,7 @@ function mergeInto(target,patch){
   }
 }
 function makeServer(){
-  const server={docs:new Map(),deny:new Set(),reads:0,log:[],listeners:[],
+  const server={docs:new Map(),deny:new Set(),fail:new Map(),reads:0,log:[],listeners:[],
     seed(col,id,data){server.docs.set(`${col}/${id}`,hostClone(data))},
     rows(col){return[...server.docs].filter(([k])=>k.startsWith(col+'/')).map(([k,v])=>({id:k.slice(col.length+1),...v}))},
     denied(col){return server.deny.has(col)},
@@ -64,6 +64,7 @@ function makeDb(server,dev){
     get(){return new Promise((res,rej)=>io(()=>{if(server.denied(col))return rej(permissionError());const d=server.docs.get(`${col}/${id}`);server.reads++;res({id,exists:!!d,data:()=>dev.clone(d)})}))},
     set(data,opts){return new Promise((res,rej)=>io(()=>{
       if(server.denied(col))return rej(permissionError());
+      if(server.fail.has(col))return rej(server.fail.get(col)());
       const path=`${col}/${id}`,cur=opts?.merge?server.docs.get(path)||{}:{};
       mergeInto(cur,data);server.docs.set(path,cur);server.log.push({dev:dev.name,op:'set',col,id});res();server.notify(path,dev);
     }))},
@@ -309,7 +310,7 @@ test('izin yok (kural yayınlanmamış): sessizce eski davranışa döner, yazma
   assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1']),'anlık eşitleme yok');
   jump(25*60*60*1000);B.show();
   await advance(6000);
-  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1','d2']),'24 saatlik eski eşitleme sürmeli');
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1','d2']),'kısa süreli eşitleme sürmeli');
   assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
 });
 
@@ -387,7 +388,7 @@ test('modülün yerelden açtığı tip: zamanlı eşitleme (schedule) bayatsa s
   assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
 });
 
-test('değişim işareti yoksa (kural yayınlanmamış) süre 10 dk: ön plana dönünce başka cihazdaki değişiklik gelir; işaret varken 24 saat',async()=>{
+test('değişim işareti yoksa (kural yayınlanmamış) süre 10 dk: ön plana dönünce başka cihazdaki değişiklik gelir; işaret varken güvenlik süresi 30 dk',async()=>{
   for(const reddet of [true,false]){
     const server=makeServer();seedBasic(server);if(reddet)server.deny.add('oy_senkron');
     const{B}=await twoDevices(server);
@@ -398,7 +399,7 @@ test('değişim işareti yoksa (kural yayınlanmamış) süre 10 dk: ön plana d
     server.seed('oy_periyodikIsler','p1',{isAdi:'Yeni ad',guncellenmeTarihi:new Date(world.now)});   /* başka cihaz sessizce değiştirdi */
     jump(11*60*1000);B.hide();B.show();await advance(6000);
     const ad=B.data('periyodikIsler')[0].isAdi;
-    assert.strictEqual(ad,reddet?'Yeni ad':'Eski ad',reddet?'işaret yokken 10 dk sonra çekilmeli':'işaret açıkken 24 saatlik süre geçerli (işaret yetkili)');
+    assert.strictEqual(ad,reddet?'Yeni ad':'Eski ad',reddet?'işaret yokken 10 dk sonra çekilmeli':'işaret açıkken 30 dk güvenlik süresi geçerli (işaret yetkili)');
     B.stop();
   }
 });
@@ -460,6 +461,101 @@ test('hesap tercihleri: KaPrefs.remoteListen başka cihazdaki değişikliği get
   await advance(500);
   assert.ok(gotB.some(x=>x&&x.menuDuzeniT_ogretmen===5),'B değişikliği almalı');
   assert.strictEqual(gotA.filter(x=>x&&x.menuDuzeniT_ogretmen===5).length,1,'yazan cihaz yerel yankıyı yok saymalı, onaylıyı bir kez almalı');
+});
+
+test('işareti yazmayan eski sürüm (ör. eski APK): işaret açıkken bile 30 dk sonra değişiklik görünür',async()=>{
+  const server=makeServer();seedBasic(server);
+  const{B}=await twoDevices(server);
+  assert.strictEqual(B.state(),'acik');
+  server.seed(COL.duyurular,'d2',{baslik:'Eski APK yazdı',guncellenmeTarihi:new Date(world.now)});   /* değişim işareti yazılmadı */
+  jump(10*60*1000);B.hide();B.show();await advance(6000);
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1']),'10 dk: güvenlik süresi dolmadı, gereksiz okuma yok');
+  jump(25*60*1000);B.hide();B.show();await advance(6000);
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1','d2']),'35 dk: güvenlik süresiyle gelmeli');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('periyodik denetim: işaret yokken açık duran ekran, hiçbir olay beklemeden güncellenir',async()=>{
+  const server=makeServer();seedBasic(server);server.deny.add('oy_senkron');
+  const{B}=await twoDevices(server);
+  server.seed(COL.duyurular,'d2',{baslik:'Sessiz',guncellenmeTarihi:new Date(world.now)});
+  await advance(8*60*1000);
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1']),'8 dk: süre (10 dk) dolmadı');
+  await advance(4*60*1000);
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1','d2']),'12 dk: ön plana dönmeden, periyodik denetimle gelmeli');
+  const hidden=server.log.length;B.hide();await advance(15*60*1000);
+  assert.strictEqual(server.log.slice(hidden).filter(l=>l.dev==='B'&&l.op==='query').length,0,'arka plandaki ekran sunucuyu yormamalı');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('kural sonradan yayınlanır: reddedilen işaret 15 dk sonra kendiliğinden yeniden denenir, anlık eşitleme başlar',async()=>{
+  const server=makeServer();seedBasic(server);server.deny.add('oy_senkron');
+  const{A,B}=await twoDevices(server);
+  assert.strictEqual(A.state(),'reddedildi');assert.strictEqual(B.state(),'reddedildi');
+  server.deny.delete('oy_senkron');                          /* kullanıcı kuralları yayınladı */
+  await advance(5*60*1000);A.hide();A.show();B.hide();B.show();await advance(3000);
+  assert.strictEqual(A.state(),'reddedildi','15 dk dolmadan yeniden denenmez');
+  jump(11*60*1000);A.hide();A.show();B.hide();B.show();await advance(4000);
+  assert.strictEqual(A.state(),'acik');assert.strictEqual(B.state(),'acik');
+  await A.add('duyurular',{baslik:'Yeni'},'d2');await advance(7000);
+  assert.strictEqual(ids(B.data('duyurular')),JSON.stringify(['d1','d2']),'artık anlık eşitleme çalışmalı');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('kalıcı yetki hatası: kayıt sessizce kaybolmaz; bildirilir, saklanır, kural düzelince yeniden gönderilir',async()=>{
+  const server=makeServer();seedBasic(server);server.deny.add(COL.gorevler);
+  const A=await boot(server,'A');await advance(4000);
+  const toasts=[],events=[];A.win.toast=(m,o)=>toasts.push([m,o]);A.win.addEventListener('koruk:sync-failed',e=>events.push(e.detail));
+  await A.add('gorevler',{ad:'Yeni görev'},'g9');
+  await advance(60*1000);
+  let st=await A.win.SyncEngine.status();
+  assert.strictEqual(st.failed,1,'kayıt ölü listeye alınmalı');assert.strictEqual(st.pending,0,'kuyruk tıkanmamalı');
+  assert.ok(/permission-denied/.test(st.failedItems[0].error),'hata kodu görünmeli: '+st.failedItems[0].error);
+  assert.strictEqual(toasts.length,1,'kullanıcı bir kez bilgilendirilmeli');assert.strictEqual(toasts[0][1].tur,'hata');
+  assert.strictEqual(events.length,1);assert.strictEqual(events[0].count,1);
+  assert.strictEqual(A.win.AppStore.get('ui.failedWrites'),1);
+  assert.ok(!server.docs.has(`${COL.gorevler}/g9`),'sunucuya yazılamadı');
+  assert.strictEqual(ids(A.data('gorevler')).includes('g9'),true,'yerelde görünmeye devam eder');
+  server.deny.delete(COL.gorevler);                            /* kural düzeldi */
+  assert.strictEqual(await A.win.SyncEngine.retryFailed(),1);
+  await advance(20*1000);
+  assert.ok(server.docs.has(`${COL.gorevler}/g9`),'yeniden gönderilen kayıt sunucuya ulaşmalı');
+  st=await A.win.SyncEngine.status();assert.strictEqual(st.failed,0);assert.strictEqual(st.pending,0);
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('kalıcı hatalı kayıt, uygulama yeniden açılınca (kural düzeldiyse) kendiliğinden gönderilir; en çok 3 kez',async()=>{
+  const server=makeServer();seedBasic(server);server.deny.add(COL.gorevler);
+  const A=await boot(server,'A');await advance(4000);
+  await A.add('gorevler',{ad:'Yeni görev'},'g9');await advance(60*1000);
+  assert.strictEqual((await A.win.SyncEngine.status()).failed,1);
+  A.stop();
+  /* kural hâlâ yok: her açılışta yeniden denenir, 3. denemeden sonra durur */
+  let dev=A;
+  for(let i=0;i<4;i++){dev=await boot(server,'A'+(i+2),{idb:A.idb});await advance(60*1000);dev.stop()}
+  const dead=await dev.win.KorukLocalFirst.meta('u-1','deadOps');
+  assert.strictEqual(dead.length,1);assert.strictEqual(dead[0].autoRetries,3,'otomatik deneme sınırı 3');
+  /* kural düzelince ilk açılış denemesi 4. kez yapılmaz; elle gönderme çalışır */
+  server.deny.delete(COL.gorevler);
+  const B=await boot(server,'Bx',{idb:A.idb});await advance(20*1000);
+  assert.ok(!server.docs.has(`${COL.gorevler}/g9`),'sınır aşıldıysa otomatik gönderilmez');
+  assert.strictEqual(await B.win.SyncEngine.retryFailed(),1);await advance(20*1000);
+  assert.ok(server.docs.has(`${COL.gorevler}/g9`),'elle gönderme çalışmalı');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('çok büyük belge (1 MiB sınırı): sonsuza dek denenip kuyruğu ve çekmeyi tıkamaz, diğer yazmalar geçer',async()=>{
+  const server=makeServer();seedBasic(server);
+  server.fail.set(COL.hatirlaticilar,()=>Object.assign(new Error('Document "projects/p/databases/(default)/documents/oy_hatirlaticilar/h1" cannot be written because its size (1,300,000 bytes) exceeds the maximum allowed size of 1,048,576 bytes.'),{code:'invalid-argument'}));
+  const A=await boot(server,'A');await advance(4000);
+  A.win.toast=()=>{};
+  await A.add('hatirlaticilar',{baslik:'Dev'},'h1');await A.add('duyurular',{baslik:'Normal'},'d9');
+  await advance(60*1000);
+  assert.ok(server.docs.has(`${COL.duyurular}/d9`),'normal yazma etkilenmemeli');
+  const st=await A.win.SyncEngine.status();
+  assert.strictEqual(st.failed,1);assert.strictEqual(st.pending,0,'büyük belge kuyrukta takılı kalmamalı');
+  assert.ok(/exceeds the maximum allowed size/.test(st.failedItems[0].error));
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
 });
 
 (async()=>{
