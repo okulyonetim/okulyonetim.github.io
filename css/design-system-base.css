@@ -15793,3 +15793,54 @@ html[data-theme] #v2ModuleRoot .dkr-eylem--yazdir .ka-btn{flex:1 1 auto}
 .ka-report .kwr-c-senaryo{width:15mm}
 .ka-report .kwr-imzalar{display:flex;justify-content:flex-end;margin-top:10mm;break-inside:avoid;page-break-inside:avoid}
 .ka-report .kwr-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:48mm;text-align:center}
+
+
+/* ===== MAARİF RAPORLARI — AÇIK/Koyu TEMA KONTRASTI ===== */
+html[data-theme] #v2ModuleRoot .ka-cizelge-check,
+html[data-theme] #v2ModuleRoot .ka-cizelge-check:not(.is-checked){
+  color:var(--ka-text)!important;
+  -webkit-text-fill-color:var(--ka-text)!important;
+  background:var(--ka-card-bg)!important;
+  border-color:var(--ka-primary)!important;
+  opacity:1!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-check .ka-cizelge-check__label{
+  color:var(--ka-text)!important;
+  -webkit-text-fill-color:var(--ka-text)!important;
+  opacity:1!important;
+  filter:none!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-check.is-checked{
+  color:var(--ka-on-accent)!important;
+  -webkit-text-fill-color:var(--ka-on-accent)!important;
+  background:var(--ka-primary)!important;
+  border-color:var(--ka-primary)!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-check.is-checked .ka-cizelge-check__label{
+  color:var(--ka-on-accent)!important;
+  -webkit-text-fill-color:var(--ka-on-accent)!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-check .ka-cizelge-check__state{
+  opacity:1!important;
+  filter:none!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-action,
+html[data-theme] #v2ModuleRoot .ka-guidance-action{
+  opacity:1!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+html[data-theme] #v2ModuleRoot .ka-cizelge-action.is-primary,
+html[data-theme] #v2ModuleRoot .ka-cizelge-action.is-primary *,
+html[data-theme] #v2ModuleRoot .ka-guidance-action.is-primary,
+html[data-theme] #v2ModuleRoot .ka-guidance-action.is-primary *,
+html[data-theme] #v2ModuleRoot .ka-cizelge-action.is-permission-disabled,
+html[data-theme] #v2ModuleRoot .ka-cizelge-action.is-permission-disabled *,
+html[data-theme] #v2ModuleRoot .ka-guidance-action.is-permission-disabled,
+html[data-theme] #v2ModuleRoot .ka-guidance-action.is-permission-disabled *{
+  color:var(--ka-on-accent)!important;
+  -webkit-text-fill-color:var(--ka-on-accent)!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+}
