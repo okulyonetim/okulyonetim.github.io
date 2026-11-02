@@ -32,7 +32,7 @@ assert(!/\.innerHTML\s*=/.test(patch.replace(/t\.innerHTML=String\(html==null\?'
   assert(!/\.innerHTML\s*=/.test(wx)&&wx.includes('DomPatch.apply(card,m.html)'),'Hava durumu kartı yerinde güncellenmeli');
   assert(dash.includes('data-patch-sig="${esc(signature)}"'),'Haber bandı aynı içerikte dokunulmadan kalmalı (animasyon sürekliliği)');
   assert(dash.includes("const q=sel=>[...(root.matches?.(sel)?[root]:[]),...root.querySelectorAll(sel)]"),'Dinleyiciler eklenen öğenin kendisine de bağlanabilmeli');
-  assert(/dashboard\.js\?v=1114/.test(loader)&&sw.includes('js/modules/dashboard.js?v=1114'),'Ana sayfa modül sürümü yükleyici ve Service Worker\'da aynı olmalı');
+  assert(/dashboard\.js\?v=1115/.test(loader)&&sw.includes('js/modules/dashboard.js?v=1115'),'Ana sayfa modül sürümü yükleyici ve Service Worker\'da aynı olmalı');
 }
 
 /* İdareci Pano */
