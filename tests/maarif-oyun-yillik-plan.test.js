@@ -120,7 +120,7 @@ assert(!/localStorage\.setItem/.test(planSrc+uiSrc)&&!/<style/i.test(planSrc+uiS
 assert(/xmlDonustur/.test(odSrc)&&/docxDoldur\(await r\.arrayBuffer\(\),C\(\)\.degerler\(b\),satirlar,undefined,xmlDonustur\)/.test(odSrc),'Öğretmen Dosyası, belge dönüştürücüyü Word hazırlamaya iletir.');
 assert(/async function docxDoldur\(tampon,v,satirlar,gruplar,donustur\)/.test(coreSrc)&&/word\/document\.xml'&&typeof donustur==='function'/.test(coreSrc),'Çekirdek dönüştürücüyü alanlar yazıldıktan sonra uygular.');
 assert(shell.includes('maarif-oyun-plan.js?v=1')&&shell.includes('report-engine.js?v=9')&&sw.includes('./js/modules/maarif-oyun-plan.js?v=1'),'Rota yükler, önbelleğe alınır.');
-assert(/ogretmen-dosyasi-core\.js\?v=4/.test(odSrc)&&sw.includes('ogretmen-dosyasi-core.js?v=4'),'Çekirdek pini yükseltildi.');
+assert(/ogretmen-dosyasi-core\.js\?v=5/.test(odSrc)&&sw.includes('ogretmen-dosyasi-core.js?v=5'),'Çekirdek pini yükseltildi.');
 
 /* ── CSS ── */
 const bas=css.indexOf("/* ===== A4 — Maarif'in Kalbinde Oyun yıllık planı (.mpl-*)"),son=css.indexOf('/* ===== A4 — Ders Kesim Raporu (.dkr-*)');

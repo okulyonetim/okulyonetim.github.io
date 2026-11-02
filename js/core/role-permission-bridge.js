@@ -30,7 +30,7 @@
     'documents:evrak':'documents.tracking','documents:teblig':'documents.tracking','documents:pdf-images':'documents.pdf','documents:pdf-merge':'documents.pdf',
     'reports:home':'reports.view',
     'tools:checklists':'tools.checklists','tools:map':'tools.map','tools:attendance':'tools.attendance','tools:gradebook':'tools.gradebook','tools:homework':'tools.gradebook','tools:grades':'tools.gradebook','tools:rubric-distribution':'tools.rubric','tools:project-evaluation':'tools.rubric',
-    'tools:form-maarif':'tools.formMaarif','tools:form-belirli':'tools.formBelirliGunler','tools:form-sok':'tools.formSok','tools:form-zumre':'tools.formZumre','tools:form-kulup':'tools.formKulup','tools:form-rehberlik':'tools.formRehberlik','tools:form-bep':'tools.formBep','tools:form-diger':'tools.formDigerEvrak','tools:student-list':'management.teacherListBuilder',
+    'tools:form-maarif':'tools.formMaarif','tools:form-belirli':'tools.formBelirliGunler','tools:form-sok':'tools.formSok','tools:form-zumre':'tools.formZumre','tools:form-kulup':'tools.formKulup','tools:form-kulup-kayit':'tools.formKulup','tools:form-rehberlik':'tools.formRehberlik','tools:form-bep':'tools.formBep','tools:form-diger':'tools.formDigerEvrak','tools:student-list':'management.teacherListBuilder',
     'settings:data':'settings.storage','settings:school':'settings.school','settings:users':'settings.users','settings:statistics':'settings.statistics','settings:roles':'settings.roles','settings:app':'settings.app','settings:storage':'settings.storage','settings:reminders':'tools.reminders'
   });
 

@@ -15567,6 +15567,49 @@ html[data-theme] #v2ModuleRoot .rhb-risk input{flex:none;width:var(--ka-ic-20);h
   html[data-theme] #v2ModuleRoot .rhb-madde{padding:var(--ka-sp-10) var(--ka-sp-12)}
 }
 
+/* ===== SOSYAL KULÜPLER (klp-*) — ekran =====
+   js/modules/kulup.js: kulüp seçimi, özet, 9 evrak kartı (Word indirme) ve düzenlenebilir alanlar. */
+html[data-theme] #v2ModuleRoot .klp-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .klp-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+html[data-theme] #v2ModuleRoot .klp-tabs::-webkit-scrollbar{display:none}
+html[data-theme] #v2ModuleRoot .klp-tabs button{flex:0 0 auto;white-space:nowrap}
+html[data-theme] #v2ModuleRoot .klp-ozet{display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(var(--ka-sp-120) * 1.3),1fr));gap:var(--ka-sp-8) var(--ka-sp-16);margin:0}
+html[data-theme] #v2ModuleRoot .klp-ozet dt{font-size:var(--ka-fs-11);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .klp-ozet dd{margin:var(--ka-sp-2) 0 0;font-size:var(--ka-fs-14);font-weight:var(--ka-fw-700);overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .klp-liste{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .klp-evrak__ust{display:flex;align-items:flex-start;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .klp-evrak__ust>div{display:flex;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+html[data-theme] #v2ModuleRoot .klp-evrak__ust strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .klp-evrak__ust small{font-size:var(--ka-fs-12);color:var(--ka-text-muted);line-height:var(--ka-lh-1-35)}
+html[data-theme] #v2ModuleRoot .klp-no{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:var(--ka-ic-24);height:var(--ka-ic-24);border-radius:var(--ka-radius-pill);background:var(--ka-primary-soft);color:var(--ka-text);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .klp-evrak--yok{opacity:.7}
+html[data-theme] #v2ModuleRoot .klp-uyari{border-left:var(--ka-sp-4) solid var(--ka-warning)}
+html[data-theme] #v2ModuleRoot .klp-uyari p{margin:0}
+html[data-theme] #v2ModuleRoot .klp-cikti{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .klp-aylar{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--ka-sp-120) * 0.7),1fr));gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .klp-duzenle{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius);background:var(--ka-card-bg);overflow:hidden}
+html[data-theme] #v2ModuleRoot .klp-duzenle>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-12);padding:var(--ka-sp-10) var(--ka-sp-14);cursor:pointer;list-style:none;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .klp-duzenle>summary::-webkit-details-marker{display:none}
+html[data-theme] #v2ModuleRoot .klp-duzenle>summary::after{content:"›";color:var(--ka-text-muted);font-size:var(--ka-fs-18);transition:transform var(--ka-dur-200) ease}
+html[data-theme] #v2ModuleRoot .klp-duzenle[open]>summary::after{transform:rotate(90deg)}
+html[data-theme] #v2ModuleRoot .klp-duzenle__govde{padding:var(--ka-sp-12) var(--ka-sp-14);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .klp-uyeler{display:flex;flex-direction:column;gap:var(--ka-sp-8);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .klp-uyeler li{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--ka-sp-8) var(--ka-sp-12);align-items:center}
+html[data-theme] #v2ModuleRoot .klp-uye__ad{display:flex;flex-direction:column;gap:var(--ka-sp-2);min-width:0;overflow-wrap:anywhere}
+html[data-theme] #v2ModuleRoot .klp-uye__ad small{font-size:var(--ka-fs-11);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .klp-aylar-liste{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .klp-ay{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,1.4fr);gap:var(--ka-sp-8);align-items:center}
+html[data-theme] #v2ModuleRoot .klp-ay strong{font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .klp-bos{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-6);padding:var(--ka-sp-24) var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-card-radius);text-align:center}
+html[data-theme] #v2ModuleRoot .klp-bos strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .klp-bos p{margin:0;font-size:var(--ka-fs-12);color:var(--ka-text-muted)}
+@media(max-width:767px){
+  html[data-theme] #v2ModuleRoot .klp-cikti .ka-btn{flex:1 1 auto}
+  html[data-theme] #v2ModuleRoot .klp-uyeler li{grid-template-columns:minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .klp-ay{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  html[data-theme] #v2ModuleRoot .klp-ay strong{grid-column:1/-1}
+}
+
 /* ===== A4 — Yazılı Kâğıdı Teslim Tutanağı (.ytt-*) =====
    js/modules/yazili-teslim-core.js çıktısının kâğıt stili: başlık ortada, başvuru imzası sağda, teslim eden solda / teslim alan sağda (yazılar blok içinde ortalı).
    Yalnız rapor belirteçleri ve mm. */

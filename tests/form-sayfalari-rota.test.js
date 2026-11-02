@@ -14,7 +14,10 @@ assert.strictEqual(typeFromTitle(FORM_PAGES['form-bep']),'bepPlani','Plan Teslim
 /* Menüdeki her form-* sayfası kayıtlı ve çizelge açılışı menü etiketine bağlı değil. */
 const menuFormlari=[...nav.matchAll(/\['(form-[a-z]+)','[^']+','[a-z]+','[^']*','tools','\1'/g)].map(m=>m[1]);
 assert(menuFormlari.length>=8,'Menüde form sayfaları bulunmalı.');
-menuFormlari.forEach(k=>assert(FORM_PAGES[k],`${k} FORM_PAGES içinde olmalı.`));
+/* Kendi modülü olan sayfa (ör. Sosyal Kulüpler → KulupModule) çizelge değil, kabukta ayrı rota bloğuyla açılır; çizelge tablosu 'form-kulup-kayit' adıyla kalır. */
+const ozelRota=k=>shell.includes(`name==='tools'&&page==='${k}'`);
+menuFormlari.forEach(k=>assert(FORM_PAGES[k]||ozelRota(k),`${k} FORM_PAGES içinde ya da kendi rota bloğunda olmalı.`));
+assert(ozelRota('form-kulup')&&!FORM_PAGES['form-kulup']&&FORM_PAGES['form-kulup-kayit'],'Sosyal Kulüpler öğretmen modülüyle açılır, klasik tablo form-kulup-kayit olarak durur.');
 const bas=shell.indexOf('function applyFormPage('),af=shell.slice(bas,shell.indexOf('\nfunction ',bas+10));
 assert(/openPage\?\.\('forms',wanted\)/.test(af)&&!/openPage\?\.\('forms',title\)/.test(af),'Çizelge, menü etiketiyle değil kanonik adla açılmalı.');
 console.log('form-sayfalari-rota: OK');

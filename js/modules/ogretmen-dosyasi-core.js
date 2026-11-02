@@ -108,9 +108,12 @@ function betikYukle(src,hazir){
 }
 /* .docx şablon baytları + alanlar (+ tekrarlanan satırlar) → doldurulmuş .docx Blob.
  * donustur (isteğe bağlı): alanlar yazıldıktan sonra word/document.xml metnini değiştiren işlev (örn. imza tablosunu yeniden yazar). */
-async function docxDoldur(tampon,v,satirlar,gruplar,donustur){
+async function paketAc(tampon){
  await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
- let paket;try{paket=await global.JSZip.loadAsync(tampon)}catch(_){throw new Error('Şablon geçerli bir Word (.docx) belgesi değil.')}
+ try{return await global.JSZip.loadAsync(tampon)}catch(_){throw new Error('Şablon geçerli bir Word (.docx) belgesi değil.')}
+}
+async function docxDoldur(tampon,v,satirlar,gruplar,donustur){
+ const paket=await paketAc(tampon);
  for(const ad of Object.keys(paket.files)){
   if(!DOLDURULAN.test(ad))continue;
   let xml=xmlDoldur(await paket.file(ad).async('string'),v,satirlar,gruplar);
@@ -118,6 +121,32 @@ async function docxDoldur(tampon,v,satirlar,gruplar,donustur){
   paket.file(ad,xml);
  }
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
+}
+/* Şablonun gövdesi her bölüm için ayrı doldurulup yeni sayfalarla art arda yazılır (örn. aylık raporlar: ay başına bir rapor).
+ * bolumler: [{ v, satirlar }]; üst/alt bilgi ilk bölümün alanlarıyla doldurulur. Bölüm sonu bölümü sayfa sonu ile ayırır. */
+async function docxBolumlu(tampon,bolumler,gruplar){
+ if(!bolumler?.length)throw new Error('Yazılacak bölüm yok.');
+ const paket=await paketAc(tampon);
+ const xml=await paket.file('word/document.xml').async('string'),bas=xml.indexOf('<w:body>')+8,son=xml.lastIndexOf('</w:body>');
+ const govde=xml.slice(bas,son),ks=govde.lastIndexOf('<w:sectPr'),icerik=ks<0?govde:govde.slice(0,ks),sect=ks<0?'':govde.slice(ks);
+ const sayfaSonrasi=x=>x.replace(/<w:pPr>(<w:pStyle[^>]*\/>)?/,(m,s)=>`<w:pPr>${s||''}<w:pageBreakBefore/>`);
+ const yeni=bolumler.map((b,i)=>{const k=xmlDoldur(icerik,b.v,b.satirlar,gruplar);return i?sayfaSonrasi(k):k}).join('');
+ paket.file('word/document.xml',xml.slice(0,bas)+yeni+sect+xml.slice(son));
+ for(const ad of Object.keys(paket.files)){
+  if(ad==='word/document.xml'||!DOLDURULAN.test(ad))continue;
+  paket.file(ad,xmlDoldur(await paket.file(ad).async('string'),bolumler[0].v,bolumler[0].satirlar,gruplar));
+ }
+ return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
+}
+/* Dosyayı kaydeder: uygulamada yerel kaydetme köprüsü, tarayıcıda indirme. */
+async function dosyaKaydet(blob,ad,tur=DOCX_TURU){
+ if(typeof global.uygulamaDosyaKaydet==='function'){
+  const b64=await new Promise((ok,hata)=>{const r=new global.FileReader();r.onload=()=>ok(String(r.result||'').split(',')[1]||'');r.onerror=()=>hata(r.error||new Error('Dosya hazırlanamadı.'));r.readAsDataURL(blob)});
+  return global.uygulamaDosyaKaydet(b64,ad,tur,false);
+ }
+ const url=global.URL.createObjectURL(blob),a=global.document.createElement('a');
+ a.href=url;a.download=ad;a.rel='noopener';global.document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>global.URL.revokeObjectURL(url),1200);
 }
 /* İndirilecek dosya adı yalnız ASCII olur (tarayıcı ve Android kaydetme yollarında Türkçe karakterli adlar bozulabiliyor):
  * "Öğretmen Dosyası Kapağı" + "Ali VELİ" → Ogretmen_Dosyasi_Kapagi-Ali_VELI.docx */
@@ -172,6 +201,6 @@ function ilerleme(maddeIdleri,d){
 }
 const durumAnahtari=yil=>`ogretmenDosyasi_${String(yil||'').replace(/[^0-9]+/g,'_')}`;
 
-global.OgretmenDosyasiCore={DOCX_TURU,PDF_TURU,upper,imzaAd,ustMakam,okulMudurlugu,bransMetni,gorevMetni,tarihMetni,degerler,dersSaatSatirlari,satirCogalt,xmlDoldur,docxDoldur,dosyaAdi,
+global.OgretmenDosyasiCore={DOCX_TURU,PDF_TURU,upper,imzaAd,ustMakam,okulMudurlugu,bransMetni,gorevMetni,tarihMetni,degerler,dersSaatSatirlari,satirCogalt,xmlDoldur,docxDoldur,docxBolumlu,dosyaKaydet,dosyaAdi,
  bosDurum,durumTemizle,durumBirlestir,durumAyni,isaret,isaretle,dosyalar,dosyaEkle,dosyaSil,ozeller,ozelEkle,ozelSil,ilerleme,durumAnahtari};
 })(window);

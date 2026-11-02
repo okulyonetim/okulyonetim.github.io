@@ -75,7 +75,7 @@ function yazdir(tur){
 async function indir(tur){
  if(!S.duzey)return toast('Önce sınıfı seçin.');
  try{
-  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=4');
+  if(!global.RehberlikDosya)await global.AppLoader?.loadScript?.('js/modules/rehberlik-dosya.js?v=5');
   if(!global.RehberlikDosya)throw new Error('İndirme bileşeni yüklenemedi.');
   await global.RehberlikDosya.indir(tur,{ctx:ctx(),plan:plan(),durum:S.durum,ay:S.ay,hepsi:S.hepsi,veliGorusmeleri:formKayitlari(),risk:riskTablosu(),yonerge:S.yonerge});
   toast('Dosya indirildi.');

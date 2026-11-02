@@ -331,9 +331,9 @@ const metin=x=>x.replace(/<w:br\/>/g,'\n').replace(/<w:tab\/>/g,'\t').replace(/<
   assert(/\['sinif-rehberlik','Sınıf Rehberlik'[^\n]*'sinif-rehberlik'\]/.test(nav),'Menüde Sınıf Rehberlik aracı olmalı.');
   {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['sinif-rehberlik'"),'Sınıf Rehberlik "Tutanak ve Evrak" grubunda olmalı.');}
   assert(shell.includes("name==='sinif-rehberlik'")&&shell.includes('RehberlikModule.open'),'Kabukta rota tanımlı olmalı.');
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=4','rehberlik-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=4'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
-  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=4'),'İndirme bileşeni ilk indirmede yüklenir.');
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=5','rehberlik-dosya.js?v=5'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+  ['sinif-baglam.js?v=2','rehberlik-veri.js?v=2','rehberlik-core.js?v=3','rehberlik-belge.js?v=4','rehberlik.js?v=5'].forEach(f=>assert(shell.includes(f),`${f} kabuktan yüklenmeli.`));
+  assert(fs.readFileSync('js/modules/rehberlik.js','utf8').includes('rehberlik-dosya.js?v=5'),'İndirme bileşeni ilk indirmede yüklenir.');
   ['aylik','donem','yilsonu'].forEach(f=>assert(sw.includes(`./assets/rehberlik/${f}.docx`),`${f}.docx çevrimdışı için önbelleğe alınmalı.`));
   [39,50,66,67,103,129].forEach(no=>assert(new RegExp(`\\{a:"sinif-rehberlik"\\}`).test(kat),`Öğretmen Dosyası maddeleri modüle bağlı olmalı (${no}).`));
   assert((kat.match(/\{a:"sinif-rehberlik"\}/g)||[]).length>=6,'Öğretmen Dosyası listesinde 6 madde Sınıf Rehberlik\'e bağlı olmalı.');

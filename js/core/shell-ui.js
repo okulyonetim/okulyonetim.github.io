@@ -18,7 +18,7 @@ const SVG={
  close:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
  chevron:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
 };
-const FORM_PAGES=Object.freeze({'form-maarif':'Maarif Model Raporları','form-belirli':'Belirli Günler ve Haftalar','form-sok':'ŞÖK','form-rehberlik':'Rehberlik','form-bep':'BEP Planları','form-zumre':'Zümre','form-kulup':'Sosyal Kulüpler','form-diger':'Diğer Evrak'});
+const FORM_PAGES=Object.freeze({'form-maarif':'Maarif Model Raporları','form-belirli':'Belirli Günler ve Haftalar','form-sok':'ŞÖK','form-rehberlik':'Rehberlik','form-bep':'BEP Planları','form-zumre':'Zümre','form-kulup-kayit':'Sosyal Kulüpler','form-diger':'Diğer Evrak'});
 const CUSTOM_PAGE_ROUTES=new Map();
 let activeAction='home',visibilityObserver=null,headerPopover=null,themeTouched=false,browserBackBound=false,browserExitApproved=false,browserExitFromPop=false;
 const homeView=()=>({kind:'route',name:'dashboard',bottom:'home',page:'',title:nav().tab('home')?.label||'Ana Sayfa'});
@@ -305,7 +305,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.RehberlikVeri)await global.AppLoader?.loadScript?.('js/modules/rehberlik-veri.js?v=2');
       if(!global.RehberlikCore)await global.AppLoader?.loadScript?.('js/modules/rehberlik-core.js?v=3');
       if(!global.RehberlikBelge)await global.AppLoader?.loadScript?.('js/modules/rehberlik-belge.js?v=4');
-      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=4');
+      if(!global.RehberlikModule?.open)await global.AppLoader?.loadScript?.('js/modules/rehberlik.js?v=5');
       if(!global.RehberlikModule?.open)throw new Error('Sınıf Rehberlik modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Sınıf Rehberlik');
       if(!global.RehberlikModule.open())throw new Error('Sınıf Rehberlik açılamadı.');
@@ -321,7 +321,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=2');
-      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=4');
+      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=5');
       if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Veli Toplantısı');
       if(!global.VeliToplantisiModule.open())throw new Error('Veli Toplantısı açılamadı.');
@@ -387,7 +387,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.MaarifOyunVeri)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-veri.js?v=1');
       if(!global.MaarifOyunPlan)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-plan.js?v=1');
-      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=3');
+      if(!global.MaarifOyunModule?.open)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun.js?v=4');
       if(!global.MaarifOyunModule?.open)throw new Error('Maarif’in Kalbinde Oyun modülü yüklenemedi.');
       const ad=(global.MaarifOyunVeri.SAYFALAR[page]||global.MaarifOyunVeri.SAYFALAR.nedir).ad;
       setBottomActive(bottom);setTitle(ad);
@@ -401,7 +401,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ogretmen-dosyasi'){
     try{
-      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=6');
+      if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=7');
       if(!global.OgretmenDosyasi?.open)throw new Error('Öğretmen Dosyası modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Öğretmen Dosyası');
       if(!await global.OgretmenDosyasi.open())throw new Error('Öğretmen Dosyası açılamadı.');
@@ -510,6 +510,26 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }catch(e){
       console.error('[Shell/reports]',e);
       global.toast?.('Okul Raporları açılamadı.');
+      return false;
+    }
+  }
+  if(name==='tools'&&page==='form-kulup'){
+    setBottomActive(bottom);
+    global.AppLoader?.setActiveModule?.(name);
+    setTitle('Sosyal Kulüpler');
+    try{
+      global.ToolsModule?.unmount?.();
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
+      if(!global.KulupCore)await global.AppLoader?.loadScript?.('js/modules/kulup-core.js?v=1');
+      if(!global.KulupModule?.open)await global.AppLoader?.loadScript?.('js/modules/kulup.js?v=1');
+      if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
+      if(!global.KulupModule?.open)throw new Error('Sosyal Kulüpler modülü yüklenemedi.');
+      if(!global.KulupModule.open())throw new Error('Sosyal Kulüpler açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Sosyal Kulüpler'});
+      return true;
+    }catch(e){
+      console.error('[Shell/form-kulup]',e);
+      global.toast?.('Sosyal Kulüpler açılamadı.');
       return false;
     }
   }

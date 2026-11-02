@@ -287,7 +287,7 @@ function baglan(){
 async function ensureDeps(){
  const L=global.AppLoader;
  if(!global.EvrakKatalog)await L?.loadScript?.('js/modules/evrak-katalog.js?v=9');
- if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=4');
+ if(!global.OgretmenDosyasiCore)await L?.loadScript?.('js/modules/ogretmen-dosyasi-core.js?v=5');
  if(!K()||!C())throw new Error('Öğretmen Dosyası bileşenleri yüklenemedi.');
 }
 async function prepare(){

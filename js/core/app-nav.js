@@ -125,7 +125,7 @@ const roleLabel=r=>r==='idareci'?'İdareci':'Öğretmen';
 
 /* ── sayfa kapıları ── */
 /* Öğretmen hesabına (PermissionService.isTeacherAccount) kapalı sayfalar; rol arayüzünden bağımsızdır. */
-const TEACHER_HIDDEN=new Set(['idareci-pano:','committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','kat-plani:','transport:services','transport:','food:audit']);
+const TEACHER_HIDDEN=new Set(['idareci-pano:','committees:home','documents:evrak','management:staff','management:evrak-teslim','management:evrak-teblig-donem1','management:evrak-teblig-sonu','management:tasks','management:diploma-request','management:diploma-response','tools:form-kulup-kayit','tools:form-zumre','tools:form-sok','tools:form-bep','tools:form-rehberlik','tools:form-maarif','tools:form-diger','kat-plani:','transport:services','transport:','food:audit']);
 const isTeacherUser=()=>global.PermissionService?.isTeacherAccount?.()===true;
 const pageAllowed=(name,page='')=>!isTeacherUser()||!TEACHER_HIDDEN.has(`${name}:${page||''}`);
 function moduleAllowed(name){
@@ -214,7 +214,7 @@ const KATALOG=[
  ]],
  ['etkinlik','Etkinlik ve Gezi','star','rose',[
   ['gezi','Gezi Planı','bus','Gezi planı ve izin belgeleri','gezi'],
-  ['form-kulup','Sosyal Kulüpler','star','Sosyal kulüp çalışmaları','tools','form-kulup'],
+  ['form-kulup','Sosyal Kulüpler','star','Kulüp evrakları: tüzük, planlar, tutanak, üye listesi, raporlar','tools','form-kulup'],
   ['form-belirli','Belirli Gün ve Haftalar','calendar','Belirli gün ve hafta etkinlikleri','tools','form-belirli'],
   ['dilimiz','Dilimizin Zenginlikleri','book','Atasözü ve deyim çalışması','documents','dilimiz']
  ]],

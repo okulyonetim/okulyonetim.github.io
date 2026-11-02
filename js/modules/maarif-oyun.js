@@ -179,7 +179,7 @@ function git(sayfa){
 async function indir(plan){
  const s=ensure(),p=V.PLANLAR[plan];
  if(!p||s.mesgul.has(plan))return false;
- if(!global.OgretmenDosyasi?.formKaydet)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=6');
+ if(!global.OgretmenDosyasi?.formKaydet)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=7');
  if(!global.OgretmenDosyasi?.formKaydet){global.toast?.('Word hazırlama bileşeni yüklenemedi.');return false}
  s.mesgul.add(plan);render();
  try{
