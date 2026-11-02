@@ -51,7 +51,7 @@ for(const token of ['ka-plan-week--overlay','data-plan-wake','bindPlanWeekGestur
 assert(!fs.existsSync('js/modules/yillik-plan.js'),'Yıllık Plan ayrı runtime JS dosyasına geri bölünmemeli.');
 for(const token of ['data-yp-word','data-yp-excel','data-yp-menu','data-yp-tanim','data-yp-satir']) assert(ypUi.includes(token),`Yıllık Plan yönetim eylemi eksik: ${token}`);
 for(const token of ['baslikEkle','baslikSil','tanimEkle','tanimGuncelle','tanimSil','secimKaydet']) assert(ypDialog.includes(token),`Yıllık Plan yönetim sözleşmesi eksik: ${token}`);
-for(const token of ['docxAyristir','belgeXmlOku','kayitHazirla']) assert(ypDialog.includes(token),`Yıllık Plan Word içe aktarma sözleşmesi eksik: ${token}`);
+for(const token of ['docxAyristir','belgeOku','kayitHazirla']) assert(ypDialog.includes(token),`Yıllık Plan Word içe aktarma sözleşmesi eksik: ${token}`);
 for(const token of ['async function olustur','async function indir','assets/yillik-plan/sablon.docx','assets/vendor/jszip.min.js']) assert(ypWord.includes(token),`Yıllık Plan Word çıktı sözleşmesi eksik: ${token}`);
 assert(ypWord.includes('betikYukle')&&!ypDialog.includes('cdnjs'),'Word paketleyici yerel kopyadan, uygulama açılışında değil gerektiğinde yüklenmeli.');
 assert(ypExcel.includes('exceljs()')&&ypExcel.includes('C.satirYukselt'),'Excel içe aktarma ExcelJS yükleyicisini ve çekirdek satır biçimini kullanmalı.');

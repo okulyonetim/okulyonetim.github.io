@@ -38,15 +38,17 @@ const TAKMA={
  'okuryazarlik becerileri':'okuryazarlik','literacy skills':'okuryazarlik','belirli gun ve haftalar':'belirli_gunler','national celebrations and important days':'belirli_gunler',
  'farklilastirma':'farklilastirma','differentiation':'farklilastirma','okul temelli planlama':'okul_temelli','school based planning':'okul_temelli',
  'yontem ve teknikler':'yontem_teknikler','okul disi ogrenme':'okul_disi_ogrenme','out of school learning activities':'okul_disi_ogrenme',
- 'functions and useful language':'islevler_yararli_dil','suggested contexts tasks and assignments':'baglam_gorev_odev',
+ 'functions and useful language':'islevler_yararli_dil','suggested contexts tasks and assignments':'baglam_gorev_odev','testing and evaluation':'olcme_degerlendirme',
  /* Maarif İngilizce planı (tema bilgi tablosu) */
  'target vocabulary in use':'kelime_hazinesi','functions of the target grammatical structures in use':'islevler_yararli_dil','target grammatical structures in use':'dilbilgisi_yapilari',
  'target social language in use':'sosyal_dil','target phonological sounds in use':'ses_bilgisi','learning skills':'sosyal_duygusal','expansion':'farklilastirma','performance assignment':'olcme_degerlendirme',
  'local cultural social and moral considerations of the theme':'yerel_kulturel'
 };
+/* "FUNCTIONS & USEFUL LANGUAGE" ile "Functions and Useful Language" aynı başlıktır: & işareti "and" okunur. */
+const etiketKey=v=>key(String(v||'').replace(/&/g,' and '));
 function baslikBilgisi(ad,grup='',kolon=0){
- const kaynak=line(ad)||line(grup)||`Sütun ${kolon}`,k=key(kaynak),a=TAKMA[k];
- return a?{key:a,name:BASLIKLAR[a]}:{key:k||`sutun_${kolon}`,name:kaynak};
+ const kaynak=line(ad)||line(grup)||`Sütun ${kolon}`,k=etiketKey(kaynak),a=TAKMA[k];
+ return a?{key:a,name:BASLIKLAR[a]}:{key:key(kaynak)||`sutun_${kolon}`,name:kaynak};
 }
 
 /* ---------- Küçük XML okuyucu (OOXML için yeterli; tarayıcı ve Node'da aynı) ---------- */
@@ -210,7 +212,7 @@ function satirGunleri(plan,basliklar,gorunum,okulGunleri){
 const KUCUK=new Set(['ve','ile','veya','ya','da','de']);
 function baslikHarfi(s){return line(s).toLocaleLowerCase('tr').split(' ').map((w,i)=>(i&&KUCUK.has(w))?w:w.charAt(0).toLocaleUpperCase('tr')+w.slice(1)).join(' ')}
 function baslikBilgi(metin){
- const t=line(metin),yil=/(\d{4})\s*[/\-–]\s*(\d{4})/.exec(t),sinif=/(\d{1,2})\s*\.?\s*SINIF/i.exec(t.toLocaleUpperCase('tr')),ders=/SINIF(?:LAR)?\s+(.+?)\s+DERS[İI]/i.exec(t.toLocaleUpperCase('tr'));
+ const t=line(metin),yil=/(\d{4})\s*[/\-–]\s*(\d{4})/.exec(t),sinif=/(\d{1,2})\s*\.?\s*SINIF/i.exec(t.toLocaleUpperCase('tr')),ders=/SINIF(?:LAR)?\s+(.+?)(?:\s+ÜN[İI]TELEND[İI]R[İI]LM[İI][ŞS])?\s+(?:DERS[İI]|YILLIK)/i.exec(t.toLocaleUpperCase('tr'));
  let dersAdi=ders?baslikHarfi(ders[1]):'';
  const grup=/SE[ÇC]MEL[İI]/i.test(t.toLocaleUpperCase('tr'))?'secmeli':/İHO|\bIHO\b|İMAM HAT[İI]P/i.test(t.toLocaleUpperCase('tr'))?'iho':'zorunlu';
  return{egitimOgretimYili:yil?`${yil[1]}-${yil[2]}`:'',seviye:sinif?Number(sinif[1]):0,dersAdi,grup};
@@ -238,7 +240,7 @@ const ORYANTASYON_RE=/^\s*week\s*(\d{1,2})\s*:\s*([^(]+?)\s*\(([^)]*)\)\s*$/i;
 const TEMALI_SIRA=['unite_tema','icerik_cercevesi','ogrenme_ciktilari','kelime_hazinesi','islevler_yararli_dil','dilbilgisi_yapilari','sosyal_dil','ses_bilgisi','olcme_degerlendirme','farklilastirma','sosyal_duygusal','degerler','okuryazarlik','yerel_kulturel'];
 /* Etiket → başlık anahtarı. Tam eşleşme ya da (en az 3 sözcüklü) başlıkla başlayan metin; "THEME 1" gibi kısa etiketler öneki sayılmaz. */
 function etiketAnahtari(etiket){
- const k=key(String(etiket||'').replace(/\([^)]*\)/g,' ')),tam=TAKMA[k];
+ const k=etiketKey(String(etiket||'').replace(/\([^)]*\)/g,' ')),tam=TAKMA[k];
  if(tam)return{anahtar:tam,tam:true};
  const on=Object.keys(TAKMA).filter(t=>t.split(' ').length>=3&&k.startsWith(t+' ')).sort((a,b)=>b.length-a.length)[0];
  return on?{anahtar:TAKMA[on],tam:false}:null;
@@ -288,7 +290,7 @@ function temaliAyristir(satirlarT,ogeler,secenek={}){
   }
  }
  if(!satirlar.length)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
- const bilgi=baslikBilgi(baslik||ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line).find(x=>/YILLIK PLAN/i.test(x.toLocaleUpperCase('tr')))||''),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
+ const bilgi=baslikBilgi(baslik||planBasligi(ogeler,secenek)),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
  /* Tarihler: yazılı aralık; yazılmamışsa (bazı haftalarda boş) bir önceki haftanın ardılı */
  satirlar.forEach((r,i)=>{
   const a=tarihAraligi(r.tarihHam,yil);
@@ -313,53 +315,92 @@ function temaliAyristir(satirlarT,ogeler,secenek={}){
  return{dersAdi:secenek.dersAdi||bilgi.dersAdi,seviye:secenek.seviye||bilgi.seviye,egitimOgretimYili:yil,grup:secenek.grup||bilgi.grup,baslik,basliklar,
   satirlar:cikti,yilSonu:'',dipnotlar:[],saatBasligi:'HOURS',haftaBasligi:'WEEK',hucreGenislikleri:[],kaynak:'word'};
 }
+/* Sayfa üstbilgisi (word/header*.xml) paragrafları: bazı planlarda başlık ("... 7 . SINIF İNGİLİZCE YILLIK PLANI") gövdede değil üstbilgidedir. */
+function ustBilgiSatirlari(xmlListesi){
+ const out=[],gez=d=>{if(d.ad==='w:p'){const t=line(metinDugum(d));if(t)out.push(t);return}d.cocuk.forEach(gez)};
+ (xmlListesi||[]).forEach(x=>gez(xmlAgaci(x)));
+ return out;
+}
+function planBasligi(ogeler,secenek={}){
+ const bul=l=>l.find(x=>/YILLIK PLAN/i.test(x.toLocaleUpperCase('tr')));
+ return bul(ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line))||bul(ustBilgiSatirlari(secenek.ustBilgiXml))||'';
+}
+const NO_HAFTA_RE=/^\s*\d{1,2}\s*\.\s*hafta/i,GUN_ADI_RE=/(?:g[uü]n[uü]?|g[uü]nleri|haftas[ıi]|haftalar[ıi]|bayram[ıi]?)\s*$/i;
+/* Baştaki sütunlar: Hafta | Saat (tarih haftanın hücresinde) ya da Hafta | Tarih | Saat (tarih ayrı sütunda); gerisi içeriktir. */
+const TARIH_BASLIK_RE=/^(?:date|tarih)$/;
+/* Sütunun hücre satırlarının çoğu "… Günü / … Haftası" ise sütun belirli gün sütunudur (başlığı yanlış yazılmış olsa da). */
+function gunSutunu(tablo,ilkHafta,kolon){
+ const l=tablo.slice(ilkHafta).flatMap(s=>s.filter(c=>c.kolon===kolon&&c.vm!=='continue').flatMap(c=>c.metin.split('\n').map(line).filter(Boolean)));
+ return l.length>=2&&l.filter(x=>GUN_ADI_RE.test(x)).length>=l.length*0.6;
+}
+/* İçerik sütunları (hafta ve saat sütunundan sonrakiler) başlık anahtarına çevrilir. Aynı başlığa düşen ikinci sütun kendi adıyla (ya da belirli gün sütunuysa o adla) ayrı bir sütun olur;
+ * çözüm başlık+konum için `bellek`te tutulur, böylece ünite başına tablolu planlarda her tablo aynı sütunu verir. */
+function icerikKolonlari(kolonlar,tablo,ilkHafta,bellek,bas){
+ const goruldu=new Set();
+ return kolonlar.slice(bas).map(k=>{
+  const kimlik=`${key(k.ad)}@${k.kolon}`;let c=bellek.get(kimlik);
+  if(!c){
+   const b=baslikBilgisi(k.ad,k.grup,k.kolon);c={key:b.key,name:b.name};
+   if(goruldu.has(c.key)){
+    if(!goruldu.has('belirli_gunler')&&gunSutunu(tablo,ilkHafta,k.kolon))c={key:'belirli_gunler',name:BASLIKLAR.belirli_gunler};
+    else{c={key:key(k.ad)||`sutun_${k.kolon}`,name:line(k.ad)||c.name};if(goruldu.has(c.key))c.key+=`_${k.kolon}`}
+   }
+   bellek.set(kimlik,c);
+  }
+  goruldu.add(c.key);return{...k,...c};
+ });
+}
 function docxAyristir(documentXml,secenek={}){
  const ogeler=govdeOgeleri(documentXml),tablolar=ogeler.filter(o=>o.ad==='w:tbl');
  if(!tablolar.length)throw new Error('Word dosyasında plan tablosu bulunamadı.');
  const satirlarT=tablolar.map(tabloSatirlari);
  /* Tek tablolu MEB planı "N. hafta" satırlarıyla; Maarif temalı plan tema bilgi + "Week N" hafta tablolarıyla gelir. */
  if(!satirlarT.some(t=>t.some(s=>s[0]&&HAFTA_RE.test(s[0].metin)))&&satirlarT.some(t=>t.some(s=>s[0]&&HAFTA_EN_RE.test(s[0].metin))))return temaliAyristir(satirlarT,ogeler,secenek);
- const indis=satirlarT.reduce((en,s,i)=>s.length>satirlarT[en].length?i:en,0),tablo=satirlarT[indis];
- const baslikMetni=ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line).find(s=>/YILLIK PLAN/i.test(s.toLocaleUpperCase('tr')))||'';
- const bilgi=baslikBilgi(baslikMetni),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
- const ilkHafta=tablo.findIndex(s=>s[0]&&HAFTA_RE.test(s[0].metin));
- if(ilkHafta<1)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
- /* MEB planları tek satırlı (Date | Hours | Theme...) veya iki katmanlı birleşik başlıklı olabilir. */
- const kolonlar=ilkHafta===1
-  ? tablo[ilkHafta-1].map(c=>({...c,ad:c.metin,grup:''}))
-  : kolonTanimlari(tablo[ilkHafta-2],tablo[ilkHafta-1]),
-  icerik=kolonlar.slice(2).map(k=>({...k,...baslikBilgisi(k.ad,k.grup,k.kolon)})),
-  haftaK=kolonlar[0],saatK=kolonlar[1];
- if(!haftaK||!saatK||!icerik.length)throw new Error('Plan tablosunun sütunları tanınamadı.');
- const satirlar=[],sonDeger={};let yilSonu='';const dipnotlar=[];
- for(let i=ilkHafta;i<tablo.length;i++){
-  const hucreler=tablo[i],ilkH=hucreler[0];
-  if(!ilkH||!HAFTA_RE.test(ilkH.metin)){
-   if(hucreler.length===1&&hucreler[0].metin)yilSonu=hucreler[0].metin;
-   else if(hucreler.length>=2&&hucreler[0].metin&&hucreler[hucreler.length-1].metin)dipnotlar.push({ad:line(hucreler[0].metin),metin:hucreler[hucreler.length-1].metin});
-   continue;
+ /* Plan tabloları: "N. hafta" satırı taşıyan tüm tablolar, belge sırasıyla. Tek tablolu planda bir tane; ünite başına tablolu planda (ör. İngilizce 7./8. sınıf) her ünite ayrı tablodur ve hepsi okunur. */
+ const planlar=satirlarT.map((tablo,i)=>({tablo,i,ilkHafta:tablo.findIndex(s=>s[0]&&NO_HAFTA_RE.test(s[0].metin))})).filter(p=>p.ilkHafta>=0);
+ if(!planlar.length||planlar[0].ilkHafta<1)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
+ const baslikMetni=planBasligi(ogeler,secenek),bilgi=baslikBilgi(baslikMetni),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
+ const satirlar=[],basliklar=new Map(),bellek=new Map(),dipnotlar=[];let yilSonu='',kolonlar=null,ilkKolonlar=null,ilkSaatBasligi='';
+ for(const {tablo,ilkHafta} of planlar){
+  /* MEB planları tek satırlı (Date | Hours | Theme...) veya iki katmanlı birleşik başlıklı olabilir; başlıksız devam tablosu önceki tablonun sütunlarını kullanır. */
+  if(ilkHafta>=1)kolonlar=ilkHafta===1?tablo[0].map(c=>({...c,ad:c.metin,grup:''})):kolonTanimlari(tablo[ilkHafta-2],tablo[ilkHafta-1]);
+  ilkKolonlar=ilkKolonlar||kolonlar;
+  const tarihK=TARIH_BASLIK_RE.test(key(kolonlar[1]?.ad))?kolonlar[1]:null,haftaK=kolonlar[0],saatK=kolonlar[tarihK?2:1],icerik=icerikKolonlari(kolonlar,tablo,ilkHafta,bellek,tarihK?3:2);
+  if(!haftaK||!saatK||!icerik.length)throw new Error('Plan tablosunun sütunları tanınamadı.');
+  ilkSaatBasligi=ilkSaatBasligi||saatK.ad;
+  icerik.forEach(k=>{if(!basliklar.has(k.key))basliklar.set(k.key,{anahtar:k.key,ad:k.name,grup:k.grup,kolon:k.kolon,span:k.span})});
+  const sonDeger={};let onceki=null;
+  for(let i=ilkHafta;i<tablo.length;i++){
+   const hucreler=tablo[i],ilkH=hucreler[0];
+   if(!ilkH||!HAFTA_RE.test(ilkH.metin)){
+    /* Hafta hücresi birleşik devam eden satır: önceki haftanın ikinci satırıdır; kendi metni olan hücreler o haftaya eklenir. */
+    if(onceki&&ilkH?.vm==='continue'){hucreler.forEach(c=>{const k=icerik.find(x=>x.kolon===c.kolon);if(k&&c.vm!=='continue'&&c.metin)onceki.degerler[k.key]=onceki.degerler[k.key]?`${onceki.degerler[k.key]}\n${c.metin}`:c.metin});continue}
+    if(hucreler.length===1&&hucreler[0].metin)yilSonu=hucreler[0].metin;
+    else if(hucreler.length>=2&&hucreler[0].metin&&hucreler[hucreler.length-1].metin)dipnotlar.push({ad:line(hucreler[0].metin),metin:hucreler[hucreler.length-1].metin});
+    continue;
+   }
+   const tarihSatirlari=tarihK?(hucreler.find(c=>c.kolon===tarihK.kolon)?.metin||'').split('\n'):ilkH.metin.split('\n').slice(1),tarih=tarihSatirlari.map(line).filter(Boolean).join(' ').replace(/\s*\d+\s*saat\s*$/i,''),
+    aralik=tarihAraligi(tarih,yil)||{baslangic:'',bitis:''},kolonOf=k=>hucreler.find(c=>c.kolon===k),saatHam=(kolonOf(saatK.kolon)?.metin||'').trim(),
+    satir={no:0,hafta:'',kaynakNo:Number(HAFTA_RE.exec(ilkH.metin)[1])||0,tarih,baslangic:aralik.baslangic,bitis:aralik.bitis,saat:/^\d+$/.test(saatHam)?`${saatHam} saat`:saatHam,ozel:'',bayram:'',birlesik:[],degerler:{}};
+   const hamlar=icerik.map(k=>{const c=kolonOf(k.kolon);if(!c)return{k,metin:'',devam:false};if(c.vm==='continue')return{k,metin:sonDeger[k.key]||'',devam:true};if(c.vm==='restart')sonDeger[k.key]=c.metin;else delete sonDeger[k.key];return{k,metin:c.metin,devam:false}});
+   /* Tatil/özel satır: ilk beş içerik hücresinden en az üçü aynı metni taşıyorsa (ARA TATİL, YARIYIL TATİLİ, SOSYAL ETKİNLİK, bayram) */
+   const ilkBes=hamlar.slice(0,5).map(h=>h.metin).filter(Boolean),sayac=new Map();ilkBes.forEach(m=>sayac.set(norm(m),(sayac.get(norm(m))||0)+1));
+   const ortak=[...sayac.entries()].sort((a,b)=>b[1]-a[1])[0];
+   if(ortak&&ortak[1]>=3&&ilkBes.length===ortak[1]){satir.ozel=ilkBes.find(m=>norm(m)===ortak[0]);hamlar.forEach(h=>{if(ilkBes.includes(h.metin)&&h.metin===satir.ozel)h.metin=''})}
+   /* Bayram/anma başlığı: bazı satırlarda hücrelerin başında aynı belirli gün metni tekrarlanır; satıra `bayram` olarak taşınır, hücrelerden ayrılır. */
+   if(!satir.ozel){
+    const ilkler=new Map();hamlar.forEach(h=>{if(!h.metin||h.devam)return;const ilk=h.metin.split('\n')[0].trim();if(ilk.length>=8){const k=norm(ilk);ilkler.set(k,{n:(ilkler.get(k)?.n||0)+1,ilk})}});
+    const en=[...ilkler.values()].sort((a,b)=>b.n-a.n)[0];
+    if(en&&en.n>=3){satir.bayram=en.ilk;hamlar.forEach(h=>{if(!h.metin||h.devam||!h.metin.startsWith(en.ilk))return;h.metin=h.metin.slice(en.ilk.length).replace(/^\s+/,'')})}
+   }
+   hamlar.forEach(h=>{if(h.devam)satir.birlesik.push(h.k.key);if(h.metin)satir.degerler[h.k.key]=h.metin});
+   satirlar.push(satir);onceki=satir;
   }
-  const [,...tarihSatirlari]=ilkH.metin.split('\n'),tarih=tarihSatirlari.map(line).filter(Boolean).join(' ').replace(/\s*\d+\s*saat\s*$/i,''),
-   aralik=tarihAraligi(tarih,yil)||{baslangic:'',bitis:''},kolonOf=k=>hucreler.find(c=>c.kolon===k),satir={no:0,hafta:'',kaynakNo:Number(HAFTA_RE.exec(ilkH.metin)[1])||0,tarih,baslangic:aralik.baslangic,bitis:aralik.bitis,saat:(kolonOf(saatK.kolon)?.metin||'').trim(),ozel:'',bayram:'',birlesik:[],degerler:{}};
-  const hamlar=icerik.map(k=>{const c=kolonOf(k.kolon);if(!c)return{k,metin:'',devam:false};if(c.vm==='continue')return{k,metin:sonDeger[k.key]||'',devam:true};if(c.vm==='restart')sonDeger[k.key]=c.metin;else delete sonDeger[k.key];return{k,metin:c.metin,devam:false}});
-  /* Tatil/özel satır: ilk beş içerik hücresinden en az üçü aynı metni taşıyorsa (ARA TATİL, YARIYIL TATİLİ, SOSYAL ETKİNLİK, bayram) */
-  const ilkBes=hamlar.slice(0,5).map(h=>h.metin).filter(Boolean),sayac=new Map();ilkBes.forEach(m=>sayac.set(norm(m),(sayac.get(norm(m))||0)+1));
-  const ortak=[...sayac.entries()].sort((a,b)=>b[1]-a[1])[0];
-  if(ortak&&ortak[1]>=3&&ilkBes.length===ortak[1]){satir.ozel=ilkBes.find(m=>norm(m)===ortak[0]);hamlar.forEach(h=>{if(ilkBes.includes(h.metin)&&h.metin===satir.ozel)h.metin=''})}
-  /* Bayram/anma başlığı: bazı satırlarda hücrelerin başında aynı belirli gün metni tekrarlanır; satıra `bayram` olarak taşınır, hücrelerden ayrılır. */
-  if(!satir.ozel){
-   const ilkler=new Map();hamlar.forEach(h=>{if(!h.metin||h.devam)return;const ilk=h.metin.split('\n')[0].trim();if(ilk.length>=8){const k=norm(ilk);ilkler.set(k,{n:(ilkler.get(k)?.n||0)+1,ilk})}});
-   const en=[...ilkler.values()].sort((a,b)=>b.n-a.n)[0];
-   if(en&&en.n>=3){satir.bayram=en.ilk;hamlar.forEach(h=>{if(!h.metin||h.devam||!h.metin.startsWith(en.ilk))return;h.metin=h.metin.slice(en.ilk.length).replace(/^\s+/,'')})}
-  }
-  hamlar.forEach(h=>{if(h.devam)satir.birlesik.push(h.k.key);if(h.metin)satir.degerler[h.k.key]=h.metin});
-  satirlar.push(satir);
  }
  if(!satirlar.length)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
  numaralandir(satirlar);
- const basliklar=icerik.map(k=>({anahtar:k.key,ad:k.name,grup:k.grup,kolon:k.kolon,span:k.span}));
- return{dersAdi:secenek.dersAdi||bilgi.dersAdi,seviye:secenek.seviye||bilgi.seviye,egitimOgretimYili:yil,grup:secenek.grup||bilgi.grup,baslik:baslikMetni,basliklar,
-  satirlar,yilSonu,dipnotlar,saatBasligi:saatK.ad,haftaBasligi:haftaK.ad,hucreGenislikleri:tablolar[indis]?(ilk(tablolar[indis],'w:tblGrid')?.cocuk||[]).map(g=>Number(g.oz['w:w'])||0):[],kaynak:'word'};
+ return{dersAdi:secenek.dersAdi||bilgi.dersAdi,seviye:secenek.seviye||bilgi.seviye,egitimOgretimYili:yil,grup:secenek.grup||bilgi.grup,baslik:baslikMetni,basliklar:[...basliklar.values()],
+  satirlar,yilSonu,dipnotlar,saatBasligi:ilkSaatBasligi,haftaBasligi:ilkKolonlar[0].ad,hucreGenislikleri:(ilk(tablolar[planlar[0].i],'w:tblGrid')?.cocuk||[]).map(g=>Number(g.oz['w:w'])||0),kaynak:'word'};
 }
 
 /* Anahtarlı (içe aktarma sonucu) plan → kayda yazılacak plan: başlık anahtarlarını havuz kimliklerine çevirir. */

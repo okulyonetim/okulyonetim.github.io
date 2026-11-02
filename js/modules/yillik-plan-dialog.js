@@ -162,7 +162,7 @@ function wordIceAktar(){
   kaydet.disabled=true;alan.innerHTML=`<div class="ka-muted">${dosyalar.length} dosya okunuyor…</div>`;kayitlar=[];
   for(const f of dosyalar){
    try{
-    const xml=await global.YillikPlanWord.belgeXmlOku(await dosyaOku(f)),ayrisan=C.docxAyristir(xml);
+    const belge=await global.YillikPlanWord.belgeOku(await dosyaOku(f)),ayrisan=C.docxAyristir(belge.xml,{ustBilgiXml:belge.ustBilgiXml});
     kayitlar.push({ad:f.name,ayrisan,secili:true,dersAdi:ayrisan.dersAdi||'',seviye:Number(ayrisan.seviye)||0,yil:ayrisan.egitimOgretimYili||C.okulYili(),grup:ayrisan.grup||'zorunlu'});
    }catch(err){kayitlar.push({ad:f.name,hata:err?.message||'Dosya okunamadı.'})}
   }

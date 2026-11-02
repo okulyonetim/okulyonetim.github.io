@@ -214,12 +214,12 @@ async function olustur(plan,basliklar,bilgi,dolu=true,gunler=[]){
  if(cekirdek)paket.file('docProps/core.xml',cekirdekXml(await cekirdek.async('string'),plan,b));
  return paket.generateAsync({type:'blob',mimeType:DOCX_TURU,compression:'DEFLATE'});
 }
-/* Yüklenen .docx dosyasının word/document.xml metni (içe aktarma). */
-async function belgeXmlOku(arrayBuffer){
+/* Yüklenen .docx dosyası (içe aktarma): word/document.xml ile sayfa üstbilgileri (başlık bazı planlarda üstbilgidedir). */
+async function belgeOku(arrayBuffer){
  await betikYukle(JSZIP_YOLU,()=>typeof global.JSZip!=='undefined');
  let paket;try{paket=await global.JSZip.loadAsync(arrayBuffer)}catch(_){throw new Error('Dosya geçerli bir Word (.docx) belgesi değil.')}
  const parca=paket.file('word/document.xml');if(!parca)throw new Error('Word belgesinde içerik bulunamadı.');
- return parca.async('string');
+ return{xml:await parca.async('string'),ustBilgiXml:await Promise.all(paket.file(/^word\/header\d*\.xml$/).map(f=>f.async('string')))};
 }
 /* Blob'u cihaza kaydeder: uygulamada yerel kaydetme, tarayıcıda indirme. */
 async function indir(blob,ad){
@@ -230,5 +230,5 @@ async function indir(blob,ad){
  const url=global.URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=ad;a.rel='noopener';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>global.URL.revokeObjectURL(url),1200);
  return{web:true};
 }
-global.YillikPlanWord={belgeXmlOku,indir,olustur,belgeXml,govdeXml,anaTablo,baslikMetni,cekirdekXml,dosyaAdi,adListesi,tarihBicimi,DOCX_TURU,SABLON_YOLU};
+global.YillikPlanWord={belgeOku,indir,olustur,belgeXml,govdeXml,anaTablo,baslikMetni,cekirdekXml,dosyaAdi,adListesi,tarihBicimi,DOCX_TURU,SABLON_YOLU};
 })(typeof window!=='undefined'?window:globalThis);
