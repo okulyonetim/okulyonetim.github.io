@@ -31,7 +31,7 @@ const dosyalar=girdiler.flatMap(g=>fs.statSync(g).isDirectory()?fs.readdirSync(g
 async function planOku(dosya){
  const zip=await JSZip.loadAsync(fs.readFileSync(dosya)),xml=await zip.file('word/document.xml')?.async('string');
  if(!xml)throw new Error('word/document.xml bulunamadı');
- const ustBilgiXml=await Promise.all(zip.file(/^word\/header\d*\.xml$/).map(f=>f.async('string'))),a=C.docxAyristir(xml,{ustBilgiXml,...(yil?{egitimOgretimYili:yil}:{})});
+ const ustBilgiXml=await Promise.all(zip.file(/^word\/header\d*\.xml$/).map(f=>f.async('string'))),a=C.docxAyristir(xml,{ustBilgiXml,dosyaAdi:path.basename(dosya),...(yil?{egitimOgretimYili:yil}:{})});
  if(!a.dersAdi||!(a.seviye>=1&&a.seviye<=12))throw new Error(`ders/sınıf başlıktan çıkarılamadı (${a.dersAdi||'?'} / ${a.seviye||'?'})`);
  return{dersAdi:a.dersAdi,seviye:a.seviye,egitimOgretimYili:a.egitimOgretimYili||yil||C.okulYili(),grup:a.grup||'zorunlu',yayin:yayin||a.yayin||'',
   basliklar:a.basliklar.map(({anahtar,ad,grup})=>({anahtar,ad,grup:grup||''})),satirlar:a.satirlar,yilSonu:a.yilSonu||'',dipnotlar:a.dipnotlar||[],kaynak:'katalog'};
