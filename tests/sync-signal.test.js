@@ -44,7 +44,7 @@ function mergeInto(target,patch){
   }
 }
 function makeServer(){
-  const server={docs:new Map(),deny:new Set(),fail:new Map(),reads:0,log:[],listeners:[],
+  const server={docs:new Map(),deny:new Set(),denyWrite:new Set(),fail:new Map(),reads:0,log:[],listeners:[],
     seed(col,id,data){server.docs.set(`${col}/${id}`,hostClone(data))},
     rows(col){return[...server.docs].filter(([k])=>k.startsWith(col+'/')).map(([k,v])=>({id:k.slice(col.length+1),...v}))},
     denied(col){return server.deny.has(col)},
@@ -63,12 +63,12 @@ function makeDb(server,dev){
   const docRef=(col,id)=>({id,path:`${col}/${id}`,
     get(){return new Promise((res,rej)=>io(()=>{if(server.denied(col))return rej(permissionError());const d=server.docs.get(`${col}/${id}`);server.reads++;res({id,exists:!!d,data:()=>dev.clone(d)})}))},
     set(data,opts){return new Promise((res,rej)=>io(()=>{
-      if(server.denied(col))return rej(permissionError());
+      if(server.denied(col)||server.denyWrite.has(col))return rej(permissionError());
       if(server.fail.has(col))return rej(server.fail.get(col)());
       const path=`${col}/${id}`,cur=opts?.merge?server.docs.get(path)||{}:{};
       mergeInto(cur,data);server.docs.set(path,cur);server.log.push({dev:dev.name,op:'set',col,id});res();server.notify(path,dev);
     }))},
-    delete(){return new Promise((res,rej)=>io(()=>{if(server.denied(col))return rej(permissionError());server.docs.delete(`${col}/${id}`);server.log.push({dev:dev.name,op:'delete',col,id});res()}))},
+    delete(){return new Promise((res,rej)=>io(()=>{if(server.denied(col)||server.denyWrite.has(col))return rej(permissionError());server.docs.delete(`${col}/${id}`);server.log.push({dev:dev.name,op:'delete',col,id});res()}))},
     onSnapshot(opts,next,err){
       if(typeof opts==='function'){err=next;next=opts}
       if(server.denied(col)){io(()=>err&&err(permissionError()));return()=>{}}
@@ -555,6 +555,22 @@ test('çok büyük belge (1 MiB sınırı): sonsuza dek denenip kuyruğu ve çek
   const st=await A.win.SyncEngine.status();
   assert.strictEqual(st.failed,1);assert.strictEqual(st.pending,0,'büyük belge kuyrukta takılı kalmamalı');
   assert.ok(/exceeds the maximum allowed size/.test(st.failedItems[0].error));
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
+test('yalnız yazma izni yok (okuma var): yazılamayan kayıt yerelde kaybolmaz; sunucu listesi onu silmez',async()=>{
+  const server=makeServer();seedBasic(server);server.denyWrite.add(COL.gorevler);   /* ör. istemci "müdür" sayıyor, sunucu kuralı yönetici saymıyor */
+  const A=await boot(server,'A');await advance(4000);A.win.toast=()=>{};
+  await A.add('gorevler',{ad:'Benim görevim'},'g9');
+  await advance(60*1000);
+  assert.strictEqual((await A.win.SyncEngine.status()).failed,1,'yazma kalıcı hatayla düştü');
+  await A.win.SyncEngine.sync(['gorevler'],{force:true,full:true});await advance(5000);   /* okuma serbest: sunucu listesi gelir */
+  assert.ok(ids(A.data('gorevler')).includes('g9'),'sunucuya gitmeyen kayıt sunucu listesiyle silinmemeli: '+ids(A.data('gorevler')));
+  assert.ok(ids(await A.cached('gorevler')).includes('g9'),'yerel önbellekte de kalmalı');
+  assert.ok(!server.docs.has(`${COL.gorevler}/g9`));
+  server.denyWrite.delete(COL.gorevler);                      /* yetki düzeldi */
+  assert.strictEqual(await A.win.SyncEngine.retryFailed(),1);await advance(20*1000);
+  assert.ok(server.docs.has(`${COL.gorevler}/g9`),'yeniden gönderilince sunucuya ulaşmalı');
   assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
 });
 
