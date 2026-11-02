@@ -30,7 +30,7 @@ define('transport',['js/core/report-customizer.js?v=1006','js/modules/report-eng
 define('food',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/food-menu.js?v=1040']);
 define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/dilimiz.js','js/modules/documents.js']);
 define('reports',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/reports.js?v=23']);
-define('tools',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/tools.js?v=10','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
+define('tools',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/tools.js?v=10','js/modules/rubric-settings.js?v=1068','js/modules/rubric-tools.js']);
 define('settings',['js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/settings.js?v=902']);
 define('committees',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/committees.js?v=7']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);

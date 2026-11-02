@@ -170,9 +170,13 @@ const gizli=nav.match(/const TEACHER_HIDDEN=new Set\(\[([^\]]*)\]/)[1];
 assert(!/'tools:form-kulup'/.test(gizli)&&gizli.includes("'tools:form-kulup-kayit'"),'Öğretmen yeni Sosyal Kulüpler sayfasını görür; klasik kayıt tablosu öğretmenden gizli kalır.');
 assert(nav.includes("['form-kulup','Sosyal Kulüpler','star'")&&nav.includes("'tools','form-kulup'],"),'Menü aracı aynı rotada kalır.');
 assert(/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup-kayit':'Sosyal Kulüpler'/.test(shell)&&!/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup':/.test(shell),'Klasik tablo form-kulup-kayit sayfasına taşınır.');
-assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=2')&&shell.includes('kulup.js?v=3'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
+assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=2')&&shell.includes('kulup.js?v=4'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
 assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
-['kulup-core.js?v=2','kulup.js?v=3','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+/* Evrak takibi sekmesi: kulüp seçiliyse yalnız o kulübün takibi (klasik çizelge sayfası takipKulubu kapsamıyla çizilir) */
+{const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
+ assert(ui.includes('data-klp-act="takip">Evrak takibi</button>')&&!ui.includes('Kulüp kayıtları')&&ui.includes('S.takipId=S.kulupId')&&ui.includes('takipKulubu:()=>S.takipId'),'Sekme “Evrak takibi” olur ve seçili kulübü takip sayfasına bildirir.');
+ assert(cz.includes('global.KulupModule?.takipKulubu?.()')&&cz.includes("tek?'Evrak Takibi':c.title")&&cz.includes('all.find(x=>String(x.id)===tek)')&&cz.includes('tek?\'\':kind===\'bep\''),'Klasik kulüp çizelgesi kapsam varsa yalnız o kulübü çizer (özet ve araç çubuğu yok).');}
+['kulup-core.js?v=2','kulup.js?v=4','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
 assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=3'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
 fs.readdirSync('assets/kulup/sablon').forEach(f=>assert(sw.includes(`./assets/kulup/sablon/${f}`),`${f} çevrimdışı için önbelleğe alınmalı.`));
 assert.deepStrictEqual(fs.readdirSync('assets/kulup/sablon').sort(),['denetleme.docx','donem-sonu.docx','tutanak.docx','uye-listesi.docx','yil-sonu.docx'],'Ortak şablonlar: kulübe bağlı olmayan beş evrak.');

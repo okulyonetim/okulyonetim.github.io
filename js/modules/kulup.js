@@ -13,7 +13,7 @@ const SB=global.SinifBaglam,K=global.KulupCore;
 const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=3';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const S={yil:'',kulupId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
+const S={yil:'',kulupId:'',takipId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
 let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,yazT=0;
 
 /* ── bağlam: kulüpler, danışmanlar, üyeler ── */
@@ -157,8 +157,8 @@ function eslesmeKarti(){
 }
 function viewHtml(){
  const liste=gorunenKulupler(),yonetici=SB.isManager();
- const sekmeler=yonetici?`<nav class="ka-tabs klp-tabs" role="tablist" aria-label="Sosyal Kulüpler"><button type="button" role="tab" class="active" aria-selected="true">Kulüp evrakları</button><button type="button" role="tab" aria-selected="false" data-klp-act="kayit">Kulüp kayıtları</button></nav>`:'';
- const bos=!liste.length?`<div class="klp-bos"><strong>${yonetici?'Kayıtlı kulüp yok':'Danışmanı olduğunuz kulüp yok'}</strong><p>${yonetici?'Kulüpler “Kulüp kayıtları” bölümünden eklenir.':'Kulüp danışmanlığınız okul yönetimi tarafından tanımlanır; tanımlandığında evraklarınız burada görünür.'}</p></div>`:'';
+ const sekmeler=yonetici?`<nav class="ka-tabs klp-tabs" role="tablist" aria-label="Sosyal Kulüpler"><button type="button" role="tab" class="active" aria-selected="true">Kulüp evrakları</button><button type="button" role="tab" aria-selected="false" data-klp-act="takip">Evrak takibi</button></nav>`:'';
+ const bos=!liste.length?`<div class="klp-bos"><strong>${yonetici?'Kayıtlı kulüp yok':'Danışmanı olduğunuz kulüp yok'}</strong><p>${yonetici?'Kulüpler “Evrak takibi” bölümünden eklenir.':'Kulüp danışmanlığınız okul yönetimi tarafından tanımlanır; tanımlandığında evraklarınız burada görünür.'}</p></div>`:'';
  const icerik=kulup()?`${eslesmeKarti()}<div class="klp-liste">${K.BELGELER.map((b,i)=>evrakKarti(b,i+1)).join('')}</div>`
   :liste.length?'<div class="klp-bos"><strong>Kulübü seçin</strong><p>İç tüzük, planlar, tutanak, üye listesi ve raporlar seçtiğiniz kulübe göre hazırlanır.</p></div>':'';
  return `<section class="ka-page ka-stack klp-page" data-klp-page>
@@ -209,7 +209,8 @@ async function indir(b){
 }
 const ISLEMLER={
  indir,
- kayit:()=>{Promise.resolve(global.ShellUI?.routeModule?.('tools',{page:'form-kulup-kayit',title:'Kulüp kayıtları'})).catch(e=>{console.warn('[Sosyal Kulüpler/kayıt]',e);toast('Kulüp kayıtları açılamadı.')})}
+ /* Evrak takibi: kulüp seçiliyse yalnız o kulübün takibi (ClassicCizelgelerParity, takipKulubu üzerinden okur); seçili değilse tüm kulüpler. */
+ takip:()=>{S.takipId=S.kulupId;Promise.resolve(global.ShellUI?.routeModule?.('tools',{page:'form-kulup-kayit',title:'Evrak takibi'})).catch(e=>{console.warn('[Sosyal Kulüpler/takip]',e);toast('Evrak takibi açılamadı.')})}
 };
 function onClick(e){
  if(!inPage(e))return;
@@ -254,5 +255,5 @@ function open(){
 }
 function unmount(){clearTimeout(pushT);clearTimeout(yazT);temizle()}
 
-global.KulupModule={open,render,unmount,baglam,kulupSec,get durum(){return S.durum},get paket(){return S.paket}};
+global.KulupModule={open,render,unmount,baglam,kulupSec,takipKulubu:()=>S.takipId,get durum(){return S.durum},get paket(){return S.paket}};
 })(window);

@@ -521,7 +521,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       global.ToolsModule?.unmount?.();
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.KulupCore)await global.AppLoader?.loadScript?.('js/modules/kulup-core.js?v=2');
-      if(!global.KulupModule?.open)await global.AppLoader?.loadScript?.('js/modules/kulup.js?v=3');
+      if(!global.KulupModule?.open)await global.AppLoader?.loadScript?.('js/modules/kulup.js?v=4');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
       if(!global.KulupModule?.open)throw new Error('Sosyal Kulüpler modülü yüklenemedi.');
       if(!global.KulupModule.open())throw new Error('Sosyal Kulüpler açılamadı.');
@@ -538,7 +538,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     global.AppLoader?.setActiveModule?.(name);
     setTitle(title||meta.label||name);
     try{
-      await global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1066');
+      await global.AppLoader?.loadScript?.('js/modules/rubric-settings.js?v=1068');
       await global.AppLoader?.loadScript?.('js/modules/rubric-tools.js');
       await global.AppLoader?.loadScript?.('js/modules/rubric-tools-engine.js');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
