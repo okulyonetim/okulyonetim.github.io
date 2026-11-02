@@ -207,8 +207,19 @@ function briefHtml(){
   const parts=[];
   const duties=rows('nobetAtamalari').filter(x=>String(x?.tarih||'').slice(0,10)===today);
   if(admin||!tid){
-    const teachers=rows('ogretmenler').filter(x=>x?.aktif!==false).length;
-    if(teachers)parts.push(`Bugün ${bold(teachers+' öğretmen')} görevde${duties.length?`, ${bold(duties.length+' nöbetçi')} var`:''}.`);
+    const day=fold(DAY_NAMES[now.getDay()]);
+    const activeTeachers=rows('ogretmenler').filter(x=>x&&x.aktif!==false);
+    const lessonTeacherIds=new Set(rows('dersProgrami')
+      .filter(x=>x&&fold(x.gun)===day&&x.ogretmenId!=null&&String(x.ogretmenId).trim())
+      .map(x=>String(x.ogretmenId)));
+    /* İdareciler ders programlarında dersleri olmasa da günlük görevli sayısına dahildir. */
+    const workingTeachers=activeTeachers.filter(t=>{
+      const title=fold(t.unvan||t.gorev||t.kadroUnvani||t.personelGorevi||'');
+      const manager=/mudur|idari personel|yonetici/.test(title);
+      return manager||lessonTeacherIds.has(String(t.id));
+    });
+    const teachers=workingTeachers.length;
+    if(teachers)parts.push(`Bugün ${bold(teachers+' öğretmen ve yönetici')} görevde${duties.length?`, ${bold(duties.length+' nöbetçi')} var`:''}.`);
     else if(duties.length)parts.push(`Bugün ${bold(duties.length+' nöbetçi')} var.`);
   }else{
     const day=fold(DAY_NAMES[now.getDay()]),mine=rows('dersProgrami').filter(x=>fold(x?.gun)===day&&x?.ogretmenId===tid).length;
