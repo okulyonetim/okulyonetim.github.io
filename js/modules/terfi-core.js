@@ -10,8 +10,29 @@ if(g.TerfiCore)return;
 const ISO=/^(\d{4})-(\d{2})-(\d{2})/;
 const pad=n=>String(n).padStart(2,'0');
 const num=v=>{const m=String(v??'').match(/\d+/),n=m?Number(m[0]):NaN;return Number.isFinite(n)&&n>0?n:NaN};
-/* DD.MM.YYYY veya DD/MM/YYYY formatını ISO'ya çevirir; zaten ISO ise olduğu gibi döner */
-const isoOnly=v=>{const s=String(v||'');if(ISO.test(s))return s.slice(0,10);const dmy=/^(\d{2})[./](\d{2})[./](\d{4})/.exec(s);return dmy?`${dmy[3]}-${dmy[2]}-${dmy[1]}`:'';};
+/* ISO, DD.MM.YYYY / DD/MM/YYYY ve "14 Ekim 2026" biçimlerini tek ISO tarihe indirger.
+ * Firestore Timestamp/Date değerleri de güvenli biçimde okunur; geçersiz gün/ay sessizce kabul edilmez. */
+const MONTHS={ocak:'01',subat:'02',şubat:'02',mart:'03',nisan:'04',mayis:'05',mayıs:'05',haziran:'06',temmuz:'07',agustos:'08',ağustos:'08',eylul:'09',eylül:'09',ekim:'10',kasim:'11',kasım:'11',aralik:'12',aralık:'12'};
+function validIso(y,m,d){
+ const yy=Number(y),mm=Number(m),dd=Number(d),date=new Date(yy,mm-1,dd);
+ return yy>=1900&&mm>=1&&mm<=12&&dd>=1&&date.getFullYear()===yy&&date.getMonth()===mm-1&&date.getDate()===dd
+  ?`${String(yy).padStart(4,'0')}-${pad(mm)}-${pad(dd)}`:'';
+}
+function isoOnly(v){
+ if(v==null||v==='')return'';
+ if(v instanceof Date&&!Number.isNaN(v.getTime()))return validIso(v.getFullYear(),v.getMonth()+1,v.getDate());
+ if(typeof v==='object'){
+  if(typeof v.toDate==='function'){try{return isoOnly(v.toDate())}catch(_){}}
+  if(Number.isFinite(v.seconds))return isoOnly(new Date(v.seconds*1000));
+ }
+ const s=String(v).trim();let m;
+ if((m=/^(\d{4})-(\d{1,2})-(\d{1,2})(?:$|T|\s)/.exec(s)))return validIso(m[1],m[2],m[3]);
+ if((m=/^(\d{1,2})[./](\d{1,2})[./](\d{4})$/.exec(s)))return validIso(m[3],m[2],m[1]);
+ if((m=/^(\d{1,2})\s+([\p{L}]+)\s+(\d{4})$/u.exec(s))){
+  const month=MONTHS[m[2].toLocaleLowerCase('tr')];if(month)return validIso(m[3],month,m[1]);
+ }
+ return'';
+}
 
 /* 29 Şubat'ta alınan terfi, artık olmayan yılda 28 Şubat sayılır. */
 function birYilSonra(iso){
