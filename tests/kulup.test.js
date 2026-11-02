@@ -164,19 +164,45 @@ assert(/Kulüp Başkanı:\s*(Zeynep Demir|Elle Yazılan)/.test(by.tuzuk.metin),'
  assert(K.bolumSec(xml).includes('B1')&&K.bolumSec(xml,[]).includes('C1'),'Seçim boşsa hepsi.');assert.throws(()=>K.bolumSec(xml,[7]),/bulunamadı/);
  assert.throws(()=>K.bolumle('<w:p><w:r>'),/kapanmıyor/);}
 
+/* ── öğretmen: evrak teslim durumu (salt okunur) ── */
+{const kayit={id:'k1',ad:'Siberay',aktif:true,yillikPlanTarihi:'2026-10-15',toplumHizmetiTarihi:'2026-10-20',kontroller:[true,false,true,true]};
+ const d=K.takipDurumu(kayit,new Date(2026,10,2));
+ assert.strictEqual(d.toplam,12,'Teslim listesi: 2 plan + 9 ay + yıl sonu raporu.');
+ assert.strictEqual(d.tamam,3,'İşaretli evraklar sayılır.');
+ assert.strictEqual(d.gecikti,1,'Toplum hizmeti planı: son tarih geçti, işaret yok → gecikti; Ekim (işaretli) ve yıllık plan (işaretli) gecikmez.');
+ assert(d.planlar[0].tamam&&!d.planlar[0].gecikti&&d.planlar[1].gecikti);
+ assert(d.aylar[0].tamam&&!d.aylar[0].gecikti&&d.aylar[1].simdi&&!d.aylar[1].gecikti,'Kasım şimdiki aydır; bitmediği için gecikmiş sayılmaz.');
+ const bos=K.takipDurumu({id:'k2',ad:'X'},new Date(2027,2,10));
+ assert.strictEqual(bos.tamam,0);assert.strictEqual(bos.gecikti,5,'Mart: Ekim–Şubat 5 ay işaretsiz → 5 gecikme.');
+ const pasif=K.takipDurumu({id:'k3',aktif:false,kontroller:[]},new Date(2027,2,10));assert.strictEqual(pasif.gecikti,0,'Pasif kulüp gecikmez.');
+ assert.strictEqual(K.takipDurumu(null).tamam,0,'Kayıt yoksa çökmez.');
+ assert(K.kulupBenim({ogretmenIdler:['t1']},'t1')&&!K.kulupBenim({ogretmenIdler:['t2']},'t1')&&!K.kulupBenim({ogretmenIdler:['t1']},''),'Kulüp yalnız danışmanına aittir.');}
+
 /* ── kayıt noktaları ── */
 const nav=fs.readFileSync('js/core/app-nav.js','utf8'),shell=fs.readFileSync('js/core/shell-ui.js','utf8'),sw=fs.readFileSync('service-worker.js','utf8'),css=fs.readFileSync('css/design-system-base.css','utf8'),bridge=fs.readFileSync('js/core/role-permission-bridge.js','utf8');
 const gizli=nav.match(/const TEACHER_HIDDEN=new Set\(\[([^\]]*)\]/)[1];
 assert(!/'tools:form-kulup'/.test(gizli)&&gizli.includes("'tools:form-kulup-kayit'"),'Öğretmen yeni Sosyal Kulüpler sayfasını görür; klasik kayıt tablosu öğretmenden gizli kalır.');
 assert(nav.includes("['form-kulup','Sosyal Kulüpler','star'")&&nav.includes("'tools','form-kulup'],"),'Menü aracı aynı rotada kalır.');
 assert(/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup-kayit':'Sosyal Kulüpler'/.test(shell)&&!/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup':/.test(shell),'Klasik tablo form-kulup-kayit sayfasına taşınır.');
-assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=2')&&shell.includes('kulup.js?v=4'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
+assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=3')&&shell.includes('kulup.js?v=5'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
 assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
+/* Öğretmen görünürlüğü ve gizlilik: sayfa rol matrisine takılmaz, yalnız kendi kulübünü görür, profilde "Sosyal kulübüm" bölümü açar */
+{const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
+ assert(/teacherOwnPage=\(name,page\)=>name==='tools'&&page==='form-kulup'&&window\.PermissionService\?\.isTeacherAccount\?\.\(\)===true/.test(bridge)&&bridge.includes('if(isAdmin()||teacherOwnPage(name,page))return true;'),'Öğretmen hesabı kendi kulüp sayfasını rol matrisinden bağımsız açar.');
+ assert(!/teacherOwnPage[^;]*form-kulup-kayit/.test(bridge),'Klasik kayıt tablosu için istisna yok.');
+ assert(ui.includes("(yonetici||K.kulupBenim(k,tid))")&&ui.includes("${yonetici?'':takipKarti()}"),'Öğretmen yalnız danışmanı olduğu kulüpleri listeler; teslim kartı yalnız öğretmene.');
+ assert(ui.includes('S.istenenId&&liste.some(k=>String(k.id)===S.istenenId)'),'Profilden gelen kulüp yalnız görebildiği kulüpler arasındaysa seçilir.');
+ assert(cz.includes('arr(\'sosyalKulupler\').filter(clubVisible)')&&cz.includes('catch(_){return false}};'),'Klasik tabloda öğretmen yalnız kendi kulüplerini görür (hata halinde kapalı).');
+ assert(!shell.includes("['sosyalKulupler','Sosyal Kulüp'"),'Kulüpler “Diğer Görevlerim”de değil, kendi bölümünde.');
+ assert(shell.includes("data-profile-kulup-section")&&shell.includes("clubs.length>1?'Sosyal kulüplerim':'Sosyal kulübüm'")&&shell.includes("routeModule('tools',{page:'form-kulup',title:'Sosyal Kulüpler',kulupId:b.dataset.profileKulup})"),'Profilde “Sosyal kulübüm” bölümü kendi kulüp sayfasını açar.');
+ assert(shell.includes('profileRecordTeacherIds(\'sosyalKulupler\',k).map(String).includes(String(tid))')&&shell.includes('k.aktif!==false'),'Profil yalnız öğretmenin danışmanı olduğu aktif kulüpleri listeler.');
+ assert(shell.includes('KulupModule.open({kulupId})')&&shell.includes("title:'Sosyal Kulüpler',kulupId})")&&shell.includes("kulupId:view.kulupId||''")&&/a\.title===b\.title&&\(a\.kulupId\|\|''\)===\(b\.kulupId\|\|''\)/.test(shell),'Kulüp kimliği geri/yeniden yükleme yığınında korunur.');
+ assert(css.includes('#v2ModuleRoot .klp-takip__bar')&&css.includes('#v2ModuleRoot .klp-durum--gecikti'),'Teslim kartı stilleri tasarım sistemi CSS dosyasında.');}
 /* Evrak takibi sekmesi: kulüp seçiliyse yalnız o kulübün takibi (klasik çizelge sayfası takipKulubu kapsamıyla çizilir) */
 {const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
  assert(ui.includes('data-klp-act="takip">Evrak takibi</button>')&&!ui.includes('Kulüp kayıtları')&&ui.includes('S.takipId=S.kulupId')&&ui.includes('takipKulubu:()=>S.takipId'),'Sekme “Evrak takibi” olur ve seçili kulübü takip sayfasına bildirir.');
  assert(cz.includes('global.KulupModule?.takipKulubu?.()')&&cz.includes("tek?'Evrak Takibi':c.title")&&cz.includes('all.find(x=>String(x.id)===tek)')&&cz.includes('tek?\'\':kind===\'bep\''),'Klasik kulüp çizelgesi kapsam varsa yalnız o kulübü çizer (özet ve araç çubuğu yok).');}
-['kulup-core.js?v=2','kulup.js?v=4','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+['kulup-core.js?v=3','kulup.js?v=5','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
 assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=3'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
 fs.readdirSync('assets/kulup/sablon').forEach(f=>assert(sw.includes(`./assets/kulup/sablon/${f}`),`${f} çevrimdışı için önbelleğe alınmalı.`));
 assert.deepStrictEqual(fs.readdirSync('assets/kulup/sablon').sort(),['denetleme.docx','donem-sonu.docx','tutanak.docx','uye-listesi.docx','yil-sonu.docx'],'Ortak şablonlar: kulübe bağlı olmayan beş evrak.');

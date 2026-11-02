@@ -15603,6 +15603,26 @@ html[data-theme] #v2ModuleRoot .klp-uye__ad small{font-size:var(--ka-fs-11);colo
 html[data-theme] #v2ModuleRoot .klp-aylar-liste{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
 html[data-theme] #v2ModuleRoot .klp-ay{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr) minmax(0,1.4fr);gap:var(--ka-sp-8);align-items:center}
 html[data-theme] #v2ModuleRoot .klp-ay strong{font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .klp-takip__ozet{display:flex;align-items:center;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .klp-takip__ozet b{flex:none;font-size:var(--ka-fs-13);font-weight:var(--ka-fw-800)}
+html[data-theme] #v2ModuleRoot .klp-takip__bar{flex:1;min-width:0;height:var(--ka-sp-8);border:0;border-radius:var(--ka-radius-pill);overflow:hidden;background:var(--ka-primary-soft);appearance:none;-webkit-appearance:none}
+html[data-theme] #v2ModuleRoot .klp-takip__bar::-webkit-progress-bar{background:var(--ka-primary-soft);border-radius:var(--ka-radius-pill)}
+html[data-theme] #v2ModuleRoot .klp-takip__bar::-webkit-progress-value{background:var(--ka-primary);border-radius:var(--ka-radius-pill)}
+html[data-theme] #v2ModuleRoot .klp-takip__bar::-moz-progress-bar{background:var(--ka-primary);border-radius:var(--ka-radius-pill)}
+html[data-theme] #v2ModuleRoot .klp-takip__uyari{margin:0;font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700);color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .klp-takip__baslik{font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .klp-satirlar{display:flex;flex-direction:column;gap:var(--ka-sp-6);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .klp-satir{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-12);padding:var(--ka-sp-8) var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-card-radius)}
+html[data-theme] #v2ModuleRoot .klp-satir__ad{display:flex;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+html[data-theme] #v2ModuleRoot .klp-satir__ad strong{font-size:var(--ka-fs-13);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .klp-satir__ad small{font-size:var(--ka-fs-11);color:var(--ka-text-muted)}
+html[data-theme] #v2ModuleRoot .klp-durum{flex:none;padding:var(--ka-sp-2) var(--ka-sp-10);border-radius:var(--ka-radius-pill);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-800);color:var(--ka-text);border:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .klp-durum--tamam,html[data-theme] #v2ModuleRoot .klp-ayrozet--tamam{background:color-mix(in srgb,var(--ka-success) 22%,transparent);border-color:color-mix(in srgb,var(--ka-success) 55%,transparent)}
+html[data-theme] #v2ModuleRoot .klp-durum--gecikti,html[data-theme] #v2ModuleRoot .klp-ayrozet--gecikti{background:color-mix(in srgb,var(--ka-danger) 20%,transparent);border-color:color-mix(in srgb,var(--ka-danger) 55%,transparent)}
+html[data-theme] #v2ModuleRoot .klp-ayrozetler{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ka-sp-6);margin:0;padding:0;list-style:none}
+html[data-theme] #v2ModuleRoot .klp-ayrozet{display:flex;align-items:center;justify-content:center;gap:var(--ka-sp-4);min-height:calc(var(--ka-sp-32) + var(--ka-sp-4));padding:0 var(--ka-sp-6);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-radius-pill);font-size:var(--ka-fs-12);font-weight:var(--ka-fw-700);color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .klp-ayrozet--simdi{border-color:var(--ka-primary);border-width:calc(var(--ka-border-w) * 2)}
+html[data-theme] #v2ModuleRoot .klp-ayrozet__isaret{font-weight:var(--ka-fw-800)}
 html[data-theme] #v2ModuleRoot .klp-bos{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-6);padding:var(--ka-sp-24) var(--ka-sp-16);border:var(--ka-border-w) dashed var(--ka-border);border-radius:var(--ka-card-radius);text-align:center}
 html[data-theme] #v2ModuleRoot .klp-bos strong{font-size:var(--ka-fs-15);font-weight:var(--ka-fw-800)}
 html[data-theme] #v2ModuleRoot .klp-bos p{margin:0;font-size:var(--ka-fs-12);color:var(--ka-text-muted)}

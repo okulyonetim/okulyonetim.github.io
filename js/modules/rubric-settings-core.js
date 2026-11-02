@@ -108,6 +108,8 @@ const PAGE_UI={
 let currentType='';
 /* Sosyal Kulüpler → "Evrak takibi": Sosyal Kulüpler ekranında kulüp seçiliyse yalnız o kulübün takibi açılır (kulüp kimliği); seçili değilse tüm kulüpler listelenir. */
 const clubScope=()=>{try{return String(global.KulupModule?.takipKulubu?.()||'')}catch(_){return''}};
+/* Öğretmen hesabı bu tabloda yalnız danışmanı olduğu kulüpleri görür (sayfa zaten öğretmene kapalı; bu ikinci kapıdır, hata halinde kapalı kalır). */
+const clubVisible=r=>{try{if(!global.PermissionService?.isTeacherAccount?.())return true;const t=String(global.SinifBaglam?.teacherId?.()||'');return !!t&&(Array.isArray(r.ogretmenIdler)?r.ogretmenIdler:[r.ogretmenId]).map(String).includes(t)}catch(_){return false}};
 function canEdit(type){try{if(!type)return false;/* Tüm klasik çizelgeler Ayarlar'daki merkezi Çizelgeler düzenleme yetkisini kullanır. Tür anahtarları app-loader içinde bu yetkiye bağlanır. */if(global.PermissionService?.can)return global.PermissionService.can(type,'edit')===true;if(typeof global.duzenleyebilir==='function')return !!global.duzenleyebilir(type);return false}catch(_){return false}}
 function typeFromTitle(title){const n=norm(title);if(n.includes('sosyal'))return'sosyalKulupler';if(n.includes('belirli'))return'belirliGunler';if(n.includes('zumre'))return'zumre';if(n==='sok'||n.includes('sube ogretmen'))return'sok';if(n.includes('bep'))return'bepPlani';if(n.includes('rehber'))return'rehberlik';if(n.includes('maarif'))return'maarifRapor';if(n.includes('diger'))return'digerEvrak';return''}
 function countText(){const el=$('#toolsCount');if(el)el.textContent=`${arr(currentType).length} kayıt`}
@@ -246,7 +248,7 @@ function clubCard(r){const labels=CONTROLS.sosyalKulupler,a=checkArray('sosyalKu
  <section class="ksk-block"><h4>Planlar ve rapor</h4><div class="kcz-chips ksk-plans">${plan(0,labels[0],'yillikPlanTarihi')}${plan(1,labels[1],'toplumHizmetiTarihi')}${kczChip({type:'sosyalKulupler',id:r.id,index:11,label:labels[11],sub:'Yıl sonu',done:!!a[11],aria:`${name} ${labels[11]}`})}</div></section>
  <section class="ksk-block"><h4>Aylık takip</h4><div class="ksk-months">${MONTHS.map((l,i)=>month(l,i)).join('')}</div></section>
  <footer class="kcl-card-foot ksk-foot">${manage?`<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-club-student-edit="${esc(r.id)}">${KICON.userPlus}<span>Öğrenci ekle</span></button>`:''}<button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-club-student-list="${esc(r.id)}">${KICON.group}<span>Öğrenciler (${students.length})</span></button></footer></article>`}
-function clubResultsHtml(){const s=kczState('sosyalKulupler'),all=arr('sosyalKulupler').slice().sort((a,b)=>(a.aktif===false)-(b.aktif===false)||String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}));
+function clubResultsHtml(){const s=kczState('sosyalKulupler'),all=arr('sosyalKulupler').filter(clubVisible).sort((a,b)=>(a.aktif===false)-(b.aktif===false)||String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true}));
  if(!all.length)return kczEmpty('Henüz kulüp eklenmedi','Kulüp evraklarını ve öğrenci listelerini yönetmek için ilk kulübü ekleyin.');
  const tek=clubScope();if(tek){const r=all.find(x=>String(x.id)===tek);return r?`<div class="ksk-grid">${clubCard(r)}</div>`:kczEmpty('Kulüp bulunamadı','Bu kulüp silinmiş olabilir.')}
  const rows=all.filter(r=>clubMatches(r,s));if(!rows.length)return kczEmpty('Sonuç bulunamadı','Arama metnini veya durum süzgecini değiştirin.');

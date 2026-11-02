@@ -13,7 +13,7 @@ const SB=global.SinifBaglam,K=global.KulupCore;
 const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=3';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const S={yil:'',kulupId:'',takipId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
+const S={yil:'',kulupId:'',istenenId:'',takipId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
 let mounted=false,bagli=false,unsubs=[],offPrefs=null,pushT=0,yazT=0;
 
 /* ── bağlam: kulüpler, danışmanlar, üyeler ── */
@@ -148,6 +148,19 @@ function kulupKarti(liste){
  }
  return `<article class="ka-card"><div class="ka-card__body ka-stack">${secici}${ozet}</div></article>`;
 }
+/* ── öğretmen: kendi kulübünün evrak teslim durumu (salt okunur; işaretleri okul yönetimi koyar). Yalnız seçili, yani kendi kulübü gösterilir. ── */
+const durumDili=x=>x.tamam?['tamam','Teslim edildi']:x.gecikti?['gecikti','Gecikti']:['bekliyor','Bekliyor'];
+function takipKarti(){
+ const k=kulup();if(!k)return '';
+ const d=K.takipDurumu(k);
+ const satir=x=>{const [t,e]=durumDili(x);return `<li class="klp-satir"><span class="klp-satir__ad"><strong>${esc(x.ad)}</strong>${x.son?`<small>Son tarih ${esc(K.gunAy(x.son))}</small>`:''}</span><span class="klp-durum klp-durum--${t}">${e}</span></li>`};
+ const ay=x=>{const [t,e]=durumDili(x);return `<li class="klp-ayrozet klp-ayrozet--${t}${x.simdi?' klp-ayrozet--simdi':''}" aria-label="${esc(x.ad)}: ${e}${x.simdi?' (bu ay)':''}"><span class="klp-ayrozet__isaret" aria-hidden="true">${x.tamam?'✓':x.gecikti?'!':''}</span>${esc(x.ad)}</li>`};
+ return `<article class="ka-card klp-takip" data-klp-takip><div class="ka-card__body ka-stack"><div class="klp-evrak__ust"><span class="klp-no" aria-hidden="true">✓</span><div><strong>Evrak teslim durumu</strong><small>Okul yönetiminin kaydettiği teslimler; yalnız bu kulübünüz gösterilir.</small></div></div>
+<div class="klp-takip__ozet"><progress class="klp-takip__bar" value="${d.tamam}" max="${d.toplam}" aria-label="Teslim edilen evrak"></progress><b>${d.tamam}/${d.toplam}</b></div>${d.gecikti?`<p class="klp-takip__uyari">${d.gecikti} evrakın teslimi gecikti.</p>`:''}
+<ul class="klp-satirlar">${d.planlar.map(satir).join('')}</ul>
+<div class="klp-takip__baslik">Aylık faaliyet raporları</div><ul class="klp-ayrozetler">${d.aylar.map(ay).join('')}</ul>
+<ul class="klp-satirlar">${satir(d.yilSonu)}</ul></div></article>`;
+}
 /* Katalogda karşılığı olmayan kulüp: hazır evrakları olan bir kulüple elle eşleştirilebilir. */
 function eslesmeKarti(){
  const l=S.katalog?.kulupler||[];
@@ -163,7 +176,7 @@ function viewHtml(){
   :liste.length?'<div class="klp-bos"><strong>Kulübü seçin</strong><p>İç tüzük, planlar, tutanak, üye listesi ve raporlar seçtiğiniz kulübe göre hazırlanır.</p></div>':'';
  return `<section class="ka-page ka-stack klp-page" data-klp-page>
 <header class="ka-page-head"><span class="ka-page-head__icon" aria-hidden="true">🌟</span><div><small>${esc(S.yil)} EĞİTİM ÖĞRETİM YILI</small><h2>Sosyal Kulüpler</h2></div></header>
-${sekmeler}${liste.length?kulupKarti(liste):''}${bos}${icerik}</section>`;
+${sekmeler}${liste.length?kulupKarti(liste):''}${bos}${yonetici?'':takipKarti()}${icerik}</section>`;
 }
 function render(){
  const r=document.getElementById('v2ModuleRoot');if(!r||!S.yil)return false;
@@ -178,7 +191,8 @@ function yenile(){
  if(!mounted||!document.querySelector('[data-klp-page]'))return temizle();
  if(document.activeElement?.closest?.('[data-klp-page]')&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName))return;
  const liste=gorunenKulupler();
- if(!S.kulupId&&liste.length===1)kulupSec(String(liste[0].id));
+ if(!S.kulupId&&S.istenenId&&liste.some(k=>String(k.id)===S.istenenId))kulupSec(S.istenenId);
+ else if(!S.kulupId&&liste.length===1)kulupSec(String(liste[0].id));
  else paketiSec();
  render();
 }
@@ -242,10 +256,11 @@ function baglan(){
 }
 
 /* ── açılış ── */
-function open(){
- S.yil=K.egitimYili();temizle();
+/* kulupId: profildeki "Sosyal kulübüm" bağlantısı gibi doğrudan bir kulüple açılış; yalnız kullanıcının görebildiği kulüpler seçilir. */
+function open({kulupId=''}={}){
+ S.yil=K.egitimYili();temizle();S.istenenId=String(kulupId||'');
  const liste=gorunenKulupler();
- kulupSec(liste.length===1?String(liste[0].id):'');
+ kulupSec(S.istenenId&&liste.some(k=>String(k.id)===S.istenenId)?S.istenenId:liste.length===1?String(liste[0].id):'');
  const ok=render();
  offPrefs=global.KaPrefs?.remoteListen?.(uzakGeldi)||null;
  SB.abonelik(['sosyalKulupler']).forEach(p=>{const u=global.AppStore?.subscribe?.(p,yenile);if(u)unsubs.push(u)});

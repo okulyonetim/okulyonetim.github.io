@@ -54,6 +54,23 @@ function katalogBul(kulup,katalog,eslesme={}){
 const kulupOgretmenIdleri=k=>Array.isArray(k?.ogretmenIdler)?k.ogretmenIdler.filter(Boolean).map(String):[k?.ogretmenId,k?.danismanOgretmenId].filter(Boolean).map(String);
 const kulupBenim=(k,ogretmenId)=>!!ogretmenId&&kulupOgretmenIdleri(k).includes(String(ogretmenId));
 
+/* ── evrak teslim durumu (kulüp kaydındaki kontroller: Yıllık plan, Toplum hizmeti planı, Eki…Haz (9 ay), Yıl sonu raporu — 12 işaret) ──
+ * Okul yönetimi işaretler; öğretmen yalnız okur. Gecikme: son tarih geçmiş ya da ay bitmiş ve işaret yok. */
+const TAKIP_AYLARI=Object.freeze(['Ekim','Kasım','Aralık','Ocak','Şubat','Mart','Nisan','Mayıs','Haziran']);
+const TAKIP_TOPLAM=2+TAKIP_AYLARI.length+1;
+const akademikAy=(d=new Date())=>{const m=d.getMonth()+1;if(m>=10)return m-10;if(m<=6)return m+2;return m===9?-1:TAKIP_AYLARI.length};
+const gun10=v=>{const t=String(v||'').slice(0,10);return /^\d{4}-\d{2}-\d{2}$/.test(t)?t:''};
+const yerelGun=d=>{const p=n=>String(n).padStart(2,'0');return`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`};
+function takipDurumu(k,bugun=new Date()){
+ const a=Array.isArray(k?.kontroller)?k.kontroller:[],on=i=>a[i]===true,aktif=k?.aktif!==false,gun=yerelGun(bugun),simdi=akademikAy(bugun);
+ const plan=(i,ad,alan)=>{const son=gun10(k?.[alan]);return{ad,son,tamam:on(i),gecikti:aktif&&!!son&&son<gun&&!on(i)}};
+ const planlar=[plan(0,'Yıllık plan','yillikPlanTarihi'),plan(1,'Toplum hizmeti planı','toplumHizmetiTarihi')];
+ const aylar=TAKIP_AYLARI.map((ad,i)=>({ad,tamam:on(i+2),gecikti:aktif&&i<simdi&&!on(i+2),simdi:aktif&&i===simdi}));
+ const yilSonu={ad:'Yıl sonu raporu',tamam:on(TAKIP_TOPLAM-1)};
+ const tamam=[...planlar,...aylar,yilSonu].filter(x=>x.tamam).length,gecikti=[...planlar,...aylar].filter(x=>x.gecikti).length;
+ return{tamam,toplam:TAKIP_TOPLAM,gecikti,planlar,aylar,yilSonu};
+}
+
 /* ── üyeler ──
  * veliler = öğrenci kayıtları ({id, ogrenciAdi, sinifId, kulupId, ogrenciNo}); siniflar = [{id, ad}]. Sınıf adına (5/A, 6/B…) sonra ada göre sıralı. */
 const sinifSirasi=ad=>{const m=/^\s*(\d{1,2})\s*[./\-\s]*\s*([A-Za-zÇĞİÖŞÜçğıöşü]*)/.exec(String(ad||''));return m?[Number(m[1]),m[2].toLocaleUpperCase('tr')]:[99,String(ad||'')]};
@@ -165,5 +182,5 @@ function degerlendirme(paket,onEk,durum){
 }
 
 global.KulupCore={NOKTA,AYLAR,BELGELER,DONEM_AYLARI,norm,buyuk,baslikHarfi,egitimYili,donemOf,kulupAdi,kulupYonelme,okulYonelme,katalogBul,kulupOgretmenIdleri,kulupBenim,
- uyeler,gorevAdi,bosDurum,durumTemizle,durumBirlestir,durumAyni,deger,ayarla,durumAnahtari,gunAy,ortakDegerler,uyeSatirlari,islerSatirlari,bolumle,bolumSec,degerlendirme};
+ uyeler,gorevAdi,takipDurumu,bosDurum,durumTemizle,durumBirlestir,durumAyni,deger,ayarla,durumAnahtari,gunAy,ortakDegerler,uyeSatirlari,islerSatirlari,bolumle,bolumSec,degerlendirme};
 })(window);

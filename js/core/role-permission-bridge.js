@@ -38,8 +38,10 @@
   const pagePermission=(name,page)=>PAGE_PERMISSIONS[`${String(name||'')}:${String(page||'')}`]||'';
   const isAdmin=()=>window.AKTIF_KULLANICI?.admin===true||window.AppStore?.get?.('session.user')?.admin===true;
   const can=(permission,level='read')=>isAdmin()||!!window.PermissionService?.can?.(permission,level);
+  /* Öğretmen kendi kulübünü her koşulda açar: sayfa yalnız danışmanı olduğu kulüpleri gösterir (KulupModule.baglam), rol matrisi bu sayfayı gizleyemez. */
+  const teacherOwnPage=(name,page)=>name==='tools'&&page==='form-kulup'&&window.PermissionService?.isTeacherAccount?.()===true;
   const allowedRoute=(name,page='')=>{
-    if(isAdmin())return true;
+    if(isAdmin()||teacherOwnPage(name,page))return true;
     if(!can(modulePermission(name),'read'))return false;
     const specific=pagePermission(name,page);
     return !specific||can(specific,'read');

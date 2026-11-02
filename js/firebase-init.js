@@ -219,7 +219,7 @@ function firebaseyiBaslat(){
 (function readOptimizedSyncFeatureLoad(){
   if(document.querySelector('script[data-read-optimized-sync]'))return;
   const script=document.createElement('script');
-  script.src='js/core/read-optimized-sync.js?v=1108';
+  script.src='js/core/read-optimized-sync.js?v=1109';
   script.async=false;
   script.dataset.readOptimizedSync='';
   document.head.appendChild(script);
