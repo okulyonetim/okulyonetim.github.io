@@ -1,6 +1,22 @@
 {
  "kulupler": [
   {
+   "id": "beyazay",
+   "ad": "Beyazay Kulübü",
+   "anahtar": [
+    "beyazay",
+    "beyaz ay"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
+   },
+   "sayilar": {
+    "aylik": 10
+   }
+  },
+  {
    "id": "siberay",
    "ad": "Siberay Kulübü",
    "anahtar": [
@@ -12,11 +28,7 @@
     "kod": "B",
     "ad": "Bilim"
    },
-   "aciklama": "Siberay Kulübü, öğrencilerde siber güvenlik, güvenli internet, dijital vatandaşlık, siber zorbalıkla mücadele ve kişisel veri güvenliği konusunda farkındalık, sorumluluk, üretkenlik ve iş birliği becerilerini geliştirmek amacıyla kurulan öğrenci kulübüdür.",
    "sayilar": {
-    "madde": 23,
-    "hafta": 41,
-    "toplumHizmeti": 10,
     "aylik": 10
    }
   }

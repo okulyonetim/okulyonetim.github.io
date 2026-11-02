@@ -1,6 +1,6 @@
 /* Koruk Asistan — Sosyal Kulüpler (danışman öğretmen)
  * Kulübü seçin: iç tüzük, yıllık plan, toplum hizmeti planı, toplantı tutanağı, üye listesi, aylık / dönem sonu / yıl sonu raporları ve denetleme kurulu raporu Word olarak indirilir.
- * Kulüp kaydı (oy_sosyalKulupler), danışmanlar, üyeler (öğrenci kaydındaki kulüp) ve okul bilgileri uygulamadan gelir; kulübe özel metinler data/kulup/{id}.json kataloğundadır.
+ * Kulüp kaydı (oy_sosyalKulupler), danışmanlar, üyeler (öğrenci kaydındaki kulüp) ve okul bilgileri uygulamadan gelir; kulübün hazır evrakları data/kulup/{id}.json ve assets/kulup/{id}/ kataloğundadır.
  * Öğretmenin yazdıkları (üye görevleri, toplantı bilgisi, katılım ve sonuç, değerlendirme yazıları) hesabın tercih belgesinde (KaPrefs → oy_kullaniciTercihleri/{uid}) eğitim yılı ve kulüp başına tutulur.
  * Mantık: kulup-core.js · Word çıktısı: kulup-dosya.js · Stil: css/design-system-base.css (.klp-*)
  */
@@ -10,7 +10,7 @@ if(global.KulupModule)return;
 if(!global.SinifBaglam||!global.KulupCore)throw new Error('Sosyal Kulüpler bileşenleri yüklenmeden açılamaz.');
 
 const SB=global.SinifBaglam,K=global.KulupCore;
-const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=1';
+const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=2';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const S={yil:'',kulupId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
@@ -99,7 +99,7 @@ const tutanakDuzenle=()=>`<div class="ka-grid">${field('Toplantı no',girdi('top
 const denetlemeDuzenle=()=>`<div class="ka-grid">${field('İnceleme tarihi',girdi('inceleme','date',deger('inceleme')))}${[1,2,3].map(i=>field(`Denetleme kurulu üyesi ${i}`,girdi(`denetleme${i}`,'text',deger(`denetleme${i}`),'maxlength="80" placeholder="Adı Soyadı"'))).join('')}</div>`;
 /* Dönem / yıl sonu: ay ay Katılım ve Sonuç + üç değerlendirme yazısı (hazır metinle gelir). onEk: d1 | d2 | y */
 function raporDuzenle(onEk,aylarListesi,paket,etiketler){
- const k=onEk==='y'?paket.yilSonu:paket.donemSonu,v=K.degerlendirme(paket,onEk,S.durum);
+ const v=K.degerlendirme(paket,onEk,S.durum);
  const satirlar=aylarListesi.map(a=>`<div class="klp-ay"><strong>${esc(K.baslikHarfi(a))}</strong>${girdi(`${onEk}katilim:${a}`,'text',deger(`${onEk}katilim:${a}`),'maxlength="60" placeholder="Katılım" aria-label="'+esc(K.baslikHarfi(a))+' katılım"')}${girdi(`${onEk}sonuc:${a}`,'text',deger(`${onEk}sonuc:${a}`),'maxlength="120" placeholder="Sonuç" aria-label="'+esc(K.baslikHarfi(a))+' sonuç"')}</div>`).join('');
  return `<div class="klp-aylar-liste">${satirlar}</div>${field(etiketler[0],metin(`${onEk}genel`,v.GENEL))}${field(etiketler[1],metin(`${onEk}gucluk`,v.GUCLUK,2))}${field(etiketler[2],metin(`${onEk}oneri`,v.ONERI,2))}`;
 }
@@ -107,7 +107,7 @@ function raporDuzenle(onEk,aylarListesi,paket,etiketler){
 /* ── evrak kartları ── */
 function ciktilar(kod,paket){
  if(kod==='aylik'){
-  const l=(paket.aylikRaporlar||[]).map(r=>r.ay);
+  const l=paket.aylar||[];
   return `<div class="klp-cikti">${dugme('aylik','⬇ Bütün aylar (tek dosya)','data-klp-ay=""')}</div><div class="klp-aylar">${l.map(a=>dugme('aylik',esc(K.baslikHarfi(a)),`data-klp-ay="${esc(a)}"`,'ka-btn--secondary ka-btn--sm')).join('')}</div>`;
  }
  if(kod==='denetleme')return `<div class="klp-cikti">${dugme('denetleme','⬇ 1. Dönem','data-klp-donem="1"')}${dugme('denetleme','⬇ 2. Dönem','data-klp-donem="2"')}</div>`;
