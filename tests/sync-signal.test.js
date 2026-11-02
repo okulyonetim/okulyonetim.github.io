@@ -574,6 +574,33 @@ test('yalnız yazma izni yok (okuma var): yazılamayan kayıt yerelde kaybolmaz;
   assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
 });
 
+/* Sunucudaki belgeler aygıta inmiyor ("sunucuda var, cihazda yok"): iki neden — ikisi de sessizdi. */
+const NOT='oy_notlar',notRow=(ad,ms)=>({ad,guncellenmeTarihi:new Date(ms),updatedAt:new Date(ms)});
+test('çekim sürerken yerel yazım: sonuç uygulanamayan tip "eşitlendi" sayılmaz; sunucudaki eski belgeler sonra yine iner',async()=>{
+  const server=makeServer();seedBasic(server);
+  server.seed(NOT,'n1',notRow('Bir',T0-3*DAY));server.seed(NOT,'n2',notRow('İki',T0-3*DAY));
+  const A=await boot(server,'A');await advance(4000);
+  A.win.SyncEngine.register('notlar',NOT);await A.win.SyncEngine.localHydrate(['notlar']);
+  const p=A.win.SyncEngine.sync(['notlar'],{force:true});
+  await A.win.DeviceData.set('notlar',NOT,'n9',{ad:'Benim'},{merge:false});     /* çekim sürerken yerel yazım → sonuç uygulanmaz */
+  await p;await advance(30*1000);
+  assert.strictEqual(ids(A.data('notlar')),JSON.stringify(['n1','n2','n9']),'ilk çekim uygulanamasa da kısa sürede yeniden alınmalı: '+ids(A.data('notlar')));
+  await A.win.SyncEngine.sync(['notlar'],{force:true});await advance(30*1000);
+  assert.strictEqual(ids(A.data('notlar')),JSON.stringify(['n1','n2','n9']),'sonraki zorla çekim de listeyi bozmamalı');
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+test('yerel liste boş + imleç var: sunucuda eski damgalı belgeler sonradan belirse de zorla çekim getirir (delta güvenilmez)',async()=>{
+  const server=makeServer();seedBasic(server);
+  const A=await boot(server,'A');await advance(4000);
+  A.win.SyncEngine.register('notlar',NOT);await A.win.SyncEngine.localHydrate(['notlar']);
+  await A.win.SyncEngine.sync(['notlar'],{force:true});await advance(5000);          /* sunucu boşken eşitlendi: imleç var, liste boş */
+  server.seed(NOT,'n1',notRow('Bir',T0-3*DAY));server.seed(NOT,'n2',notRow('İki',T0-3*DAY));   /* sonradan, imleçten eski damgayla belirdi */
+  await advance(60*1000);
+  await A.win.SyncEngine.sync(['notlar'],{force:true});await advance(30*1000);
+  assert.strictEqual(ids(A.data('notlar')),JSON.stringify(['n1','n2']),'delta imleçten eskiyi getirmez; boş listede tam çekim gerekir: '+ids(A.data('notlar')));
+  assert.strictEqual(world.errors.length,0,String(world.errors[0]?.stack||''));
+});
+
 (async()=>{
   let failed=0;
   for(const t of tests){
