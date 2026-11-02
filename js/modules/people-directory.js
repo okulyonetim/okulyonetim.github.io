@@ -167,7 +167,22 @@ function docGroup(o,type,title,rows){
   return `<section class="kcl-panel kpd-docs"><header class="kpd-docs-head"><h3>${esc(title)}</h3><span class="kpd-count ${state}">${done}/${all}</span></header><div class="kpd-bar"><i data-kpd-w="${all?Math.round(done/all*100):0}"></i></div>${rows.map(k=>`<div class="kpd-doc"><strong>${esc(H.docSummary(type,k))}</strong><div class="kpd-checks">${labels.map((l,i)=>{if(!act(k).includes(i))return'';const on=!!k.kontroller?.[i];return `<label class="kpd-check${on?' is-on':''}${editable?'':' is-ro'}"><input type="checkbox" ${on?'checked':''} ${editable?'':'disabled'} data-kpd-doc data-doc-type="${esc(type)}" data-doc-id="${esc(k.id)}" data-doc-index="${i}"><span>${esc(l)}</span></label>`}).join('')}</div></div>`).join('')}</section>`;
 }
 /* Terfi: kaynak derece, kademe ve son terfi tarihidir; sonraki terfi (1 yıl sonra, yeni derece/kademe) TerfiCore'dan hesaplanır. */
-const trDate=iso=>{const d=new Date(String(iso||'').slice(0,10)+'T00:00:00');return Number.isNaN(d.getTime())?'':d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})};
+const trDate=value=>{
+  /* Android kayıtları ISO metin, web/Firestore kayıtları Timestamp veya Date gelebilir. */
+  let d=null;
+  try{
+    if(value instanceof Date)d=new Date(value.getTime());
+    else if(value&&typeof value.toDate==='function')d=value.toDate();
+    else if(value&&Number.isFinite(value.seconds))d=new Date(value.seconds*1000);
+    else{
+      const s=String(value??'').trim();let m;
+      if((m=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s)))d=new Date(Number(m[1]),Number(m[2])-1,Number(m[3]));
+      else if((m=/^(\d{1,2})[./](\d{1,2})[./](\d{4})$/.exec(s)))d=new Date(Number(m[3]),Number(m[2])-1,Number(m[1]));
+      else if(s)d=new Date(s);
+    }
+  }catch(_){d=null}
+  return !d||Number.isNaN(d.getTime())?'':d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+};
 function terfiRows(o){
   const T=global.TerfiCore,rows=[infoRow('Son terfi tarihi',o.sonTerfiTarihi?trDate(o.sonTerfiTarihi):'')],r=T?.sonraki?.(o);
   if(!r)return rows;
