@@ -47,6 +47,7 @@ function hazirla(kod,b,girdi={}){
    const donem=kod==='donem'?(girdi.donem===2?2:1):0,onEk=kod==='yil'?'y':`d${donem}`;
    const aylar=(paket.yilSonu?.aylar?.length?paket.yilSonu.aylar:paket.donemSonu?.aylar||[]).filter(a=>kod==='yil'||k.DONEM_AYLARI[donem].includes(a.ay));
    Object.assign(cikti.v,k.degerlendirme(paket,onEk,d));
+   for(const a of ['GENEL','GUCLUK','ONERI'])cikti.v[a]=cikti.v[a]||k.NOKTA;   // kulübün dosyasında değerlendirme yazısı yoksa yazılacak noktalı satır
    if(kod==='donem'){cikti.v.DONEM=`${donem}. Dönem`;cikti.ek=`${donem}_Donem`}else cikti.v.RAPOR_TARIHI=k.gunAy(al('yRaporTarihi'))||k.NOKTA;
    cikti.satirlar=k.islerSatirlari(aylar,d,onEk);break;
   }

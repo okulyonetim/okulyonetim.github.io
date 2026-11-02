@@ -15,18 +15,19 @@ const K=win.KulupCore,D=win.KulupDosya,O=win.OgretmenDosyasiCore;
 /* ── katalog: kulüp başına data/kulup/{id}.json (özet bilgi, dönem/yıl sonu metinleri) + assets/kulup/{id}/*.docx (kulübün kendi evrakları) ── */
 const katalog=JSON.parse(fs.readFileSync('data/kulup/katalog.json','utf8'));
 const paketler=Object.fromEntries(katalog.kulupler.map(k=>[k.id,JSON.parse(fs.readFileSync(`data/kulup/${k.id}.json`,'utf8'))]));
-assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','siberay']);
+assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','kizilay','siberay']);
 for(const k of katalog.kulupler){
  const p=paketler[k.id];
  assert.strictEqual(p.id,k.id);assert.deepStrictEqual(J(k.sayilar),{aylik:10},`${k.id}: katalog sayıları`);assert(p.tema.ad&&p.yil===k.yil&&k.anahtar.length,`${k.id}: tema, yıl, eşleşme anahtarı`);
  assert.deepStrictEqual(J(p.aylar),J(K.AYLAR),`${k.id}: aylık raporlar Eylül–Haziran sırasıyla.`);
  assert.strictEqual(p.yilSonu.aylar.length,10);assert(p.yilSonu.aylar.every(a=>a.ay&&a.calisma),`${k.id}: yıl sonunda her ayın özeti dolu.`);
- assert(p.yilSonu.b&&p.yilSonu.c&&p.yilSonu.d,`${k.id}: hazır değerlendirme metinleri gelir.`);
+ if(k.id==='kizilay')assert(!p.yilSonu.b&&!p.yilSonu.c&&!p.yilSonu.d,'Kızılay dosyasında değerlendirme yazısı yok (Word’de noktalı satır kalır).');
+ else assert(p.yilSonu.b&&p.yilSonu.c&&p.yilSonu.d,`${k.id}: hazır değerlendirme metinleri gelir.`);
  assert.deepStrictEqual(fs.readdirSync(`assets/kulup/${k.id}`).sort(),['aylik-rapor.docx','toplum-hizmeti.docx','tuzuk.docx','yillik-plan.docx'],`${k.id}: kulübün dört evrakı`);
 }
 const paket=paketler.siberay;
 assert.strictEqual(paket.tema.kod,'B');assert.strictEqual(paket.tema.ad,'Bilim');assert.strictEqual(paketler.beyazay.tema.ad,'Doğa-Çevre-Toplum');
-assert.strictEqual(paket.donemSonu.aylar.length,5);assert(paket.donemSonu.b);assert.strictEqual(paketler.beyazay.donemSonu,null,'Dönem sonu dosyası gelmeyen kulüpte dönem raporu yıl sonu metinlerinden hazırlanır.');
+assert.strictEqual(paket.donemSonu.aylar.length,5);assert(paket.donemSonu.b);assert.strictEqual(paketler.beyazay.donemSonu,null,'Dönem sonu dosyası gelmeyen kulüpte dönem raporu yıl sonu metinlerinden hazırlanır.');assert.strictEqual(paketler.kizilay.tema.ad,'Doğa-Çevre-Toplum');
 /* kulübün evrakları kişisel bilgi taşımaz: ad, okul ve müdür {{ALAN}} olmalı (dosyayı indiren öğretmenin bilgileri başka kulüplere sızmaz) */
 for(const k of katalog.kulupler){
  for(const f of fs.readdirSync(`assets/kulup/${k.id}`)){
@@ -43,6 +44,7 @@ assert.strictEqual(K.katalogBul({id:'a',ad:'Siberay'},katalog)?.id,'siberay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Siberay Kulübü'},katalog)?.id,'siberay');
 assert.strictEqual(K.katalogBul({id:'a',kulupAdi:'SİBERAY KULÜBÜ (TYMM)'},katalog)?.id,'siberay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Beyazay Kulübü'},katalog)?.id,'beyazay');assert.strictEqual(K.katalogBul({id:'a',ad:'Beyaz Ay'},katalog)?.id,'beyazay');
+assert.strictEqual(K.katalogBul({id:'a',ad:'Kızılay Kulübü'},katalog)?.id,'kizilay');assert.strictEqual(K.katalogBul({id:'a',ad:'KIZILAY'},katalog)?.id,'kizilay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Satranç Kulübü'},katalog),null);
 assert.strictEqual(K.katalogBul({id:'a',ad:'Siberayan Kültür'},katalog)?.id,undefined,'Yalnız tam sözcük eşleşir.');
 assert.strictEqual(K.katalogBul({id:'k9',ad:'Satranç'},katalog,{k9:'siberay'})?.id,'siberay','Elle eşleme önceliklidir.');
@@ -64,7 +66,7 @@ assert.deepStrictEqual(J(K.durumTemizle({k:{ok:{v:'1',t:5},kotu:{v:'1'}}}).k),{o
 assert.strictEqual(K.egitimYili(new Date(2026,9,1)),'2026-2027');assert.strictEqual(K.egitimYili(new Date(2027,5,1)),'2026-2027');
 assert(/^kulup_k_1_2026_2027$/.test(K.durumAnahtari('k-1','2026-2027')));
 
-/* ── Word çıktıları: iki kulüp (Siberay: tablolu/maddeli evraklar; Beyazay: 2 aylık plan, 5 sütunlu toplum hizmeti, maddesiz tüzük) ── */
+/* ── Word çıktıları: üç kulüp (Siberay: tablolu/maddeli evraklar; Beyazay: 2 aylık plan, 5 sütunlu toplum hizmeti, maddesiz tüzük; Kızılay: iki aylık yıl sonu satırları, değerlendirme yazısız) ── */
 const okul={okul:'Atatürk Ortaokulu',il:'Ankara',ilce:'Çankaya',mudur:'Ali Veli',yil:'2026-2027',danismanlar:['Ayşe Öğretmen'],kulup:{id:'k1',ad:'Siberay'},uyeler,paket};
 K.ayarla(durum,'toplantiTarihi','2026-09-21',12);K.ayarla(durum,'toplantiYeri','Fen Laboratuvarı',12);K.ayarla(durum,'toplantiNo','2',12);
 K.ayarla(durum,'d1katilim:EYLÜL','24 öğrenci',12);K.ayarla(durum,'d1sonuc:EYLÜL','Başarılı',12);K.ayarla(durum,'d2katilim:MART','19 öğrenci',12);
@@ -87,7 +89,7 @@ async function kulupSinamasi(id,ad,kulupRe){
  for(const bl of K.BELGELER){
   const girdi=bl.k==='donem'||bl.k==='denetleme'?{donem:1}:{};
   const o=sonuc[bl.k]=await uret(bl.k,girdi);
-  assert(/^[A-Za-z0-9_.-]+\.docx$/.test(o.ad),`${id}/${bl.k}: dosya adı ASCII olmalı (${o.ad})`);assert(o.ad.startsWith(`${ad.replace(/ /g,'_').replace('Kulübü','Kulubu')}_`),`${id}/${bl.k}: dosya adı kulüple başlar (${o.ad})`);
+  assert(/^[A-Za-z0-9_.-]+\.docx$/.test(o.ad),`${id}/${bl.k}: dosya adı ASCII olmalı (${o.ad})`);assert(o.ad.startsWith(`${ad.replace(/ /g,'_').replace('Kulübü','Kulubu').replace(/ı/g,'i')}_`),`${id}/${bl.k}: dosya adı kulüple başlar (${o.ad})`);
   for(const dosya of Object.keys(o.dosyalar).filter(n=>/^word\/(document|header\d*|footer\d*)\.xml$/.test(n))){
    const x=o.dosyalar[dosya].toString('utf8');
    assert(!/\{\{|\}\}|\[\[|\]\]/.test(x),`${id}/${bl.k}/${dosya}: doldurulmamış alan kaldı`);dengeli(x,`${id}/${bl.k}/${dosya}`);
@@ -123,7 +125,7 @@ async function kulupSinamasi(id,ad,kulupRe){
  assert(t('donem').includes((pk.donemSonu||pk.yilSonu).b.slice(0,30)),'Kazanımlar hazır metinle gelir.');
  assert(t('donem').includes(pk.yilSonu.aylar[0].calisma.slice(0,25)),'Ay özeti kulüp kataloğundan gelir.');
  {const d2=await uret('donem',{donem:2});assert(d2.metin.includes('HAZİRAN')&&d2.metin.includes('ŞUBAT')&&!d2.metin.includes('EYLÜL'));assert(d2.metin.includes('19 öğrenci')&&!d2.metin.includes('24 öğrenci'),'Katılım dönem başına ayrı tutulur.');assert(d2.ad.endsWith('_2_Donem.docx'));}
- K.AYLAR.forEach(ay=>assert(t('yil').includes(ay),`Yıl sonu ${ay}`));assert(t('yil').includes('Yıl sonu özel metni.')&&!t('yil').includes(pk.yilSonu.b.slice(0,30)),'Öğretmenin yazdığı değerlendirme hazır metnin yerine geçer.');assert(t('yil').includes('18.06.2027'));
+ K.AYLAR.forEach(ay=>assert(t('yil').includes(ay),`Yıl sonu ${ay}`));assert(t('yil').includes('Yıl sonu özel metni.')&&(!pk.yilSonu.b||!t('yil').includes(pk.yilSonu.b.slice(0,30))),'Öğretmenin yazdığı değerlendirme hazır metnin yerine geçer.');assert(t('yil').includes('18.06.2027'));
  /* denetleme */
  assert(t('denetleme').includes('1. Dönem')&&t('denetleme').includes('15.01.2027')&&t('denetleme').includes('Deniz Kurt'));
  {const dn=await uret('denetleme',{donem:2});assert(dn.metin.includes('2. Dönem')&&!dn.metin.includes('1. Dönem /'));}
@@ -131,6 +133,8 @@ async function kulupSinamasi(id,ad,kulupRe){
 }
 const si=await kulupSinamasi('siberay','Siberay Kulübü',/Siberay|S[Iİ]BERAY/);
 const by=await kulupSinamasi('beyazay','Beyazay Kulübü',/Beyazay|BEYAZAY/);
+const kz=await kulupSinamasi('kizilay','Kızılay Kulübü',/Kızılay|KIZILAY/);
+{const bos=await uretK({...okul,durum:K.bosDurum(),paket:paketler.kizilay,kulup:{id:'k1',ad:'Kızılay Kulübü'}},'yil',{});assert(bos.metin.includes(K.NOKTA),'Dosyada değerlendirme yazısı yoksa noktalı satır kalır.');assert(/Kızılay Kulübü[^]*Eylül ayında|EYLÜL/.test(bos.metin)&&bos.metin.includes(paketler.kizilay.yilSonu.aylar[0].calisma.slice(0,30)),'Ay özetleri aylık raporlardan gelir.');}
 /* kulübe özgü içerik kulübün kendi dosyasından gelir */
 assert.strictEqual((si.tuzuk.metin.match(/MADDE \d+ –/g)||[]).length,23);assert(si.plan.metin.includes('Bilim (B)')&&(si.plan.xml.match(/<w:tr[ >]/g)||[]).length>=42,'Siberay planı: tema ve 41 hafta.');
 assert(si.aylik.metin.split('AYLIK FAALİYET RAPORU').length-1===10&&si.aylik.metin.includes('Rapor No: 10'));
@@ -166,10 +170,10 @@ const gizli=nav.match(/const TEACHER_HIDDEN=new Set\(\[([^\]]*)\]/)[1];
 assert(!/'tools:form-kulup'/.test(gizli)&&gizli.includes("'tools:form-kulup-kayit'"),'Öğretmen yeni Sosyal Kulüpler sayfasını görür; klasik kayıt tablosu öğretmenden gizli kalır.');
 assert(nav.includes("['form-kulup','Sosyal Kulüpler','star'")&&nav.includes("'tools','form-kulup'],"),'Menü aracı aynı rotada kalır.');
 assert(/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup-kayit':'Sosyal Kulüpler'/.test(shell)&&!/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup':/.test(shell),'Klasik tablo form-kulup-kayit sayfasına taşınır.');
-assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=2')&&shell.includes('kulup.js?v=2'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
+assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=2')&&shell.includes('kulup.js?v=3'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
 assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
-['kulup-core.js?v=2','kulup.js?v=2','kulup-dosya.js?v=2'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
-assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=2'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
+['kulup-core.js?v=2','kulup.js?v=3','kulup-dosya.js?v=3'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=3'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
 fs.readdirSync('assets/kulup/sablon').forEach(f=>assert(sw.includes(`./assets/kulup/sablon/${f}`),`${f} çevrimdışı için önbelleğe alınmalı.`));
 assert.deepStrictEqual(fs.readdirSync('assets/kulup/sablon').sort(),['denetleme.docx','donem-sonu.docx','tutanak.docx','uye-listesi.docx','yil-sonu.docx'],'Ortak şablonlar: kulübe bağlı olmayan beş evrak.');
 assert(sw.includes('./data/kulup/katalog.json'),'Katalog önbelleğe alınmalı (kulüplerin evrakları seçilince yüklenir).');

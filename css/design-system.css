@@ -1,6 +1,6 @@
 /* KORUK ASİSTAN — MERKEZİ DESIGN SYSTEM ENTRYPOINT */
 /* Mevcut merkezi tema aynen korunur; bu dosya yalnızca ortak giriş noktasıdır. */
-@import url("./design-system-base.css?v=1375");
+@import url("./design-system-base.css?v=1376");
 
 /* Ders Programı aksiyon butonları: açık ikon kutularında ikon görünürlüğü */
 [data-schedule-add],[data-schedule-import],[data-schedule-report],[data-schedule-sheet-report],[data-schedule-clear]{color:var(--ka-text)!important}
@@ -332,10 +332,10 @@ html,body{min-height:100dvh}
 /* BUGÜNKÜ DERSLER — MOBİLDE KOMPAKT YAZI */
 
 /* ===== KOYU TEMA — SARI DOLGU / SİYAH METİN KONTRASTI =====
-   Sarı dolgu kullanan ana aksiyon yüzeylerinde metin ve ikonlar siyah kalır. */
+   Sarı dolgu kullanan ana aksiyon yüzeylerinde metin ve ikonlar siyah kalır.
+   (.ka-btn--primary hariç: altın cam düğmenin yazısı --ka-btn-primary-ink tokenından gelir.) */
 html[data-theme="dark"] .food-tab.is-active,
 html[data-theme="dark"] .ka-btn.primary,
-html[data-theme="dark"] .ka-btn--primary,
 html[data-theme="dark"] button.primary,
 html[data-theme="dark"] .primary{
   color:rgb(var(--k-gray-11))!important;
@@ -343,7 +343,6 @@ html[data-theme="dark"] .primary{
 }
 html[data-theme="dark"] .food-tab.is-active *,
 html[data-theme="dark"] .ka-btn.primary *,
-html[data-theme="dark"] .ka-btn--primary *,
 html[data-theme="dark"] button.primary *,
 html[data-theme="dark"] .primary *{
   color:rgb(var(--k-gray-11))!important;

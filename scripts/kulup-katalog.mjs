@@ -30,6 +30,8 @@ const K=ctx.KulupCore;               // bölümleme (aylık raporlar) uygulamada
 const AYLAR=K.AYLAR;
 const norm=s=>String(s||'').toLocaleLowerCase('tr').replace(/\s+/g,' ').trim();
 const kacisRe=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+/* kişi adı: büyük/küçük harf ve Türkçe i/İ farkı gözetmeden eşleşir (belgede "SEDAT KARAGÖZ" da "Sedat KARAGÖZ" da olabilir) */
+const adRe=s=>[...String(s)].map(c=>{const k=new Set([c,c.toLocaleLowerCase('tr'),c.toLocaleUpperCase('tr'),c.toLowerCase(),c.toUpperCase()]);return k.size>1?`[${[...k].map(kacisRe).join('')}]`:kacisRe(c)}).join('');
 const BUYUK=s=>String(s||'').toLocaleUpperCase('tr');
 const BASLIK=s=>String(s||'').split(/\s+/).map(w=>w.charAt(0).toLocaleUpperCase('tr')+w.slice(1).toLocaleLowerCase('tr')).join(' ');
 
@@ -78,9 +80,12 @@ function temaBul(ogeler){
  }
  return{kod:'',ad:''};
 }
+/* "EYLÜL – EKİM" gibi iki aylık satır etiketi → ['EYLÜL','EKİM'] (tek ay etiketi → [etiket]) */
+const etiketAylari=e=>{const l=String(e).split(/\s*[–—-]\s*/).map(x=>AYLAR.find(a=>norm(a)===norm(x))).filter(Boolean);return l.length?l:[String(e).trim()]};
 function sonuRaporu(ogeler){
- const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&norm(o.satirlar[0][0]?.metin)==='ay');if(!tab)throw new Error('faaliyet tablosu bulunamadı');
- const aylar=tab.satirlar.slice(1).map(r=>({ay:r[0].metin.trim(),calisma:(r[1]?.metin||'').trim()})).filter(r=>r.ay);
+ const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&/^aylar?$/.test(norm(o.satirlar[0][0]?.metin)));if(!tab)throw new Error('faaliyet tablosu bulunamadı');
+ /* Çok aylı satırlar (Eylül–Ekim…) ay ay açılır: ekran ve dönem raporu ay bazında çalışır; ay metni aylık raporlardan gelir (aşağıda). */
+ const aylar=tab.satirlar.slice(1).flatMap(r=>{const e=r[0].metin.trim(),l=etiketAylari(e);return l.length>1?l.map(ay=>({ay,calisma:''})):e?[{ay:e,calisma:(r[1]?.metin||'').trim()}]:[]});
  const bolum=ad=>{const i=ogeler.findIndex(o=>o.tur==='p'&&new RegExp(`^[B-D]\\.\\s*${ad}`,'i').test(o.metin));return i<0?'':(ogeler[i+1]?.tur==='p'?ogeler[i+1].metin:'')};
  return{aylar,b:bolum('(Genel Değerlendirme|Değerlendirme|Kazanımlar)'),c:bolum('(Karşılaşılan Güçlükler|Güçlükler)'),d:bolum('(Gelecek Yıl İçin Öneriler|Öneriler)')};
 }
@@ -136,8 +141,8 @@ function kuralKur({okul,danisman,mudur}){
   ekle('okul adı (büyük)',new RegExp(o,'g'),()=>[null,'{{OKUL_BUYUK}}']);
   ekle('okul adı',new RegExp(baslikli,'g'),()=>[null,'{{OKUL}}']);
  }
- if(danisman)ekle('danışman adı',new RegExp(kacisRe(danisman),'g'),()=>[null,'{{DANISMAN}}']);
- if(mudur)ekle('müdür adı',new RegExp(kacisRe(mudur),'g'),()=>[null,'{{MUDUR}}']);
+ if(danisman)ekle('danışman adı',new RegExp(adRe(danisman),'g'),()=>[null,'{{DANISMAN}}']);
+ if(mudur)ekle('müdür adı',new RegExp(adRe(mudur),'g'),()=>[null,'{{MUDUR}}']);
  /* noktalı alanlar */
  ekle('… müdürlüğüne',new RegExp(`${NOKTALI}\\s*MÜDÜRLÜĞÜNE`,'g'),()=>[null,'{{OKUL_MUDURLUGU_YONELME}}']);
  ekle('… müdürlüğü',new RegExp(`${NOKTALI}\\s*MÜDÜRLÜĞÜ(?!NE)`,'g'),()=>[null,'{{OKUL_MUDURLUGU}}']);

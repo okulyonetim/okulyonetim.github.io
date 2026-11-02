@@ -521,7 +521,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       global.ToolsModule?.unmount?.();
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.KulupCore)await global.AppLoader?.loadScript?.('js/modules/kulup-core.js?v=2');
-      if(!global.KulupModule?.open)await global.AppLoader?.loadScript?.('js/modules/kulup.js?v=2');
+      if(!global.KulupModule?.open)await global.AppLoader?.loadScript?.('js/modules/kulup.js?v=3');
       if(routeToken!==routeEpoch||AppStore?.get?.('ui.route')!==name)return false;
       if(!global.KulupModule?.open)throw new Error('Sosyal Kulüpler modülü yüklenemedi.');
       if(!global.KulupModule.open())throw new Error('Sosyal Kulüpler açılamadı.');

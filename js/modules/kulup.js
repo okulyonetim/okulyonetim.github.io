@@ -10,7 +10,7 @@ if(global.KulupModule)return;
 if(!global.SinifBaglam||!global.KulupCore)throw new Error('Sosyal Kulüpler bileşenleri yüklenmeden açılamaz.');
 
 const SB=global.SinifBaglam,K=global.KulupCore;
-const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=2';
+const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=3';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const S={yil:'',kulupId:'',katalog:null,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
@@ -83,7 +83,9 @@ function temizle(){offPrefs?.();offPrefs=null;unsubs.forEach(f=>{try{f()}catch(_
 const field=(etiket,html,sinif='')=>`<label class="ka-field ${sinif}"><span class="ka-field__label">${esc(etiket)}</span>${html}</label>`;
 const girdi=(anah,tip,deger,ek='')=>`<input class="ka-input" type="${tip}" value="${esc(deger)}" data-klp-k="${esc(anah)}" autocomplete="off" ${ek}>`;
 const metin=(anah,deger,satir=3)=>`<textarea class="ka-input" rows="${satir}" data-klp-k="${esc(anah)}">${esc(deger)}</textarea>`;
-const dugme=(belge,ad,ek='',sinif='ka-btn--secondary')=>`<button type="button" class="ka-btn ${sinif}" data-klp-act="indir" data-klp-belge="${belge}" ${ek}>${ad}</button>`;
+const IND_IKON='<svg class="klp-ik" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+/* sinif verilmezse ana eylem (indir, ikonlu); 'ka-btn--secondary ka-btn--sm' gibi verilirse yalnız yazı */
+const dugme=(belge,ad,ek='',sinif='ka-btn--primary')=>`<button type="button" class="ka-btn ${sinif}" data-klp-act="indir" data-klp-belge="${belge}" ${ek}>${sinif==='ka-btn--primary'?IND_IKON:''}<span>${ad}</span></button>`;
 const aylar=()=>K.AYLAR;
 const duzenleAc=(id,baslik,icerik)=>`<details class="klp-duzenle" data-klp-ac="${id}" ${S.acik.has(id)?'open':''}><summary>${esc(baslik)}</summary><div class="klp-duzenle__govde ka-stack">${icerik}</div></details>`;
 const deger=a=>K.deger(S.durum,a);
@@ -108,11 +110,11 @@ function raporDuzenle(onEk,aylarListesi,paket,etiketler){
 function ciktilar(kod,paket){
  if(kod==='aylik'){
   const l=paket.aylar||[];
-  return `<div class="klp-cikti">${dugme('aylik','⬇ Bütün aylar (tek dosya)','data-klp-ay=""')}</div><div class="klp-aylar">${l.map(a=>dugme('aylik',esc(K.baslikHarfi(a)),`data-klp-ay="${esc(a)}"`,'ka-btn--secondary ka-btn--sm')).join('')}</div>`;
+  return `<div class="klp-cikti">${dugme('aylik','Bütün aylar (tek dosya)','data-klp-ay=""')}</div><div class="klp-aylar">${l.map(a=>dugme('aylik',esc(K.baslikHarfi(a)),`data-klp-ay="${esc(a)}"`,'ka-btn--secondary ka-btn--sm')).join('')}</div>`;
  }
- if(kod==='denetleme')return `<div class="klp-cikti">${dugme('denetleme','⬇ 1. Dönem','data-klp-donem="1"')}${dugme('denetleme','⬇ 2. Dönem','data-klp-donem="2"')}</div>`;
- if(kod==='donem')return `<div class="klp-cikti">${dugme('donem','⬇ 1. Dönem raporu','data-klp-donem="1"')}${dugme('donem','⬇ 2. Dönem raporu','data-klp-donem="2"')}</div>`;
- return `<div class="klp-cikti">${dugme(kod,'⬇ Word olarak indir')}</div>`;
+ if(kod==='denetleme')return `<div class="klp-cikti">${dugme('denetleme','1. Dönem','data-klp-donem="1"')}${dugme('denetleme','2. Dönem','data-klp-donem="2"')}</div>`;
+ if(kod==='donem')return `<div class="klp-cikti">${dugme('donem','1. Dönem raporu','data-klp-donem="1"')}${dugme('donem','2. Dönem raporu','data-klp-donem="2"')}</div>`;
+ return `<div class="klp-cikti">${dugme(kod,'Word olarak indir')}</div>`;
 }
 function donemBloklari(paket){
  const ay=K.DONEM_AYLARI;
@@ -197,13 +199,13 @@ async function indir(b){
  const kod=b.dataset.klpBelge,girdi={};
  if(kod==='aylik'&&b.dataset.klpAy)girdi.aylar=[b.dataset.klpAy];
  if(b.dataset.klpDonem)girdi.donem=Number(b.dataset.klpDonem);
- const eski=b.textContent;b.disabled=true;b.textContent='Hazırlanıyor…';
+ const eski=b.innerHTML;b.disabled=true;b.textContent='Hazırlanıyor…';
  try{
   await yukleDosya();
   await global.KulupDosya.indir(kod,baglam(),girdi);
   toast('Dosya indirildi.');
  }catch(e){console.warn('[Sosyal Kulüpler/indir]',e);toast(String(e?.message||'Dosya indirilemedi.'))}
- finally{b.disabled=false;b.textContent=eski}
+ finally{b.disabled=false;b.innerHTML=eski}
 }
 const ISLEMLER={
  indir,

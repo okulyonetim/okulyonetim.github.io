@@ -17,6 +17,22 @@
    }
   },
   {
+   "id": "kizilay",
+   "ad": "Kızılay Kulübü",
+   "anahtar": [
+    "kizilay",
+    "kızılay"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
+   },
+   "sayilar": {
+    "aylik": 10
+   }
+  },
+  {
    "id": "siberay",
    "ad": "Siberay Kulübü",
    "anahtar": [
