@@ -25,7 +25,8 @@ const BASLIKLAR={
  unite_tema:'Ünite / Tema',icerik_cercevesi:'Konu / İçerik Çerçevesi',ogrenme_ciktilari:'Öğrenme Çıktıları',surec_becerileri:'Süreç Becerileri',surec_bilesenleri:'Süreç Bileşenleri',
  kazanim:'Kazanım',kazanim_aciklamasi:'Kazanım Açıklaması',olcme_degerlendirme:'Ölçme ve Değerlendirme',sosyal_duygusal:'Sosyal-Duygusal Öğrenme Becerileri',degerler:'Değerler',
  okuryazarlik:'Okuryazarlık Becerileri',belirli_gunler:'Belirli Gün ve Haftalar',farklilastirma:'Farklılaştırma',okul_temelli:'Okul Temelli Planlama',yontem_teknikler:'Yöntem ve Teknikler',
- okul_disi_ogrenme:'Okul Dışı Öğrenme',islevler_yararli_dil:'İşlevler ve Yararlı Dil',baglam_gorev_odev:'Önerilen Bağlamlar, Görevler ve Ödevler'
+ okul_disi_ogrenme:'Okul Dışı Öğrenme',islevler_yararli_dil:'İşlevler ve Yararlı Dil',baglam_gorev_odev:'Önerilen Bağlamlar, Görevler ve Ödevler',
+ kelime_hazinesi:'Hedef Kelime Bilgisi',dilbilgisi_yapilari:'Hedef Dil Bilgisi Yapıları',sosyal_dil:'Hedef Sosyal Dil',ses_bilgisi:'Hedef Ses Bilgisi',yerel_kulturel:'Yerel, Kültürel, Sosyal ve Ahlaki Hususlar'
 };
 const TAKMA={
  'tema':'unite_tema','theme':'unite_tema','unite tema':'unite_tema','unit theme':'unite_tema','unite':'unite_tema',
@@ -37,7 +38,11 @@ const TAKMA={
  'okuryazarlik becerileri':'okuryazarlik','literacy skills':'okuryazarlik','belirli gun ve haftalar':'belirli_gunler','national celebrations and important days':'belirli_gunler',
  'farklilastirma':'farklilastirma','differentiation':'farklilastirma','okul temelli planlama':'okul_temelli','school based planning':'okul_temelli',
  'yontem ve teknikler':'yontem_teknikler','okul disi ogrenme':'okul_disi_ogrenme','out of school learning activities':'okul_disi_ogrenme',
- 'functions and useful language':'islevler_yararli_dil','suggested contexts tasks and assignments':'baglam_gorev_odev'
+ 'functions and useful language':'islevler_yararli_dil','suggested contexts tasks and assignments':'baglam_gorev_odev',
+ /* Maarif İngilizce planı (tema bilgi tablosu) */
+ 'target vocabulary in use':'kelime_hazinesi','functions of the target grammatical structures in use':'islevler_yararli_dil','target grammatical structures in use':'dilbilgisi_yapilari',
+ 'target social language in use':'sosyal_dil','target phonological sounds in use':'ses_bilgisi','learning skills':'sosyal_duygusal','expansion':'farklilastirma','performance assignment':'olcme_degerlendirme',
+ 'local cultural social and moral considerations of the theme':'yerel_kulturel'
 };
 function baslikBilgisi(ad,grup='',kolon=0){
  const kaynak=line(ad)||line(grup)||`Sütun ${kolon}`,k=key(kaynak),a=TAKMA[k];
@@ -205,7 +210,7 @@ function satirGunleri(plan,basliklar,gorunum,okulGunleri){
 const KUCUK=new Set(['ve','ile','veya','ya','da','de']);
 function baslikHarfi(s){return line(s).toLocaleLowerCase('tr').split(' ').map((w,i)=>(i&&KUCUK.has(w))?w:w.charAt(0).toLocaleUpperCase('tr')+w.slice(1)).join(' ')}
 function baslikBilgi(metin){
- const t=line(metin),yil=/(\d{4})\s*[/\-–]\s*(\d{4})/.exec(t),sinif=/(\d{1,2})\s*\.?\s*SINIF/i.exec(t.toLocaleUpperCase('tr')),ders=/SINIF\s+(.+?)\s+DERS[İI]/i.exec(t.toLocaleUpperCase('tr'));
+ const t=line(metin),yil=/(\d{4})\s*[/\-–]\s*(\d{4})/.exec(t),sinif=/(\d{1,2})\s*\.?\s*SINIF/i.exec(t.toLocaleUpperCase('tr')),ders=/SINIF(?:LAR)?\s+(.+?)\s+DERS[İI]/i.exec(t.toLocaleUpperCase('tr'));
  let dersAdi=ders?baslikHarfi(ders[1]):'';
  const grup=/SE[ÇC]MEL[İI]/i.test(t.toLocaleUpperCase('tr'))?'secmeli':/İHO|\bIHO\b|İMAM HAT[İI]P/i.test(t.toLocaleUpperCase('tr'))?'iho':'zorunlu';
  return{egitimOgretimYili:yil?`${yil[1]}-${yil[2]}`:'',seviye:sinif?Number(sinif[1]):0,dersAdi,grup};
@@ -224,10 +229,97 @@ function kolonTanimlari(ust,alt2){
  const gruplar=[];ust.forEach(c=>gruplar.push({bas:c.kolon,son:c.kolon+c.span-1,ad:c.metin}));
  return alt2.map(c=>{const g=gruplar.find(x=>c.kolon>=x.bas&&c.kolon<=x.son);return{kolon:c.kolon,span:c.span,ad:c.metin,grup:g?g.ad:''}});
 }
+/* ---------- Temalı (Maarif) Word planı ----------
+ * Her tema için bir "tema bilgi" tablosu (Theme / Content Frame / Target Vocabulary / Learning Skills / Values / Expansion / Performance Assignment…) ve
+ * bir "hafta" tablosu (Week N + tarih / Hours / öğrenme çıktıları) vardır; tablolar belge sırasıyla gelir. Tema bilgisi o temanın her haftasına
+ * (birleşik hücre olarak) dağıtılır; böylece sonuç, tek tablolu MEB planıyla aynı biçimdedir ve ekran, Word çıktısı ve katalog aynı kodla çalışır. */
+const HAFTA_EN_RE=/^\s*week\s*(\d{1,2})\b\s*([\s\S]*)$/i;
+const ORYANTASYON_RE=/^\s*week\s*(\d{1,2})\s*:\s*([^(]+?)\s*\(([^)]*)\)\s*$/i;
+const TEMALI_SIRA=['unite_tema','icerik_cercevesi','ogrenme_ciktilari','kelime_hazinesi','islevler_yararli_dil','dilbilgisi_yapilari','sosyal_dil','ses_bilgisi','olcme_degerlendirme','farklilastirma','sosyal_duygusal','degerler','okuryazarlik','yerel_kulturel'];
+/* Etiket → başlık anahtarı. Tam eşleşme ya da (en az 3 sözcüklü) başlıkla başlayan metin; "THEME 1" gibi kısa etiketler öneki sayılmaz. */
+function etiketAnahtari(etiket){
+ const k=key(String(etiket||'').replace(/\([^)]*\)/g,' ')),tam=TAKMA[k];
+ if(tam)return{anahtar:tam,tam:true};
+ const on=Object.keys(TAKMA).filter(t=>t.split(' ').length>=3&&k.startsWith(t+' ')).sort((a,b)=>b.length-a.length)[0];
+ return on?{anahtar:TAKMA[on],tam:false}:null;
+}
+const gunEkle=(s,n)=>{const d=toDate(s);d.setDate(d.getDate()+n);return iso(d.getFullYear(),d.getMonth()+1,d.getDate())};
+function temaliAyristir(satirlarT,ogeler,secenek={}){
+ const temalar=[],satirlar=[];let tema=null,baslik='',bekleyen=[],sonCikti={};
+ /* Başlık satırının (ör. "ASSESSMENT AND EVALUATION") altındaki gövde hücresi ya da kendi etiketini taşıyan hücre → temanın bloğu */
+ const blokYaz=(anahtar,metin)=>{const v=String(metin||'').trim();if(!v)return;tema.bloklar[anahtar]=tema.bloklar[anahtar]?tema.bloklar[anahtar]+'\n'+v:v};
+ function blokSatiri(s){
+  const dolu=s.filter(c=>c.metin&&c.vm!=='continue');if(!dolu.length)return;
+  if(dolu.every(c=>c.metin.length<60&&!c.metin.includes('\n')&&etiketAnahtari(c.metin)?.tam)){bekleyen=dolu.map(c=>({kolon:c.kolon,span:c.span,anahtar:etiketAnahtari(c.metin).anahtar}));return}
+  for(const c of dolu){
+   if(norm(c.metin)===norm(tema.ad))continue;   /* satır etiketi (tema adı) */
+   const satirlar=c.metin.split('\n'),ilk=satirlar[0].trim(),altta=bekleyen.find(b=>c.kolon>=b.kolon&&c.kolon<b.kolon+b.span);
+   if(altta){blokYaz(altta.anahtar,c.metin);continue}
+   const e=etiketAnahtari(ilk.split(':')[0]);
+   if(!e){tema.ek.push(c.metin);continue}
+   const yalnizEtiket=/:\s*$/.test(ilk)||(!ilk.includes(':')&&!!etiketAnahtari(ilk)?.tam);
+   blokYaz(e.anahtar,(e.anahtar==='farklilastirma'||!yalnizEtiket)?c.metin:(satirlar.slice(1).join('\n').trim()||c.metin));
+  }
+ }
+ for(const tablo of satirlarT){
+  bekleyen=[];sonCikti={};
+  for(const s of tablo){
+   const ilkMetin=s[0]?.metin||'';
+   if(s.length===1&&/YILLIK PLAN/i.test(ilkMetin.toLocaleUpperCase('tr'))){baslik=baslik||line(ilkMetin);continue}
+   if(['theme','tema'].includes(norm(line(ilkMetin)))&&s.length>=2){
+    tema={ad:line(s[1].metin),bloklar:{},ek:[],cerceve:'',satirlar:[]};temalar.push(tema);bekleyen=[];continue;
+   }
+   if(tema&&['content frame','icerik cercevesi'].includes(norm(line(ilkMetin)))){tema.cerceve=(s[1]?.metin||'').trim();continue}
+   if(s.length>=2&&norm(line(ilkMetin))==='week'){sonCikti={};if(!tema&&s[2]?.metin){const m=/\(([^)]+)\)/.exec(s[2].metin);tema={ad:line(m?m[1]:s[2].metin),bloklar:{},ek:[],cerceve:'',satirlar:[]};temalar.push(tema)}continue}
+   const oryan=s.length===1?ORYANTASYON_RE.exec(ilkMetin):null;
+   if(oryan){satirlar.push({kaynakNo:Number(oryan[1]),tarihHam:oryan[3],saat:'',ozel:line(oryan[2]).toLocaleUpperCase('tr'),cikti:'',devam:false,tema:null});continue}
+   const hafta=HAFTA_EN_RE.exec(ilkMetin);
+   if(hafta){
+    const hucreler=s.slice(2),cikti=[];
+    for(const c of hucreler){let m=c.metin;if(c.vm==='continue')m=sonCikti[c.kolon]||'';else if(c.vm==='restart')sonCikti[c.kolon]=c.metin;else delete sonCikti[c.kolon];if(m)cikti.push(m)}
+    const metin=cikti.join('\n'),sosyal=/^\*?\s*social activity\b/i.test(line(metin)),saatHam=line(s[1]?.metin||'');
+    satirlar.push({kaynakNo:Number(hafta[1]),tarihHam:hafta[2].split('\n').map(line).filter(Boolean).join(' '),
+     saat:/^\d+$/.test(saatHam)?saatHam+' saat':/school|okul/i.test(saatHam)?'Okul temelli planlama':saatHam,
+     ozel:sosyal?'SOSYAL ETKİNLİK':'',cikti:sosyal?'':metin,devam:!sosyal&&hucreler.some(c=>c.vm==='continue')&&!hucreler.some(c=>c.vm==='restart'),tema:sosyal?null:tema});
+    if(tema&&!sosyal)tema.satirlar.push(satirlar[satirlar.length-1]);
+    continue;
+   }
+   if(tema)blokSatiri(s);
+  }
+ }
+ if(!satirlar.length)throw new Error('Plan tablosunda hafta satırı bulunamadı.');
+ const bilgi=baslikBilgi(baslik||ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line).find(x=>/YILLIK PLAN/i.test(x.toLocaleUpperCase('tr')))||''),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
+ /* Tarihler: yazılı aralık; yazılmamışsa (bazı haftalarda boş) bir önceki haftanın ardılı */
+ satirlar.forEach((r,i)=>{
+  const a=tarihAraligi(r.tarihHam,yil);
+  if(a){r.baslangic=a.baslangic;r.bitis=a.bitis}
+  else if(i&&satirlar[i-1].baslangic){r.baslangic=gunEkle(satirlar[i-1].baslangic,7);r.bitis=gunEkle(satirlar[i-1].bitis,7)}
+  else{r.baslangic='';r.bitis=''}
+  r.tarih=r.baslangic?tarihMetni(r.baslangic,r.bitis):'';
+ });
+ const kullanilan=new Set(),ilkSatir=new Map(temalar.map(t=>[t,t.satirlar[0]]));
+ const cikti=satirlar.map(r=>{
+  const degerler={},birlesik=[],t=r.tema,ilkMi=!t||ilkSatir.get(t)===r;
+  if(t){
+   const cerceve=[t.cerceve,...t.ek].map(x=>String(x||'').trim()).filter(Boolean).join('\n');
+   Object.entries({unite_tema:t.ad,icerik_cercevesi:cerceve,...t.bloklar}).forEach(([k,v])=>{if(v){degerler[k]=v;if(!ilkMi)birlesik.push(k)}});
+  }
+  if(r.cikti){degerler.ogrenme_ciktilari=r.cikti;if(r.devam&&!ilkMi)birlesik.push('ogrenme_ciktilari')}
+  Object.keys(degerler).forEach(k=>kullanilan.add(k));
+  return{no:0,hafta:'',kaynakNo:r.kaynakNo,tarih:r.tarih,baslangic:r.baslangic,bitis:r.bitis,saat:r.saat,ozel:r.ozel,bayram:'',birlesik,degerler};
+ });
+ numaralandir(cikti);
+ const basliklar=TEMALI_SIRA.filter(k=>kullanilan.has(k)).map((k,i)=>({anahtar:k,ad:BASLIKLAR[k],grup:'',kolon:i+2,span:1}));
+ return{dersAdi:secenek.dersAdi||bilgi.dersAdi,seviye:secenek.seviye||bilgi.seviye,egitimOgretimYili:yil,grup:secenek.grup||bilgi.grup,baslik,basliklar,
+  satirlar:cikti,yilSonu:'',dipnotlar:[],saatBasligi:'HOURS',haftaBasligi:'WEEK',hucreGenislikleri:[],kaynak:'word'};
+}
 function docxAyristir(documentXml,secenek={}){
  const ogeler=govdeOgeleri(documentXml),tablolar=ogeler.filter(o=>o.ad==='w:tbl');
  if(!tablolar.length)throw new Error('Word dosyasında plan tablosu bulunamadı.');
- const satirlarT=tablolar.map(tabloSatirlari),indis=satirlarT.reduce((en,s,i)=>s.length>satirlarT[en].length?i:en,0),tablo=satirlarT[indis];
+ const satirlarT=tablolar.map(tabloSatirlari);
+ /* Tek tablolu MEB planı "N. hafta" satırlarıyla; Maarif temalı plan tema bilgi + "Week N" hafta tablolarıyla gelir. */
+ if(!satirlarT.some(t=>t.some(s=>s[0]&&HAFTA_RE.test(s[0].metin)))&&satirlarT.some(t=>t.some(s=>s[0]&&HAFTA_EN_RE.test(s[0].metin))))return temaliAyristir(satirlarT,ogeler,secenek);
+ const indis=satirlarT.reduce((en,s,i)=>s.length>satirlarT[en].length?i:en,0),tablo=satirlarT[indis];
  const baslikMetni=ogeler.filter(o=>o.ad==='w:p').map(metinDugum).map(line).find(s=>/YILLIK PLAN/i.test(s.toLocaleUpperCase('tr')))||'';
  const bilgi=baslikBilgi(baslikMetni),yil=secenek.egitimOgretimYili||bilgi.egitimOgretimYili;
  const ilkHafta=tablo.findIndex(s=>s[0]&&HAFTA_RE.test(s[0].metin));

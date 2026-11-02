@@ -135,9 +135,11 @@ async function katalogKopyala(plan,dugme){
   toast?.('Plan okulunuzun planlarına kopyalandı.');ui.geri();
  }catch(err){if(dugme){dugme.disabled=false;dugme.textContent=eski}toast?.(hataMetni(err,'Plan kopyalanamadı.'))}
 }
+/* Plan tek Firestore belgesidir (sınır 1 MiB); sınıra dayanan plan sessizce düşmesin, aktarma sırasında bildirilsin. */
+const PLAN_BOYUT_SINIRI=900000;
 function wordIceAktar(){
  let kayitlar=[];
- const ov=modal('📄 Word’den içe aktar',`<p class="ka-muted">MEB biçimli “Ünitelendirilmiş Yıllık Plan” Word dosyalarını (.docx) seçin. Birden çok dosya aynı anda eklenebilir; tablo, birleşik hücre ve tatil satırları olduğu gibi okunur.</p><label class="ka-field"><span class="ka-field__label">Word dosyaları</span><input type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple data-yp-dosya></label><label class="ka-field"><span class="ka-field__label">Yayın (isteğe bağlı)</span><input data-yp-yayin placeholder="Örn: MEB Yayınları"></label><div class="ka-yp-import" data-yp-onizleme></div><label class="ka-field" data-yp-politika hidden><span class="ka-field__label">Kayıtlı plan bulunan dersler</span><select data-yp-politika-sec><option value="guncelle">Mevcut planı bu dosyayla güncelle</option><option value="atla">Atla, mevcut planı koru</option></select></label>`);
+ const ov=modal('📄 Word’den içe aktar',`<p class="ka-muted">MEB biçimli “Ünitelendirilmiş Yıllık Plan” veya Maarif temalı (Theme / Week tablolu, ör. İngilizce) Word dosyalarını (.docx) seçin. Birden çok dosya aynı anda eklenebilir; tablo, birleşik hücre ve tatil satırları olduğu gibi okunur.</p><label class="ka-field"><span class="ka-field__label">Word dosyaları</span><input type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" multiple data-yp-dosya></label><label class="ka-field"><span class="ka-field__label">Yayın (isteğe bağlı)</span><input data-yp-yayin placeholder="Örn: MEB Yayınları"></label><div class="ka-yp-import" data-yp-onizleme></div><label class="ka-field" data-yp-politika hidden><span class="ka-field__label">Kayıtlı plan bulunan dersler</span><select data-yp-politika-sec><option value="guncelle">Mevcut planı bu dosyayla güncelle</option><option value="atla">Atla, mevcut planı koru</option></select></label>`);
  const kaydet=ov.querySelector('[data-save]'),alan=ov.querySelector('[data-yp-onizleme]'),politika=ov.querySelector('[data-yp-politika]');
  kaydet.textContent='İçe aktar';kaydet.disabled=true;
  const mevcutMu=k=>{const a=C.planAnahtari({seviye:k.seviye,dersAdi:k.dersAdi,egitimOgretimYili:k.yil});return ui.planlar().find(p=>C.planAnahtari(p)===a)||null};
@@ -184,6 +186,7 @@ function wordIceAktar(){
     const var_=mevcutMu(k);if(var_&&atla){atlanan++;continue}
     const anahtarId={};for(const b of k.ayrisan.basliklar)anahtarId[b.anahtar]=await baslikId(b);
     const veri=C.kayitHazirla({...k.ayrisan,dersAdi:k.dersAdi.trim(),seviye:k.seviye,egitimOgretimYili:k.yil.trim()||C.okulYili(),grup:k.grup,yayin},anahtarId);
+    if(JSON.stringify(veri).length>PLAN_BOYUT_SINIRI)throw new Error(`“${k.ad}” planı tek kayda sığmayacak kadar büyük (Firestore belge sınırı 1 MB).`);
     if(var_){await service().tanimGuncelle(var_.id,veri);guncellenen++}else{await service().tanimEkle(veri);eklenen++}
    }
    ov.remove();
