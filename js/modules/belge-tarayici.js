@@ -508,6 +508,7 @@ function panelCiz(){
   }else if(d.sekme==='filtre'){
     pn.innerHTML=`<div class="bts-filtreler" data-r="filtreler">${core().FILTRELER.map(f=>`<button type="button" class="bts-fcard${a.filtre===f.id?' is-on':''}" data-act="filtre" data-f="${f.id}" aria-pressed="${a.filtre===f.id}"><canvas width="72" height="96" data-fc="${f.id}" aria-hidden="true"></canvas><span>${esc(f.ad)}</span></button>`).join('')}</div>
       <div class="bts-chips"><button type="button" class="bts-chip" data-act="hepsine">${ic('onay')}Tüm sayfalara uygula</button></div>`;
+    pn.querySelector('.bts-fcard.is-on')?.scrollIntoView?.({inline:'center',block:'nearest'});
     filtreKucukleri();
   }else if(d.sekme==='ayarla'){
     const f=a.filtre,liste=AYARLAR.filter(s=>s.ok(f));

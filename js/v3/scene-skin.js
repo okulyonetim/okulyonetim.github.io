@@ -41,9 +41,6 @@ function K(x,g,c,k,o,y,z){o=o||'';var pn=g?'#7c3aed':'#1e3a8a',lg=g?'#d9a57b':pn
     (g?'<path d="M-1 33q6 1 4 10" stroke="#5b3a1e" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="-1.5" cy="33" r="1.8" fill="#ffc400"/>':'')+'<circle cx="-8.2" cy="37" r=".8" fill="#222"/></g>'+
     '<g class="rst" style="'+r+'"><path d="M-4 48L-17 56" stroke="'+c+'" stroke-width="3.6" stroke-linecap="round"/></g>'+
     '<g class="up" style="'+r+'"><path d="M-4 48L-8 29" stroke="'+c+'" stroke-width="3.6" stroke-linecap="round"/><circle cx="-8" cy="27" r="2.3" fill="#d9a57b"/></g></g>'}
-  var STU=S(0,'#16a34a','stu',316,11.6,.8)+S(1,'#f59e0b','stu',348,11.6,.8)+S(1,'#ec4899','stu A',332,0,1)+S(0,'#3b82f6','stu',364,0,1);
-  setInterval(function(){tk++;ap()},5000);
-  document.querySelectorAll('.pv').forEach(function(b){b.onclick=function(){off=(new Date(b.dataset.t)-Date.now())/1000;last=null;ringUntil=0;tick()}});
 
   /* ---- gerçekçi özet kartları ---- */
   function CL(x,y,z,d){return '<g class="cld" style="animation-delay:'+d+'s"><g transform="translate('+x+' '+y+') scale('+z+')" fill="var(--cl)"><ellipse rx="14" ry="5"/><ellipse cx="-6" cy="-4" rx="7" ry="5"/><ellipse cx="4" cy="-6" rx="8" ry="6"/></g></g>'}

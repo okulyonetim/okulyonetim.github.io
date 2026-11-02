@@ -115,6 +115,33 @@ function dondurNokta(cx,cy,hw,hh,aci){const a=aci*Math.PI/180,c=Math.cos(a),s=Ma
   for(const f of K.FILTRELER){const r=K.isle(kagit,{filtre:f.id});assert.strictEqual(r.width,W);assert.strictEqual(r.height,H)}
   assert(K.kenarSinirla(kagit,150).width===113||K.kenarSinirla(kagit,150).height===150,'kenar sınırlama uzun kenarı azami değere indirmeli');
 }
+/* ── önizleme (düşük çözünürlük) ile PDF çıktısı (yüksek çözünürlük) aynı görüntüyü vermeli ── */
+{
+  /* aynı sahne iki çözünürlükte: ince mürekkep çizgileri, işaretleyici lekeleri, gölge eğimi, sıcak ışık */
+  const sayfa=W=>{
+    const H=Math.round(W*.58),img=K.yeni(W,H),d=img.data,SS=3;
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      let R=0,G=0,B=0;
+      for(let sy=0;sy<SS;sy++)for(let sx=0;sx<SS;sx++){   /* alt örnekleme: her çözünürlük aynı sürekli sahnenin alan ortalamasıdır */
+        const u=(x+(sx+.5)/SS)/W,v=(y+(sy+.5)/SS)/H,k=.8+.2*u;let r=238*k,g=228*k,b=205*k;
+        const sari=Math.exp(-(((u-.3)/.12)**2+((v-.4)/.07)**2)),mavi=Math.exp(-(((u-.7)/.1)**2+((v-.65)/.06)**2));
+        r*=1-.05*sari-.35*mavi;g*=1-.02*sari-.1*mavi;b*=1-.45*sari-.02*mavi;
+        const satir=v*34,fr=satir-Math.floor(satir);   /* çizgi kalınlığı satır aralığıyla (yani çözünürlükle) orantılı */
+        if(u>.1&&u<.9&&v>.1&&v<.9&&fr>.4&&fr<.54&&((Math.floor(satir)*5+Math.floor(u*60)*11)%10)>2){r=40*k;g=50*k;b=150*k}
+        R+=r;G+=g;B+=b;
+      }
+      const p=(y*W+x)*4;d[p]=R/(SS*SS);d[p+1]=G/(SS*SS);d[p+2]=B/(SS*SS);d[p+3]=255;
+    }
+    return img;
+  };
+  const kucuk=sayfa(600),buyuk=sayfa(1500);
+  for(const f of['sihirli','belge','gri','canli']){
+    const a=K.isle(kucuk,{filtre:f}),b=K.boyutla(K.isle(buyuk,{filtre:f}),a.width,a.height);
+    let fark=0;for(let i=0;i<a.data.length;i+=4)fark+=Math.abs(a.data[i]-b.data[i])+Math.abs(a.data[i+1]-b.data[i+1])+Math.abs(a.data[i+2]-b.data[i+2]);
+    fark/=a.data.length/4*3;
+    assert(fark<4,f+': önizleme ile yüksek çözünürlüklü çıktı farklı görünüyor (ort. fark '+fark.toFixed(2)+')');
+  }
+}
 /* ── PDF yazıcı ── */
 {
   const b64=s=>Uint8Array.from(Buffer.from(s,'base64'));

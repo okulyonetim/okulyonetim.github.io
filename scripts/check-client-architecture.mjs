@@ -9,7 +9,7 @@ function walk(dir){const out=[];if(!fs.existsSync(dir))return out;for(const entr
 const rel=f=>path.relative(ROOT,f).replaceAll('\\','/');
 const files=walk(JS_ROOT).filter(f=>f.endsWith('.js'));
 const cssFiles=walk(CSS_ROOT).filter(f=>f.endsWith('.css'));
-const legacyCssFiles=cssFiles.filter(f=>rel(f)!=='css/design-system.css');
+const legacyCssFiles=cssFiles.filter(f=>rel(f)!=='css/design-system.css'&&rel(f)!=='css/design-system-base.css');
 const debtName=/(?:modern|fix|stability|v\d+|bridge|bootstrap-sync)/i;
 const debtFiles=files.filter(f=>debtName.test(path.basename(f)));
 const retiredLegacyRoots=['js/istatistikler.js','js/core/services/istatistik.service.js','js/cizelgeler.js','js/core/services/konum-giris.service.js','js/excel-visual-fidelity-v3.js'];
@@ -28,8 +28,17 @@ const styleViolations=stylesheetLinks.filter(href=>normalizeAssetHref(href)!=='c
 const inlineStyleTags=(shellHtml.match(/<style\b/gi)||[]).length;
 const inlineStyleAttrs=(shellHtml.match(/\sstyle=["']/gi)||[]).length;
 const designPath=path.join(ROOT,'css','design-system.css');
-const designSource=fs.existsSync(designPath)?fs.readFileSync(designPath,'utf8'):'';
-const requiredThemeTokens=['--ka-app-bg','--ka-header-bg','--ka-header-text','--ka-nav-bg','--ka-nav-active-bg','--ka-button-bg','--ka-button-text','--ka-card-bg','--ka-input-bg','--ka-text','--ka-border','--ka-primary','--ka-report-bg'];
+/* design-system.css merkezi giriş noktasıdır; @import ettiği dosyalar (design-system-base.css) aynı tasarım sisteminin parçasıdır. */
+const designFiles=new Set();
+function readDesign(file){
+  if(designFiles.has(file)||!fs.existsSync(file))return'';
+  designFiles.add(file);
+  const src=fs.readFileSync(file,'utf8');let out=src;
+  for(const m of src.matchAll(/@import\s+url\(\s*["']?([^"')?#]+)/g))out+='\n'+readDesign(path.resolve(path.dirname(file),m[1]));
+  return out;
+}
+const designSource=readDesign(designPath);
+const requiredThemeTokens=['--ka-app-bg','--ka-header-bg','--ka-header-text','--ka-nav-bg','--ka-nav-pill-a','--ka-button-bg','--ka-button-text','--ka-card-bg','--ka-input-bg','--ka-text','--ka-border','--ka-primary','--ka-report-bg'];
 const missingThemeTokens=requiredThemeTokens.filter(token=>!designSource.includes(token));
 const requiredShellClasses=['.ka-app-header','.ka-app-nav'];
 const missingShellClasses=requiredShellClasses.filter(name=>!designSource.includes(name));

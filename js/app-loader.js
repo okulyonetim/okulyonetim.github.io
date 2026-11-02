@@ -21,18 +21,18 @@ const isLoaded=name=>(registry.get(name)||[]).every(x=>loaded.has(normalize(x))|
 const list=()=>[...registry.entries()].map(([name,files])=>({name,files:[...files],loaded:isLoaded(name)}));
 function moduleMounted(name){const root=document.getElementById('v2ModuleRoot'),selector=MODULE_ROOT_SELECTORS[name];return !!(root&&selector&&root.querySelector(selector))}
 function clearModuleRoot(){const root=document.getElementById('v2ModuleRoot');if(root)root.replaceChildren()}
-define('dashboard',['js/modules/school-live-status.js?v=1073','js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=3','js/modules/dashboard.js?v=1113']);
+define('dashboard',['js/modules/school-live-status.js?v=1073','js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=3','js/modules/dashboard.js?v=1114']);
 define('people',['js/modules/people.js','js/modules/people-import.js','js/modules/people-classic-ui.js','js/modules/classes-mobile-parity.js','js/modules/people-reports.js','js/modules/student-intake.js','js/modules/terfi-core.js','js/modules/people-directory.js']);
-define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=3','js/modules/yillik-plan-word.js?v=2','js/modules/yillik-plan-excel.js?v=1','js/modules/yillik-plan-dialog.js?v=1','js/modules/yillik-plan-ui.js?v=2','js/modules/academic.js?v=901']);
-define('management',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/management.js?v=900']);
+define('academic',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/belirli-gunler-catalog.js?v=6','js/modules/yillik-plan-core.js?v=3','js/modules/yillik-plan-word.js?v=2','js/modules/yillik-plan-excel.js?v=1','js/modules/yillik-plan-dialog.js?v=1','js/modules/yillik-plan-ui.js?v=2','js/modules/academic.js?v=901']);
+define('management',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/management.js?v=900']);
 define('communication',['js/modules/communication.js?v=842','js/modules/assistant.js']);
-define('transport',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/transport.js?v=956']);
-define('food',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/food-menu.js?v=1040']);
-define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/dilimiz.js','js/modules/documents.js']);
-define('reports',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/reports.js?v=23']);
-define('tools',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/tools.js?v=10','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
+define('transport',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/transport.js?v=956']);
+define('food',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/food-menu.js?v=1040']);
+define('documents',[FIREBASE_STORAGE_SDK,'js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/dilimiz.js','js/modules/documents.js']);
+define('reports',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/reports.js?v=23']);
+define('tools',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/tools.js?v=10','js/modules/rubric-settings.js?v=1067','js/modules/rubric-tools.js']);
 define('settings',['js/modules/gunun-sozleri-veri.js?v=1','js/modules/gunun-sozleri.js?v=1','js/modules/settings.js?v=901']);
-define('committees',['js/core/report-customizer.js?v=1005','js/modules/report-engine.js?v=9','js/modules/committees.js?v=7']);
+define('committees',['js/core/report-customizer.js?v=1006','js/modules/report-engine.js?v=9','js/modules/committees.js?v=7']);
 define('guide',['js/modules/guide-data.js?v=5','js/modules/guide.js?v=2']);
 
 const MODULE_DEFAULTS=[{key:'committees',label:'Kurul ve Komisyonlar',icon:'🏛️',visible:true,order:95},{key:'dashboard',label:'Ana Sayfa',icon:'🏠',visible:true,order:10},{key:'people',label:'Öğretmen / Öğrenci',icon:'👥',visible:true,order:20},{key:'academic',label:'Akademik',icon:'📚',visible:true,order:30},{key:'management',label:'Yönetim',icon:'🗂️',visible:true,order:40},{key:'communication',label:'İletişim',icon:'💬',visible:true,order:50},{key:'transport',label:'Taşıma',icon:'🚌',visible:true,order:60},{key:'food',label:'Yemek',icon:'🍽️',visible:true,order:65},{key:'documents',label:'Doküman / Rapor',icon:'📄',visible:true,order:70},{key:'reports',label:'Raporlar',icon:'📊',visible:true,order:75},{key:'tools',label:'Araçlar',icon:'🧰',visible:true,order:80},{key:'settings',label:'Ayarlar',icon:'⚙️',visible:true,order:90}];

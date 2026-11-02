@@ -341,16 +341,9 @@ function griYap(img){
   const d=img.data;
   for(let i=0;i<d.length;i+=4){const y=(d[i]*77+d[i+1]*150+d[i+2]*29)>>8;d[i]=d[i+1]=d[i+2]=y}
 }
-function parlaklikYuzdelik(img,oran){
-  const d=img.data,hist=new Uint32Array(256);
-  for(let i=0;i<d.length;i+=4)hist[(d[i]*77+d[i+1]*150+d[i+2]*29)>>8]++;
-  const n=d.length/4,hedef=n*oran;let acc=0;
-  for(let v=0;v<256;v++){acc+=hist[v];if(acc>=hedef)return v}
-  return 255;
-}
-/** Otomatik seviye: koyu uç yüzdeliği siyaha çekilir; isteğe bağlı doygunluk/kontrast. */
+/** Otomatik seviye: sabit siyah nokta (içeriğe ve çözünürlüğe bağlı değil → önizleme ile PDF çıktısı aynı); isteğe bağlı doygunluk/kontrast. */
 function otomatikSeviye(img,{doygun=1,kontrast=1}={}){
-  const d=img.data,lo=Math.min(90,parlaklikYuzdelik(img,.01))*.8,aralik=Math.max(40,255-lo);
+  const d=img.data,lo=30,aralik=255-lo;
   for(let i=0;i<d.length;i+=4){
     let r=(d[i]-lo)*255/aralik,g=(d[i+1]-lo)*255/aralik,b=(d[i+2]-lo)*255/aralik;
     if(doygun!==1){const y=.299*r+.587*g+.114*b;r=y+(r-y)*doygun;g=y+(g-y)*doygun;b=y+(b-y)*doygun}

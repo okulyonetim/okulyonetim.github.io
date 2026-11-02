@@ -376,9 +376,11 @@ function tvClose(){
 function root(){return document.getElementById('v2ModuleRoot')}
 function render(){
  const r=root();if(!r||!C())return false;
+ /* Pano zaten açıksa yalnız değişen düğümler yazılır (DomPatch): her veri değişikliğinde sayfa baştan kurulmaz, ekran titremez. */
+ const acik=alive()&&mounted===r;
  mounted=r;build();
  const y=global.scrollY,keep=r.querySelector('[data-ip-tv] .ka-ip-tv-body')?.scrollTop||0;
- r.innerHTML=pageHtml();
+ if(acik)global.DomPatch.apply(r,pageHtml());else r.innerHTML=pageHtml();
  if(y)global.scrollTo?.(0,y);
  const tb=r.querySelector('[data-ip-tv] .ka-ip-tv-body');if(tb&&keep)tb.scrollTop=keep;
  S.liveKey=liveKey();
@@ -399,7 +401,7 @@ function refreshCard(id){
  if(!mounted||!RENDER[id])return;
  build();
  /* TV açıkken arkadaki sayfa da aynı kartı taşıyabilir; her ikisi de yeniden çizilir */
- mounted.querySelectorAll(`[data-ip-card="${id}"]`).forEach(el=>{el.outerHTML=RENDER[id]()});
+ mounted.querySelectorAll(`[data-ip-card="${id}"]`).forEach(el=>{global.DomPatch.node(el,RENDER[id]())});
 }
 function alive(){return !!mounted&&mounted.isConnected&&!!mounted.querySelector('[data-ip-page]')}
 const liveKey=()=>{const l=global.SchoolLiveStatus?.status?.(new Date())||{};return`${l.mode}|${l.period||''}|${l.nextPeriod||''}|${C().isoOf(new Date())}`};
