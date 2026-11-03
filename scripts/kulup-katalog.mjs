@@ -3,7 +3,7 @@
  *   node scripts/kulup-katalog.mjs <klasör|dosya…> --id beyazay --ad "Beyazay Kulübü" [--anahtar beyazay,"beyaz ay"] [--yil 2026-2027]
  *        [--okul "KORUK ORTAOKULU"] [--danisman "Sedat KARAGÖZ"] [--mudur "Bilal BAYKAR"] [--cikti data/kulup] [--varlik assets/kulup]
  *
- * Klasörde kulübün şu dosyaları aranır (dosya adındaki sözcüğe göre): iç tüzük · yıllık (çalışma) planı · toplum hizmeti · aylık (faaliyet|çalışma) raporları ·
+ * Klasörde kulübün şu dosyaları aranır (dosya adındaki sözcüğe göre): iç tüzük · yıllık (çalışma) planı (kademeye özel plan varsa adında ortaokul/ilkokul geçen ek dosya; genel plan her durumda gerekir) · toplum hizmeti · aylık (faaliyet|çalışma) raporları ·
  * yıl sonu (zorunlu) · dönem sonu (varsa). Üye listesi, toplantı tutanağı ve denetleme kurulu raporu kulübe bağlı olmadığından alınmaz; her kulüp için ortak şablondan yazılır.
  *
  * Kulübe özel dört evrak (tüzük, yıllık plan, toplum hizmeti, aylık raporlar) kulübün KENDİ Word dosyası olarak saklanır (assets/kulup/{id}/): içerik ve görünüm aynen korunur,
@@ -83,7 +83,7 @@ function temaBul(ogeler){
 /* "EYLÜL – EKİM" gibi iki aylık satır etiketi → ['EYLÜL','EKİM'] (tek ay etiketi → [etiket]) */
 const etiketAylari=e=>{const l=String(e).split(/\s*[–—-]\s*/).map(x=>AYLAR.find(a=>norm(a)===norm(x))).filter(Boolean);return l.length?l:[String(e).trim()]};
 function sonuRaporu(ogeler){
- const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&/^aylar?$/.test(norm(o.satirlar[0][0]?.metin)));if(!tab)throw new Error('faaliyet tablosu bulunamadı');
+ const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&/^ay(lar)?$/.test(norm(o.satirlar[0][0]?.metin)));if(!tab)throw new Error('faaliyet tablosu bulunamadı');
  /* Çok aylı satırlar (Eylül–Ekim…) ay ay açılır: ekran ve dönem raporu ay bazında çalışır; ay metni aylık raporlardan gelir (aşağıda). */
  const aylar=tab.satirlar.slice(1).flatMap(r=>{const e=r[0].metin.trim(),l=etiketAylari(e);return l.length>1?l.map(ay=>({ay,calisma:''})):e?[{ay:e,calisma:(r[1]?.metin||'').trim()}]:[]});
  const bolum=ad=>{const i=ogeler.findIndex(o=>o.tur==='p'&&new RegExp(`^[B-D]\\.\\s*${ad}`,'i').test(o.metin));return i<0?'':(ogeler[i+1]?.tur==='p'?ogeler[i+1].metin:'')};
@@ -202,11 +202,20 @@ for(let i=0;i<arg.length;i++){
 if(!girdiler.length||!id||!ad){console.error('Kullanım: node scripts/kulup-katalog.mjs <klasör> --id beyazay --ad "Beyazay Kulübü" [--anahtar a,b] [--yil 2026-2027] [--okul "KORUK ORTAOKULU"] [--danisman "Ad SOYAD"] [--mudur "Ad SOYAD"]');process.exit(1)}
 const dosyalar=girdiler.flatMap(g=>fs.statSync(g).isDirectory()?fs.readdirSync(g).filter(f=>/\.docx$/i.test(f)&&!f.startsWith('~$')).map(f=>path.join(g,f)):[g]);
 const bul=(re,zorunlu=true,ad)=>{const d=dosyalar.find(f=>re.test(path.basename(f).toLocaleLowerCase('tr')));if(!d&&zorunlu)throw new Error(`"${ad}" dosyası bulunamadı (dosya adında ${re} geçmeli)`);return d||null};
+/* Yıllık plan kademeye göre birden çok olabilir: dosya adında "ortaokul" / "ilkokul" geçen plan o kademenin planıdır (yillik-plan-{kademe}.docx), geçmeyen genel plandır (yillik-plan.docx). */
+const planDosyalari=dosyalar.filter(f=>/yillik.*plan|yıllık.*plan/.test(path.basename(f).toLocaleLowerCase('tr')));
+const planKademesi=f=>/ortaokul/.test(path.basename(f).toLocaleLowerCase('tr'))?'ortaokul':/ilkokul/.test(path.basename(f).toLocaleLowerCase('tr'))?'ilkokul':'';
+const genelPlan=planDosyalari.find(f=>!planKademesi(f));
+if(!genelPlan)throw new Error('"yıllık plan" dosyası bulunamadı (kademesiz genel plan gerekir; kademeye özel plan dosya adında ortaokul/ilkokul geçmeli)');
+const kademePlanlari=Object.fromEntries(planDosyalari.filter(f=>planKademesi(f)).map(f=>[planKademesi(f),f]));
 const F={
- tuzuk:bul(/tuzuk|tüzük/,true,'iç tüzük'),plan:bul(/yillik.*plan|yıllık.*plan/,true,'yıllık plan'),toplum:bul(/toplum/,true,'toplum hizmeti'),
+ tuzuk:bul(/tuzuk|tüzük/,true,'iç tüzük'),plan:genelPlan,toplum:bul(/toplum/,true,'toplum hizmeti'),
  aylik:bul(/aylik|aylık/,true,'aylık raporlar'),yil:bul(/yil[-_ ]*sonu|yıl[-_ ]*sonu/,true,'yıl sonu raporu'),donem:bul(/d[oö]nem[-_ ]*sonu/,false)
 };
 const hedefler={tuzuk:'tuzuk.docx',plan:'yillik-plan.docx',toplum:'toplum-hizmeti.docx',aylik:'aylik-rapor.docx'};
+/* kademeye özel planlar da kulübün kendi dosyası olarak aynı yoldan geçer */
+const planlar={};
+for(const [kademe,dosya] of Object.entries(kademePlanlari)){F[`plan-${kademe}`]=dosya;hedefler[`plan-${kademe}`]=`yillik-plan-${kademe}.docx`;planlar[kademe]=`yillik-plan-${kademe}.docx`}
 
 /* kulübün kendi evrakları */
 const klasor=path.join(varlik,id);
@@ -235,7 +244,7 @@ const donem=F.donem?sonuRaporu(await govde(F.donem)):null,yilSonu=sonuRaporu(awa
 const maddeler=aylikMaddeleri(ogeAylik,aylar);
 for(const r of [yilSonu,donem].filter(Boolean))for(const a of r.aylar)if(!a.calisma&&maddeler[a.ay])a.calisma=maddeler[a.ay];
 
-const paket={id,ad,yil:yilBul,tema,aylar,donemSonu:donem,yilSonu};
+const paket={id,ad,yil:yilBul,tema,...(Object.keys(planlar).length?{planlar}:{}),aylar,donemSonu:donem,yilSonu};
 fs.mkdirSync(cikti,{recursive:true});
 fs.writeFileSync(path.join(cikti,`${id}.json`),JSON.stringify(paket)+'\n');
 

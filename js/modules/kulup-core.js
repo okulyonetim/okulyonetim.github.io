@@ -50,6 +50,13 @@ function katalogBul(kulup,katalog,eslesme={}){
  return liste.find(k=>[k.id,...(k.anahtar||[])].some(a=>a&&ad.includes(` ${norm(a)} `)))||null;
 }
 
+/* ── yıllık plan: kulübün kademesine göre ──
+ * Katalogda kademeye özel plan varsa (paket.planlar = {ortaokul:'yillik-plan-ortaokul.docx'}) ve kulübün sınıfları o kademedeyse o plan, değilse genel plan verilir.
+ * Kademe: sınıf düzeylerinin (1–8) hepsi 5–8 → ortaokul, hepsi 1–4 → ilkokul; karışık ya da bilinmiyorsa '' (genel plan). */
+const PLAN_GENEL='yillik-plan.docx';
+function kulupKademesi(duzeyler){const d=(duzeyler||[]).map(Number).filter(n=>n>=1&&n<=8);if(!d.length)return'';return d.every(n=>n>=5)?'ortaokul':d.every(n=>n<=4)?'ilkokul':''}
+function planSecimi(paket,kademe){const dosya=kademe&&paket?.planlar?.[kademe];return dosya?{dosya,kademe}:{dosya:PLAN_GENEL,kademe:''}}
+
 /* ── danışman / yetki ── */
 const kulupOgretmenIdleri=k=>Array.isArray(k?.ogretmenIdler)?k.ogretmenIdler.filter(Boolean).map(String):[k?.ogretmenId,k?.danismanOgretmenId].filter(Boolean).map(String);
 const kulupBenim=(k,ogretmenId)=>!!ogretmenId&&kulupOgretmenIdleri(k).includes(String(ogretmenId));
@@ -181,6 +188,6 @@ function degerlendirme(paket,onEk,durum){
  return{GENEL:al('genel',k?.b),GUCLUK:al('gucluk',k?.c),ONERI:al('oneri',k?.d)};
 }
 
-global.KulupCore={NOKTA,AYLAR,BELGELER,DONEM_AYLARI,norm,buyuk,baslikHarfi,egitimYili,donemOf,kulupAdi,kulupYonelme,okulYonelme,katalogBul,kulupOgretmenIdleri,kulupBenim,
+global.KulupCore={NOKTA,AYLAR,BELGELER,DONEM_AYLARI,norm,buyuk,baslikHarfi,egitimYili,donemOf,kulupAdi,kulupYonelme,okulYonelme,katalogBul,kulupKademesi,planSecimi,kulupOgretmenIdleri,kulupBenim,
  uyeler,gorevAdi,takipDurumu,bosDurum,durumTemizle,durumBirlestir,durumAyni,deger,ayarla,durumAnahtari,gunAy,ortakDegerler,uyeSatirlari,islerSatirlari,bolumle,bolumSec,degerlendirme};
 })(window);

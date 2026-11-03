@@ -10,7 +10,7 @@ if(global.KulupModule)return;
 if(!global.SinifBaglam||!global.KulupCore)throw new Error('Sosyal Kulüpler bileşenleri yüklenmeden açılamaz.');
 
 const SB=global.SinifBaglam,K=global.KulupCore;
-const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=3';
+const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_DOSYA='js/modules/kulup-dosya.js?v=4';
 const toast=m=>global.toast?.(m);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const S={yil:'',kulupId:'',istenenId:'',takipId:'',katalog:null,katalogHata:false,paket:null,paketId:'',yukleniyor:false,durum:null,acik:new Set()};
@@ -29,13 +29,18 @@ function danismanlar(k){
  const ogr=rows('ogretmenler');
  return K.kulupOgretmenIdleri(k).map(id=>SB.adBicimi(SB.adSoyad(ogr.find(t=>String(t.id)===id)))).filter(Boolean);
 }
+/* Kulübün kademesi: kulübe tanımlı sınıflar (sinifIdler), belirsizse üye öğrencilerin sınıfları; hangi yıllık planın verileceğini belirler. */
+function kademe(k){
+ const ad=c=>c?.ad||c?.sinifAdi||'',siniflar=rows('siniflar'),ids=Array.isArray(k?.sinifIdler)?k.sinifIdler.map(String):[];
+ return K.kulupKademesi(ids.map(id=>SB.duzeyOf(ad(siniflar.find(c=>String(c.id)===id)))))||K.kulupKademesi(uyeler().map(u=>SB.duzeyOf(u.sinif)));
+}
 function uyeler(){
  const siniflar=rows('siniflar').map(c=>({id:c.id,ad:c.ad||c.sinifAdi}));
  return S.kulupId?K.uyeler(S.kulupId,rows('veliler'),siniflar,S.durum):[];
 }
 function baglam(){
  const k=kulup(),o=SB.okulKaydi();
- return{okul:SB.okulAdi(0),il:o.il,ilce:o.ilce,mudur:SB.okulMuduru(),yil:S.yil,danismanlar:danismanlar(k),kulup:k,uyeler:uyeler(),durum:S.durum,paket:S.paket};
+ return{okul:SB.okulAdi(0),il:o.il,ilce:o.ilce,mudur:SB.okulMuduru(),yil:S.yil,danismanlar:danismanlar(k),kulup:k,uyeler:uyeler(),kademe:kademe(k),durum:S.durum,paket:S.paket};
 }
 
 /* ── katalog ── */
@@ -115,6 +120,9 @@ function ciktilar(kod,paket){
  }
  if(kod==='denetleme')return `<div class="klp-cikti">${dugme('denetleme','1. Dönem','data-klp-donem="1"')}${dugme('denetleme','2. Dönem','data-klp-donem="2"')}</div>`;
  if(kod==='donem')return `<div class="klp-cikti">${dugme('donem','1. Dönem raporu','data-klp-donem="1"')}${dugme('donem','2. Dönem raporu','data-klp-donem="2"')}</div>`;
+ if(kod==='plan'&&paket.planlar){const p=K.planSecimi(paket,kademe(kulup()));
+  return `<div class="klp-cikti">${dugme(kod,'Word olarak indir')}</div><p class="ka-muted">${p.kademe?`Kulübünüzün sınıflarına uygun ${p.kademe} planı verilir.`:`Genel plan verilir; ${Object.keys(paket.planlar).join(', ')} planı yalnız o kademedeki kulüplere verilir.`}</p>`;
+ }
  return `<div class="klp-cikti">${dugme(kod,'Word olarak indir')}</div>`;
 }
 function donemBloklari(paket){

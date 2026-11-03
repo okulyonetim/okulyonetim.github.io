@@ -26,7 +26,7 @@ const BELGELER=K().BELGELER.map(b=>({...b,...SABLON[b.k]}));
 const belge=k=>BELGELER.find(b=>b.k===k)||null;
 
 /* ── evrak başına alanlar ──
- * b = { okul, il, ilce, mudur, yil, danismanlar, kulup, uyeler, durum, paket }  ·  girdi = { aylar: ['EYLÜL'…], donem: 1|2 } */
+ * b = { okul, il, ilce, mudur, yil, danismanlar, kulup, uyeler, durum, paket, kademe }  ·  girdi = { aylar: ['EYLÜL'…], donem: 1|2 } */
 function hazirla(kod,b,girdi={}){
  const bl=belge(kod);if(!bl)throw new Error('Evrak bulunamadı.');
  const k=K(),paket=b.paket||null;
@@ -36,6 +36,7 @@ function hazirla(kod,b,girdi={}){
  switch(kod){
   case 'tutanak':
    Object.assign(cikti.v,{TOPLANTI_NO:al('toplantiNo')||'1',TARIH:k.gunAy(al('toplantiTarihi'))||k.NOKTA,SAAT:al('toplantiSaati')||'……:……',YER:al('toplantiYeri')||'Okul'});break;
+  case 'plan':{const p=k.planSecimi(paket,b.kademe);cikti.bl={...bl,dosya:p.dosya};if(p.kademe)cikti.ek=k.baslikHarfi(p.kademe);break}   // kademeye özel plan varsa onun dosyası
   case 'uyeler':cikti.satirlar=k.uyeSatirlari(b.uyeler||[]);break;
   case 'aylik':{
    const secim=(girdi.aylar||[]).map(a=>(paket.aylar||[]).indexOf(a));
