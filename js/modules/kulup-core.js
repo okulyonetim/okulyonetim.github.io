@@ -13,7 +13,8 @@ const AYLAR=['EYLÜL','EKİM','KASIM','ARALIK','OCAK','ŞUBAT','MART','NİSAN','
 const DONEM_AYLARI={1:AYLAR.slice(0,5),2:AYLAR.slice(5)};
 const norm=s=>String(s||'').toLocaleLowerCase('tr').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ı/g,'i').replace(/ş/g,'s').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ç/g,'c').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
 const buyuk=s=>String(s||'').replace(/\s+/g,' ').trim().toLocaleUpperCase('tr');
-const baslikHarfi=s=>String(s||'').charAt(0).toLocaleUpperCase('tr')+String(s||'').slice(1).toLocaleLowerCase('tr');
+/* 'EKİM' → 'Ekim'; iki aylık birleşik rapor etiketi 'EYLÜL-EKİM' → 'Eylül-Ekim' */
+const baslikHarfi=s=>String(s||'').toLocaleLowerCase('tr').replace(/(^|-)(\p{L})/gu,(m,a,h)=>a+h.toLocaleUpperCase('tr'));
 const egitimYili=(d=new Date())=>{const y=d.getFullYear();return d.getMonth()+1>=9?`${y}-${y+1}`:`${y-1}-${y}`};
 const donemOf=(d=new Date())=>{const a=d.getMonth()+1;return a>=9||a===1?1:2};
 

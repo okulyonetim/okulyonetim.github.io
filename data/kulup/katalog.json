@@ -17,6 +17,22 @@
    }
   },
   {
+   "id": "enerji-verimliligi",
+   "ad": "Enerji Verimliliği Kulübü",
+   "anahtar": [
+    "enerji verimliligi",
+    "enerji verimlilik"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
+   },
+   "sayilar": {
+    "aylik": 9
+   }
+  },
+  {
    "id": "kizilay",
    "ad": "Kızılay Kulübü",
    "anahtar": [
@@ -43,6 +59,22 @@
    "tema": {
     "kod": "B",
     "ad": "Bilim"
+   },
+   "sayilar": {
+    "aylik": 10
+   }
+  },
+  {
+   "id": "tabiat-yasanabilir-cevre",
+   "ad": "Tabiat ve Yaşanabilir Çevre Kulübü",
+   "anahtar": [
+    "tabiat ve yasanabilir cevre",
+    "yasanabilir cevre"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
    },
    "sayilar": {
     "aylik": 10

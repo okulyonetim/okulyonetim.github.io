@@ -15,13 +15,13 @@ const K=win.KulupCore,D=win.KulupDosya,O=win.OgretmenDosyasiCore;
 /* ── katalog: kulüp başına data/kulup/{id}.json (özet bilgi, dönem/yıl sonu metinleri) + assets/kulup/{id}/*.docx (kulübün kendi evrakları) ── */
 const katalog=JSON.parse(fs.readFileSync('data/kulup/katalog.json','utf8'));
 const paketler=Object.fromEntries(katalog.kulupler.map(k=>[k.id,JSON.parse(fs.readFileSync(`data/kulup/${k.id}.json`,'utf8'))]));
-assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','kizilay','siberay','tarih-kulturel-miras','yasam-becerileri','yesilay']);
+assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','enerji-verimliligi','kizilay','siberay','tabiat-yasanabilir-cevre','tarih-kulturel-miras','yasam-becerileri','yesilay']);
 for(const k of katalog.kulupler){
  const p=paketler[k.id];
- assert.strictEqual(p.id,k.id);assert.deepStrictEqual(J(k.sayilar),{aylik:10},`${k.id}: katalog sayıları`);assert(p.tema.ad&&p.yil===k.yil&&k.anahtar.length,`${k.id}: tema, yıl, eşleşme anahtarı`);
- assert.deepStrictEqual(J(p.aylar),J(K.AYLAR),`${k.id}: aylık raporlar Eylül–Haziran sırasıyla.`);
+ assert.strictEqual(p.id,k.id);assert.deepStrictEqual(J(k.sayilar),{aylik:p.aylar.length},`${k.id}: katalog sayıları`);assert(p.tema.ad&&p.yil===k.yil&&k.anahtar.length,`${k.id}: tema, yıl, eşleşme anahtarı`);
+ assert.deepStrictEqual(J(p.aylar.flatMap(a=>a.split('-'))),J(K.AYLAR),`${k.id}: aylık raporlar Eylül–Haziran sırasıyla (birleşik rapor etiketi 'EYLÜL-EKİM' iki ayı kapsar).`);assert(k.id==='enerji-verimliligi'?p.aylar.length===9&&p.aylar[0]==='EYLÜL-EKİM':p.aylar.length===10,`${k.id}: rapor sayısı`);
  assert.strictEqual(p.yilSonu.aylar.length,10);assert(p.yilSonu.aylar.every(a=>a.ay&&a.calisma),`${k.id}: yıl sonunda her ayın özeti dolu.`);
- if(k.id==='kizilay')assert(!p.yilSonu.b&&!p.yilSonu.c&&!p.yilSonu.d,'Kızılay dosyasında değerlendirme yazısı yok (Word’de noktalı satır kalır).');
+ if(k.id==='kizilay'||k.id==='enerji-verimliligi')assert(!p.yilSonu.b&&!p.yilSonu.c&&!p.yilSonu.d,`${k.id}: dosyada değerlendirme yazısı yok (Word’de noktalı satır kalır).`);
  else assert(p.yilSonu.b&&p.yilSonu.c&&p.yilSonu.d,`${k.id}: hazır değerlendirme metinleri gelir.`);
  assert.deepStrictEqual(fs.readdirSync(`assets/kulup/${k.id}`).sort(),k.id==='yesilay'?['aylik-rapor.docx','toplum-hizmeti.docx','tuzuk.docx','yillik-plan-ortaokul.docx','yillik-plan.docx']:['aylik-rapor.docx','toplum-hizmeti.docx','tuzuk.docx','yillik-plan.docx'],`${k.id}: kulübün evrakları (dört evrak; kademeye özel plan ek dosya)`);
  assert.deepStrictEqual(J(p.planlar||null),k.id==='yesilay'?{ortaokul:'yillik-plan-ortaokul.docx'}:null,`${k.id}: kademeye özel plan yalnız tanımlıysa kayıtlıdır`);
@@ -49,6 +49,7 @@ assert.strictEqual(K.katalogBul({id:'a',ad:'Kızılay Kulübü'},katalog)?.id,'k
 assert.strictEqual(K.katalogBul({id:'a',ad:'Yeşilay Kulübü'},katalog)?.id,'yesilay');assert.strictEqual(K.katalogBul({id:'a',ad:'YEŞİLAY'},katalog)?.id,'yesilay');assert.strictEqual(K.katalogBul({id:'a',ad:'Yeşil Ay Kulübü'},katalog)?.id,'yesilay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Yaşam Becerileri Kulübü'},katalog)?.id,'yasam-becerileri');assert.strictEqual(K.katalogBul({id:'a',ad:'YAŞAM BECERİLERİ'},katalog)?.id,'yasam-becerileri');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Tarih ve Kültürel Miras Kulübü'},katalog)?.id,'tarih-kulturel-miras');assert.strictEqual(K.katalogBul({id:'a',ad:'TARİH VE KÜLTÜREL MİRAS'},katalog)?.id,'tarih-kulturel-miras');
+assert.strictEqual(K.katalogBul({id:'a',ad:'Tabiat ve Yaşanabilir Çevre Kulübü'},katalog)?.id,'tabiat-yasanabilir-cevre');assert.strictEqual(K.katalogBul({id:'a',ad:'Enerji Verimliliği Kulübü'},katalog)?.id,'enerji-verimliligi');assert.strictEqual(K.katalogBul({id:'a',ad:'ENERJİ VERİMLİLİĞİ'},katalog)?.id,'enerji-verimliligi');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Satranç Kulübü'},katalog),null);
 /* yıllık plan kademeye göre: yalnız ortaokul sınıflarındaki kulüp ortaokul planını alır */
 assert.strictEqual(K.kulupKademesi([5,6,8]),'ortaokul');assert.strictEqual(K.kulupKademesi([1,4]),'ilkokul');assert.strictEqual(K.kulupKademesi([4,5]),'','Karışık kademe → genel plan');assert.strictEqual(K.kulupKademesi([]),'');assert.strictEqual(K.kulupKademesi([0,0]),'','Düzeyi bilinmeyen sınıf kademe sayılmaz');
@@ -123,10 +124,10 @@ async function kulupSinamasi(id,ad,kulupRe){
  /* üye listesi: sıralı öğrenciler, en az 25 satır */
  {const x=t('uyeler'),sira=['Ali Yılmaz','Mehmet Kaya','Zeynep Demir','Ece Su'].map(n=>x.indexOf(n));assert(sira.every(i=>i>=0)&&sira.every((v,i)=>!i||v>sira[i-1]),'Üyeler sınıf ve ada göre sıralı yazılır.');
   assert((sonuc.uyeler.xml.match(/<w:tr[ >]/g)||[]).length>=26,'Başlık + en az 25 satır.');assert(x.includes('Elle Yazılan'),'Başkan elle yazılan alandan.');}
- /* aylık raporlar: bütün aylar tek dosyada = 10 rapor (9 sayfa sonu); tek ay = 1 rapor, sayfa sonu yok */
- {const hepsi=sonuc.aylik;assert.strictEqual(sayfaSonlari(hepsi.xml),9,`${id}: bütün aylar 10 rapor`);
-  const ekim=await uret('aylik',{aylar:['EKİM']});assert.strictEqual(sayfaSonlari(ekim.xml),0);assert(ekim.metin.includes('EKİM')&&!ekim.metin.includes('KASIM')&&!ekim.metin.includes('EYLÜL')&&ekim.ad.endsWith('_EKIM.docx'),`${id}: yalnız ekim raporu`);
-  const iki=await uret('aylik',{aylar:['EYLÜL','MAYIS']});assert.strictEqual(sayfaSonlari(iki.xml),1,`${id}: seçilen iki rapor`);assert(iki.metin.includes('EYLÜL')&&iki.metin.includes('MAYIS')&&!iki.metin.includes('EKİM'));
+ /* aylık raporlar: bütün aylar tek dosyada = her rapor bir bölüm (rapor sayısı−1 sayfa sonu); tek rapor = 1 rapor, sayfa sonu yok */
+ {const hepsi=sonuc.aylik,ay1=pk.aylar[0].split('-')[0],ay2=pk.aylar[1],ay3=pk.aylar[2],ascii=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');assert.strictEqual(sayfaSonlari(hepsi.xml),pk.aylar.length-1,`${id}: bütün aylar ${pk.aylar.length} rapor`);
+  const ekim=await uret('aylik',{aylar:[ay2]});assert.strictEqual(sayfaSonlari(ekim.xml),0);assert(ekim.metin.includes(ay2)&&!ekim.metin.includes(ay3)&&!ekim.metin.includes(ay1)&&ekim.ad.endsWith(`_${ascii(ay2)}.docx`),`${id}: yalnız ekim raporu`);
+  const iki=await uret('aylik',{aylar:[pk.aylar[0],'MAYIS']});assert.strictEqual(sayfaSonlari(iki.xml),1,`${id}: seçilen iki rapor`);assert(iki.metin.includes(ay1)&&iki.metin.includes('MAYIS')&&!iki.metin.includes(ay3));
   assert(hepsi.xml.length>ekim.xml.length*5,'Bütün aylar tek ay raporundan çok daha uzun.');
   await assert.rejects(()=>D.olustur('aylik',b0,{aylar:['TEMMUZ']}),/rapor bulunamadı/);}
  /* dönem sonu: dönemin ayları + katılım/sonuç; yıl sonu: 10 ay + özel metin */
@@ -146,6 +147,15 @@ const kz=await kulupSinamasi('kizilay','Kızılay Kulübü',/Kızılay|KIZILAY/)
 const ye=await kulupSinamasi('yesilay','Yeşilay Kulübü',/Yeşilay|YEŞİLAY/);
 const yb=await kulupSinamasi('yasam-becerileri','Yaşam Becerileri Kulübü',/Yaşam Becerileri|YAŞAM BECERİLERİ/);
 const tk=await kulupSinamasi('tarih-kulturel-miras','Tarih ve Kültürel Miras Kulübü',/Tarih ve Kültürel Miras|TARİH VE KÜLTÜREL MİRAS/);
+const tb=await kulupSinamasi('tabiat-yasanabilir-cevre','Tabiat ve Yaşanabilir Çevre Kulübü',/Tabiat ve Yaşanabilir Çevre|TABİAT VE YAŞANABİLİR ÇEVRE/);
+const en=await kulupSinamasi('enerji-verimliligi','Enerji Verimliliği Kulübü',/Enerji Verimliliği|ENERJİ VERİMLİLİĞİ/);
+/* Enerji Verimliliği: aylık rapor iki aylık birleşik (Eylül–Ekim) → dokuz rapor; etiket, dosya adı ve yıl sonu ay satırları */
+{assert.strictEqual(K.baslikHarfi('EYLÜL-EKİM'),'Eylül-Ekim');assert.strictEqual(K.baslikHarfi('EKİM'),'Ekim');assert.strictEqual(K.baslikHarfi('ortaokul'),'Ortaokul');
+ assert.strictEqual(en.aylik.metin.split('AYLIK ÇALIŞMA RAPORU').length-1,9,'Enerji: dokuz aylık rapor.');
+ const r=await uretK({...okul,durum,paket:paketler['enerji-verimliligi'],kulup:{id:'k1',ad:'Enerji Verimliliği Kulübü'}},'aylik',{aylar:['EYLÜL-EKİM']});
+ assert(/\(\s*EYLÜL-EKİM\s*\)/.test(r.metin)&&!/KASIM/.test(r.metin)&&r.ad.endsWith('_EYLUL_EKIM.docx'),`Birleşik rapor tek dosya olarak iner (${r.ad}).`);
+ const y=paketler['enerji-verimliligi'].yilSonu.aylar;assert(y.length===10&&y.every(a=>a.calisma&&!/\n/.test(a.calisma)),'Enerji: iki aylık satırlar ay ay açılır, her ayın tek satırlık özeti vardır.');
+ assert.strictEqual(y.find(a=>a.ay==='EYLÜL').calisma,y.find(a=>a.ay==='EKİM').calisma,'Birleşik raporun özeti iki ayda da yer alır.');}
 /* Yeşilay: iki yıllık plan; ortaokul kulübü ortaokul planını (ay ay satırlı), diğeri genel planı (iki aylık satırlı) alır */
 {const gen=await uretK({...okul,durum,paket:paketler.yesilay,kulup:{id:'k1',ad:'Yeşilay Kulübü'},kademe:''},'plan',{}),oo=await uretK({...okul,durum,paket:paketler.yesilay,kulup:{id:'k1',ad:'Yeşilay Kulübü'},kademe:'ortaokul'},'plan',{});
  assert(!/\(\s*ORTAOKUL\s*\)/.test(gen.metin)&&/EYLÜL\s*-\s*EKİM/.test(gen.metin),'Genel plan: kademe yazmaz, iki aylık satırlar.');
@@ -204,7 +214,7 @@ const gizli=nav.match(/const TEACHER_HIDDEN=new Set\(\[([^\]]*)\]/)[1];
 assert(!/'tools:form-kulup'/.test(gizli)&&gizli.includes("'tools:form-kulup-kayit'"),'Öğretmen yeni Sosyal Kulüpler sayfasını görür; klasik kayıt tablosu öğretmenden gizli kalır.');
 assert(nav.includes("['form-kulup','Sosyal Kulüpler','star'")&&nav.includes("'tools','form-kulup'],"),'Menü aracı aynı rotada kalır.');
 assert(/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup-kayit':'Sosyal Kulüpler'/.test(shell)&&!/FORM_PAGES=Object\.freeze\(\{[^}]*'form-kulup':/.test(shell),'Klasik tablo form-kulup-kayit sayfasına taşınır.');
-assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=4')&&shell.includes('kulup.js?v=7'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
+assert(shell.includes("page==='form-kulup'")&&shell.includes('KulupModule.open')&&shell.includes('kulup-core.js?v=5')&&shell.includes('kulup.js?v=7'),'Kabukta Sosyal Kulüpler rotası tanımlı olmalı.');
 assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
 /* Öğretmen görünürlüğü ve gizlilik: sayfa rol matrisine takılmaz, yalnız kendi kulübünü görür, profilde "Sosyal kulübüm" bölümü açar */
 {const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
@@ -222,7 +232,7 @@ assert(bridge.includes("'tools:form-kulup-kayit':'tools.formKulup'"));
 {const ui=fs.readFileSync('js/modules/kulup.js','utf8'),cz=fs.readFileSync('js/modules/rubric-settings-core.js','utf8');
  assert(ui.includes('data-klp-act="takip">Evrak takibi</button>')&&!ui.includes('Kulüp kayıtları')&&ui.includes('S.takipId=S.kulupId')&&ui.includes('takipKulubu:()=>S.takipId'),'Sekme “Evrak takibi” olur ve seçili kulübü takip sayfasına bildirir.');
  assert(cz.includes('global.KulupModule?.takipKulubu?.()')&&cz.includes("tek?'Evrak Takibi':c.title")&&cz.includes('all.find(x=>String(x.id)===tek)')&&cz.includes('tek?\'\':kind===\'bep\''),'Klasik kulüp çizelgesi kapsam varsa yalnız o kulübü çizer (özet ve araç çubuğu yok).');}
-['kulup-core.js?v=4','kulup.js?v=7','kulup-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
+['kulup-core.js?v=5','kulup.js?v=7','kulup-dosya.js?v=4'].forEach(f=>assert(sw.includes(`./js/modules/${f}`),`${f} önbelleğe alınmalı.`));
 assert(fs.readFileSync('js/modules/kulup.js','utf8').includes('kulup-dosya.js?v=4'),'Kulüp ekranı aynı kulup-dosya sürümünü yükler.');
 fs.readdirSync('assets/kulup/sablon').forEach(f=>assert(sw.includes(`./assets/kulup/sablon/${f}`),`${f} çevrimdışı için önbelleğe alınmalı.`));
 assert.deepStrictEqual(fs.readdirSync('assets/kulup/sablon').sort(),['denetleme.docx','donem-sonu.docx','tutanak.docx','uye-listesi.docx','yil-sonu.docx'],'Ortak şablonlar: kulübe bağlı olmayan beş evrak.');

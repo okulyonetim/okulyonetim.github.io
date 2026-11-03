@@ -84,8 +84,9 @@ function temaBul(ogeler){
 const etiketAylari=e=>{const l=String(e).split(/\s*[–—-]\s*/).map(x=>AYLAR.find(a=>norm(a)===norm(x))).filter(Boolean);return l.length?l:[String(e).trim()]};
 function sonuRaporu(ogeler){
  const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&/^ay(lar)?$/.test(norm(o.satirlar[0][0]?.metin)));if(!tab)throw new Error('faaliyet tablosu bulunamadı');
- /* Çok aylı satırlar (Eylül–Ekim…) ay ay açılır: ekran ve dönem raporu ay bazında çalışır; ay metni aylık raporlardan gelir (aşağıda). */
- const aylar=tab.satirlar.slice(1).flatMap(r=>{const e=r[0].metin.trim(),l=etiketAylari(e);return l.length>1?l.map(ay=>({ay,calisma:''})):e?[{ay:e,calisma:(r[1]?.metin||'').trim()}]:[]});
+ /* Çok aylı satırlar (Eylül–Ekim…) ay ay açılır: ekran ve dönem raporu ay bazında çalışır; ay metni o ayın aylık raporundan gelir, yoksa birleşik satırın kendi metni kullanılır (aşağıda). */
+ const ozet=m=>String(m||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,OZET_MADDE).join(' ');   // çok paragraflı hücre: ilk üç paragraf, tek satırda
+ const aylar=tab.satirlar.slice(1).flatMap(r=>{const e=r[0].metin.trim(),l=etiketAylari(e),m=ozet(r[1]?.metin);return l.length>1?l.map(ay=>({ay,calisma:'',birlesik:m})):e?[{ay:e,calisma:m}]:[]});
  const bolum=ad=>{const i=ogeler.findIndex(o=>o.tur==='p'&&new RegExp(`^[B-D]\\.\\s*${ad}`,'i').test(o.metin));return i<0?'':(ogeler[i+1]?.tur==='p'?ogeler[i+1].metin:'')};
  return{aylar,b:bolum('(Genel Değerlendirme|Değerlendirme|Kazanımlar)'),c:bolum('(Karşılaşılan Güçlükler|Güçlükler)'),d:bolum('(Gelecek Yıl İçin Öneriler|Öneriler)')};
 }
@@ -188,6 +189,12 @@ const ayBul=metni=>{
  for(const a of AYLAR){const i=u.indexOf(a);if(i>=0&&(!en||i<en.i))en={a,i}}
  return en?.a||'';
 };
+/* Rapor etiketi: başlıktaki "( EKİM )" → 'EKİM'; iki aylık birleşik rapor "( EYLÜL-EKİM )" → 'EYLÜL-EKİM' (bir rapor, iki ay). Parantez yoksa metindeki ilk ay. */
+const raporEtiketi=metni=>{
+ const u=BUYUK(metni),p=/\(\s*([^)]*?)\s*\)/.exec(u),l=p?AYLAR.filter(a=>p[1].includes(a)):[];
+ return l.length>1?l.join('-'):l[0]||ayBul(metni);
+};
+const etiketAyi=e=>String(e).split('-');   // 'EYLÜL-EKİM' → ['EYLÜL','EKİM']
 
 /* ── giriş ── */
 const girdiler=[],secenek={okul:'',danisman:'',mudur:''};let id='',ad='',yil='',anahtar=[],cikti=path.join(kok,'data/kulup'),varlik=path.join(kok,'assets/kulup');
@@ -238,11 +245,12 @@ const ogePlan=await govde(F.plan),ogeTuzuk=await govde(F.tuzuk),ogeAylik=await g
 const tema=temaBul(ogePlan);
 const yilBul=yil||[ogeTuzuk,ogePlan].map(o=>/(\d{4})\s*-\s*(\d{4})/.exec(tumMetin(o))?.slice(1,3).join('-')).find(Boolean)||'';
 const bolumler=await bolumMetinleri(path.join(klasor,hedefler.aylik));
-const aylar=bolumler.map(ayBul);
+const aylar=bolumler.map(raporEtiketi);
 if(aylar.some(a=>!a)||new Set(aylar).size!==aylar.length)throw new Error(`aylık raporların ayları ayırt edilemedi: ${aylar.join(', ')}`);
 const donem=F.donem?sonuRaporu(await govde(F.donem)):null,yilSonu=sonuRaporu(await govde(F.yil));
 const maddeler=aylikMaddeleri(ogeAylik,aylar);
-for(const r of [yilSonu,donem].filter(Boolean))for(const a of r.aylar)if(!a.calisma&&maddeler[a.ay])a.calisma=maddeler[a.ay];
+for(const e of aylar)if(maddeler[e])for(const ay of etiketAyi(e))maddeler[ay]=maddeler[ay]||maddeler[e];   // birleşik rapor her iki ayın özeti olur
+for(const r of [yilSonu,donem].filter(Boolean))for(const a of r.aylar){if(!a.calisma)a.calisma=maddeler[a.ay]||a.birlesik||'';delete a.birlesik}
 
 const paket={id,ad,yil:yilBul,tema,...(Object.keys(planlar).length?{planlar}:{}),aylar,donemSonu:donem,yilSonu};
 fs.mkdirSync(cikti,{recursive:true});
