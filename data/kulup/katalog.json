@@ -1,6 +1,22 @@
 {
  "kulupler": [
   {
+   "id": "afet-hazirlik",
+   "ad": "Afet Hazırlık Kulübü",
+   "anahtar": [
+    "afet hazirlik",
+    "afet farkindaligi"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
+   },
+   "sayilar": {
+    "aylik": 9
+   }
+  },
+  {
    "id": "beyazay",
    "ad": "Beyazay Kulübü",
    "anahtar": [
