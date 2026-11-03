@@ -15,7 +15,7 @@ const K=win.KulupCore,D=win.KulupDosya,O=win.OgretmenDosyasiCore;
 /* ── katalog: kulüp başına data/kulup/{id}.json (özet bilgi, dönem/yıl sonu metinleri) + assets/kulup/{id}/*.docx (kulübün kendi evrakları) ── */
 const katalog=JSON.parse(fs.readFileSync('data/kulup/katalog.json','utf8'));
 const paketler=Object.fromEntries(katalog.kulupler.map(k=>[k.id,JSON.parse(fs.readFileSync(`data/kulup/${k.id}.json`,'utf8'))]));
-assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','kizilay','siberay','yasam-becerileri','yesilay']);
+assert.deepStrictEqual(J(katalog.kulupler.map(k=>k.id)),['beyazay','kizilay','siberay','tarih-kulturel-miras','yasam-becerileri','yesilay']);
 for(const k of katalog.kulupler){
  const p=paketler[k.id];
  assert.strictEqual(p.id,k.id);assert.deepStrictEqual(J(k.sayilar),{aylik:10},`${k.id}: katalog sayıları`);assert(p.tema.ad&&p.yil===k.yil&&k.anahtar.length,`${k.id}: tema, yıl, eşleşme anahtarı`);
@@ -48,6 +48,7 @@ assert.strictEqual(K.katalogBul({id:'a',ad:'Beyazay Kulübü'},katalog)?.id,'bey
 assert.strictEqual(K.katalogBul({id:'a',ad:'Kızılay Kulübü'},katalog)?.id,'kizilay');assert.strictEqual(K.katalogBul({id:'a',ad:'KIZILAY'},katalog)?.id,'kizilay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Yeşilay Kulübü'},katalog)?.id,'yesilay');assert.strictEqual(K.katalogBul({id:'a',ad:'YEŞİLAY'},katalog)?.id,'yesilay');assert.strictEqual(K.katalogBul({id:'a',ad:'Yeşil Ay Kulübü'},katalog)?.id,'yesilay');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Yaşam Becerileri Kulübü'},katalog)?.id,'yasam-becerileri');assert.strictEqual(K.katalogBul({id:'a',ad:'YAŞAM BECERİLERİ'},katalog)?.id,'yasam-becerileri');
+assert.strictEqual(K.katalogBul({id:'a',ad:'Tarih ve Kültürel Miras Kulübü'},katalog)?.id,'tarih-kulturel-miras');assert.strictEqual(K.katalogBul({id:'a',ad:'TARİH VE KÜLTÜREL MİRAS'},katalog)?.id,'tarih-kulturel-miras');
 assert.strictEqual(K.katalogBul({id:'a',ad:'Satranç Kulübü'},katalog),null);
 /* yıllık plan kademeye göre: yalnız ortaokul sınıflarındaki kulüp ortaokul planını alır */
 assert.strictEqual(K.kulupKademesi([5,6,8]),'ortaokul');assert.strictEqual(K.kulupKademesi([1,4]),'ilkokul');assert.strictEqual(K.kulupKademesi([4,5]),'','Karışık kademe → genel plan');assert.strictEqual(K.kulupKademesi([]),'');assert.strictEqual(K.kulupKademesi([0,0]),'','Düzeyi bilinmeyen sınıf kademe sayılmaz');
@@ -144,6 +145,7 @@ const by=await kulupSinamasi('beyazay','Beyazay Kulübü',/Beyazay|BEYAZAY/);
 const kz=await kulupSinamasi('kizilay','Kızılay Kulübü',/Kızılay|KIZILAY/);
 const ye=await kulupSinamasi('yesilay','Yeşilay Kulübü',/Yeşilay|YEŞİLAY/);
 const yb=await kulupSinamasi('yasam-becerileri','Yaşam Becerileri Kulübü',/Yaşam Becerileri|YAŞAM BECERİLERİ/);
+const tk=await kulupSinamasi('tarih-kulturel-miras','Tarih ve Kültürel Miras Kulübü',/Tarih ve Kültürel Miras|TARİH VE KÜLTÜREL MİRAS/);
 /* Yeşilay: iki yıllık plan; ortaokul kulübü ortaokul planını (ay ay satırlı), diğeri genel planı (iki aylık satırlı) alır */
 {const gen=await uretK({...okul,durum,paket:paketler.yesilay,kulup:{id:'k1',ad:'Yeşilay Kulübü'},kademe:''},'plan',{}),oo=await uretK({...okul,durum,paket:paketler.yesilay,kulup:{id:'k1',ad:'Yeşilay Kulübü'},kademe:'ortaokul'},'plan',{});
  assert(!/\(\s*ORTAOKUL\s*\)/.test(gen.metin)&&/EYLÜL\s*-\s*EKİM/.test(gen.metin),'Genel plan: kademe yazmaz, iki aylık satırlar.');

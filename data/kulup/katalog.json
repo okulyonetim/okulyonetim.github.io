@@ -49,6 +49,22 @@
    }
   },
   {
+   "id": "tarih-kulturel-miras",
+   "ad": "Tarih ve Kültürel Miras Kulübü",
+   "anahtar": [
+    "tarih ve kulturel miras",
+    "kulturel miras"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "KD",
+    "ad": "Kültür Dünyamız"
+   },
+   "sayilar": {
+    "aylik": 10
+   }
+  },
+  {
    "id": "yasam-becerileri",
    "ad": "Yaşam Becerileri Kulübü",
    "anahtar": [
