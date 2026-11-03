@@ -9,16 +9,29 @@ new Function(patch);
 
 /* yükleme: iki kabukta aynı sürüm, Service Worker ön belleğinde, modüllerden önce */
 for(const [ad,html] of [['index.html',index],['beta.html',beta]]){
-  const i=html.indexOf('js/core/dom-patch.js?v=1');
+  const i=html.indexOf('js/core/dom-patch.js?v=2');
   assert(i>0,ad+': dom-patch.js yüklenmeli');
   assert(i<html.indexOf('js/app-loader.js'),ad+': DomPatch, modül yükleyiciden önce gelmeli');
 }
-assert(sw.includes("'./js/core/dom-patch.js?v=1'"),'Service Worker ön belleğinde dom-patch.js olmalı');
+assert(sw.includes("'./js/core/dom-patch.js?v=2'"),'Service Worker ön belleğinde dom-patch.js olmalı');
 
 /* DomPatch: yalnız farkı yazan sözleşme */
 assert(/g\.DomPatch=Object\.freeze\(\{apply,node\}\)/.test(patch),'DomPatch.apply ve DomPatch.node dışa açılmalı');
 assert(patch.includes('data-patch-sig')&&patch.includes('eklenince'),'imza atlama ve eklenince geri çağrısı olmalı');
 assert(!/\.innerHTML\s*=/.test(patch.replace(/t\.innerHTML=String\(html==null\?'':html\)/,'')),'DomPatch kabı innerHTML ile baştan kurmamalı (yalnız şablon ayrıştırır)');
+
+/* Masaüstü kabuğu (web-shell) ana sayfa öğelerine satır aralığı, çift sınıfı ve özet cümlesi yazar; yama bunları siler.
+ * Bu yüzden her yazımdan sonra olay gider, kabuk yerleşimini yeniden kurar (yoksa kartlar üst üste biniyordu). */
+{
+  const web=read('js/core/web-shell.js');
+  assert(patch.includes("'ka:dompatch'")&&/apply\(kap,html,sec\)\{[^}]*haber\(kap\)/.test(patch),'DomPatch.apply, yazımdan sonra ka:dompatch olayı göndermeli');
+  assert(/function node\([^)]*\)\{[\s\S]*?haber\(son\)/.test(patch),'DomPatch.node da olay göndermeli (değiştirilen düğüm için yenisiyle)');
+  const h=web.slice(web.indexOf('function onHomePatched('),web.indexOf('function watchHome('));
+  assert(h.includes('decorateHome();layoutHome()')&&h.includes('isWeb()'),'Kabuk, yamadan sonra özet cümlesini ve satır aralıklarını yeniden kurmalı (yalnız masaüstünde)');
+  assert(h.includes('kap.contains(home)||home.contains(kap)'),'Kabuk yalnız ana sayfayı ilgilendiren yamalara tepki vermeli (Pano değil)');
+  assert(web.includes("doc.addEventListener('ka:dompatch',onHomePatched)"),'Kabuk olayı dinlemeli');
+  assert(/web-shell\.js\?v=8/.test(index)&&/web-shell\.js\?v=8/.test(beta)&&sw.includes('web-shell.js?v=8'),'web-shell sürümü kabuklarda ve Service Worker\'da aynı olmalı');
+}
 
 /* Ana sayfa */
 {

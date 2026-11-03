@@ -271,9 +271,16 @@ function onModuleRootChange(){
   if(home!==homeNode){homeNode=home;try{homeRO?.disconnect()}catch(_){}}
   layoutHome();
 }
+/* Ana sayfa yerinde yamanır (DomPatch): şablonda olmayan satır aralığı, çift sınıfı ve özet cümlesi silinir → yamadan sonra yeniden kurulur */
+function onHomePatched(e){
+  const home=$('#v2ModuleRoot .ka-home'),kap=e?.detail?.kap;
+  if(!home||!isWeb()||!kap||!(kap.contains(home)||home.contains(kap)))return;
+  decorateHome();layoutHome();
+}
 function watchHome(){
   const root=$('#v2ModuleRoot');if(!root||homeMO||!global.MutationObserver)return;
   homeMO=new MutationObserver(onModuleRootChange);homeMO.observe(root,{childList:true});
+  doc.addEventListener('ka:dompatch',onHomePatched);
   global.addEventListener('resize',queueLayout,{passive:true});
   onModuleRootChange();
 }

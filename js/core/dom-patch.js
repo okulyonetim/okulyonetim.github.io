@@ -9,6 +9,10 @@
  *   eklenince(düğüm): yeni eklenen ya da değiştirilen en üst düzey öğeler için çağrılır (olay dinleyicisi bağlamak için);
  *                     değişmeden kalan öğelerin dinleyicileri zaten yerindedir.
  *   data-patch-sig="…": eski ve yeni öğede aynıysa öğe hiç dokunulmaz (ör. zamana bağlı animasyon gecikmesi taşıyan haber bandı).
+ *
+ * Yama, şablonda olmayan öznitelik ve düğümleri siler. Masaüstü kabuğu (web-shell) ana sayfa öğelerine kendi yerleşim bilgisini
+ * (satır aralığı, çift sınıfı, özet cümlesi) dışarıdan yazdığı için her yazımdan sonra belgeye `ka:dompatch` olayı gönderilir
+ * (detail.kap = yamanan kap); kabuk bu olayda yerleşimini yeniden kurar. Aksi halde kartlar üst üste biniyordu.
  */
 (function(g){
 'use strict';
@@ -53,11 +57,16 @@ function bildir(ek,sec){
   for(const n of ek){try{f(n)}catch(e){console.warn('[DomPatch]',e&&e.message||e)}}
 }
 
-function apply(kap,html,sec){const ek=[];cocuklar(kap,sablon(html),ek);bildir(ek,sec);return ek}
+function haber(kap){
+  const d=g.document;if(!d||typeof d.dispatchEvent!=='function'||typeof g.CustomEvent!=='function')return;
+  try{d.dispatchEvent(new g.CustomEvent('ka:dompatch',{detail:{kap}}))}catch(e){console.warn('[DomPatch]',e&&e.message||e)}
+}
+function apply(kap,html,sec){const ek=[];cocuklar(kap,sablon(html),ek);bildir(ek,sec);haber(kap);return ek}
 function node(eski,html,sec){
   const yeni=sablon(html).firstElementChild,ek=[];if(!yeni)return ek;
-  if(ayniTur(eski,yeni))dugum(eski,yeni,ek);else{eski.replaceWith(yeni);ek.push(yeni)}
-  bildir(ek,sec);return ek;
+  let son=eski;
+  if(ayniTur(eski,yeni))dugum(eski,yeni,ek);else{eski.replaceWith(yeni);ek.push(yeni);son=yeni}
+  bildir(ek,sec);haber(son);return ek;
 }
 
 g.DomPatch=Object.freeze({apply,node});
