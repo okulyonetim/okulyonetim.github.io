@@ -20,6 +20,8 @@ public class MainActivity extends BridgeActivity {
     private volatile boolean appHazir = false;
     private String bekleyenPage = null;
     private String bekleyenKategori = null;
+    private String bekleyenHatirlatici = null;
+    private String bekleyenIslem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +117,11 @@ public class MainActivity extends BridgeActivity {
 
     public void markAppReady() { appHazir = true; nativeRuntimeDuzeltmeleriniYukle(); bekleyenHedefleriGonder(); }
     @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); handleIntent(intent); }
-    private synchronized void handleIntent(Intent intent) { if (intent == null) return; String page=intent.getStringExtra("page"); if(page!=null&&!page.trim().isEmpty()) bekleyenPage=page; String kategori=intent.getStringExtra("kategori"); if(kategori!=null&&!kategori.trim().isEmpty()) bekleyenKategori=kategori; if(appHazir) bekleyenHedefleriGonder(); }
+    private synchronized void handleIntent(Intent intent) { if (intent == null) return; String page=intent.getStringExtra("page"); if(page!=null&&!page.trim().isEmpty()) bekleyenPage=page; String kategori=intent.getStringExtra("kategori"); if(kategori!=null&&!kategori.trim().isEmpty()) bekleyenKategori=kategori; String hatirlatici=intent.getStringExtra("hatirlaticiId"); if(hatirlatici!=null&&!hatirlatici.trim().isEmpty()) bekleyenHatirlatici=hatirlatici; String islem=intent.getStringExtra("islem"); if(islem!=null&&!islem.trim().isEmpty()) bekleyenIslem=islem; if(appHazir) bekleyenHedefleriGonder(); }
     private synchronized void bekleyenHedefleriGonder() {
         if(!appHazir||getBridge()==null||getBridge().getWebView()==null)return;
-        final String page=bekleyenPage,kategori=bekleyenKategori; bekleyenPage=null;bekleyenKategori=null;
+        final String page=bekleyenPage,kategori=bekleyenKategori,hatirlatici=bekleyenHatirlatici,islem=bekleyenIslem; bekleyenPage=null;bekleyenKategori=null;bekleyenHatirlatici=null;bekleyenIslem=null;
         if(page==null&&kategori==null)return;
-        runOnUiThread(()->{WebView webView=getBridge()!=null?getBridge().getWebView():null;if(webView==null)return;if(page!=null)webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('widgetSayfaAc',{detail:{page:"+JSONObject.quote(page)+"}}));",null);if(kategori!=null)webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('bildirimAcildi',{detail:{kategori:"+JSONObject.quote(kategori)+"}}));",null);});
+        runOnUiThread(()->{WebView webView=getBridge()!=null?getBridge().getWebView():null;if(webView==null)return;if(page!=null)webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('widgetSayfaAc',{detail:{page:"+JSONObject.quote(page)+"}}));",null);if(kategori!=null)webView.evaluateJavascript("window.dispatchEvent(new CustomEvent('bildirimAcildi',{detail:{kategori:"+JSONObject.quote(kategori)+",hatirlaticiId:"+JSONObject.quote(hatirlatici==null?"":hatirlatici)+",islem:"+JSONObject.quote(islem==null?"":islem)+"}}));",null);});
     }
 }

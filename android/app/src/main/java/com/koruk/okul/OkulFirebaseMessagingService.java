@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  * FCM push bildirimleri yakalar.
- * Bildirim kategorileri: nobet, belge, sinav, genel
+ * Bildirim kategorileri: nobet, belge, sinav, takvim, genel
  * Deep link: intent://okul/#Intent;scheme=koruk;...
  */
 public class OkulFirebaseMessagingService extends FirebaseMessagingService {
@@ -30,6 +30,7 @@ public class OkulFirebaseMessagingService extends FirebaseMessagingService {
     private static final String CH_BELGE  = "ch_belge";
     private static final String CH_SINAV  = "ch_sinav";
     private static final String CH_GENEL  = "ch_genel";
+    private static final String CH_TAKVIM = "ch_takvim";
 
     @Override
     public void onCreate() {
@@ -38,6 +39,7 @@ public class OkulFirebaseMessagingService extends FirebaseMessagingService {
         kanalOlustur(CH_BELGE, "Belge Bildirimleri",   NotificationManager.IMPORTANCE_DEFAULT);
         kanalOlustur(CH_SINAV, "Sınav Bildirimleri",   NotificationManager.IMPORTANCE_HIGH);
         kanalOlustur(CH_GENEL, "Genel Bildirimler",    NotificationManager.IMPORTANCE_DEFAULT);
+        kanalOlustur(CH_TAKVIM, "Takvim Hatırlatıcıları", NotificationManager.IMPORTANCE_HIGH);
     }
 
     @Override
@@ -55,8 +57,13 @@ public class OkulFirebaseMessagingService extends FirebaseMessagingService {
             case "nobet":  kanal = CH_NOBET; renk = Color.parseColor("#0A6E6E"); break;
             case "belge":  kanal = CH_BELGE; renk = Color.parseColor("#6366f1"); break;
             case "sinav":  kanal = CH_SINAV; renk = Color.parseColor("#d97706"); break;
+            case "takvim": kanal = CH_TAKVIM; renk = Color.parseColor("#d97706"); break;
             default:       kanal = CH_GENEL; renk = Color.parseColor("#0A6E6E"); break;
         }
+
+        // Hatırlatıcı bildirimi: dokunuş Takvim'i açar, "Ertele" düğmesi ertele penceresini açar
+        String hatirlaticiId = data.getOrDefault("hatirlaticiId", "");
+        int bildirimNo = (int) System.currentTimeMillis();
 
         // Tıklama intent'i — deep link varsa oraya, yoksa ana sayfaya
         Intent intent;
@@ -65,9 +72,13 @@ public class OkulFirebaseMessagingService extends FirebaseMessagingService {
         } else {
             intent = new Intent(this, MainActivity.class);
             intent.putExtra("kategori", kategori);
+            if (!hatirlaticiId.isEmpty()) {
+                intent.putExtra("page", "calendar");
+                intent.putExtra("hatirlaticiId", hatirlaticiId);
+            }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent,
+        PendingIntent pi = PendingIntent.getActivity(this, bildirimNo, intent,
             PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
         Uri sesUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -82,8 +93,20 @@ public class OkulFirebaseMessagingService extends FirebaseMessagingService {
             .setSound(sesUri)
             .setContentIntent(pi);
 
+        if (!hatirlaticiId.isEmpty() && deepLink.isEmpty()) {
+            Intent erteleIntent = new Intent(this, MainActivity.class);
+            erteleIntent.putExtra("kategori", kategori);
+            erteleIntent.putExtra("page", "calendar");
+            erteleIntent.putExtra("hatirlaticiId", hatirlaticiId);
+            erteleIntent.putExtra("islem", "ertele");
+            erteleIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent erteleBekleyen = PendingIntent.getActivity(this, bildirimNo + 1, erteleIntent,
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+            builder.addAction(0, "Ertele", erteleBekleyen);
+        }
+
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify((int) System.currentTimeMillis(), builder.build());
+        nm.notify(bildirimNo, builder.build());
     }
 
     @Override

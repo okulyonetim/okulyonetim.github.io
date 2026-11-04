@@ -16,6 +16,10 @@ let kontrolCalisiyor = false;
 const CHECKPOINT_COLLECTION = 'oy_sistem';
 const CHECKPOINT_DOC = 'bildirimKontrol';
 const MESSAGE_LOOKBACK_MS = 60 * 60 * 1000;
+// Hatırlatıcıda saat girilmemişse bildirim gece yarısı değil, sabah bu saatte gider.
+const HATIRLATICI_VARSAYILAN_SAAT = '08:00';
+// Vadesi gelmiş hatırlatıcılar için en fazla kaç gün geriye bakılır (eski kayıtlar sorguyu şişirmesin).
+const HATIRLATICI_GERIYE_GUN = 7;
 
 function firebaseBaslat() {
   if (dbReady) return;
@@ -155,11 +159,24 @@ async function kontrolEt() {
 
   const gonderilecekler = [];
 
-  const hSnap = await db.collection('oy_hatirlaticilar').where('tarih', '<=', bugun).limit(100).get();
+  // Eski ve zaten bildirilmiş kayıtlar limiti doldurup yenileri gölgelemesin diye yalnız son günlere bakılır.
+  const hSnap = await db.collection('oy_hatirlaticilar')
+    .where('tarih', '>=', ileriTarih(bugun, -HATIRLATICI_GERIYE_GUN))
+    .where('tarih', '<=', bugun)
+    .limit(300)
+    .get();
   hSnap.forEach(doc => {
     const v = doc.data() || {};
     if (v.tamamlandi || v.bildirimGonderildi || !v.tarih) return;
-    if (`${v.tarih} ${v.saat || '00:00'}` <= esikSimdi) gonderilecekler.push({ baslik: `⏰ Hatırlatıcı: ${v.baslik || ''}`, govde: v.aciklama || `${v.tarih}${v.saat ? ' ' + v.saat : ''}`, koleksiyon: 'oy_hatirlaticilar', docId: doc.id });
+    const saat = /^\d{2}:\d{2}/.test(String(v.saat || '')) ? String(v.saat).slice(0, 5) : '';
+    if (`${v.tarih} ${saat || HATIRLATICI_VARSAYILAN_SAAT}` <= esikSimdi) {
+      gonderilecekler.push({
+        baslik: `⏰ Hatırlatıcı: ${v.baslik || ''}`,
+        govde: v.aciklama || `${v.tarih}${saat ? ' ' + saat : ''}`,
+        koleksiyon: 'oy_hatirlaticilar', docId: doc.id,
+        hatirlatici: true, sahipUid: String(v.sahipUid || '')
+      });
+    }
   });
 
   const gSnap = await db.collection('oy_gorevler').where('sonTarih', '<=', bugun).limit(100).get();
@@ -201,11 +218,32 @@ async function kontrolEt() {
     tokens = tokenDocs.map(x => x.token);
   }
 
+  // Hatırlatıcılar kişiseldir: yalnız sahibinin cihazlarına gider. Sahibi kayıtlı olmayan (eski) hatırlatıcıları
+  // yalnız yöneticiler görebildiği için onlar yöneticilerin cihazlarına gider.
+  let yoneticiUidler = null;
+  const yoneticileriGetir = async () => {
+    if (yoneticiUidler) return yoneticiUidler;
+    const ySnap = await db.collection('oy_kullanicilar').where('admin', '==', true).get();
+    yoneticiUidler = new Set(ySnap.docs.map(d => d.id));
+    return yoneticiUidler;
+  };
+  const alicilar = async item => {
+    if (!item.hatirlatici) return tokens;
+    if (item.sahipUid) return tokenDocs.filter(t => t.uid === item.sahipUid).map(t => t.token);
+    const yoneticiler = await yoneticileriGetir();
+    return tokenDocs.filter(t => t.uid && yoneticiler.has(t.uid)).map(t => t.token);
+  };
+
   const gecersiz = new Set();
   for (const item of gonderilecekler) {
-    if (tokens.length) {
+    const hedefTokenlar = await alicilar(item);
+    // Sahibinin henüz kayıtlı cihazı yoksa hatırlatıcı "gönderildi" işaretlenmez; cihaz kaydolunca sonraki kontrolde gider.
+    if (item.hatirlatici && !hedefTokenlar.length) continue;
+    if (hedefTokenlar.length) {
       try {
-        await fcmMulticastInChunks(tokens, { kategori: 'takvim', baslik: item.baslik, icerik: item.govde }, (r, token) => {
+        const veri = { kategori: 'takvim', baslik: item.baslik, icerik: item.govde };
+        if (item.hatirlatici) veri.hatirlaticiId = item.docId;
+        await fcmMulticastInChunks(hedefTokenlar, veri, (r, token) => {
           if (!r.success) {
             const code = r.error?.code || '';
             if (code.includes('not-registered') || code.includes('invalid-registration')) gecersiz.add(token);

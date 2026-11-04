@@ -15977,3 +15977,7 @@ html[data-theme] #v2ModuleRoot .ka-guidance-action.is-permission-disabled *{
   filter:none!important;
   mix-blend-mode:normal!important;
 }
+/* Takvim: satır eylemleri, silme düğmesi konumu, ertele penceresi */
+.ka-cal-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-6)}
+.ka-modal__footer .ka-btn--start{margin-inline-end:auto}
+.ka-snooze__options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-8)}
