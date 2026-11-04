@@ -122,7 +122,6 @@ html[data-theme="dark"] [data-teacher-profile-detail] .ka-teacher-profile-hero h
 .ka-meeting-draft-field{min-width:0;display:grid;gap:var(--ka-sp-6)}
 .ka-meeting-report-button{position:static}
 .ka-meeting-report__table th,.ka-meeting-report__table td{text-align:center!important;vertical-align:middle!important}
-.ka-meeting-saved-head{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-10)}
 .ka-meeting-session{display:grid;grid-template-columns:32px minmax(0,1fr);gap:var(--ka-sp-10);align-items:center}
 @media(max-width:390px){.ka-meeting-draft-grid{grid-template-columns:1fr}}
 
