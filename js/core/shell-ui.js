@@ -465,6 +465,22 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='ek-ders'){
+    try{
+      /* Belgeler Dokümanlar altyapısıyla (özel depolama) saklanır: servis + açma/indirme için documents.js gerekir. */
+      if(!global.DokumanlarService||!global.DocumentsModule)await global.AppLoader?.loadScript?.('js/modules/documents.js');
+      if(!global.EkDersModule?.open)await global.AppLoader?.loadScript?.('js/modules/ek-ders.js?v=1');
+      if(!global.EkDersModule?.open)throw new Error('Ek Ders İşlemleri modülü yüklenemedi.');
+      global.firebaseStorageHazirla?.();
+      setBottomActive(bottom);setTitle('Ek Ders İşlemleri');
+      if(!await global.EkDersModule.open())throw new Error('Ek Ders İşlemleri açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Ek Ders İşlemleri'});
+    }catch(e){
+      console.error('[Shell/ek-ders]',e);global.toast?.('Ek Ders İşlemleri açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   const meta=global.AppConfig?.module?.(name)||{label:name};
   if(meta.visible===false||global.PermissionService?.moduleLevel?.(name)==='hidden')return false;
   if(name==='committees'){

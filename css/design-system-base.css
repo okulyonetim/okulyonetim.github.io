@@ -15981,3 +15981,17 @@ html[data-theme] #v2ModuleRoot .ka-guidance-action.is-permission-disabled *{
 .ka-cal-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:var(--ka-sp-6)}
 .ka-modal__footer .ka-btn--start{margin-inline-end:auto}
 .ka-snooze__options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-8)}
+/* Ek Ders İşlemleri (js/modules/ek-ders.js) */
+.kek-sayfa{min-width:0}
+.kek-bolum__baslik{align-items:flex-start;flex-wrap:wrap;gap:var(--ka-sp-8)}
+.kek-bolum__ad{align-items:flex-start;gap:var(--ka-sp-10);min-width:0;flex:1 1 var(--ka-ic-120)}
+.kek-bolum__ad h3{margin:0}
+.kek-bolum__ikon{display:grid;place-items:center;flex:0 0 auto;width:var(--ka-ic-40);height:var(--ka-ic-40);border-radius:var(--ka-card-radius);background:var(--ka-muted-bg);font-size:var(--ka-fs-20)}
+.kek-dosya{display:flex;align-items:center;gap:var(--ka-sp-8);flex-wrap:wrap;padding:var(--ka-sp-8) 0;border-top:var(--ka-card-border-w) solid var(--ka-border)}
+.kek-dosya__ad{display:flex;align-items:center;gap:var(--ka-sp-8);flex:1 1 var(--ka-ic-120);min-width:0;padding:0;border:0;background:transparent;color:inherit;text-align:start;cursor:pointer}
+.kek-dosya__metin{display:grid;min-width:0}
+.kek-dosya__metin strong{overflow-wrap:anywhere}
+.kek-dosya__eylem{gap:var(--ka-sp-6);flex:0 0 auto}
+.kek-donemler{gap:var(--ka-sp-6)}
+.kek-not{margin:0}
+

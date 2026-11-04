@@ -74,7 +74,7 @@ const GLYPHS={
   'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
   'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','veli-toplantisi':'👨‍👩‍👧','yazili-teslim':'📦','ders-kesim':'📝','sinif-rehberlik':'🧩','form-rehberlik':'🧭',
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️','kat-plani':'🏢',
-  'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
+  'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','ek-ders':'🧾','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','class-seats':'🪑','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
@@ -208,6 +208,7 @@ const KATALOG=[
   ['dilekce-izin','Dilekçe & İzinler','doc','İzin ve dilekçe formları','management','dilekce',{y:1}],
   ['attendance','Personel Devamsızlık Çizelgesi','calendar','Personel devamsızlık çizelgesi','tools','attendance',{y:1}],
   ['payroll','Maaş Değişikliği','wallet','Maaş değişikliği bildirimi','payroll','',{y:1}],
+  ['ek-ders','Ek Ders İşlemleri','wallet','Ek ders ücret onay yazısı ve onay çizelgesi','ek-ders','',{y:1}],
   ['diploma-request','Diploma Kayıt Talep Dilekçesi','doc','Diploma kayıt talebi','management','diploma-request',{y:1}],
   ['diploma-response','Diploma Okul Dilekçesi','school','Okuldan diploma cevabı','management','diploma-response',{y:1}],
   ['teacher-list-builder','Öğretmen Liste Oluşturucu','doc','Öğretmen listesi hazırla','management','teacher-list-builder',{y:1}]
@@ -310,7 +311,7 @@ const KEYWORDS={
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto tara tarayıcı kamera scanner camscanner belge','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
-  'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
+  'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','ek-ders':'ek ders ücret onay yazısı onay çizelgesi bordro maaş yatay a4 pdf','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',
   'tasks':'aylık iş işler görev periyodik','monthflow':'aylık yönetim akış iş takvim','reports':'rapor liste','food-audit':'yemek denetim','teacher-list-builder':'öğretmen liste oluşturucu',
   'school-info':'okul bilgi kurulum ayar müdür','holiday':'tatil günleri','acad-calendar':'akademik takvim eğitim öğretim yılı','teachers':'öğretmen kadro','staff':'personel kadro','schedule':'ders programı','duty':'nöbet','meeting-schedule':'toplantı kurul çizelge',
