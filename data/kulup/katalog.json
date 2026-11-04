@@ -65,6 +65,22 @@
    }
   },
   {
+   "id": "saglikli-yasam",
+   "ad": "Sağlıklı Yaşam ve Fiziksel Aktivite Kulübü",
+   "anahtar": [
+    "saglikli yasam",
+    "fiziksel aktivite"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "SP",
+    "ad": "Spor"
+   },
+   "sayilar": {
+    "aylik": 10
+   }
+  },
+  {
    "id": "siberay",
    "ad": "Siberay Kulübü",
    "anahtar": [
