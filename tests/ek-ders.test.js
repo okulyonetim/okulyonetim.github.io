@@ -12,8 +12,10 @@ assert(mod.indexOf('dokumanEkle')<mod.indexOf('for(const d of eskiler)'),'Deği�
 assert(mod.includes("application/pdf")&&mod.includes('MAX_BOYUT'),'Yalnız PDF ve boyut sınırı denetlenmeli.');
 
 /* 1b) Evrak türleri: onay yazısı + çizelge (PDF); ilkokul/ortaokul ek ders ve maaş dosyaları (Excel .xlsx) */
-for(const id of ['yazi','cizelge'])assert(new RegExp(`\\{id:'${id}',kabul:'pdf'`).test(mod),id+' PDF kabul etmeli.');
-for(const id of ['ilkokul','ortaokul','maas'])assert(new RegExp(`\\{id:'${id}',kabul:'xlsx'`).test(mod),id+' Excel (.xlsx) kabul etmeli.');
+for(const id of ['yazi','cizelge'])assert(new RegExp(`\\{id:'${id}',kabul:'pdf',donemli:true`).test(mod),id+' PDF kabul etmeli ve aylık (dönemli) olmalı.');
+for(const id of ['ilkokul','ortaokul','maas'])assert(new RegExp(`\\{id:'${id}',kabul:'xlsx',donemli:false`).test(mod),id+' Excel (.xlsx) kabul etmeli ve aya bağlı olmamalı (sürekli dosya).');
+assert(mod.includes("tur.donemli?donemAnahtar():''")&&mod.includes('(!tur.donemli||d.ekDersDonem===donem)'),'Sürekli dosyalar dönemden bağımsız saklanmalı ve türü başına tek dosya olmalı (yenisi eskisinin yerine geçer).');
+assert(mod.includes('.filter(d=>turBul(d.ekDersTur)?.donemli)'),'Kayıtlı dönem düğmeleri yalnız aylık evraklardan üretilmeli.');
 assert(!/kabul:'txt'/.test(mod)&&!mod.includes('text/plain'),'Bu evraklar Excel biçimindedir; text biçimi kalmamalı.');
 assert(/xlsx:\{[^}]*uygun:f=>\/\\\.xlsx\$\/i\.test/.test(mod)&&/pdf:\{[^}]*uygun:f=>f\.type==='application\/pdf'/.test(mod),'Kabul edilen biçim her tür için ayrı denetlenmeli (xlsx: uzantı, pdf: tür/uzantı).');
 assert(mod.includes('girdi.accept=KABUL[hedef.kabul].accept')&&!/<input type="file"[^>]*accept=/.test(mod),'Dosya seçici kabul türü, tıklanan evrak türüne göre ayarlanmalı.');
@@ -30,10 +32,10 @@ assert.strictEqual(M.donemAnahtar(9,2026),'2026-10');assert.strictEqual(M.donemE
 
 /* 3) Menü + yönlendirme + önbellek */
 assert(nav.includes("['ek-ders','Ek Ders İşlemleri','wallet'")&&/\['ek-ders','Ek Ders İşlemleri'[^\]]*'ek-ders','',\{y:1\}\]/.test(nav),'Menüde Personel İşleri altında yönetici sayfası olarak "Ek Ders İşlemleri" bulunmalı.');
-assert(shell.includes("name==='ek-ders'")&&shell.includes("loadScript?.('js/modules/ek-ders.js?v=3')")&&shell.includes("loadScript?.('js/modules/documents.js')")&&shell.includes('EkDersModule.open'),'Kabuk rotası ek-ders.js ve documents.js\'i ihtiyaç anında yüklemeli.');
-assert(sw.includes("'./js/modules/ek-ders.js?v=3'"),'Sayfa çevrimdışı önbellekte olmalı.');
-for(const c of ['.kek-bolum__baslik{','.kek-dosya{','.kek-dosya__ad{'])assert(base.includes(c)&&!ds.includes(c),c+' yalnız tabanda tanımlı olmalı.');
+assert(shell.includes("name==='ek-ders'")&&shell.includes("loadScript?.('js/modules/ek-ders.js?v=4')")&&shell.includes("loadScript?.('js/modules/documents.js')")&&shell.includes('EkDersModule.open'),'Kabuk rotası ek-ders.js ve documents.js\'i ihtiyaç anında yüklemeli.');
+assert(sw.includes("'./js/modules/ek-ders.js?v=4'"),'Sayfa çevrimdışı önbellekte olmalı.');
+for(const c of ['.kek-bolum__baslik{','.kek-dosya{','.kek-dosya__ad{','.kek-grup{','.kek-grup__baslik{'])assert(base.includes(c)&&!ds.includes(c),c+' yalnız tabanda tanımlı olmalı.');
 const pin=(f,re)=>Number(read(f).match(re)[1]);
 assert(pin('index.html',/shell-ui\.js\?v=(\d+)/)===pin('service-worker.js',/shell-ui\.js\?v=(\d+)/)&&pin('index.html',/app-nav\.js\?v=(\d+)/)===pin('service-worker.js',/app-nav\.js\?v=(\d+)/),'index ve SW sürüm pinleri eşleşmeli.');
-assert(pin('css/design-system.css',/design-system-base\.css\?v=(\d+)/)>=1379&&pin('service-worker.js',/CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/)>=1473,'CSS ve önbellek sürümü artırılmalı.');
+assert(pin('css/design-system.css',/design-system-base\.css\?v=(\d+)/)>=1380&&pin('service-worker.js',/CACHE_ADI\s*=\s*'oy-cache-v(\d+)'/)>=1474,'CSS ve önbellek sürümü artırılmalı.');
 console.log('Ek Ders İşlemleri sözleşmesi başarılı.');

@@ -1,6 +1,6 @@
 /* Koruk Asistan — Ek Ders İşlemleri
- * Aylık evraklar dönem bazında tutulur: ek ders ücret onay yazısı (PDF), onay çizelgesi (PDF, tek sayfa yatay A4),
- * ilkokul ve ortaokul ek ders dosyaları (Excel .xlsx) ile maaş dosyası (Excel .xlsx).
+ * Aylık evraklar dönem (ay/yıl) bazında tutulur: ek ders ücret onay yazısı (PDF) ve onay çizelgesi (PDF, tek sayfa yatay A4).
+ * Sürekli kullanılan dosyalar dönemden bağımsız, türü başına tek dosyadır: ilkokul ek ders, ortaokul ek ders ve maaş (Excel .xlsx).
  * Evraklarda T.C. kimlik numarası, maaş bilgisi, imza kodu gibi kişisel veriler bulunur; bu yüzden uygulamanın herkese açık dosyalarına
  * KONMAZ. Mevcut Dokümanlar altyapısıyla (özel depolama, görünürlük "Kişisel": yalnız yükleyen ve yönetici) saklanır.
  * Yükleme/silme/indirme/açma: documents.js (DokumanlarService, DocumentsModule). Stil: css/design-system-base.css (.kek-*).
@@ -9,17 +9,17 @@
 'use strict';
 if(global.EkDersModule)return;
 const KATEGORI='Ek Ders İşlemleri';
-/* Dosya türleri: her evrak türü hangi biçimi kabul ettiğini kendisi söyler (pdf | xlsx). */
+/* Dosya türleri: her evrak türü hangi biçimi kabul ettiğini (pdf | xlsx) ve dönem bazlı olup olmadığını (donemli) kendisi söyler. */
 const KABUL=Object.freeze({
  pdf:{ad:'PDF',ikon:'📄',mime:'application/pdf',accept:'application/pdf,.pdf',uygun:f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name||''),mesaj:'Yalnız PDF dosyası yüklenebilir.'},
  xlsx:{ad:'Excel',ikon:'📗',mime:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',accept:'.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',uygun:f=>/\.xlsx$/i.test(f.name||''),mesaj:'Yalnız Excel (.xlsx) dosyası yüklenebilir.'}
 });
 const TURLER=Object.freeze([
- {id:'yazi',kabul:'pdf',ad:'Ek Ders Ücret Onay Yazısı',not:'İl/İlçe Millî Eğitim Müdürlüğü onay yazısı (PDF)',ikon:'📄'},
- {id:'cizelge',kabul:'pdf',ad:'Ek Ders Ücret Onay Çizelgesi',not:'Tek sayfa, yatay A4 çizelge (PDF)',ikon:'📊'},
- {id:'ilkokul',kabul:'xlsx',ad:'Ek Ders İlkokul Dosyası',not:'İlkokul ek ders Excel dosyası (.xlsx)',ikon:'📗'},
- {id:'ortaokul',kabul:'xlsx',ad:'Ek Ders Ortaokul Dosyası',not:'Ortaokul ek ders Excel dosyası (.xlsx)',ikon:'📗'},
- {id:'maas',kabul:'xlsx',ad:'Maaş Dosyası',not:'Maaş Excel dosyası (.xlsx)',ikon:'💰'}
+ {id:'yazi',kabul:'pdf',donemli:true,ad:'Ek Ders Ücret Onay Yazısı',not:'İl/İlçe Millî Eğitim Müdürlüğü onay yazısı (PDF)',ikon:'📄'},
+ {id:'cizelge',kabul:'pdf',donemli:true,ad:'Ek Ders Ücret Onay Çizelgesi',not:'Tek sayfa, yatay A4 çizelge (PDF)',ikon:'📊'},
+ {id:'ilkokul',kabul:'xlsx',donemli:false,ad:'Ek Ders İlkokul Dosyası',not:'İlkokul ek ders Excel dosyası (.xlsx)',ikon:'📗'},
+ {id:'ortaokul',kabul:'xlsx',donemli:false,ad:'Ek Ders Ortaokul Dosyası',not:'Ortaokul ek ders Excel dosyası (.xlsx)',ikon:'📗'},
+ {id:'maas',kabul:'xlsx',donemli:false,ad:'Maaş Dosyası',not:'Maaş Excel dosyası (.xlsx)',ikon:'💰'}
 ]);
 const AYLAR=Object.freeze(['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık']);
 const MAX_BOYUT=10*1024*1024;
@@ -43,28 +43,33 @@ function tumBelgeler(){
  for(const d of kaynak)if(d?.id&&d.kategori===KATEGORI&&global.DokumanlarService?.gorunurMu?.(d)!==false)m.set(d.id,d);
  return[...m.values()].sort((a,b)=>zaman(b)-zaman(a));
 }
-const belgeler=(tur,donem)=>tumBelgeler().filter(d=>d.ekDersTur===tur&&d.ekDersDonem===donem);
-const kayitliDonemler=()=>[...new Set(tumBelgeler().map(d=>d.ekDersDonem).filter(Boolean))].sort().reverse();
+const turBul=id=>TURLER.find(t=>t.id===id);
+const belgeler=(tur,donem)=>tumBelgeler().filter(d=>d.ekDersTur===tur.id&&(!tur.donemli||d.ekDersDonem===donem));
+const kayitliDonemler=()=>[...new Set(tumBelgeler().filter(d=>turBul(d.ekDersTur)?.donemli).map(d=>d.ekDersDonem).filter(Boolean))].sort().reverse();
 const boyut=n=>{n=Number(n)||0;if(!n)return'';return n<1048576?`${(n/1024).toFixed(1)} KB`:`${(n/1048576).toFixed(1)} MB`};
 const tarihMetni=d=>{const t=zaman(d);return t?new Date(t).toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):''};
 
 /* ── ekran ── */
 function belgeSatiri(d,duzenle){
  const meta=[boyut(d.dosyaBoyutu),tarihMetni(d)].filter(Boolean).join(' · ');
- const ikon=KABUL[TURLER.find(t=>t.id===d.ekDersTur)?.kabul]?.ikon||KABUL.pdf.ikon;
+ const ikon=KABUL[turBul(d.ekDersTur)?.kabul]?.ikon||KABUL.pdf.ikon;
  return`<div class="kek-dosya" data-kek-belge="${esc(d.id)}"><button type="button" class="kek-dosya__ad" data-kek-ac="${esc(d.id)}"><span aria-hidden="true">${ikon}</span><span class="kek-dosya__metin"><strong>${esc(d.dosyaAdi||d.ad||'Belge')}</strong><small class="ka-muted">${esc(meta)}</small></span></button><div class="ka-row kek-dosya__eylem"><button class="ka-btn ka-btn--secondary ka-btn--sm" type="button" data-kek-indir="${esc(d.id)}">İndir</button>${duzenle?`<button class="ka-btn ka-btn--ghost ka-btn--sm" type="button" data-kek-sil="${esc(d.id)}">Sil</button>`:''}</div></div>`;
 }
 function bolum(tur,donem,duzenle){
- const liste=belgeler(tur.id,donem),yukluyor=S.mesgul===tur.id;
+ const liste=belgeler(tur,donem),yukluyor=S.mesgul===tur.id;
  const yukle=duzenle?`<button class="ka-btn ${liste.length?'ka-btn--secondary':''} ka-btn--sm" type="button" data-kek-yukle="${tur.id}" ${S.mesgul?'disabled':''}>${yukluyor?`Yükleniyor… %${S.ilerleme}`:liste.length?'Dosyayı Değiştir':`${KABUL[tur.kabul].ad} Yükle`}</button>`:'';
- return`<article class="ka-card kek-bolum" data-kek-tur="${tur.id}"><div class="ka-card__body ka-stack"><div class="ka-row ka-row--between kek-bolum__baslik"><div class="ka-row kek-bolum__ad"><span class="kek-bolum__ikon" aria-hidden="true">${tur.ikon}</span><div><h3>${esc(tur.ad)}</h3><div class="ka-muted">${esc(tur.not)}</div></div></div>${yukle}</div>${liste.length?liste.map(d=>belgeSatiri(d,duzenle)).join(''):`<div class="ka-empty">${esc(donemEtiket(donem))} için henüz yüklenmedi.</div>`}</div></article>`;
+ return`<article class="ka-card kek-bolum" data-kek-tur="${tur.id}"><div class="ka-card__body ka-stack"><div class="ka-row ka-row--between kek-bolum__baslik"><div class="ka-row kek-bolum__ad"><span class="kek-bolum__ikon" aria-hidden="true">${tur.ikon}</span><div><h3>${esc(tur.ad)}</h3><div class="ka-muted">${esc(tur.not)}</div></div></div>${yukle}</div>${liste.length?liste.map(d=>belgeSatiri(d,duzenle)).join(''):`<div class="ka-empty">${tur.donemli?`${esc(donemEtiket(donem))} için henüz yüklenmedi.`:'Henüz yüklenmedi.'}</div>`}</div></article>`;
 }
 function ciz(){
  if(!mounted||!root)return;
  const donem=donemAnahtar(),duzenle=canEdit(),kayitli=kayitliDonemler();
- root.innerHTML=`<section class="ka-stack kek-sayfa" data-ekders-module><div class="ka-row ka-row--between"><div><h2>Ek Ders İşlemleri</h2><p class="ka-muted">Aylık ek ders ücret onay belgeleri ile ek ders (ilkokul, ortaokul) ve maaş Excel dosyaları.</p></div><span class="ka-badge">${esc(donemEtiket(donem))}</span></div>
+ const aylik=TURLER.filter(t=>t.donemli),surekli=TURLER.filter(t=>!t.donemli);
+ root.innerHTML=`<section class="ka-stack kek-sayfa" data-ekders-module><div><h2>Ek Ders İşlemleri</h2><p class="ka-muted">Aylık ek ders ücret onay belgeleri ile sürekli kullanılan ek ders ve maaş dosyaları.</p></div>
+ <div class="ka-row ka-row--between kek-grup"><h3 class="kek-grup__baslik">Aylık evraklar</h3><span class="ka-badge">${esc(donemEtiket(donem))}</span></div>
  <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ka-grid"><label class="ka-field"><span class="ka-field__label">Ay</span><select data-kek-ay>${AYLAR.map((a,i)=>`<option value="${i}" ${i===S.ay?'selected':''}>${a}</option>`).join('')}</select></label><label class="ka-field"><span class="ka-field__label">Yıl</span><input type="number" inputmode="numeric" min="2020" max="2100" value="${S.yil}" data-kek-yil></label></div>${kayitli.length?`<div class="ka-row ka-wrap kek-donemler" aria-label="Kayıtlı dönemler">${kayitli.map(a=>`<button class="ka-btn ${a===donem?'':'ka-btn--secondary'} ka-btn--sm" type="button" data-kek-donem="${a}">${esc(donemEtiket(a))}</button>`).join('')}</div>`:''}</div></article>
- ${TURLER.map(t=>bolum(t,donem,duzenle)).join('')}
+ ${aylik.map(t=>bolum(t,donem,duzenle)).join('')}
+ <div class="kek-grup"><h3 class="kek-grup__baslik">Sürekli kullanılan dosyalar</h3><p class="ka-muted kek-not">Aya bağlı değildir; her ay aynı dosya kullanılır. Yeni dosya yüklediğinizde eskisinin yerine geçer.</p></div>
+ ${surekli.map(t=>bolum(t,donem,duzenle)).join('')}
  <p class="ka-muted kek-not">Belgeler “Kişisel” olarak saklanır: yalnız siz ve yönetici görür. Çizelge ve Excel dosyalarında T.C. kimlik numarası, maaş bilgisi gibi kişisel veriler bulunduğundan herkese açık yapmayın.</p>
  <input type="file" hidden data-kek-dosya></section>`;
  baglan();
@@ -95,13 +100,13 @@ async function yukle(tur,dosya){
  if(!kabul.uygun(dosya))return toast(kabul.mesaj);
  if(dosya.size>MAX_BOYUT)return toast('Dosya 10 MB’tan büyük olamaz.');
  if(!global.DokumanlarService?.dokumanEkle)return toast('Doküman servisi hazır değil.');
- const donem=donemAnahtar(),eskiler=belgeler(tur.id,donem);
+ const donem=tur.donemli?donemAnahtar():'',eskiler=belgeler(tur,donem);
  /* Bazı cihazlar dosya türünü boş bildirir; depoya doğru türle gitmesi için işaretlenir. */
  const gonderilecek=dosya.type?dosya:new File([dosya],dosya.name,{type:kabul.mime});
  S.mesgul=tur.id;S.ilerleme=0;ciz();
  try{
-  await global.DokumanlarService.dokumanEkle({ad:`${tur.ad} — ${donemEtiket(donem)}`,kategori:KATEGORI,aciklama:'',ekDersTur:tur.id,ekDersDonem:donem,gorunurluk:'kisisel'},gonderilecek,p=>{S.ilerleme=p;const b=root?.querySelector(`[data-kek-yukle="${tur.id}"]`);if(b)b.textContent=`Yükleniyor… %${p}`});
-  /* Değiştirme: yeni dosya yüklendikten SONRA aynı dönemin eski dosyası silinir (yükleme başarısızsa eskisi kalır). */
+  await global.DokumanlarService.dokumanEkle({ad:tur.donemli?`${tur.ad} — ${donemEtiket(donem)}`:tur.ad,kategori:KATEGORI,aciklama:'',ekDersTur:tur.id,ekDersDonem:donem,gorunurluk:'kisisel'},gonderilecek,p=>{S.ilerleme=p;const b=root?.querySelector(`[data-kek-yukle="${tur.id}"]`);if(b)b.textContent=`Yükleniyor… %${p}`});
+  /* Değiştirme: yeni dosya yüklendikten SONRA aynı türün (dönemli ise aynı dönemin) eski dosyası silinir (yükleme başarısızsa eskisi kalır). */
   for(const d of eskiler)await global.DokumanlarService.dokumanSil(d.id,d.storagePath,d).catch(e=>console.warn('[Ek Ders] eski belge silinemedi',e?.message||e));
   toast('Belge yüklendi.');
  }catch(e){console.warn('[Ek Ders/yukle]',e);toast(hataMetni(e))}
