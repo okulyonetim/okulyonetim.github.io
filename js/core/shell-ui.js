@@ -469,7 +469,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       /* Belgeler Dokümanlar altyapısıyla (özel depolama) saklanır: servis + açma/indirme için documents.js gerekir. */
       if(!global.DokumanlarService||!global.DocumentsModule)await global.AppLoader?.loadScript?.('js/modules/documents.js');
-      if(!global.EkDersModule?.open)await global.AppLoader?.loadScript?.('js/modules/ek-ders.js?v=1');
+      if(!global.EkDersModule?.open)await global.AppLoader?.loadScript?.('js/modules/ek-ders.js?v=2');
       if(!global.EkDersModule?.open)throw new Error('Ek Ders İşlemleri modülü yüklenemedi.');
       global.firebaseStorageHazirla?.();
       setBottomActive(bottom);setTitle('Ek Ders İşlemleri');
