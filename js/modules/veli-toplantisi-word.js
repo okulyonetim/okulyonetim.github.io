@@ -1,7 +1,7 @@
 /* Koruk Asistan — Veli Toplantısı tutanağı Word (.docx) çıktısı
  * Tutanak içeriği (düzenlenmiş gündem, görüşme metinleri ve kararlar dahil) veli-toplantisi.js'teki tutanakModeli ile gelir;
  * burada A4, Times New Roman, kâğıt çıktısıyla aynı düzende gerçek Word metni olarak yazılır (şablon dosyası yok, JSZip tembel yüklenir).
- * Sayfa kenar boşlukları üst/alt 20 mm, sol 25 mm, sağ 20 mm; "Alınan Kararlar" toplantı başlığıyla yeni sayfadan başlar; imzalar solda.
+ * Sayfa kenar boşlukları üst/alt 20 mm, sol 25 mm, sağ 20 mm; "Alınan Kararlar" toplantı başlığıyla yeni sayfadan başlar; öğretmen imzası solda, müdür imzası sağda kendi bloğunda ortalı.
  */
 (function(global){
 'use strict';
@@ -41,8 +41,8 @@ const altBaslik=(metin,once=240)=>par(calis(metin,{b:true,sz:22}),{once,sonra:80
 const liste=maddeler=>maddeler.map((x,i)=>par(`${calis(`${i+1}.`)}${sekme}${calis(x)}`,{sol:454,asili:454,sonra:40,al:'both'})).join('');
 const imzalar=m=>{
  const sol=par(calis(m.ogretmen),{sonraki:true})+par(calis(m.unvan,{b:true}),{once:20});
- const sag=par(calis('UYGUNDUR',{b:true}),{sonraki:true})+par(calis(m.tarihBos),{sonraki:true,once:20})+par(calis(m.mudur),{sonraki:true,once:20})+par(calis('Okul Müdürü',{b:true}),{once:20});
- return tablo([4677,4678],[hucre(4677,sol,{kenar:false,dikey:'top'})+hucre(4678,sag,{kenar:false,dikey:'top'})],{kenar:false});
+ const orta={al:'center'},sag=par(calis('UYGUNDUR',{b:true}),{...orta,sonraki:true})+par(calis(m.tarihBos),{...orta,sonraki:true,once:20})+par(calis(m.mudur),{...orta,sonraki:true,once:20})+par(calis('Okul Müdürü',{b:true}),{...orta,once:20});
+ return tablo([5355,4000],[hucre(5355,sol,{kenar:false,dikey:'top'})+hucre(4000,sag,{kenar:false,dikey:'top'})],{kenar:false});
 };
 function tutanakBelgesi(m){
  const w=Math.floor(GENISLIK/4),bilgi=tablo([w,w,w,GENISLIK-3*w],[

@@ -119,7 +119,7 @@ assert(/A4_GENISLIK=297\*96\/25\.4/.test(uiSrc)&&/frame\.style\.transform=`scale
 assert(!/localStorage\.setItem/.test(planSrc+uiSrc)&&!/<style/i.test(planSrc+uiSrc)&&!/style="/.test(planSrc+uiSrc),'Modül depolama yazmaz, stil gömmez.');
 assert(/xmlDonustur/.test(odSrc)&&/docxDoldur\(await r\.arrayBuffer\(\),C\(\)\.degerler\(b\),satirlar,undefined,xmlDonustur\)/.test(odSrc),'Öğretmen Dosyası, belge dönüştürücüyü Word hazırlamaya iletir.');
 assert(/async function docxDoldur\(tampon,v,satirlar,gruplar,donustur\)/.test(coreSrc)&&/word\/document\.xml'&&typeof donustur==='function'/.test(coreSrc),'Çekirdek dönüştürücüyü alanlar yazıldıktan sonra uygular.');
-assert(shell.includes('maarif-oyun-plan.js?v=1')&&shell.includes('report-engine.js?v=9')&&sw.includes('./js/modules/maarif-oyun-plan.js?v=1'),'Rota yükler, önbelleğe alınır.');
+assert(shell.includes('maarif-oyun-plan.js?v=1')&&shell.includes('report-engine.js?v=10')&&sw.includes('./js/modules/maarif-oyun-plan.js?v=1'),'Rota yükler, önbelleğe alınır.');
 assert(/ogretmen-dosyasi-core\.js\?v=5/.test(odSrc)&&sw.includes('ogretmen-dosyasi-core.js?v=5'),'Çekirdek pini yükseltildi.');
 
 /* ── CSS ── */

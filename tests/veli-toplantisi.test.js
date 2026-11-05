@@ -83,6 +83,9 @@ assert(t.includes('05 / 11 / 2026')&&t.includes('14:30'));
 assert.strictEqual((h.match(/class="vtp-kutu"/g)||[]).length,2,'Toplantı başlığı kararlar sayfasında yinelenir.');
 assert(/<section class="vtp-kararlar"><header class="vtp-kutu">[\s\S]*I\. DÖNEM VELİ TOPLANTI TUTANAĞI[\s\S]*<\/header><h2 class="vtp-baslik">ALINAN KARARLAR<\/h2><ol class="vtp-liste">[\s\S]*UYGUNDUR[\s\S]*<\/section><\/article>/.test(h),'Kararlar, başlık ve imzalar tek bölümde.');
 assert(!h.slice(0,h.indexOf('vtp-kararlar')).includes('ALINAN KARARLAR'),'Karar başlığı kararlar bölümünden önce gelmez.');
+/* müdür ad/imza alanı sağda kendi bloğunda: öğretmen bloğundan ayrı, tutanakta UYGUNDUR, dilekçede OLUR */
+assert(/<div class="vtp-imzalar"><div class="vtp-imza"><span>[^<]*<\/span><b>[^<]*<\/b><\/div><div class="vtp-imza vtp-imza--mudur"><b>UYGUNDUR<\/b>[\s\S]*<b>Okul Müdürü<\/b><\/div><\/div><\/section>/.test(h),'Tutanakta müdür bloğu öğretmen bloğundan ayrı, kendi bloğunda.');
+assert(/<div class="vtp-imzalar vtp-imzalar--alt"><div class="vtp-imza">[\s\S]*<div class="vtp-imza vtp-imza--mudur"><b>OLUR<\/b>[\s\S]*<b>Okul Müdürü<\/b><\/div><\/div><\/article>/.test(M.belge('dilekce',M.ctx())),'Dilekçede müdür (OLUR) bloğu ayrı ve sağdaki sınıfla gelir.');
 /* öğretmen adı HTML kaçışlı */
 M.degistir('ogretmen','x <b>y</b> z');assert(!M.belge('tutanak',M.ctx()).includes('<b>y</b>')&&M.belge('tutanak',M.ctx()).includes('&lt;b&gt;'),'Ad kaçışlı yazılır.');
 M.degistir('ogretmen','');t=duz(M.belge('tutanak',M.ctx()));assert(t.includes('Şube Rehber Öğretmeni …………………, katılan velilere'),'Ad boşsa noktalı kalır.');
@@ -217,14 +220,15 @@ const nav=fs.readFileSync('js/core/app-nav.js','utf8'),shell=fs.readFileSync('js
 assert(/\['veli-toplantisi','Veli Toplantısı','users'[^\n]*'veli-toplantisi'\]/.test(nav),'Menüde Veli Toplantısı aracı olmalı.');
 {const evrak=nav.slice(nav.indexOf("['evrak','Tutanak ve Evrak'"),nav.indexOf("['personel','Personel İşleri'"));assert(evrak.includes("['veli-toplantisi'")&&!nav.slice(nav.indexOf("['ogrenci','Öğrenciler'"),nav.indexOf("['sinav','Sınav ve Not'")).includes("['veli-toplantisi'"),'Veli Toplantısı "Tutanak ve Evrak" menüsünde (Öğretmen Dosyası yanında), tek yerde durur.');}
 assert(shell.includes("name==='veli-toplantisi'")&&shell.includes('VeliToplantisiModule.open'),'Kabukta rota tanımlı olmalı.');
-['veli-toplantisi-veri.js?v=2','veli-toplantisi.js?v=5'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&shell.includes(f),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
-['veli-toplantisi-word.js?v=1','ogretmen-dosyasi-core.js?v=5'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&ui.includes(f),`${f} Word indirme için yüklenmeli ve önbelleğe alınmalı.`));
+['veli-toplantisi-veri.js?v=2','veli-toplantisi.js?v=6'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&shell.includes(f),`${f} hem yüklenmeli hem önbelleğe alınmalı.`));
+['veli-toplantisi-word.js?v=2','ogretmen-dosyasi-core.js?v=5'].forEach(f=>assert(sw.includes(`./js/modules/${f}`)&&ui.includes(f),`${f} Word indirme için yüklenmeli ve önbelleğe alınmalı.`));
 assert(/\["idari","Veli Toplantısı Evrakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat)&&/\["rehberlik","Veli Toplantı Tutanakları",null,null,\{a:"veli-toplantisi"\}\]/.test(kat),'Öğretmen Dosyası maddeleri modüle bağlı olmalı.');
 assert(!/localStorage\s*\.\s*setItem/.test(ui)&&!/<style|createElement\('style'\)/.test(ui),'Modül depolamaya yazmaz, stil gömmez.');
 assert(css.includes('.ka-report .vtp-paper')&&css.includes('#v2ModuleRoot .vtp-page')&&css.includes('#v2ModuleRoot .vtp-ed__madde')&&css.includes('.ka-report .vtp-pbilgi'),'Stiller tasarım sistemi CSS dosyasında olmalı.');
 {const a4=css.slice(css.indexOf('/* ===== A4 — Veli Toplantısı'),css.indexOf('/* ===== VELİ TOPLANTISI (vtp-*)'));
  assert(/\.vtp-kararlar\{break-before:page/.test(a4),'Kararlar bölümü yeni sayfadan başlar.');
- assert(/\.vtp-imza\{[^}]*align-items:flex-start[^}]*text-align:left/.test(a4)&&!/\.vtp-imza(?!--sag)[^{]*\{[^}]*(?:align-items:center|align-self:flex-end|text-align:center)/.test(a4)&&!a4.includes('vtp-imzalar--sag'),'Öğretmen/müdür adı blokları solda hizalanır.');
+ assert(/\.vtp-imza\{[^}]*align-items:flex-start[^}]*text-align:left/.test(a4)&&!a4.includes('vtp-imzalar--sag'),'Öğretmen imza bloğu solda hizalanır.');
+ assert(/\.vtp-imza--mudur\{[^}]*margin-left:auto[^}]*align-items:center[^}]*text-align:center/.test(a4),'Müdür ad/imza bloğu sağda, kendi bloğunda ortalıdır.');
  assert(/\.vtp-pusula \.vtp-imza--sag\{[^}]*align-self:flex-end[^}]*align-items:center[^}]*text-align:center/.test(a4),'Davet pusulasında öğretmen adı/unvanı sağda, birbirine ortalı.');
  assert(/\.vtp-pusula \.vtp-logo\{/.test(a4)&&/\.vtp-pbilgi\{/.test(a4),'Pusula logo ve bilgi şeridi stilleri.');}
 assert(!/\d(?:\.\d+)?px/.test(css.slice(css.indexOf('/* ===== A4 — Veli Toplantısı')).replace(/@media\([^)]*\)/g,'')),'Yeni stillerde sabit px olmamalı (ekran kesme noktası hariç); belirteç ya da mm kullanılmalı.');

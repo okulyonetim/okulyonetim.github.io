@@ -81,7 +81,7 @@ function installBuiltInPageRoutes(){if(global.__shellBuiltInPageRoutes)return;gl
     const root=ctx?.root||$('#v2ModuleRoot');
     if(!nav().tool('folder-spine')||!nav().toolAllowed(nav().tool('folder-spine'))){global.toast?.('Klasör Sırtlığı yalnızca admin ve yönetici rolündekiler içindir.');return false}
     global.DocumentsModule?.unmount?.();
-    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+    if(!global.ReportEngine?.previewHtml)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
     if(!global.FolderSpine?.open)await global.AppLoader?.loadScript?.('js/modules/folder-spine.js?v=7');
     if(!global.FolderSpine?.open)throw new Error('folder-spine-load');
     return global.FolderSpine.open(root);
@@ -321,7 +321,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.VeliToplantisiVeri)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi-veri.js?v=2');
-      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=5');
+      if(!global.VeliToplantisiModule?.open)await global.AppLoader?.loadScript?.('js/modules/veli-toplantisi.js?v=6');
       if(!global.VeliToplantisiModule?.open)throw new Error('Veli Toplantısı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Veli Toplantısı');
       if(!global.VeliToplantisiModule.open())throw new Error('Veli Toplantısı açılamadı.');
@@ -336,7 +336,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     try{
       const tool=nav().tool('kat-plani');
       if(!tool||!nav().toolAllowed(tool)){global.toast?.('Kat Planı yalnızca admin ve yönetici rolündekiler içindir.');return false}
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.KatPlani?.open)await global.AppLoader?.loadScript?.('js/modules/kat-plani.js?v=5');
       if(!global.KatPlani?.open)throw new Error('Kat Planı modülü yüklenemedi.');
       setBottomActive(bottom);setTitle('Kat Planı');
@@ -351,7 +351,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='yazili-teslim'){
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.YaziliTeslimCore)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim-core.js?v=2');
       if(!global.YaziliTeslimModule?.open)await global.AppLoader?.loadScript?.('js/modules/yazili-teslim.js?v=2');
@@ -367,7 +367,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='ders-kesim'){
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.DersKesimCore)await global.AppLoader?.loadScript?.('js/modules/ders-kesim-core.js?v=1');
       if(!global.DersKesimModule?.open)await global.AppLoader?.loadScript?.('js/modules/ders-kesim.js?v=1');
@@ -383,7 +383,7 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
   }
   if(name==='maarif-oyun'){
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
       if(!global.MaarifOyunVeri)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-veri.js?v=1');
       if(!global.MaarifOyunPlan)await global.AppLoader?.loadScript?.('js/modules/maarif-oyun-plan.js?v=1');
@@ -781,7 +781,7 @@ function renderSearch({remember=true}={}){
     if(!rows.length){global.toast?.('Yazdırılacak arama sonucu bulunamadı.');return}
     button.disabled=true;
     try{
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.ReportEngine?.printReport)throw new Error('Rapor motoru hazır değil.');
       const escPrint=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const filterParts=[];

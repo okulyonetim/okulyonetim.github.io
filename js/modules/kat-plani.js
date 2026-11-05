@@ -735,7 +735,7 @@ async function cikti(tur){
       }
       toast(L.length>1?L.length+' JPEG hazırlandı.':'JPEG hazırlandı.');
     }else if(tur==='yazdir'){
-      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
       if(!global.ReportEngine?.printReport)throw new Error('Yazdırma altyapısı yüklenemedi.');
       cBilgi('Sayfalar hazırlanıyor…');
       const govde=await Z().yazdirGovde(L.length,uret('A4',6.5));

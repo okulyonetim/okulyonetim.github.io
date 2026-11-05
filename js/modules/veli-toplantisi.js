@@ -15,7 +15,7 @@ if(!global.SinifBaglam)throw new Error('Sınıf bağlamı yüklenmeden Veli Topl
 const {adBicimi,duzeyOf,egitimYili,okulAdi,okulMuduru,siniflar,sinifBul,ogrencilerOf,sinifOgretmeni}=global.SinifBaglam;
 const veri=()=>global.VeliToplantisiVeri||{yil:'',donem:'',duzeyler:{}};
 const NOKTA='…………………',AYRAC=' / ',TARIH_BOS=['……','……','20……'].join(AYRAC),SAAT_BOS='………';
-const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_BELGE='js/modules/veli-toplantisi-word.js?v=1';
+const WORD_CORE='js/modules/ogretmen-dosyasi-core.js?v=5',WORD_BELGE='js/modules/veli-toplantisi-word.js?v=2';
 
 /* ── biçimler ── */
 const tarihMetni=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?[m[3],m[2],m[1]].join(AYRAC):TARIH_BOS};
@@ -51,7 +51,7 @@ const ogretmenUnvani=c=>veri().duzeyler[c.duzey]?.unvan||'Sınıf Öğretmeni';
 const gundemListe=c=>`<ol class="vtp-liste">${doluMaddeler(icerik(c.duzey).maddeler).map(m=>`<li>${esc(m.b.trim())}</li>`).join('')}</ol>`;
 const baslikKutusu=(c,baslik)=>`<header class="vtp-kutu"><span class="vtp-kutu__yil">${esc(c.yil)} EĞİTİM-ÖĞRETİM YILI</span><strong class="vtp-kutu__okul">${esc((c.okul||NOKTA).toLocaleUpperCase('tr'))}</strong><strong class="vtp-kutu__sinif">${esc(sinifBuyuk(c.sinif))}</strong><strong class="vtp-kutu__baslik">${esc(baslik)}</strong></header>`;
 const imzaBlok=(ad,unvan)=>`<div class="vtp-imza"><span>${esc(ad)}</span><b>${esc(unvan)}</b></div>`;
-const mudurBlok=(c,ust)=>`<div class="vtp-imza">${ust?`<b>${esc(ust)}</b>`:''}<span>${TARIH_BOS}</span><span>${esc(adBicimi(c.mudur)||NOKTA)}</span><b>Okul Müdürü</b></div>`;
+const mudurBlok=(c,ust)=>`<div class="vtp-imza vtp-imza--mudur">${ust?`<b>${esc(ust)}</b>`:''}<span>${TARIH_BOS}</span><span>${esc(adBicimi(c.mudur)||NOKTA)}</span><b>Okul Müdürü</b></div>`;
 
 function dilekce(c){
  return`<article class="vtp-paper vtp-dilekce"><h1 class="vtp-ust">${esc((c.okul||NOKTA).toLocaleUpperCase('tr'))} MÜDÜRLÜĞÜNE</h1>

@@ -603,7 +603,7 @@ async function pdfUret(){
   }
 }
 async function reportEngine(){
-  if(!global.ReportEngine?.savePdfBlob)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=9');
+  if(!global.ReportEngine?.savePdfBlob)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
   if(!global.ReportEngine?.savePdfBlob)throw new Error('Dosya işlemleri hazır değil.');
   return global.ReportEngine;
 }

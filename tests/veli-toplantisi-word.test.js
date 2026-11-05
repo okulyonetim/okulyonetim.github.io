@@ -58,13 +58,15 @@ function dengeli(xml){
   const tw=a=>Number(new RegExp(`w:${a}="(\\d+)"`).exec(s)[1]);
   assert(tw('top')>=567&&tw('bottom')>=567,'Her sayfada üst ve alt boşluk ≥ 10 mm.');
 
-  /* imzalar: öğretmen solda, müdür sağda (UYGUNDUR + tarih + ad + unvan), kenarlıksız iki hücre */
+  /* imzalar: öğretmen solda, müdür sağda kendi bloğunda ortalı (UYGUNDUR + tarih + ad + unvan), kenarlıksız iki hücre */
   const imza=d.slice(d.lastIndexOf('<w:tbl>'));
   const hucre=imza.split('<w:tc>').slice(1);
   assert.strictEqual(hucre.length,2,'İmza tablosu iki hücre.');
   assert(hucre[0].includes('Hasret ÇEÇEN')&&hucre[0].includes('Sınıf Öğretmeni')&&!hucre[0].includes('UYGUNDUR'),'Öğretmen solda.');
   assert(hucre[1].includes('UYGUNDUR')&&hucre[1].includes('…… / …… / 20……')&&hucre[1].includes('Ali VELİ')&&hucre[1].includes('Okul Müdürü'),'Müdür sağda; UYGUNDUR ve tarih ile.');
-  assert(!/<w:jc w:val="(?:center|right)"\/>/.test(imza),'İmza adları ortalanmaz / sağa yaslanmaz.');
+  assert(!/<w:jc w:val="(?:center|right)"\/>/.test(hucre[0])&&!/<w:jc w:val="(?:right|both)"\/>/.test(hucre[1]),'Öğretmen bloğu solda kalır; müdür bloğu kendi (sağdaki) hücresinde ortalıdır.');
+  assert.strictEqual((hucre[1].match(/<w:jc w:val="center"\/>/g)||[]).length,4,'Müdür bloğunun dört satırı (UYGUNDUR, tarih, ad, unvan) ortalı.');
+  assert(Number(/<w:tcW w:w="(\d+)"/.exec(hucre[1])[1])<Number(/<w:tcW w:w="(\d+)"/.exec(hucre[0])[1]),'Müdür bloğu sağda, daha dar kendi hücresinde.');
   assert(!/w:val="single"/.test(/<w:tblBorders>[\s\S]*?<\/w:tblBorders>/.exec(imza)?.[0]||''),'İmza tablosu kenarlıksız.');
 
   /* madde sayısı değişince belge de değişir; boş liste güvenli */
