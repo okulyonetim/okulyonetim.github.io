@@ -15992,9 +15992,5 @@ html[data-theme] #v2ModuleRoot .ka-guidance-action.is-permission-disabled *{
 .kek-dosya__metin{display:grid;min-width:0}
 .kek-dosya__metin strong{overflow-wrap:anywhere}
 .kek-dosya__eylem{gap:var(--ka-sp-6);flex:0 0 auto}
-.kek-donemler{gap:var(--ka-sp-6)}
 .kek-not{margin:0}
-.kek-grup{display:flex;align-items:baseline;flex-wrap:wrap;gap:var(--ka-sp-8)}
-.kek-grup__baslik{margin:0;font-size:var(--ka-fs-17)}
-.kek-grup .kek-not{flex:1 1 100%}
 
