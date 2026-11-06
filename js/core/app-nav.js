@@ -364,7 +364,8 @@ function cleanBar(list,menus,r,fill=defaultOf(r).bar){
   (Array.isArray(list)?list:[]).forEach(add);
   fill.forEach(add);
   ['home','tools','me'].forEach(add);
-  if(!out.includes('me'))out[BAR_SLOTS-1]='me';
+  /* Beş yuvanın hepsi serbesttir; yalnız Menü ya da Ben'den biri kalmalıdır: profil, çıkış ve menü düzeni bu ikisinden açılır. */
+  if(!out.includes('tools')&&!out.includes('me'))out[BAR_SLOTS-1]='tools';
   return out;
 }
 function legacyFav(r){
@@ -548,7 +549,7 @@ function findTool(route,page=''){
   return Object.values(TOOLS).find(t=>t.route===route&&t.page===page)||null;
 }
 const ME_TOOLS=new Set(['settings','guide','about','notes']);
-/* Bir sayfa hangi alt menü yuvasını aydınlatır: önce tek başına eklenmişse onu, sonra onu içeren menüyü, sonra Ben ya da Menü'yü. */
+/* Bir sayfa hangi alt menü yuvasını aydınlatır: önce tek başına eklenmişse onu, sonra onu içeren menüyü, sonra Ben (alt menüdeyse) ya da Menü'yü. */
 function tabOf(route,page=''){
   route=String(route||'');page=String(page||'');
   if(route==='dashboard'&&!page)return 'home';
@@ -557,19 +558,19 @@ function tabOf(route,page=''){
     if(keys.includes(`tool:${t.id}`))return `tool:${t.id}`;
     const m=layoutRaw(r).menus.find(x=>keys.includes(`menu:${x.id}`)&&x.ids.includes(t.id));
     if(m)return `menu:${m.id}`;
-    if(ME_TOOLS.has(t.id))return 'me';
+    if(ME_TOOLS.has(t.id)&&keys.includes('me'))return 'me';
   }
-  if(route==='settings'||route==='dashboard')return 'me';
+  if((route==='settings'||route==='dashboard')&&keys.includes('me'))return 'me';
   return keys.includes('tools')?'tools':'';
 }
-/* Bir sayfanın geri dönüş sayfası: alt menüde sabit olan menü; yoksa Ben sayfasındakiler (Ayarlar, Notlarım…) için Ben, diğerleri için ilk içeren menü, o da yoksa Menü. */
+/* Bir sayfanın geri dönüş sayfası: alt menüde sabit olan menü; yoksa Ben sayfasındakiler (Ayarlar, Notlarım…) için Ben (alt menüdeyse), diğerleri için ilk içeren menü, o da yoksa Menü. */
 function parentOf(route,page=''){
   const t=findTool(route,page),r=role();
   if(!t)return route==='settings'||route==='dashboard'?'me':'';
   const all=layoutRaw(r).menus.filter(x=>x.ids.includes(t.id)&&menu(x.id,r)),keys=tabs(r).map(x=>x.key);
   const pinned=all.find(x=>keys.includes(`menu:${x.id}`));
   if(pinned)return `menu:${pinned.id}`;
-  if(ME_TOOLS.has(t.id))return 'me';
+  if(ME_TOOLS.has(t.id)&&keys.includes('me'))return 'me';
   return all[0]?`menu:${all[0].id}`:'tools';
 }
 const menuNamesOf=(id,r)=>layoutRaw(r).menus.filter(m=>m.ids.includes(id)).map(m=>m.ad);

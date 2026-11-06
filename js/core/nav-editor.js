@@ -46,7 +46,7 @@ function homeHtml(){
   const pinned=new Set(L.bar.filter(k=>k.startsWith('menu:')).map(k=>k.slice(5)));
   const menus=L.menus.map((m,i)=>`<div class="ka-ne-row">${H.ico(m.icon,m.tone,40,20)}<button type="button" class="ka-ne-main" data-nav-page-go="menu-edit:${esc(m.id)}"><span class="ka-ne-copy"><strong>${esc(m.ad)}</strong><small>${m.ids.length} sayfa${pinned.has(m.id)?' · alt menüde':''}</small></span>${H.chevron()}</button><span class="ka-ne-acts">${ibtn('menu-move','chevu','Menüyü yukarı al',i===0,`data-i="${i}" data-d="-1"`)}${ibtn('menu-move','chevd','Menüyü aşağı al',i===L.menus.length-1,`data-i="${i}" data-d="1"`)}</span></div>`).join('');
   return H.pageRoot('menu-edit',H.head('Menüyü düzenle','Alt menüyü ve menülerinizi kendiniz belirleyin')
-    +`<div class="ka-nav-section"><h3>Alt menü<span>5 yuva</span></h3><p class="ka-nav-hint">Ekranın altındaki beş düğmeyi seçin. Her yuvaya bir menü ya da tek bir sayfa koyabilirsiniz. “Ben” alt menüde kalmalıdır; menü düzenine oradan ulaşırsınız.</p>${H.rowCard(slots)}</div>`
+    +`<div class="ka-nav-section"><h3>Alt menü<span>5 yuva</span></h3><p class="ka-nav-hint">Ekranın altındaki beş düğmeyi seçin. Her yuvaya bir menü ya da tek bir sayfa koyabilirsiniz. Beş yuvanın hepsini değiştirebilirsiniz; yalnız “Menü” ya da “Ben”den biri alt menüde kalmalıdır, profil, çıkış ve menü düzenine onlardan ulaşılır.</p>${H.rowCard(slots)}</div>`
     +`<div class="ka-nav-section"><h3>Menülerim<span>${L.menus.length}</span></h3>${H.rowCard(menus||H.emptyState('Henüz menü yok.'))}<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="menu-new">${H.ic('plus',18)}<span>Yeni menü oluştur</span></button></div>`
     +(orphan?`<div class="ka-nav-section"><p class="ka-nav-hint">${orphan} sayfa hiçbir menüde değil. Bunlar Menü ekranında klasörlerin altında A'dan Z'ye listelenir; bir menüye eklediğinizde oradan kalkar.</p><button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="orphans">${H.ic('plus',18)}<span>Hepsini uygun menüye ekle</span></button></div>`:'')
     +(L.custom?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="reset">${H.ic('swap',18)}<span>${okul?'Okulun varsayılan düzenine dön':'Varsayılan düzene dön'}</span></button>`:`<p class="ka-nav-hint">Şu an ${okul?'okulun varsayılan düzenini':'varsayılan düzeni'} kullanıyorsunuz.</p>`)
@@ -124,9 +124,9 @@ function pick(slot,key){
   const L=read(),prev=L.bar[slot];
   if(prev===key){ui()?.back?.();return}
   const j=L.bar.indexOf(key);
-  if(prev==='me'&&j<0){toast('Ben sayfası alt menüde kalmalı; menü düzenine oradan ulaşırsınız.');return}
   if(j>=0)L.bar[j]=prev;
   L.bar[slot]=key;
+  if(!L.bar.includes('tools')&&!L.bar.includes('me')){toast('Menü ya da Ben alt menüde kalmalı; profil, çıkış ve menü düzenine bunlardan biriyle ulaşırsınız.');return}
   nav().saveLayout(L,role());
   ui()?.back?.();
 }
@@ -206,16 +206,18 @@ function onInput(e){
   $$('[data-ne-hay]',root).forEach(el=>{el.hidden=!!q&&!el.dataset.neHay.includes(q)});
 }
 
+/* Düzenleme sayfaları Ben'e bağlıdır; Ben alt menüde değilse Menü'ye bağlanır. */
+const door=r=>{const keys=nav().tabs(r).map(t=>t.key);return keys.includes('me')?'me':'tools'};
 pages().register('menu-edit',{
-  info:arg=>arg?{id:`menu-edit:${arg}`,tab:'me',title:'Menüyü düzenle',parent:'menu-edit'}:{id:'menu-edit',tab:'me',title:'Menüyü düzenle',parent:'me'},
+  info:(arg,r)=>arg?{id:`menu-edit:${arg}`,tab:door(r),title:'Menüyü düzenle',parent:'menu-edit'}:{id:'menu-edit',tab:door(r),title:'Menüyü düzenle',parent:door(r)},
   html:arg=>arg?menuHtml(arg):homeHtml()
 });
 pages().register('bar-pick',{
-  info:arg=>({id:`bar-pick:${arg}`,tab:'me',title:`${Number(arg)+1}. yuva`,parent:'menu-edit'}),
+  info:(arg,r)=>({id:`bar-pick:${arg}`,tab:door(r),title:`${Number(arg)+1}. yuva`,parent:'menu-edit'}),
   html:arg=>pickHtml(Number(arg))
 });
 pages().register('menu-add',{
-  info:arg=>({id:`menu-add:${arg}`,tab:'me',title:'Sayfa ekle',parent:`menu-edit:${arg}`}),
+  info:(arg,r)=>({id:`menu-add:${arg}`,tab:door(r),title:'Sayfa ekle',parent:`menu-edit:${arg}`}),
   html:arg=>addHtml(arg)
 });
 document.addEventListener('click',onClick);

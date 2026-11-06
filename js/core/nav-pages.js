@@ -39,7 +39,7 @@ function info(id,r=nav().role()){
   }
   if(p.kind==='all')return{id:'all',tab:pin('tools')?'tools':'',title:'Tüm sayfalar',parent:'tools'};
   if(p.kind==='program'){const own=pin('program');return{id:'program',tab:own?'program':'me',title:r==='ogretmen'?'Programım':'Ders programım',parent:own?'':'me'}}
-  if(p.kind==='me')return{id:'me',tab:'me',title:'Ben',parent:''};
+  if(p.kind==='me'){const own=pin('me');return{id:'me',tab:own?'me':(pin('tools')?'tools':''),title:'Ben',parent:own?'':'tools'}}
   return kinds[p.kind]?.info?.(p.arg,r)||null;
 }
 
@@ -113,9 +113,11 @@ function renderTools(){
   const all=`<button type="button" class="ka-nav-gtile" data-nav-page-go="all">${ico('search','slate',40)}<span class="ka-nav-gtile__copy"><strong>Tüm sayfalar</strong><small>A'dan Z'ye liste</small></span></button>`;
   const swap=nav().canSwitch()?`<div class="ka-nav-section ka-nav-section--split"><h3>Hem yönetip hem ders veriyorsanız</h3>${switchCard('compact')}</div>`:'';
   /* Hiçbir menüde olmayan sayfalar klasörlerin altında doğrudan, A'dan Z'ye; menüye eklenen sayfa buradan kalkar. */
+  /* Ben alt menüde değilse profil, görünüm ve çıkışa Menü ekranından ulaşılır. */
+  const ben=nav().tabs(r).some(t=>t.key==='me')?'':`<div class="ka-nav-section">${rowCard(`<button type="button" class="ka-nav-row ka-nav-row__main is-first" data-nav-page-go="me">${ico('user','slate',40,20)}<span class="ka-nav-row__copy"><strong>${esc(nav().TAB_LABEL.me(r))}</strong><small>Profil, görünüm, menü düzeni ve çıkış</small></span>${chevron()}</button>`)}</div>`;
   const loose=nav().inNoMenu(r),rest=loose.length?`<div class="ka-nav-section"><h3>Sayfalar<span>${loose.length}</span></h3>${rowCard(loose.map((t,i)=>toolRow(t,{star:true,first:i===0,right:t.id==='school-info'?setupPill():''})).join(''))}</div>`:'';
   return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} sayfa, ${ms.length} menü`,editButton('menu-edit','Menüyü düzenle'))+searchBox(hub.search)
-    +`<div data-nav-browse class="ka-nav-stack">${chipRow('Sık kullandıklarım',favs)}${chipRow('Son açtıklarım',recent)}<div class="ka-nav-gtiles">${tiles}${all}</div>${rest}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
+    +`<div data-nav-browse class="ka-nav-stack">${chipRow('Sık kullandıklarım',favs)}${chipRow('Son açtıklarım',recent)}<div class="ka-nav-gtiles">${tiles}${all}</div>${ben}${rest}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
 }
 
 /* ── menü: kullanıcının kendi oluşturduğu ya da varsayılan sayfa listesi ── */
