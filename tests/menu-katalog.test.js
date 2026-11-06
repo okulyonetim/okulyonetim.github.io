@@ -40,7 +40,7 @@ for(const r of ROLES){
   eq(def.bar.length,5,`${r}: alt menü 5 yuva.`);
   assert(def.bar.includes('me')&&def.bar.includes('tools'),`${r}: Menü ve Ben alt menüde bulunmalı.`);
   def.bar.forEach(k=>assert(['home','program','tools','me'].includes(k)||(k.startsWith('menu:')&&def.menus.some(m=>m.id===k.slice(5)))||(k.startsWith('tool:')&&scope.includes(k.slice(5))),`${r}: geçersiz alt menü yuvası ${k}`));
-  eq(N.inNoMenu(r).length,0,`${r}: varsayılan düzende menüsüz sayfa olmamalı.`);
+  eq(N.layoutRaw(r).menus.some(m=>m.id==='diger'),false,`${r}: varsayılan düzende "Diğer sayfalar" menüsü gerekmez; her sayfa kendi menüsündedir.`);
 }
 eq(N.scopeIds('idareci').length,cat.length,'İdareci tüm sayfaları görür.');
 assert(N.scopeIds('ogretmen').length<cat.length&&N.scopeIds('ogretmen').every(id=>!cat.find(t=>t.id===id).y),'Öğretmen yalnız yönetime özel olmayan sayfaları görür.');
@@ -122,16 +122,11 @@ const setOf=o=>JSON.parse(o);
   eq(where('guide'),['diger'],'Menüsü silinmiş kullanıcıda yeni sayfa "Diğer sayfalar"a düşer.');
   eq(where('about'),['diger']);
   eq(L.menus.find(m=>m.id==='diger').ad,'Diğer sayfalar');
-  eq(where('grades'),[],'Kullanıcının çıkardığı sayfa geri gelmez (gorulen içinde).');
+  eq(where('grades'),['diger'],'Kullanıcının çıkardığı sayfa kendi menüsüne geri gelmez (gorulen içinde); menüde kalması için "Diğer sayfalar"da görünür.');
   assert(setOf(ls.get(K)).gorulen.includes('written'),'Eklenen sayfa görülen listesine yazılır.');
-  eq(M.inNoMenu('idareci').map(t=>t.id),['settings','grades'],'Kullanıcının çıkardığı/sildirdiği sayfalar menüsüz olarak sayılır.');
-  /* "Hepsini uygun menüye ekle": kendi menüsü varsa orada, yoksa Diğer sayfalar'da */
-  eq(M.placeOrphans('idareci'),2,'placeOrphans menüsüz sayfaları yerleştirir.');
-  const P=M.layoutRaw('idareci');
-  eq(P.menus.find(m=>m.id==='sinav').ids.includes('grades'),true);
-  eq(P.menus.find(m=>m.id==='diger').ids.includes('settings'),true);
-  eq(M.inNoMenu('idareci').length,0);
-  eq(M.placeOrphans('idareci'),0,'Eklenecek sayfa kalmadıysa 0.');
+  eq(where('settings'),['diger'],'Menüsü silinen sayfa da menüde görünür: "Diğer sayfalar".');
+  const hepsi=L.menus.flatMap(m=>m.ids);
+  eq([...hepsi].sort(),[...M.scopeIds('idareci')].sort(),'Rolün tüm sayfaları menülerde tam bir kez bulunur.');
 }
 {
   /* katalogda başka menüye taşınan sayfa: kayıtlı düzende bir kez taşınır, sonra kullanıcı nereye koyarsa orada kalır */

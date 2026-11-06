@@ -44,11 +44,9 @@ function homeHtml(){
   }).join('');
   const pinned=new Set(L.bar.filter(k=>k.startsWith('menu:')).map(k=>k.slice(5)));
   const menus=L.menus.map((m,i)=>`<div class="ka-ne-row">${H.ico(m.icon,m.tone,40,20)}<button type="button" class="ka-ne-main" data-nav-page-go="menu-edit:${esc(m.id)}"><span class="ka-ne-copy"><strong>${esc(m.ad)}</strong><small>${m.ids.length} sayfa${pinned.has(m.id)?' · alt menüde':''}</small></span>${H.chevron()}</button><span class="ka-ne-acts">${ibtn('menu-move','chevu','Menüyü yukarı al',i===0,`data-i="${i}" data-d="-1"`)}${ibtn('menu-move','chevd','Menüyü aşağı al',i===L.menus.length-1,`data-i="${i}" data-d="1"`)}</span></div>`).join('');
-  const orphan=nav().inNoMenu(role()).length;
   return H.pageRoot('menu-edit',H.head('Menüyü düzenle','Alt menüyü ve menülerinizi kendiniz belirleyin')
     +`<div class="ka-nav-section"><h3>Alt menü<span>5 yuva</span></h3><p class="ka-nav-hint">Ekranın altındaki beş düğmeyi seçin. Her yuvaya bir menü ya da tek bir sayfa koyabilirsiniz. “Ben” alt menüde kalmalıdır; menü düzenine oradan ulaşırsınız.</p>${H.rowCard(slots)}</div>`
     +`<div class="ka-nav-section"><h3>Menülerim<span>${L.menus.length}</span></h3>${H.rowCard(menus||H.emptyState('Henüz menü yok.'))}<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="menu-new">${H.ic('plus',18)}<span>Yeni menü oluştur</span></button></div>`
-    +(orphan?`<div class="ka-nav-section"><p class="ka-nav-hint">${orphan} sayfa hiçbir menüde yok. Bunlara Menü › Tüm sayfalar listesinden ya da arama ile ulaşırsınız.</p><button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="orphans">${H.ic('plus',18)}<span>Hepsini uygun menüye ekle</span></button></div>`:'')
     +(L.custom?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="reset">${H.ic('swap',18)}<span>${okul?'Okulun varsayılan düzenine dön':'Varsayılan düzene dön'}</span></button>`:`<p class="ka-nav-hint">Şu an ${okul?'okulun varsayılan düzenini':'varsayılan düzeni'} kullanıyorsunuz.</p>`)
     +(nav().canPublishDefault()?defaultHtml(okul):''));
 }
@@ -71,22 +69,27 @@ function menuHtml(id){
     const t=nav().tool(tid);
     if(!t)return '';
     const closed=!nav().toolAllowed(t);
-    return `<div class="ka-ne-row">${H.gico(t.glyph,t.tone,40)}<span class="ka-ne-copy"><strong>${esc(t.label)}</strong><small>${closed?'Bu hesapta açık değil':esc(t.sub||'')}</small></span><span class="ka-ne-acts">${ibtn('item-move','chevu','Yukarı al',i===0,`data-i="${i}" data-d="-1"`)}${ibtn('item-move','chevd','Aşağı al',i===m.ids.length-1,`data-i="${i}" data-d="1"`)}${ibtn('item-del','x','Menüden çıkar',false,`data-id="${esc(tid)}"`)}</span></div>`;
+    return `<div class="ka-ne-row">${H.gico(t.glyph,t.tone,40)}<span class="ka-ne-copy"><strong>${esc(t.label)}</strong><small>${closed?'Bu hesapta açık değil':esc(t.sub||'')}</small></span><span class="ka-ne-acts">${ibtn('item-move','chevu','Yukarı al',i===0,`data-i="${i}" data-d="-1"`)}${ibtn('item-move','chevd','Aşağı al',i===m.ids.length-1,`data-i="${i}" data-d="1"`)}${ibtn('item-del','x','Menüden çıkar',m.id==='diger',`data-id="${esc(tid)}"`)}</span></div>`;
   }).join('');
   return H.pageRoot(`menu-edit:${m.id}`,H.head(m.ad,'Adı, simgesi, rengi ve sayfaları')
     +`<article class="ka-ne-card"><label class="ka-ne-label" for="neName">Menü adı</label><input id="neName" class="ka-ne-input" type="text" maxlength="${nav().MENU_NAME_MAX}" value="${esc(m.ad)}" data-ne-name autocomplete="off"><span class="ka-ne-label">Simge</span><div class="ka-ne-chips">${icons}</div><span class="ka-ne-label">Renk</span><div class="ka-ne-chips">${tones}</div></article>`
     +`<div class="ka-nav-section"><h3>Sayfalar<span>${m.ids.length}</span></h3>${H.rowCard(rows||H.emptyState('Bu menüde sayfa yok. Aşağıdan sayfa ekleyin.'))}<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-nav-page-go="menu-add:${esc(m.id)}">${H.ic('plus',18)}<span>Sayfa ekle</span></button></div>`
-    +`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide ka-ne-danger" data-ne="menu-del" data-id="${esc(m.id)}">${H.ic('x',18)}<span>Menüyü sil</span></button>`);
+    +(m.id==='diger'?`<p class="ka-nav-hint">Hiçbir menüde olmayan sayfalar burada toplanır. Bir sayfayı başka menüye “Sayfa ekle” ile taşıyabilirsiniz.</p>`:`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide ka-ne-danger" data-ne="menu-del" data-id="${esc(m.id)}">${H.ic('x',18)}<span>Menüyü sil</span></button>`));
 }
 
-/* ── Menüye sayfa ekle (işaretlenen anında eklenir, kaldırılır) ── */
+/* ── Menüye sayfa ekle (işaretlenen sayfa bu menüye taşınır; bir sayfa tek menüde durur) ── */
+/* Sayfanın alt yazısı: başka menüdeyse hangisinde olduğu da yazılır. */
+function rowSub(t,L,menuId){
+  const at=L.menus.find(x=>x.ids.includes(t.id));
+  return at&&at.id!==menuId?`${t.sub||''}${t.sub?' · ':''}Şu an: ${at.ad}`:(t.sub||'');
+}
 function addHtml(id){
   const L=read(),m=L.menus.find(x=>x.id===id),H=h();
   if(!m)return null;
   const have=new Set(m.ids);
-  const rows=nav().allTools().map((t,i)=>`<label class="ka-ne-check${i===0?' is-first':''}" data-ne-hay="${esc(fold(`${t.label} ${t.sub}`))}"><input type="checkbox" data-ne-add="${esc(t.id)}"${have.has(t.id)?' checked':''}>${H.gico(t.glyph,t.tone,40)}<span class="ka-ne-copy"><strong>${esc(t.label)}</strong><small>${esc(t.sub||'')}</small></span></label>`).join('');
+  const rows=nav().allTools().map((t,i)=>`<label class="ka-ne-check${i===0?' is-first':''}" data-ne-hay="${esc(fold(`${t.label} ${t.sub}`))}"><input type="checkbox" data-ne-add="${esc(t.id)}"${have.has(t.id)?' checked':''}>${H.gico(t.glyph,t.tone,40)}<span class="ka-ne-copy"><strong>${esc(t.label)}</strong><small>${esc(rowSub(t,L,m.id))}</small></span></label>`).join('');
   return H.pageRoot(`menu-add:${m.id}`,H.head('Sayfa ekle',`${m.ad} menüsü`)+filterBox('Sayfa ara')
-    +`<p class="ka-nav-hint"><b data-ne-count>${m.ids.length}</b> sayfa seçili. İşaretlediğiniz sayfa menüye hemen eklenir, işareti kaldırırsanız çıkar.</p>`
+    +`<p class="ka-nav-hint"><b data-ne-count>${m.ids.length}</b> sayfa seçili. İşaretlediğiniz sayfa bu menüye taşınır, başka menüdeyse oradan çıkar. İşareti kaldırırsanız “Diğer sayfalar” menüsüne geçer.</p>`
     +`<div class="ka-nav-rowcard" data-ne-list>${rows}</div><button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="back">Bitti</button>`);
 }
 
@@ -150,13 +153,9 @@ function onClick(e){
   }
   else if(act==='menu-del'){
     const m=read().menus.find(x=>x.id===id);
-    if(m&&global.confirm?.(`“${m.ad}” menüsü silinsin mi? İçindeki sayfalar silinmez, yalnız bu menüden kalkar.`)){
+    if(m&&global.confirm?.(`“${m.ad}” menüsü silinsin mi? İçindeki sayfalar silinmez, “Diğer sayfalar” menüsüne geçer.`)){
       if(mutate(L=>{L.menus=L.menus.filter(x=>x.id!==id)}))ui()?.back?.();
     }
-  }
-  else if(act==='orphans'){
-    const n=nav().placeOrphans(role());
-    toast(n?'Menüde olmayan sayfalar kendi menülerine eklendi.':'Eklenecek sayfa yok.');
   }
   else if(act==='reset'){
     if(global.confirm?.(`Alt menü, menüler ve sık kullandıklarınız ${nav().hasSchoolDefault(role())?'okulun varsayılan düzenine':'varsayılan düzene'} dönsün mü?`))nav().resetLayout(role());
@@ -183,13 +182,16 @@ function onChange(e){
   const add=e.target.closest?.('[data-ne-add]');
   if(add){
     const id=currentMenuId(),tid=add.dataset.neAdd;
+    if(!add.checked&&id==='diger'){add.checked=true;toast('Menüsüz sayfalar “Diğer sayfalar”da kalır. Başka bir menüden “Sayfa ekle” ile taşıyabilirsiniz.');return}
     mutate(L=>{
       const m=L.menus.find(x=>x.id===id);
       if(!m)return false;
-      if(add.checked){if(!m.ids.includes(tid))m.ids.push(tid)}else m.ids=m.ids.filter(x=>x!==tid);
+      if(add.checked)nav().moveTool(L.menus,tid,id);else m.ids=m.ids.filter(x=>x!==tid);
     },{silent:true});
+    const L=read(),t=nav().tool(tid),sub=add.closest('label')?.querySelector('small');
+    if(sub&&t)sub.textContent=rowSub(t,L,id);
     const n=$('[data-ne-count]',root);
-    if(n)n.textContent=String(read().menus.find(x=>x.id===id)?.ids.length||0);
+    if(n)n.textContent=String(L.menus.find(x=>x.id===id)?.ids.length||0);
   }
 }
 function onInput(e){

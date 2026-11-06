@@ -283,7 +283,8 @@ for(const [mid,mad,micon,mtone,rows] of KATALOG){
  * Her sayfa tek bir sayfadır; çok sayfalı ya da sekmeli sayfa yoktur, her sayfa istenen menüye ve alt menüye ayrı eklenir. */
 const MENU_ICONS=['grid','folder','doc','pen','users','school','calendar','clip','chart','shield','bus','food','star','award','book','inbox','wallet','briefcase','message','mega','clock','map','sliders'];
 const MENU_TONES=['blue','violet','green','orange','rose','cyan','amber','indigo','slate'];
-const BAR_SLOTS=5,MENU_MAX=24,MENU_ITEMS_MAX=60,MENU_NAME_MAX=32;
+const BAR_SLOTS=5,MENU_MAX=24,MENU_NAME_MAX=32;
+const MENU_ITEMS_MAX=Object.keys(TOOLS).length;      /* bir menü rolün tüm sayfalarını alabilir: menüsüz sayfalar "Diğer sayfalar"da toplanır */
 const LAYOUT_SURUM=2;
 const DIGER={id:'diger',ad:'Diğer sayfalar'};
 const BAR_FIXED=['home','program','tools','me'];                  /* yerleşik sayfalar; geri kalan yuvalar menü ya da tek sayfadır */
@@ -338,16 +339,36 @@ function cleanIds(list){
   const seen=new Set();
   return (Array.isArray(list)?list:[]).map(x=>LEGACY_IDS[x]||x).filter(id=>typeof id==='string'&&TOOLS[id]&&!seen.has(id)&&seen.add(id)).slice(0,MENU_ITEMS_MAX);
 }
+/* Bir sayfa tek menüde durur: aynı sayfa birden çok menüde kayıtlıysa ilk menüsünde kalır. "Diğer sayfalar" menü sınırına sayılmaz. */
 function cleanMenus(list){
-  const seen=new Set(),out=[];
+  const seen=new Set(),used=new Set(),out=[];
   for(const m of Array.isArray(list)?list:[]){
     const id=String(m?.id||'').toLowerCase().replace(/[^a-z0-9_-]/g,'').slice(0,32),ad=String(m?.ad||'').trim().slice(0,MENU_NAME_MAX);
-    if(!id||!ad||seen.has(id))continue;
+    if(!id||!ad||seen.has(id)||(out.length>=MENU_MAX&&id!==DIGER.id))continue;
+    const ids=cleanIds(m.ids).filter(x=>!used.has(x)&&used.add(x));
+    if(id===DIGER.id&&!ids.length)continue;           /* boş "Diğer sayfalar" saklanmaz; gerektiğinde yeniden oluşur */
     seen.add(id);
-    out.push({id,ad,icon:MENU_ICONS.includes(m.icon)?m.icon:'grid',tone:MENU_TONES.includes(m.tone)?m.tone:'slate',ids:cleanIds(m.ids)});
-    if(out.length>=MENU_MAX)break;
+    out.push({id,ad,icon:MENU_ICONS.includes(m.icon)?m.icon:'grid',tone:MENU_TONES.includes(m.tone)?m.tone:'slate',ids});
   }
   return out;
+}
+/* Her sayfa bir menüdedir: hiçbir menüde olmayan sayfa (menüden çıkarılan, menüsü silinen) "Diğer sayfalar" menüsünde görünür; menü yoksa oluşturulur.
+ * Tüm sayfalar ve arama yalnız kısa yoldur; sayfa menüde de bulunur. Yalnız hesaplanır, kullanıcı düzenlediğinde kayda girer. */
+function complete(menus,r){
+  const used=new Set(menus.flatMap(m=>m.ids)),rest=scopeIds(r).filter(id=>!used.has(id));
+  if(!rest.length)return menus;
+  let d=menus.find(m=>m.id===DIGER.id);
+  if(!d){d={id:DIGER.id,ad:DIGER.ad,icon:'grid',tone:'slate',ids:[]};menus.push(d)}
+  d.ids.push(...rest);
+  return menus;
+}
+/* Sayfayı bir menüye taşır: başka menülerdeki yerinden çıkar (bir sayfa tek menüde durur). */
+function moveTool(menus,id,menuId){
+  const m=menus.find(x=>x.id===menuId);
+  if(!m||!TOOLS[id])return false;
+  menus.forEach(x=>{x.ids=x.ids.filter(y=>y!==id)});
+  m.ids.push(id);
+  return true;
 }
 const barKeyValid=(key,menus)=>typeof key==='string'&&(BAR_FIXED.includes(key)||(key.startsWith('menu:')&&menus.some(m=>m.id===key.slice(5)))||(key.startsWith('tool:')&&!!TOOLS[key.slice(5)]));
 function cleanBar(list,menus,r,fill=defaultOf(r).bar){
@@ -375,7 +396,7 @@ function placeInto(menus,id,known=null){
     if(k){m={id:k.id,ad:k.ad,icon:k.icon,tone:k.tone,ids:[]};menus.push(m)}
   }
   m=m||menus.find(x=>x.id===DIGER.id);
-  if(!m&&menus.length<MENU_MAX){m={id:DIGER.id,ad:DIGER.ad,icon:'grid',tone:'slate',ids:[]};menus.push(m)}
+  if(!m){m={id:DIGER.id,ad:DIGER.ad,icon:'grid',tone:'slate',ids:[]};menus.push(m)}
   if(!m||m.ids.length>=MENU_ITEMS_MAX)return false;
   m.ids.push(id);
   return true;
@@ -426,7 +447,7 @@ function defaultOf(r){
     const known=new Set(Array.isArray(src.gorulen)?src.gorulen:[]);
     TASINANLAR.filter(t=>!known.has(tasiIsareti(t))).forEach(t=>tasi(menus,t));
     scopeIds(r).filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id,known));
-    val={bar:cleanBar(src.bar,menus,r,DEFAULT_LAYOUT[r].bar),menus,fav:Array.isArray(src.fav)?cleanIds(src.fav):[...DEFAULT_LAYOUT[r].fav]};
+    val={bar:cleanBar(src.bar,menus,r,DEFAULT_LAYOUT[r].bar),menus:complete(menus,r),fav:Array.isArray(src.fav)?cleanIds(src.fav):[...DEFAULT_LAYOUT[r].fav]};
   }
   okulOnbellek[r]={src,val};
   return val;
@@ -434,7 +455,7 @@ function defaultOf(r){
 const hasSchoolDefault=r=>defaultOf(r)!==DEFAULT_LAYOUT[r];
 /* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı etkin varsayılandan gelir. */
 function layoutRaw(r=role()){
-  const o=settle(r,readOverride(r)),def=defaultOf(r),menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
+  const o=settle(r,readOverride(r)),def=defaultOf(r),menus=complete(o?.menus?cleanMenus(o.menus):clone(def.menus),r);
   return{bar:cleanBar(o?.bar||def.bar,menus,r),menus,fav:o?.fav?cleanIds(o.fav):(legacyFav(r)||clone(def.fav)),custom:!!(o&&(o.bar||o.menus))};
 }
 function emitLayoutChanged(r){try{global.dispatchEvent(new CustomEvent('koruk:nav-layout-changed',{detail:{role:r}}))}catch(_){}}
@@ -474,13 +495,6 @@ async function clearDefault(r=role()){
   const {[r]:_,...rest}=global.AppConfig.get().menuVarsayilan||{};
   await global.AppConfig.save({menuVarsayilan:rest});
   emitLayoutChanged(r);
-}
-/* Hiçbir menüde olmayan sayfaları kendi menülerine (yoksa "Diğer sayfalar"a) ekler; eklenen sayfa sayısını döner. */
-function placeOrphans(r=role()){
-  const L=layoutRaw(r),menus=clone(L.menus);
-  const n=scopeIds(r).filter(id=>placeInto(menus,id)).length;
-  if(n)saveLayout({...L,menus},r);
-  return n;
 }
 /* Hesaba eşitleme: hesap belgesi canlı dinlenir; başka cihazdaki daha yeni düzen bu cihaza hemen gelir, cihazdaki daha yeniyse hesaba gider. */
 function applyRemoteLayouts(x){
@@ -535,8 +549,6 @@ const toolCount=(r=role())=>new Set(menus(r).flatMap(m=>m.tools.map(t=>t.id))).s
 function allTools(){
   return Object.values(TOOLS).filter(toolAllowed).sort((a,b)=>a.label.localeCompare(b.label,'tr'));
 }
-/* Rolün sayfalarından hiçbir menüde olmayanlar (yetkisi olanlar). */
-const inNoMenu=(r=role())=>{const used=new Set(layoutRaw(r).menus.flatMap(m=>m.ids));return scopeIds(r).map(tool).filter(t=>toolAllowed(t)&&!used.has(t.id)).sort((a,b)=>a.label.localeCompare(b.label,'tr'))};
 function findTool(route,page=''){
   route=String(route||'');page=String(page||'');
   return Object.values(TOOLS).find(t=>t.route===route&&t.page===page)||null;
@@ -613,8 +625,8 @@ function webMenu(){
 
 global.AppNav={
   icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
-  tabs,tab,homeTab,tabOf,parentOf,hub,menus,menu,toolCount,tool,findTool,allTools,inNoMenu,
-  layoutRaw,saveLayout,resetLayout,placeOrphans,defaultLayout:r=>clone(defaultOf(r)),hasSchoolDefault,canPublishDefault,publishDefault,clearDefault,MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,TAB_LABEL,
+  tabs,tab,homeTab,tabOf,parentOf,hub,menus,menu,toolCount,tool,findTool,allTools,
+  layoutRaw,saveLayout,resetLayout,moveTool,defaultLayout:r=>clone(defaultOf(r)),hasSchoolDefault,canPublishDefault,publishDefault,clearDefault,MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,TAB_LABEL,
   catalog:()=>Object.values(TOOLS).map(t=>({id:t.id,label:t.label,kat:t.kat,y:t.y,route:t.route,page:t.page})),menuTree:()=>MENU_TREE.map(m=>({...m})),menuOrder:r=>[...MENU_SIRA[r]],scopeIds,LAYOUT_SURUM,
   favorites,isFavorite,toggleFavorite,recent,noteOpened,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN
