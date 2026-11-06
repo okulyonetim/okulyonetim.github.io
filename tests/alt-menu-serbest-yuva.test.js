@@ -42,6 +42,55 @@ const stored=bar=>{
   eq(loadNav({store}).N.layoutRaw(R).bar,bar,'Ben varsa Menü zorunlu değildir.');
 }
 
+/* ── alt menü her zaman tam beş yuvadır (varsayılan menüsü silinmiş kullanıcıda da) ── */
+{
+  const T='ogretmen',KT=`ka-nav-layout:u1:${T}`;
+  const {N}=loadNav();
+  const def=N.defaultLayout(T);
+  assert(def.bar.includes('menu:iletisim'),'Deneme anlamlı olsun: öğretmen varsayılan alt menüsünde İletişim menüsü var.');
+  const menus=def.menus.filter(m=>m.id!=='iletisim');
+  const cur={v:N.LAYOUT_SURUM,menus,bar:['home','program','tools','me'],fav:[],gorulen:N.scopeIds(T),t:1};
+  const M=loadNav({store:{[KT]:JSON.stringify(cur)}}).N;
+  const bar=M.layoutRaw(T).bar;
+  eq(bar.length,5,'Silinen varsayılan menü yüzünden yuva sayısı 4\'e düşmez.');
+  eq(bar.slice(0,4),['home','program','tools','me'],'Mevcut yuvalar yerinde kalır.');
+  assert(bar[4].startsWith('menu:')&&menus.some(m=>m.id===bar[4].slice(5)&&m.ids.length),`Boş yuva kullanıcının sayfası olan bir menüsüyle dolar (${bar[4]}).`);
+  eq(M.tabs(T).length,5,'Alt çubuk beş düğme gösterir.');
+  eq(new Set(bar).size,5,'Yuvalar birbirinden farklıdır.');
+
+  /* hiç menü kalmadıysa yerleşik sayfalar ve tek sayfalar doldurur */
+  const none=loadNav({store:{[KT]:JSON.stringify({v:N.LAYOUT_SURUM,menus:[],bar:['home','tools'],fav:[],gorulen:N.scopeIds(T),t:1})}}).N;
+  eq(none.layoutRaw(T).bar.length,5);
+  eq(none.tabs(T).length,5);
+  eq(new Set(none.layoutRaw(T).bar).size,5);
+  assert(none.layoutRaw(T).bar.some(k=>k==='tools'||k==='me'));
+
+  /* boş (görünmeyen) bir menü yuvada kalırsa çubuk yine beş düğmedir */
+  const bos=[...menus,{id:'bosmenu',ad:'Boş',icon:'grid',tone:'slate',ids:[]}];
+  const B=loadNav({store:{[KT]:JSON.stringify({v:N.LAYOUT_SURUM,menus:bos,bar:['home','program','tools','menu:bosmenu','me'],fav:[],gorulen:N.scopeIds(T),t:1})}}).N;
+  eq(B.tabs(T).length,5,'Boş menü çubukta görünmez ama yerine başka öğe gelir; çubuk eksik kalmaz.');
+  assert(!B.tabs(T).some(t=>t.key==='menu:bosmenu'));
+}
+
+/* ── düzenleyici beş yuvayı da listeler ── */
+{
+  const T='ogretmen',KT=`ka-nav-layout:u1:${T}`;
+  const {N}=loadNav();
+  const def=N.defaultLayout(T);
+  const cur={v:N.LAYOUT_SURUM,menus:def.menus.filter(m=>m.id!=='iletisim'),bar:['home','program','tools','me'],fav:[],gorulen:N.scopeIds(T),t:1};
+  const {N:M,win}=loadNav({user:{uid:'u1',admin:false,ogretmenId:'t1'},store:{[KT]:JSON.stringify(cur)}});
+  const reg={};
+  win.NavPages={register:(k,v)=>{reg[k]=v},current:()=>'menu-edit',helpers:{esc:s=>String(s??''),ico:()=>'',gico:()=>'',head:(t,s)=>`<h1>${t}</h1>`,pageRoot:(k,b)=>b,rowCard:x=>x,emptyState:x=>x,chevron:()=>'',ic:n=>`[${n}]`}};
+  win.document={addEventListener(){},querySelector:()=>({}),querySelectorAll:()=>[]};
+  win.ShellUI={back(){}};
+  win.AppNav=M;
+  vm.runInContext(fs.readFileSync('js/core/nav-editor.js','utf8'),win,{filename:'nav-editor.js'});
+  const html=reg['menu-edit'].html('');
+  const role=M.role();
+  const slots=[...html.matchAll(/data-nav-page-go="bar-pick:(\d)"/g)].map(x=>x[1]);
+  eq(slots,['0','1','2','3','4'],`Beş yuvanın hepsinde "Değiştir" düğmesi var (rol: ${role}).`);
+}
+
 /* ── Ben alt menüde değilken: sayfa aydınlatma ve geri dönüş Menü'dür ── */
 {
   const {store}=stored(['home','menu:okul','tools','tool:idareci-pano','menu:evrak']);

@@ -364,6 +364,10 @@ function cleanBar(list,menus,r,fill=defaultOf(r).bar){
   (Array.isArray(list)?list:[]).forEach(add);
   fill.forEach(add);
   ['home','tools','me'].forEach(add);
+  /* Alt menü her zaman tam beş yuvadır: varsayılanlar yetmezse (ör. varsayılan menü silinmişse) sayfası olan menüler, sonra yerleşik sayfalar, sonra tek sayfalar sırayla boş yuvaları doldurur. */
+  menus.filter(m=>m.ids.length).forEach(m=>add(`menu:${m.id}`));
+  BAR_FIXED.forEach(add);
+  scopeIds(r).forEach(id=>add(`tool:${id}`));
   /* Beş yuvanın hepsi serbesttir; yalnız Menü ya da Ben'den biri kalmalıdır: profil, çıkış ve menü düzeni bu ikisinden açılır. */
   if(!out.includes('tools')&&!out.includes('me'))out[BAR_SLOTS-1]='tools';
   return out;
@@ -532,7 +536,7 @@ function tabs(r=role()){
   const raw=layoutRaw(r).bar,out=[],seen=new Set();
   const take=k=>{const it=barItem(k,r);if(it&&!seen.has(it.key)){seen.add(it.key);out.push(it);return true}return false};
   raw.forEach(take);
-  for(const k of [...defaultOf(r).bar,'home','tools','me'])if(out.length<BAR_SLOTS)take(k);
+  for(const k of [...defaultOf(r).bar,'home','tools','me',...menus(r).map(m=>`menu:${m.id}`),...BAR_FIXED,...allTools().map(t=>`tool:${t.id}`)])if(out.length<BAR_SLOTS)take(k);
   return out.slice(0,BAR_SLOTS);
 }
 const tab=(key,r=role())=>tabs(r).find(t=>t.key===key)||null;
