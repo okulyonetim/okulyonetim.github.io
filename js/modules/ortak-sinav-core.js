@@ -1,219 +1,149 @@
 /* Koruk Asistan — Ortak Sınavlar: saf mantık (ekrandan bağımsız, testlenir)
- * Görevlendirme tebliği, gözetmen görev listesi ve sınav evrakı teslim tutanağı için
- * belge gövdeleri, tarih biçimleri ve yardımcı fonksiyonlar.
- * Ekran: ortak-sinav.js  Çıktı: ReportEngine.printReport()
+ * Üç belge, okulun kullandığı resmî örneklerle birebir aynı metin ve düzendedir:
+ *   1) Görevlendirme Tebliği  2) Görevli/Gözetmen Öğretmenlerin Yapacağı İş ve İşlemler (+ uyulması gereken kurallar)  3) Ortak Sınav Evrakı Teslim Tutanağı.
+ * Belge gövdeleri yalnız <article> döner; kâğıt stili css/design-system-base.css (.osn-*). Çıktı merkezi ReportEngine ile yazdırılır / PDF alınır.
+ * Ekran: ortak-sinav.js.
  */
 (function(global){
 'use strict';
 if(global.OrtakSinavCore)return;
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const NOKTA='………………………', NK='……………………';
+const NOKTA='………………………',NOKTA_K='………………',NOKTA_U='…………………………………………';
+const buyuk=v=>String(v??'').trim().toLocaleUpperCase('tr');
 
-/* ── tarih ── */
-const tarihMetni=(iso,bos=NK)=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));return m?`${m[3]}.${m[2]}.${m[1]}`:bos};
-const isoBugün=()=>{const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
-const gunAdlari=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
-const tarihGun=iso=>{const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));if(!m)return'';const d=new Date(`${m[1]}-${m[2]}-${m[3]}`);return gunAdlari[d.getDay()]||''};
-
-/* ── gözetmen görev listesi ── */
-const GOZETMEN_GOREVLERI=[
- 'Gözetmen öğretmenler, görevli oldukları sınavlardan 15 dakika önce sınav merkezinde hazır bulunur.',
- 'Sınav salonlarını sınav başlamadan önce sıra numaralarına ve aday sayısına göre düzenler.',
- 'Adayların sınav salonlarına usul ve nizama uygun girişini sağlar, kimlik kontrolünü yapar.',
- 'Sınav başlamadan önce adaylara sınavın kurallarını hatırlatır.',
- 'Sınav süresince salon içinde gereken düzen ve güveni sağlar; kopya girişimini önler.',
- 'Sınav süresince adayların birbirleriyle konuşmasına ve başkasının cevaplarını görmesine izin vermez.',
- 'Sınav süresi boyunca salon içinde devamlı dolaşır; masalara yaslanmaz, oturmaz.',
- 'Sınav süresince yanında çalışır durumda cep telefonu bulundurmaz; acil durumlarda salon dışında kullanır.',
- 'Adayların soru kitapçığını ve cevap kâğıdını zamanında alıp almadığını kontrol eder.',
- 'Sınav süresi dolduğunda adayların kalemleri bırakmasını sağlar ve cevap kâğıtlarını toplar.',
- 'Toplanan cevap kâğıtlarını salon tutanağı ile birlikte sınav komisyonuna teslim eder.'
-];
-
-const SINAV_KURALLARI=[
- 'Sınava girmek için kimlik belgesi (nüfus cüzdanı, pasaport veya sürücü belgesi) zorunludur.',
- 'Cep telefonu, akıllı saat ve iletişim cihazları sınav salonuna alınmaz.',
- 'Sınav süresince adaylar soru kitapçığı dışına herhangi bir şey yazamaz.',
- 'Sınav başladıktan sonra ilk 15 dakika içinde ve son 15 dakika içinde salon terk edilemez.',
- 'Sınavda kopya girişimi tespit edilen adayın sınavı geçersiz sayılır.',
- 'Sınav kurallarına uymayan adaylar salondan çıkarılır ve tutanağa geçirilir.'
-];
-
-/* ── kapsam ── */
-const KAPSAM_SECENEKLERI=['Ülke Geneli','İl Geneli','İlçe Geneli','Okul Geneli'];
-
-/* ── ortak belge stili (tüm bölümler) ── */
-function okulBasi(okul,yil,logo){
- const logoHtml=logo?`<img src="${esc(logo)}" alt="Okul logosu" class="os-logo">`:`<div class="os-logo-yer">🏫</div>`;
- return`<div class="os-okul-basi"><div class="os-logo-alan">${logoHtml}</div><div class="os-okul-bilgi"><div class="os-okul-adi">${esc(okul||NOKTA)}</div><div class="os-yil">${esc(yil||'')}</div></div></div>`;
-}
-
-/* ══════════════════════════════════════════════
-   GÖREVLENDİRME TEBLİĞİ
-══════════════════════════════════════════════ */
-/* m: {okul, yil, logo, tarih, sayi, sinif, ders, kapsam, ogretmen, gorevlendiren, gorevlendirenUnvan} */
-function gorevlendirmeBelgesi(m={}){
- const tarih=tarihMetni(m.tarih);
- const sinifDers=([m.sinif,m.ders].filter(Boolean).join(' '))||NOKTA;
- return`<article class="os-paper">
-<div class="os-meb-bant">T.C. MİLLÎ EĞİTİM BAKANLIĞI</div>
-${okulBasi(m.okul,m.yil,m.logo)}
-<div class="os-belge-no"><span>Sayı: <b>${esc(m.sayi||NK)}</b></span><span>Tarih: <b>${tarih}</b></span></div>
-<h2 class="os-baslik">GÖREVLENDİRME TEBLİĞİ</h2>
-<table class="os-bilgi-tablo">
- <tr><th>Adı Soyadı</th><td>${esc(m.ogretmen||NOKTA)}</td></tr>
- <tr><th>Görevi</th><td>${esc(m.gorev||'Öğretmen')}</td></tr>
- <tr><th>Sınıf / Ders</th><td>${esc(sinifDers)}</td></tr>
- <tr><th>Sınav Kapsamı</th><td>${esc(m.kapsam||NOKTA)}</td></tr>
- <tr><th>Sınav Tarihi</th><td>${esc(m.sinavTarihi?tarihMetni(m.sinavTarihi):NOKTA)}</td></tr>
- <tr><th>Sınav Saati</th><td>${esc(m.sinavSaati||NK)}</td></tr>
- <tr><th>Salon</th><td>${esc(m.salon||NK)}</td></tr>
-</table>
-<div class="os-aciklama">
- <p>Yukarıda bilgileri yazılı ${esc(m.ogretmen||'Sayın Öğretmen')}, <b>${esc(m.kapsam||NOKTA)}</b> kapsamında
- yapılacak ortak sınavda <b>${esc(sinifDers)}</b> sınavında gözetmen olarak görevlendirilmiştir.</p>
- <p>Gereğini saygılarımla arz ederim.</p>
-</div>
-<div class="os-imza-alan">
- <div class="os-imza-blok">
-  <p class="os-imza-unvan">${esc(m.gorevlendirenUnvan||'Müdür Yardımcısı')}</p>
-  <p class="os-imza-ad">${esc(m.gorevlendiren||NOKTA)}</p>
-  <p class="os-imza-cizgi"></p>
- </div>
-</div>
-<div class="os-teblig-alt">
- <p><b>Tebliğ Tarihi:</b> ${tarih} &nbsp;&nbsp; <b>Tebliğ Alan:</b> ${esc(m.ogretmen||NOKTA)}</p>
- <p class="os-imza-cizgi os-imza-cizgi--kisa"></p>
-</div>
-</article>`;
-}
-
-/* ══════════════════════════════════════════════
-   GÖZETMEN ÖĞRETMEN GÖREVLERİ
-══════════════════════════════════════════════ */
-/* gorevler: string[], kurallar: string[] */
-function gozetmenGorevleriBelgesi(okul,yil,logo,gorevler,kurallar){
- const gorevListesi=(gorevler||GOZETMEN_GOREVLERI).map((g,i)=>`<li><b>${String.fromCharCode(97+i)})</b> ${esc(g)}</li>`).join('');
- const kuralListesi=(kurallar||SINAV_KURALLARI).map((k,i)=>`<li>${i+1}. ${esc(k)}</li>`).join('');
- return`<article class="os-paper">
-${okulBasi(okul,yil,logo)}
-<h2 class="os-baslik">GÖZETMEN ÖĞRETMEN GÖREVLERİ</h2>
-<section class="os-gorev-liste">
- <h3>Gözetmen Öğretmenlerin Görevleri</h3>
- <ol class="os-liste" type="a">${gorevListesi}</ol>
-</section>
-<section class="os-gorev-liste">
- <h3>Sınavlarda Uyulması Gereken Kurallar</h3>
- <ol class="os-liste">${kuralListesi}</ol>
-</section>
-</article>`;
-}
-
-/* ══════════════════════════════════════════════
-   SINAV EVRAKI TESLİM TUTANAĞI
-══════════════════════════════════════════════ */
-/* m: {okul, yil, logo, sinavAdi, sinavYeri, tarih, saat,
-        onceki:{soruKitabi, teslimEden, teslimAlan, diger, tarih, saat},
-        sirasinda:{olumsuzluk:bool, olumsuzlukAciklama, katilimci, kitapciDurum},
-        sonrasi:{soruKitabi, teslimEden, teslimAlan, tarih, saat},
-        gozetmen:{ad, soyad} } */
-function tutanakBelgesi(m={}){
- const onc=m.onceki||{}, sir=m.sirasinda||{}, son=m.sonrasi||{}, gzt=m.gozetmen||{};
- const satir=(label,val)=>`<tr><th>${esc(label)}</th><td>${esc(val||NK)}</td></tr>`;
- const cb=val=>`<span class="os-cb${val?' os-cb--secili':''}">${val?'☑':'☐'}</span>`;
- return`<article class="os-paper">
-${okulBasi(m.okul,m.yil,m.logo)}
-<h2 class="os-baslik">SINAV EVRAKI TESLİM TUTANAĞI</h2>
-<table class="os-bilgi-tablo">
- ${satir('Sınav Adı',m.sinavAdi)}
- ${satir('Sınav Yeri (Sınıf/Şube)',m.sinavYeri)}
- ${satir('Tarih',m.tarih?tarihMetni(m.tarih):'')}
- ${satir('Saat',m.saat)}
-</table>
-
-<h3 class="os-alt-baslik">A) Sınav Öncesi</h3>
-<table class="os-bilgi-tablo">
- ${satir('Soru Kitapçığı Adedi',onc.soruKitabi)}
- ${satir('Teslim Eden',onc.teslimEden)}
- ${satir('Teslim Alan',onc.teslimAlan)}
- ${satir('Diğer',onc.diger)}
- ${satir('Tarih / Saat',[(onc.tarih?tarihMetni(onc.tarih):''), onc.saat].filter(Boolean).join(' / '))}
-</table>
-
-<h3 class="os-alt-baslik">B) Sınav Sırasında</h3>
-<table class="os-bilgi-tablo">
- <tr><th>Olumsuzluk</th><td>${cb(sir.olumsuzluk)} Var &nbsp;&nbsp; ${cb(!sir.olumsuzluk)} Yok<br><span class="os-aciklama-kucuk">${esc(sir.olumsuzlukAciklama||'')}</span></td></tr>
- ${satir('Katılımcı Sayısı',sir.katilimci)}
- ${satir('Kitapçık Durumu',sir.kitapciDurum)}
-</table>
-
-<div class="os-gozetmen-imza">
- <table class="os-bilgi-tablo">
-  ${satir('Gözetmen Adı',gzt.ad)}
-  ${satir('Gözetmen Soyadı',gzt.soyad)}
- </table>
- <div class="os-imza-kutu"><p>İmza</p><div class="os-imza-alan-bos"></div></div>
-</div>
-
-<h3 class="os-alt-baslik">C) Sınav Sonrası</h3>
-<table class="os-bilgi-tablo">
- ${satir('Soru Kitapçığı Adedi',son.soruKitabi)}
- ${satir('Teslim Eden',son.teslimEden)}
- ${satir('Teslim Alan',son.teslimAlan)}
- ${satir('Tarih / Saat',[(son.tarih?tarihMetni(son.tarih):''), son.saat].filter(Boolean).join(' / '))}
-</table>
-</article>`;
-}
-
-/* ── print wrapper ── */
-function printHtml(belgeIcerigi){
- return`<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',Arial,sans-serif;font-size:11pt;color:#111;background:#fff}
-@page{size:A4;margin:16mm 14mm}
-@media print{body{background:#fff}.os-paper{box-shadow:none;margin:0;padding:0;page-break-after:always}}
-.os-paper{max-width:794px;margin:0 auto;padding:14mm 14mm 14mm 14mm;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12)}
-.os-meb-bant{text-align:center;font-weight:700;font-size:9pt;letter-spacing:.05em;border-bottom:2px solid #1a237e;padding-bottom:4px;margin-bottom:10px;color:#1a237e}
-.os-okul-basi{display:flex;align-items:center;gap:14px;margin-bottom:10px;border-bottom:1px solid #ccc;padding-bottom:8px}
-.os-logo-alan{flex:0 0 64px;display:flex;align-items:center;justify-content:center}
-.os-logo{max-width:64px;max-height:64px;object-fit:contain}
-.os-logo-yer{font-size:40px;line-height:1}
-.os-okul-adi{font-size:13pt;font-weight:700;color:#1a237e}
-.os-yil{font-size:9pt;color:#555;margin-top:2px}
-.os-belge-no{display:flex;gap:24px;font-size:9pt;margin-bottom:8px;color:#333}
-.os-baslik{text-align:center;font-size:13pt;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:10px 0 10px;border-bottom:2px solid #1a237e;padding-bottom:4px}
-.os-alt-baslik{font-size:10pt;font-weight:700;margin:10px 0 4px;color:#1a237e}
-.os-bilgi-tablo{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:10pt}
-.os-bilgi-tablo th,.os-bilgi-tablo td{border:1px solid #bbb;padding:4px 8px;text-align:left;vertical-align:top}
-.os-bilgi-tablo th{background:#f0f4ff;font-weight:600;width:38%}
-.os-aciklama{margin:10px 0;font-size:10pt;line-height:1.6}
-.os-aciklama p{margin-bottom:6px}
-.os-imza-alan{display:flex;justify-content:flex-end;margin-top:14px}
-.os-imza-blok{text-align:center;min-width:200px}
-.os-imza-unvan{font-size:9pt;font-weight:600;margin-bottom:4px}
-.os-imza-ad{font-size:10pt;font-weight:700}
-.os-imza-cizgi{border-top:1px solid #333;width:200px;margin:24px auto 4px}
-.os-imza-cizgi--kisa{width:140px;margin:12px 0 2px}
-.os-teblig-alt{margin-top:12px;font-size:9.5pt;border-top:1px dashed #aaa;padding-top:6px}
-.os-gorev-liste{margin-bottom:12px}
-.os-gorev-liste h3{font-size:10.5pt;font-weight:700;margin-bottom:6px;color:#1a237e}
-.os-liste{padding-left:0;list-style:none;font-size:10pt;line-height:1.65}
-.os-liste li{margin-bottom:4px;padding-left:4px}
-.os-gozetmen-imza{display:flex;gap:16px;align-items:flex-start;margin-bottom:8px}
-.os-gozetmen-imza .os-bilgi-tablo{flex:1}
-.os-imza-kutu{flex:0 0 140px;text-align:center;font-size:9pt;font-weight:600;padding-top:4px}
-.os-imza-alan-bos{border:1px solid #bbb;height:56px;margin-top:4px}
-.os-cb{font-size:13pt;line-height:1}
-.os-aciklama-kucuk{font-size:9pt;color:#555}
-</style></head><body>${belgeIcerigi}</body></html>`;
-}
-
-global.OrtakSinavCore={
- isoBugün, tarihMetni, tarihGun,
- GOZETMEN_GOREVLERI, SINAV_KURALLARI, KAPSAM_SECENEKLERI,
- gorevlendirmeBelgesi, gozetmenGorevleriBelgesi, tutanakBelgesi,
- printHtml
+/* ── sayfalar ── */
+const SAYFALAR={
+ teblig:{ad:'Ortak Sınav Görevlendirme Tebliği'},
+ gorevler:{ad:'Gözetmen Öğretmen Görevleri'},
+ tutanak:{ad:'Ortak Sınav Evrakı Teslim Tutanağı'}
 };
+/* Türk alfabesindeki sıra: a b c ç d e f g ğ h ı i j k … (madde işareti). */
+const HARFLER=[...'abcçdefgğhıijklmnoöprsştuüvyz'];
+const KAPSAMLAR=['ülke','il','ilçe','okul'];
+const kapsamNormal=v=>{const k=String(v??'').trim().toLocaleLowerCase('tr').replace(/\s*geneli$/,'');return KAPSAMLAR.includes(k)?k:'ülke'};
+
+/* ── resmî metinler (okulun belgesinden; ekranda düzenlenebilir) ── */
+const GOREVLER=[
+ 'Ortak yazılı sınavlar öncesinde okul müdürü tarafından yapılacak ortak yazılı sınav bilgilendirme toplantısına katılmak,',
+ 'Ortak yazılı sınav kâğıtlarını ve sınıf listesini sınav başlamadan en geç 10 dakika önce okul müdürlüğünden kapalı sınav güvenlik poşeti içerisinde imza karşılığı teslim almak,',
+ 'Sınav süresi tamamlandığında “Sınav süresi bitmiştir.” uyarısı yapmak, tüm yazılı sınav kâğıtlarını sayarak toplamak ve okul müdürlüğüne sınav güvenlik poşeti içerisinde imza karşılığı teslim etmek,',
+ 'Ortak yazılı sınavların sınıfta uygulanmasına yönelik iş ve işlemler konusunda öğrencileri bilgilendirmek ve “Sınavda Uyulması Gereken Kurallar”ı sınav başlamadan önce sınıfta yüksek sesle okumak,',
+ 'Ortak yazılı sınav başlamadan önce sınavın başlama ve bitiş saatlerini tahtaya yazmak,',
+ 'Ortak yazılı sınavda açık uçlu soruların cevaplarının belirlenen alanın dışına taşırmadan yazılması gerektiği konusunda öğrencileri uyarmak,',
+ 'Öğrencilerin, ortak yazılı sınav kâğıtları üzerine yazacakları tüm cevapları kurşun kalemle yazmalarını sağlamak,',
+ 'Ortak yazılı sınav kâğıdı üzerinde ilgili bölümlerin (adı, soyadı, öğrenci numarası, sınıfı/şubesi vb.) öğrenci tarafından doldurulmasını sağlamak,',
+ 'Ortak yazılı sınavın 100 (yüz) tam puan üzerinden değerlendirileceğini öğrencilere duyurmak,',
+ 'Baskı hatası tespit edilen ortak yazılı sınav kâğıtlarının değiştirilmesini sağlamak,',
+ 'Ortak yazılı sınavda kopya çekildiğinin tespiti hâlinde kopya çeken öğrenci için tutanak düzenleyip bu tutanağı okul müdürlüğüne teslim etmek,',
+ 'Ortak yazılı sınavların uygulanması aşamasında soruların görüntülerinin alınmamasını ve herhangi bir yerde paylaşımının yapılmamasını sağlamak,',
+ 'Ortak yazılı sınav kâğıtlarının yırtılması, okunamayacak hâle getirilmesi ya da teslim edilmemesi durumunda tutanak düzenlemek ve tutanağı okul idaresine teslim etmek,',
+ 'Öğrencinin ortak yazılı sınava katılım durumunu sınıf listesine işlemek (Öğrenci sınava katıldı ise “GİRDİ”, katılmadı ise “GİRMEDİ” şeklinde yazılacaktır.).'
+];
+const KURALLAR=[
+ 'Ortak yazılı sınav açık uçlu veya açık uçlu ve kısa cevaplı sorulardan oluşmaktadır. İstediğiniz sorudan başlayabilirsiniz. Sınav süresi 40 dakikadır.',
+ 'Her sorunun puan değeri sorunun sonunda yer almaktadır.',
+ 'Ortak yazılı sınav kâğıdının ilgili bölümlerini (adı, soyadı, öğrenci numarası, sınıfı/şubesi vb.) doldurunuz.',
+ 'Ortak yazılı sınav kâğıdınızı kontrol ediniz. Eksik sayfa veya baskı hatası var ise ortak yazılı sınav kâğıdınız değiştirilecektir.',
+ 'Ortak yazılı sınav kâğıdına cevaplarınızı yazabilmeniz için her sorunun altında cevaplama alanları oluşturulmuştur. Bu alana cevaplarınızı siyah kurşun kalemle yazınız.',
+ 'Ortak yazılı sınav esnasında kopya çektiği tespit edilen öğrenciler hakkında ilgili Yönetmelik’e göre işlem yapılacaktır.'
+];
+const temizListe=(l,varsayilan)=>Array.isArray(l)?l.map(x=>String(x??'').trim()).filter(Boolean):[...varsayilan];
+
+/* ── tarih / saat ── */
+const tarihAyir=iso=>/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso||''));
+const tarihNokta=(iso,bos=NOKTA_K)=>{const m=tarihAyir(iso);return m?`${m[3]}.${m[2]}.${m[1]}`:bos};
+const tarihEgik=(iso,bos=NOKTA_K)=>{const m=tarihAyir(iso);return m?`${m[3]}/${m[2]}/${m[1]}`:bos};
+const saatMetni=(v,bos='…… : ……')=>{const m=/^(\d{1,2})[:.](\d{2})$/.exec(String(v||'').trim());return m?`${m[1].padStart(2,'0')} : ${m[2]}`:bos};
+const nokta=(v,bos=NOKTA)=>{const s=String(v??'').trim();return s||bos};
+
+/* "7. Sınıf" + "Matematik" → "7. Sınıf Matematik" */
+const sinifDers=(sinif,ders)=>[sinif,ders].map(x=>String(x??'').trim()).filter(Boolean).join(' ');
+
+/* ── 1) Görevlendirme tebliği ──
+ * m: {ustBaslik1, ustBaslik2, okul, belgeTarihi, ogretmen, sinif, ders, kapsam, sinavTarihi, tebligEden, tebligUnvan, ek} */
+function tebligCumlesi(m={}){
+ const t=tarihAyir(m.sinavTarihi)?tarihNokta(m.sinavTarihi):NOKTA_K,sd=sinifDers(m.sinif,m.ders)||NOKTA;
+ return`${t} tarihinde yapılacak olan ${sd} dersi ${kapsamNormal(m.kapsam)} geneli ortak yazılı sınavına gözetmen öğretmen olarak görevlendirildiniz.`;
+}
+function gorevlendirmeBelgesi(m={}){
+ const ek=String(m.ek??'Gözetmen Öğretmenin Görevleri').trim();
+ return`<article class="osn-paper osn-teblig">
+<header class="osn-mektup"><img class="osn-logo" src="assets/logo.png" alt=""><div class="osn-mektup-yazi"><div>T.C.</div><div>${esc(nokta(m.ustBaslik1,NOKTA_U))}</div><div>${esc(nokta(m.ustBaslik2,NOKTA_U))}</div><div>${esc(nokta(m.okul,NOKTA_U))}</div></div></header>
+<div class="osn-konu"><span>Konu : Görevlendirme Tebliği</span><span>${esc(tarihEgik(m.belgeTarihi))}</span></div>
+<div class="osn-muhatap"><span class="osn-sn">Sn: ${esc(nokta(m.ogretmen,NOKTA_U))}</span><span class="osn-okudum"><i>İmza</i><span>Okudum</span></span></div>
+<p class="osn-govde">${esc(tebligCumlesi(m))}</p>
+<p class="osn-govde">Gereğini bilgilerinize rica ederim.</p>
+<div class="osn-imza"><b>${esc(nokta(m.tebligEden,NOKTA_K))}</b><span>${esc(String(m.tebligUnvan||'').trim()||'Tebliğ Eden Mdr Yrd')}</span></div>
+${ek?`<div class="osn-ek"><span>Ek</span><span>: ${esc(ek)}</span></div>`:''}
+</article>`;
+}
+
+/* ── 2) Gözetmen öğretmenlerin yapacağı iş ve işlemler + uyulması gereken kurallar ──
+ * m: {gorevler:[], kurallar:[]} */
+function gorevlerBelgesi(m={}){
+ const g=temizListe(m.gorevler,GOREVLER),k=temizListe(m.kurallar,KURALLAR);
+ return`<article class="osn-paper osn-gorevler">
+<h2 class="osn-baslik">GÖREVLİ/GÖZETMEN ÖĞRETMENLERİN YAPACAĞI İŞ VE İŞLEMLER</h2>
+<ol class="osn-liste">${g.map((x,i)=>`<li><span class="osn-no">${HARFLER[i]||String(i+1)})</span><span>${esc(x)}</span></li>`).join('')}</ol>
+<h2 class="osn-baslik osn-baslik--sol osn-baslik--kural">SINAVLARDA UYULMASI GEREKEN KURALLAR</h2>
+<h3 class="osn-baslik osn-baslik--alt">ORTAK YAZILI SINAVLARDA UYULMASI GEREKEN KURALLAR</h3>
+<p class="osn-not">(Öğretmen tarafından sınav öncesinde sınıfta okunacaktır.)</p>
+<ol class="osn-liste">${k.map((x,i)=>`<li><span class="osn-no">${i+1})</span><span>${esc(x)}</span></li>`).join('')}</ol>
+</article>`;
+}
+
+/* ── 3) Ortak sınav evrakı teslim tutanağı ──
+ * m: {okul, kapsam, ders, donem, sinavNo, sinavAdi (elle yazılırsa o kullanılır), sinavYeri, tarih, saat,
+ *     onceKitapcik, onceTeslimEden, onceTeslimAlan, onceDiger, onceTarih, onceSaat,
+ *     olumsuzluk, olumsuzlukYok, katilan, eksiksiz, gozetmenAd, gozetmenSoyad,
+ *     sonraKitapcik, sonraTeslimEden, sonraTeslimAlan, sonraDiger, sonraTarih, sonraSaat} */
+function sinavAdi(m={}){
+ if(String(m.sinavAdi||'').trim())return String(m.sinavAdi).trim();
+ const kapsam=String(m.kapsam||'').trim()?`${buyuk(kapsamNormal(m.kapsam))} GENELİ`:`${NOKTA_K} GENELİ`;
+ const ders=String(m.ders||'').trim()?buyuk(m.ders):NOKTA_U;
+ const d=String(m.donem||'').trim(),no=String(m.sinavNo||'').trim();
+ return`${kapsam} ${ders} DERSİ ${d?`${d}.`:'… .'} DÖNEM ${no?`${no}.`:'…. .'} ORTAK YAZILI SINAVI`;
+}
+const sinavYeriMetni=v=>{const s=buyuk(v);return s?(/SINIFI$/.test(s)?s:`${s} SINIFI`):'…./A SINIFI'};
+const kutu=sec=>`<span class="osn-kutu${sec?' osn-kutu--secili':''}" aria-hidden="true"></span>`;
+const satir=metin=>`<div class="osn-satir">${esc(metin)}</div>`;
+function tutanakBelgesi(m={}){
+ const adet=(v,bos='…….')=>`${String(v??'').trim()||bos} adet`;
+ const olumsuzlukMetni=String(m.olumsuzluk||'').trim();
+ const katilan=String(m.katilan??'').trim();
+ return`<article class="osn-paper osn-tutanak">
+<div class="osn-kutuluk osn-kutuluk--baslik"><div>${esc(buyuk(m.okul)||NOKTA_U)}</div><div>ORTAK SINAV EVRAKI TESLİM TUTANAĞI</div></div>
+<table class="osn-tablo osn-tablo--bilgi"><colgroup><col class="osn-c-etiket"><col></colgroup><tbody>
+<tr><th>Sınav Adı</th><td>${esc(sinavAdi(m))}</td></tr>
+<tr><th>Sınav Yeri</th><td>${esc(sinavYeriMetni(m.sinavYeri))}</td></tr>
+<tr><th>Tarih ve Saat</th><td>${esc(tarihEgik(m.tarih,'…./…./202..'))} &nbsp;&nbsp; - &nbsp;&nbsp; ${esc(saatMetni(m.saat,'….. : …..'))}</td></tr>
+</tbody></table>
+<p class="osn-aciklama">Sınav öncesinde sınav evrakı koordinatörlükten alınırken aşağıdaki kısım doldurulacaktır.</p>
+<table class="osn-tablo osn-tablo--teslim"><colgroup><col class="osn-c-sol"><col><col></colgroup><tbody><tr>
+<td class="osn-sol">${satir(`Soru Kitapçığı: ${adet(m.onceKitapcik)}`)}${satir(`Diğer (belirtiniz): ${String(m.onceDiger??'Gözetmen Öğretmenin Görevleri').trim()}`)}${satir(`Tarih: ${tarihEgik(m.onceTarih,'…../…../202…')}`)}${satir(`Saat: ${saatMetni(m.onceSaat,'….. : …..')}`)}</td>
+<td class="osn-imza-hucre"><b>Teslim Eden</b><span>${esc(nokta(m.onceTeslimEden,NOKTA_K))}</span></td>
+<td class="osn-imza-hucre"><b>Teslim Alan</b><span>${esc(nokta(m.onceTeslimAlan,NOKTA_K))}</span></td>
+</tr></tbody></table>
+<table class="osn-tablo osn-tablo--olumsuzluk"><tbody>
+<tr><th>Sınav sırasında gözlenen olumsuzlukları ayrıntılı olarak belirtiniz (varsa).</th></tr>
+<tr><td class="osn-olumsuzluk">${esc(olumsuzlukMetni)}</td></tr>
+<tr><td class="osn-imza-satiri">İmza:</td></tr>
+</tbody></table>
+<p class="osn-onay">${kutu(m.olumsuzlukYok)}<span>Sınav esnasında sınav ortamını bozan herhangi bir olumsuzluk yaşanmamıştır.</span></p>
+<p class="osn-onay">${kutu(m.eksiksiz)}<span>Sınava ${esc(katilan||'…..')} kişi katılmıştır. Soru kitapçıkları eksiksiz alınmıştır.</span></p>
+<table class="osn-tablo osn-tablo--gozetmen"><thead><tr><th></th><th>Adı</th><th>Soyadı</th><th>İmza</th></tr></thead><tbody>
+<tr><th>Gözetmen</th><td>${esc(String(m.gozetmenAd||'').trim())}</td><td>${esc(String(m.gozetmenSoyad||'').trim())}</td><td></td></tr>
+</tbody></table>
+<p class="osn-aciklama">Sınav sonrasında sınav evrakı koordinatörlüğe teslim edilirken aşağıdaki kısım doldurulacaktır.</p>
+<table class="osn-tablo osn-tablo--sonra"><colgroup><col class="osn-c-etiket"><col class="osn-c-deger"><col><col></colgroup><tbody>
+<tr><th>Soru Kitapçığı:</th><td>${esc(adet(m.sonraKitapcik,'………'))}</td><td class="osn-imza-hucre" rowspan="4"><b>Teslim Eden</b><span>${esc(nokta(m.sonraTeslimEden,NOKTA_K))}</span></td><td class="osn-imza-hucre" rowspan="4"><b>Teslim Alan</b><span>${esc(nokta(m.sonraTeslimAlan,NOKTA_K))}</span></td></tr>
+<tr><th>Diğer (belirtiniz):</th><td>${esc(String(m.sonraDiger??'').trim())}</td></tr>
+<tr><th>Tarih:</th><td>${esc(tarihEgik(m.sonraTarih,'…./…./202…'))}</td></tr>
+<tr><th>Saat:</th><td>${esc(saatMetni(m.sonraSaat,'……. : ……..'))}</td></tr>
+</tbody></table>
+</article>`;
+}
+
+global.OrtakSinavCore={SAYFALAR,HARFLER,KAPSAMLAR,kapsamNormal,GOREVLER,KURALLAR,temizListe,tarihNokta,tarihEgik,saatMetni,sinifDers,tebligCumlesi,sinavAdi,sinavYeriMetni,gorevlendirmeBelgesi,gorevlerBelgesi,tutanakBelgesi};
 })(window);

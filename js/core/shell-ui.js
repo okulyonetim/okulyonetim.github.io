@@ -365,6 +365,23 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='ortak-sinav'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
+      if(!global.OrtakSinavCore)await global.AppLoader?.loadScript?.('js/modules/ortak-sinav-core.js?v=1');
+      if(!global.OrtakSinavModule?.open)await global.AppLoader?.loadScript?.('js/modules/ortak-sinav.js?v=1');
+      if(!global.OrtakSinavModule?.open)throw new Error('Ortak Sınavlar modülü yüklenemedi.');
+      const ad=(global.OrtakSinavCore.SAYFALAR[page]||global.OrtakSinavCore.SAYFALAR.teblig).ad;
+      setBottomActive(bottom);setTitle(ad);
+      if(!global.OrtakSinavModule.open(page))throw new Error('Ortak Sınavlar açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:ad});
+    }catch(e){
+      console.error('[Shell/ortak-sinav]',e);global.toast?.('Ortak Sınavlar açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='ders-kesim'){
     try{
       if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');

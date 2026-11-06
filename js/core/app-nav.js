@@ -72,7 +72,7 @@ function icon(name,size=20,sw=2){
 /* ── araç simgeleri: eski menüdeki emoji; bilinenler CSS maskesiyle çizgi simgeye çevrilir (css: [data-ka-glyph]), bilinmeyenler emoji kalır ── */
 const GLYPHS={
   'student-attendance':'☑️','classes':'🏫','students':'🎓','student-list':'📋','written':'☑️','trial':'🧪','results':'🏅','grades':'📊','homework':'✅','rubric':'📊','project':'📏',
-  'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','veli-toplantisi':'👨‍👩‍👧','yazili-teslim':'📦','ders-kesim':'📝','sinif-rehberlik':'🧩','form-rehberlik':'🧭',
+  'plans':'📋','form-maarif':'🏅','form-bep':'📋','tutanak':'📝','dilekce-olustur':'📄','form-sok':'🛡️','form-zumre':'👥','form-diger':'📁','parentmeeting':'💬','veli-toplantisi':'👨‍👩‍👧','yazili-teslim':'📦','ortak-teblig':'📨','ortak-gorevler':'📋','ortak-tutanak':'📝','ders-kesim':'📝','sinif-rehberlik':'🧩','form-rehberlik':'🧭',
   'gezi':'🚌','form-kulup':'♡','form-belirli':'📅','dilimiz':'🗣️','documents':'📁','pdf-images':'🖼️','pdf-merge':'📑','checklists':'📋','school-age-calculator':'🎯','folder-spine':'🗂️','kat-plani':'🏢',
   'staff-leaves':'📋','puantaj':'🕘','dilekce-izin':'📄','payroll':'💵','ek-ders':'🧾','diploma-request':'🎓','diploma-response':'🏫','teblig':'🔔','attendance':'📅','evrak':'📄','evrak-teslim':'✍️','evrak-teblig-donem1':'📨','evrak-teblig-sonu':'📬','tasks':'🕘','monthflow':'📆',
   'reports':'📊','food-audit':'📝','teacher-list-builder':'📋','school-info':'🏫','holiday':'☀️','acad-calendar':'📅','teachers':'👩‍🏫','staff':'🧑‍💼','schedule':'📅','duty':'🛡️','meeting-schedule':'📅',
@@ -169,6 +169,11 @@ const KATALOG=[
   ['rubric','Katılım Puanı Dağıtımı','ruler','Ders etkinliği katılım puanı','tools','rubric'],
   ['project','Proje Değerlendirme Ölçeği','ruler','Proje puanlama ölçeği','tools','project'],
   ['tymm-olcek','TYMM İlkokul Ölçekleri','ruler','1–4. sınıf süreç değerlendirme gözlem formları','tymm-olcek']
+ ]],
+ ['ortaksinav','Ortak Sınavlar','clip','indigo',[
+  ['ortak-teblig','Görevlendirme Tebliği','pen','Ortak yazılı sınav gözetmen görevlendirme tebliği','ortak-sinav','teblig',{y:1}],
+  ['ortak-gorevler','Gözetmen Öğretmen Görevleri','check','Gözetmenin iş ve işlemleri, sınav kuralları','ortak-sinav','gorevler'],
+  ['ortak-tutanak','Sınav Evrakı Teslim Tutanağı','doc','Ortak sınav evrakı alma ve teslim tutanağı','ortak-sinav','tutanak']
  ]],
  ['plan','Planlar','calendar','green',[
   ['plans','Yıllık Plan','calendar','Yıllık planlar ve haftalık kazanımlar','academic','plans'],
@@ -284,8 +289,8 @@ const DIGER={id:'diger',ad:'Diğer sayfalar'};
 const BAR_FIXED=['home','program','tools','me'];                  /* yerleşik sayfalar; geri kalan yuvalar menü ya da tek sayfadır */
 /* Rolün menü sırası: her biri KATALOG'daki tüm menülerin bir sıralamasıdır; rolde sayfası olmayan menü gizlenir. */
 const MENU_SIRA={
-  ogretmen:['ogrenci','sinav','plan','program','evrak','etkinlik','projeler','hizmet','iletisim','belge','okul','personel','ayar'],
-  idareci:['okul','evrak','personel','ogrenci','sinav','plan','program','etkinlik','projeler','hizmet','iletisim','belge','ayar']
+  ogretmen:['ogrenci','sinav','ortaksinav','plan','program','evrak','etkinlik','projeler','hizmet','iletisim','belge','okul','personel','ayar'],
+  idareci:['okul','evrak','personel','ogrenci','sinav','ortaksinav','plan','program','etkinlik','projeler','hizmet','iletisim','belge','ayar']
 };
 const BAR_VARSAYILAN={ogretmen:['home','program','tools','menu:iletisim','me'],idareci:['home','menu:okul','tools','tool:idareci-pano','me']};
 const FAV_VARSAYILAN={ogretmen:['student-attendance','written','tutanak','plans'],idareci:[]};
@@ -309,7 +314,7 @@ const KEYWORDS={
   'ogretmen-dosyasi':'öğretmen dosyası kapak evrak form kontrol listesi teslim dosya hazırlık',
   'oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
-  'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
+  'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ortak-teblig':'ortak sınav görevlendirme tebliği gözetmen öğretmen ülke geneli ortak yazılı','ortak-gorevler':'gözetmen öğretmen görevleri iş ve işlemler sınavda uyulması gereken kurallar ortak yazılı','ortak-tutanak':'ortak sınav evrakı teslim tutanağı soru kitapçığı gözetmen koordinatör','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto tara tarayıcı kamera scanner camscanner belge','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
   'staff-leaves':'izin rapor mazeret','puantaj':'puantaj imza sirküsü çizelge','dilekce-izin':'izin dilekçe dilekçe ve izinler','payroll':'maaş ek ders bordro','ek-ders':'ek ders ücret onay yazısı onay çizelgesi excel xlsx ilkokul ortaokul maaş bordro yatay a4 pdf','diploma-request':'diploma kayıt talep','diploma-response':'diploma okul cevap',
   'teblig':'tebliğ tebellüğ tebliğ-tebellüğ imza','attendance':'devamsızlık personel çizelge','evrak':'evrak gelen giden takip','evrak-teslim':'evrak teslim imza öğretmenden istenecek teslim imza çizelgesi','evrak-teblig-donem1':'tebliğ yazı dönem sonu','evrak-teblig-sonu':'tebliğ yazı sene sonu',

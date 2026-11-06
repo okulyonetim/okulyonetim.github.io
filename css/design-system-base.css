@@ -15659,6 +15659,55 @@ html[data-theme] #v2ModuleRoot .klp-bos p{margin:0;font-size:var(--ka-fs-12);col
 .ka-report .ytt-ozet{margin:0 0 8mm}
 .ka-report .ytt-imzalar{display:flex;justify-content:space-between;align-items:flex-start;gap:20mm;break-inside:avoid;page-break-inside:avoid}
 
+/* ===== A4 — Ortak Sınavlar (.osn-*) =====
+   js/modules/ortak-sinav-core.js çıktısının kâğıt stili: görevlendirme tebliği (resmî yazı), gözetmen görevleri listesi, sınav evrakı teslim tutanağı (çerçeveli form).
+   Yalnız rapor belirteçleri ve mm. */
+.ka-report .osn-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:12pt;line-height:1.4}
+.ka-report .osn-mektup{display:flex;align-items:center;gap:6mm;margin:0 0 12mm}
+.ka-report .osn-logo{flex:none;width:28mm;height:28mm;object-fit:contain}
+.ka-report .osn-mektup-yazi{flex:1;padding-inline-end:34mm;text-align:center}
+.ka-report .osn-konu{display:flex;justify-content:space-between;margin:0 0 14mm}
+.ka-report .osn-muhatap{display:flex;justify-content:space-between;align-items:flex-start;margin:0 0 10mm;padding-inline-start:55mm}
+.ka-report .osn-okudum{display:flex;flex-direction:column;align-items:center;min-width:30mm}
+.ka-report .osn-okudum i{font-style:normal;opacity:.45}
+.ka-report .osn-govde{margin:0 0 4mm;text-indent:12mm;text-align:justify}
+.ka-report .osn-imza{display:flex;flex-direction:column;align-items:center;width:60mm;margin:16mm 0 14mm auto;text-align:center;break-inside:avoid;page-break-inside:avoid}
+.ka-report .osn-ek{display:flex;gap:8mm;margin:0}
+.ka-report .osn-baslik{margin:0 0 3mm;text-align:center;font-size:11.5pt;font-weight:700;line-height:1.35}
+.ka-report .osn-baslik--sol{text-align:start}
+.ka-report .osn-baslik--kural{margin-top:5mm}
+.ka-report .osn-baslik--alt{font-size:11.5pt}
+.ka-report .osn-not{margin:0 0 3mm;text-align:center;font-weight:700}
+.ka-report .osn-liste{margin:0 0 3mm;padding:0;list-style:none;font-size:11pt;line-height:1.33;text-align:justify}
+.ka-report .osn-liste li{display:flex;gap:2mm;margin:0 0 2.4mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .osn-no{flex:none}
+.ka-report .osn-tutanak{font-family:Arial,Helvetica,sans-serif;font-size:10pt}
+.ka-report .osn-kutuluk{margin:0 0 6mm;padding:4mm;border:.35mm solid var(--ka-report-border);text-align:center;font-size:12pt;font-weight:700;line-height:1.45}
+.ka-report .osn-tablo{width:100%;margin:0 0 5mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .osn-tablo tr{break-inside:avoid;page-break-inside:avoid}
+.ka-report .osn-tablo th,.ka-report .osn-tablo td{padding:1.6mm 2.5mm;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:10pt!important;font-weight:400!important;text-align:start!important;vertical-align:middle;overflow-wrap:anywhere}
+.ka-report .osn-tablo tbody tr:nth-child(n) td{background:var(--ka-report-bg)!important}
+.ka-report .osn-c-etiket{width:32mm}
+.ka-report .osn-c-sol{width:78mm}
+.ka-report .osn-c-deger{width:34mm}
+.ka-report .osn-tablo--bilgi th,.ka-report .osn-tablo--bilgi td{height:8mm}
+.ka-report .osn-aciklama{margin:0 0 2mm}
+.ka-report .osn-tablo--teslim td{height:30mm}
+.ka-report .osn-satir{padding:.9mm 0}
+.ka-report .osn-tablo td.osn-imza-hucre{text-align:center!important}
+.ka-report .osn-imza-hucre b{display:block;margin:0 0 6mm;font-weight:400}
+.ka-report .osn-tablo--olumsuzluk th{height:7mm}
+.ka-report .osn-tablo td.osn-olumsuzluk{height:22mm;vertical-align:top;white-space:pre-wrap}
+.ka-report .osn-tablo td.osn-imza-satiri{height:7mm}
+.ka-report .osn-onay{display:flex;align-items:center;gap:2mm;margin:0 0 2mm;font-family:"Times New Roman",Times,serif;font-size:11pt}
+.ka-report .osn-kutu{position:relative;flex:none;box-sizing:border-box;width:3.4mm;height:3.4mm;border:.3mm solid var(--ka-report-border)}
+.ka-report .osn-kutu--secili::after{content:"";position:absolute;top:.1mm;inset-inline-start:.95mm;width:.9mm;height:1.9mm;border:solid var(--ka-report-text);border-width:0 .4mm .4mm 0;transform:rotate(45deg)}
+.ka-report .osn-tablo--gozetmen{margin-top:9mm}
+.ka-report .osn-tablo--gozetmen thead th{text-align:center!important}
+.ka-report .osn-tablo--gozetmen td{height:11mm}
+.ka-report .osn-tablo--sonra td.osn-imza-hucre{width:auto}
+.ka-report .osn-tablo--sonra th,.ka-report .osn-tablo--sonra td{height:8mm}
+
 /* ===== A4 — Öğrenci Tanıma Formu (.tif-*) =====
    js/modules/student-intake.js baskı çıktısı: iki sabit tabaka; her biri A4'ün 10 mm kenar boşluğu içine 275 mm yükseklikle oturur (277 mm'den 2 mm pay) (ReportEngine akis:true, kenarBosluk:10).
    Hücre: üstte etiket, altta değer. Satırlar 12 sütunlu ızgara; kalan yükseklik yazılacak alanlara dağıtılır. Yalnız rapor belirteçleri ve mm. */
@@ -15769,6 +15818,17 @@ html[data-theme] #v2ModuleRoot .ytt-eylem--yazdir .ka-btn{flex:1 1 auto}
  html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-top{grid-column:4;grid-row:3}
  html[data-theme] #v2ModuleRoot .ytt-satir>.ytt-sil{grid-column:5;grid-row:1}
 }
+
+/* ===== ORTAK SINAVLAR (osn-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .osn-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .osn-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .osn-head p{margin:0}
+html[data-theme] #v2ModuleRoot .osn-maddeler{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .osn-madde{display:grid;grid-template-columns:var(--ka-sp-24) minmax(0,1fr) var(--ka-sp-42);align-items:start;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .osn-madde-no{padding-top:var(--ka-sp-10);color:var(--ka-text-muted);font-weight:var(--ka-fw-700)}
+html[data-theme] #v2ModuleRoot .osn-onay-ekran{display:flex;align-items:flex-start;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .osn-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .osn-eylem--yazdir .ka-btn{flex:1 1 auto}
 
 /* ===== PROJELER › MAARİF'İN KALBİNDE OYUN (mok-*) — ekran ===== */
 html[data-theme] #v2ModuleRoot .mok-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
