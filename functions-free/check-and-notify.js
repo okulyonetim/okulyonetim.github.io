@@ -18,8 +18,13 @@ const CHECKPOINT_DOC = 'bildirimKontrol';
 const MESSAGE_LOOKBACK_MS = 60 * 60 * 1000;
 // Hatırlatıcıda saat girilmemişse bildirim gece yarısı değil, sabah bu saatte gider.
 const HATIRLATICI_VARSAYILAN_SAAT = '08:00';
-// Vadesi gelmiş hatırlatıcılar için en fazla kaç gün geriye bakılır (eski kayıtlar sorguyu şişirmesin).
-const HATIRLATICI_GERIYE_GUN = 7;
+// Vadesi gelmiş hatırlatıcı, görev ve aylık işler için en fazla kaç gün geriye bakılır. Bu kontrol her çalışmada yapılır;
+// tamamlanmış ya da bildirilmiş eski kayıtlar her seferinde yeniden okunup Firestore'un günlük okuma kotasını (ücretsiz: 50 bin) tüketmesin.
+const GERIYE_GUN = 7;
+// Aylık işlerin üretimi (şablon + bu ayın kayıtları) her kontrolde değil, ayda bir ve ayrıca bu aralıkta bir yapılır.
+const URETIM_ARALIGI_MS = 60 * 60 * 1000;
+let sonUretimAyi = '';
+let sonUretimZamani = 0;
 
 function firebaseBaslat() {
   if (dbReady) return;
@@ -161,7 +166,7 @@ async function kontrolEt() {
 
   // Eski ve zaten bildirilmiş kayıtlar limiti doldurup yenileri gölgelemesin diye yalnız son günlere bakılır.
   const hSnap = await db.collection('oy_hatirlaticilar')
-    .where('tarih', '>=', ileriTarih(bugun, -HATIRLATICI_GERIYE_GUN))
+    .where('tarih', '>=', ileriTarih(bugun, -GERIYE_GUN))
     .where('tarih', '<=', bugun)
     .limit(300)
     .get();
@@ -179,7 +184,11 @@ async function kontrolEt() {
     }
   });
 
-  const gSnap = await db.collection('oy_gorevler').where('sonTarih', '<=', bugun).limit(100).get();
+  const gSnap = await db.collection('oy_gorevler')
+    .where('sonTarih', '>=', ileriTarih(bugun, -GERIYE_GUN))
+    .where('sonTarih', '<=', bugun)
+    .limit(100)
+    .get();
   gSnap.forEach(doc => {
     const v = doc.data() || {};
     if (v.durum === 'tamamlandi' || v.bildirimGonderildi || !v.sonTarih) return;
@@ -187,8 +196,18 @@ async function kontrolEt() {
   });
 
   // Periyodik işler: aylık otomatik üret, sonra "X gün önce" ve bitiş/gecikme bildirimlerini topla.
-  await periyodikAylikUret(bugun).catch(e => console.warn('Aylık üretim hatası:', e.message));
-  const pSnap = await db.collection('oy_periyodikIsler').where('bitis', '<=', ileriTarih(bugun, 30)).limit(300).get();
+  if (bugun.slice(0, 7) !== sonUretimAyi || Date.now() - sonUretimZamani >= URETIM_ARALIGI_MS) {
+    try {
+      await periyodikAylikUret(bugun);
+      sonUretimAyi = bugun.slice(0, 7);
+      sonUretimZamani = Date.now();
+    } catch (e) { console.warn('Aylık üretim hatası:', e.message); }
+  }
+  const pSnap = await db.collection('oy_periyodikIsler')
+    .where('bitis', '>=', ileriTarih(bugun, -GERIYE_GUN))
+    .where('bitis', '<=', ileriTarih(bugun, 30))
+    .limit(300)
+    .get();
   pSnap.forEach(doc => {
     const v = doc.data() || {};
     if (v.tamamlandi || !v.bitis) return;

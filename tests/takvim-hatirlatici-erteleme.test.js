@@ -43,7 +43,7 @@ assert(fcm.includes('CH_TAKVIM')&&fcm.includes('"Ertele"')&&fcm.includes('hatirl
 assert(server.includes("HATIRLATICI_VARSAYILAN_SAAT = '08:00'")&&server.includes('saat || HATIRLATICI_VARSAYILAN_SAAT'),'Saatsiz hatırlatıcı gece yarısı değil sabah 08:00\'de bildirilmeli.');
 assert(server.includes('sahipUid: String(v.sahipUid')&&server.includes('t.uid === item.sahipUid'),'Hatırlatıcı bildirimi yalnız sahibinin cihazlarına gitmeli.');
 assert(server.includes('veri.hatirlaticiId = item.docId'),'FCM verisi hatırlatıcı kimliğini taşımalı (Ertele için).');
-assert(server.includes("'>=', ileriTarih(bugun, -HATIRLATICI_GERIYE_GUN)"),'Eski kayıtlar limiti doldurup yeni hatırlatıcıları gölgelememeli.');
+assert(server.includes("'>=', ileriTarih(bugun, -GERIYE_GUN)"),'Eski kayıtlar limiti doldurup yeni hatırlatıcıları gölgelememeli.');
 assert(server.includes('item.hatirlatici && !hedefTokenlar.length')&&/continue;/.test(server),'Alıcı cihaz yoksa hatırlatıcı gönderildi sayılmamalı.');
 
 /* 5) Stil + önbellek */
