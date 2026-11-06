@@ -112,8 +112,10 @@ function renderTools(){
   const tiles=ms.map(m=>`<button type="button" class="ka-nav-gtile" data-nav-page-go="menu:${esc(m.id)}">${ico(m.icon,m.tone,40)}<span class="ka-nav-gtile__copy"><strong>${esc(m.ad)}</strong><small>${m.tools.length} sayfa</small></span></button>`).join('');
   const all=`<button type="button" class="ka-nav-gtile" data-nav-page-go="all">${ico('search','slate',40)}<span class="ka-nav-gtile__copy"><strong>Tüm sayfalar</strong><small>A'dan Z'ye liste</small></span></button>`;
   const swap=nav().canSwitch()?`<div class="ka-nav-section ka-nav-section--split"><h3>Hem yönetip hem ders veriyorsanız</h3>${switchCard('compact')}</div>`:'';
+  /* Hiçbir menüde olmayan sayfalar klasörlerin altında doğrudan, A'dan Z'ye; menüye eklenen sayfa buradan kalkar. */
+  const loose=nav().inNoMenu(r),rest=loose.length?`<div class="ka-nav-section"><h3>Sayfalar<span>${loose.length}</span></h3>${rowCard(loose.map((t,i)=>toolRow(t,{star:true,first:i===0,right:t.id==='school-info'?setupPill():''})).join(''))}</div>`:'';
   return pageRoot('tools',head(hub.title,`${nav().toolCount(r)} sayfa, ${ms.length} menü`,editButton('menu-edit','Menüyü düzenle'))+searchBox(hub.search)
-    +`<div data-nav-browse class="ka-nav-stack">${chipRow('Sık kullandıklarım',favs)}${chipRow('Son açtıklarım',recent)}<div class="ka-nav-gtiles">${tiles}${all}</div>${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
+    +`<div data-nav-browse class="ka-nav-stack">${chipRow('Sık kullandıklarım',favs)}${chipRow('Son açtıklarım',recent)}<div class="ka-nav-gtiles">${tiles}${all}</div>${rest}${swap}</div><div data-nav-results class="ka-nav-stack" hidden></div>`);
 }
 
 /* ── menü: kullanıcının kendi oluşturduğu ya da varsayılan sayfa listesi ── */

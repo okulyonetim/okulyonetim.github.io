@@ -93,7 +93,7 @@ function okulDuzeni(N,{gorulenEksik=[],cikar=[]}={}){
 
   const bilerek=okulDuzeni(N,{cikar:['plans']});
   const d=boot({menuVarsayilan:{[T]:bilerek}}).N.layoutRaw(T);
-  eq(d.menus.filter(m=>m.ids.includes('plans')).map(m=>m.id),['diger'],'Okulun bilerek çıkardığı sayfa kendi menüsüne geri gelmez; "Diğer sayfalar"da görünür.');
+  assert(!d.menus.flatMap(m=>m.ids).includes('plans'),'Okulun bilerek çıkardığı sayfa geri gelmez.');
 }
 
 /* ── bozuk okul varsayılanı katalog varsayılanına düşer ── */

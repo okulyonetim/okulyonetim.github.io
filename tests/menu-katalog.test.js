@@ -40,7 +40,7 @@ for(const r of ROLES){
   eq(def.bar.length,5,`${r}: alt menü 5 yuva.`);
   assert(def.bar.includes('me')&&def.bar.includes('tools'),`${r}: Menü ve Ben alt menüde bulunmalı.`);
   def.bar.forEach(k=>assert(['home','program','tools','me'].includes(k)||(k.startsWith('menu:')&&def.menus.some(m=>m.id===k.slice(5)))||(k.startsWith('tool:')&&scope.includes(k.slice(5))),`${r}: geçersiz alt menü yuvası ${k}`));
-  eq(N.layoutRaw(r).menus.some(m=>m.id==='diger'),false,`${r}: varsayılan düzende "Diğer sayfalar" menüsü gerekmez; her sayfa kendi menüsündedir.`);
+  eq(N.inNoMenu(r).length,0,`${r}: varsayılan düzende menüsüz sayfa olmamalı.`);
 }
 eq(N.scopeIds('idareci').length,cat.length,'İdareci tüm sayfaları görür.');
 assert(N.scopeIds('ogretmen').length<cat.length&&N.scopeIds('ogretmen').every(id=>!cat.find(t=>t.id===id).y),'Öğretmen yalnız yönetime özel olmayan sayfaları görür.');
@@ -119,14 +119,20 @@ const setOf=o=>JSON.parse(o);
   const {N:M,ls}=loadNav({store:{[K]:JSON.stringify(cur)}});
   const L=M.layoutRaw('idareci'),where=id=>L.menus.filter(m=>m.ids.includes(id)).map(m=>m.id);
   eq(where('written'),['sinav'],'Yeni sayfa kendi menüsüne eklenir.');
-  eq(where('guide'),['diger'],'Menüsü silinmiş kullanıcıda yeni sayfa "Diğer sayfalar"a düşer.');
-  eq(where('about'),['diger']);
-  eq(L.menus.find(m=>m.id==='diger').ad,'Diğer sayfalar');
-  eq(where('grades'),['diger'],'Kullanıcının çıkardığı sayfa kendi menüsüne geri gelmez (gorulen içinde); menüde kalması için "Diğer sayfalar"da görünür.');
+  eq(where('guide'),[],'Menüsü silinmiş kullanıcıda yeni sayfa menüsüz kalır (Menü ekranında listelenir).');
+  eq(where('about'),[]);
+  assert(!L.menus.some(m=>m.id==='diger'),'"Diğer sayfalar" menüsü oluşturulmaz.');
+  eq(where('grades'),[],'Kullanıcının çıkardığı sayfa geri gelmez (gorulen içinde).');
   assert(setOf(ls.get(K)).gorulen.includes('written'),'Eklenen sayfa görülen listesine yazılır.');
-  eq(where('settings'),['diger'],'Menüsü silinen sayfa da menüde görünür: "Diğer sayfalar".');
-  const hepsi=L.menus.flatMap(m=>m.ids);
-  eq([...hepsi].sort(),[...M.scopeIds('idareci')].sort(),'Rolün tüm sayfaları menülerde tam bir kez bulunur.');
+  const menusuz=M.inNoMenu('idareci').map(t=>t.id);
+  eq([...menusuz].sort(),['about','grades','guide','settings'],'Kullanıcının çıkardığı/sildirdiği sayfalar menüsüz olarak sayılır.');
+  eq(menusuz,[...M.inNoMenu('idareci')].sort((a,b)=>a.label.localeCompare(b.label,'tr')).map(t=>t.id),'Menüsüz sayfalar A\'dan Z\'ye sıralıdır.');
+  /* "Hepsini uygun menüye ekle": kendi menüsü varsa orada; kendi menüsü yoksa menüsüz kalır */
+  eq(M.placeOrphans('idareci'),1,'placeOrphans kendi menüsü olan sayfayı yerleştirir.');
+  const P=M.layoutRaw('idareci');
+  eq(P.menus.find(m=>m.id==='sinav').ids.includes('grades'),true);
+  eq(M.inNoMenu('idareci').map(t=>t.id).sort(),['about','guide','settings'],'Menüsü olmayanlar menüsüz kalır.');
+  eq(M.placeOrphans('idareci'),0,'Eklenecek sayfa kalmadıysa 0.');
 }
 {
   /* katalogda başka menüye taşınan sayfa: kayıtlı düzende bir kez taşınır, sonra kullanıcı nereye koyarsa orada kalır */

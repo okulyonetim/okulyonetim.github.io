@@ -101,12 +101,14 @@ assert(!/\d(?:\.\d+)?px/.test(pxSiz)&&!/#[0-9a-fA-F]{3,8}\b/.test(mok),'Stiller 
   assert.strictEqual(M.layoutRaw('idareci').menus.filter(m=>m.id==='projeler').length,1,'Tekrar okununca çoğalmaz.');
 }
 {
-  /* Projeler menüsünü bilerek silen kullanıcı (sayfaları görülmüş): menü geri gelmez, yeni sayfa Diğer sayfalar'a düşer */
+  /* Projeler menüsünü bilerek silen kullanıcı (sayfaları görülmüş): menü geri gelmez, yeni sayfa klasörsüz kalır ve Menü ekranında A–Z listelenir */
   const K1='ka-nav-layout:u1:idareci',def=N.defaultLayout('idareci');
   const menus=def.menus.filter(m=>m.id!=='projeler'),bilinen=N.scopeIds('idareci').filter(id=>id!=='oyun-ortaokul');
   const {N:M}=loadNav({store:{[K1]:JSON.stringify({v:N.LAYOUT_SURUM,menus,bar:def.bar,gorulen:bilinen,t:1})}});
   const L=M.layoutRaw('idareci');
   assert(!L.menus.some(m=>m.id==='projeler'),'Silinen menü geri gelmez.');
-  assert(L.menus.find(m=>m.id==='diger')?.ids.includes('oyun-ortaokul'),'Yeni sayfa Diğer sayfalar’a düşer.');
+  assert(!L.menus.some(m=>m.id==='diger'),'Sanal "Diğer sayfalar" klasörü oluşmaz.');
+  assert(!L.menus.some(m=>m.ids.includes('oyun-ortaokul')),'Yeni sayfa hiçbir klasöre zorla konmaz.');
+  assert(M.inNoMenu('idareci').some(t=>t.id==='oyun-ortaokul'),'Yeni sayfa Menü ekranındaki menüsüz listede görünür.');
 }
 console.log('maarif-oyun-sayfalari: OK');
