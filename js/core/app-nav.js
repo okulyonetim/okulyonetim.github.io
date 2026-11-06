@@ -350,11 +350,11 @@ function cleanMenus(list){
   return out;
 }
 const barKeyValid=(key,menus)=>typeof key==='string'&&(BAR_FIXED.includes(key)||(key.startsWith('menu:')&&menus.some(m=>m.id===key.slice(5)))||(key.startsWith('tool:')&&!!TOOLS[key.slice(5)]));
-function cleanBar(list,menus,r){
+function cleanBar(list,menus,r,fill=defaultOf(r).bar){
   const seen=new Set(),out=[];
   const add=k=>{if(out.length<BAR_SLOTS&&barKeyValid(k,menus)&&!seen.has(k)){seen.add(k);out.push(k)}};
   (Array.isArray(list)?list:[]).forEach(add);
-  DEFAULT_LAYOUT[r].bar.forEach(add);
+  fill.forEach(add);
   ['home','tools','me'].forEach(add);
   if(!out.includes('me'))out[BAR_SLOTS-1]='me';
   return out;
@@ -413,9 +413,28 @@ function settle(r,o){
   writeOverride(r,{menus,gorulen:gorulenListesi(r)},{silent:true});
   return readOverride(r);
 }
-/* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı varsayılandan gelir. */
+/* Etkin varsayılan düzen: okulun varsayılanı (AppConfig.menuVarsayilan; yönetici "okul varsayılanı yap" ile kaydeder) varsa o, yoksa katalog varsayılanı.
+ * Kendi düzenini kaydetmemiş herkes bunu görür. Okul varsayılanı düzen sürümüne bağlı değildir: yöneticinin bilerek kaydettiği düzen katalog yeniden
+ * gruplansa da korunur. Katalogdaki sonradan eklenen sayfalar kayıtlı düzendeki gibi `gorulen` listesine göre buna da yerleşir; bu yalnız hesaplanır, hiçbir yere yazılmaz. */
+const okulOnbellek={};
+function defaultOf(r){
+  const src=global.AppConfig?.menuDefault?.(r)||null,hit=okulOnbellek[r];
+  if(hit&&hit.src===src)return hit.val;
+  let val=DEFAULT_LAYOUT[r];
+  const menus=src?cleanMenus(src.menus):[];
+  if(menus.length){
+    const known=new Set(Array.isArray(src.gorulen)?src.gorulen:[]);
+    TASINANLAR.filter(t=>!known.has(tasiIsareti(t))).forEach(t=>tasi(menus,t));
+    scopeIds(r).filter(id=>!known.has(id)).forEach(id=>placeInto(menus,id,known));
+    val={bar:cleanBar(src.bar,menus,r,DEFAULT_LAYOUT[r].bar),menus,fav:Array.isArray(src.fav)?cleanIds(src.fav):[...DEFAULT_LAYOUT[r].fav]};
+  }
+  okulOnbellek[r]={src,val};
+  return val;
+}
+const hasSchoolDefault=r=>defaultOf(r)!==DEFAULT_LAYOUT[r];
+/* Düzenlenebilir düzen: yalnız kullanıcının değiştirdiği parçalar saklanır; kalanı etkin varsayılandan gelir. */
 function layoutRaw(r=role()){
-  const o=settle(r,readOverride(r)),def=DEFAULT_LAYOUT[r],menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
+  const o=settle(r,readOverride(r)),def=defaultOf(r),menus=o?.menus?cleanMenus(o.menus):clone(def.menus);
   return{bar:cleanBar(o?.bar||def.bar,menus,r),menus,fav:o?.fav?cleanIds(o.fav):(legacyFav(r)||clone(def.fav)),custom:!!(o&&(o.bar||o.menus))};
 }
 function emitLayoutChanged(r){try{global.dispatchEvent(new CustomEvent('koruk:nav-layout-changed',{detail:{role:r}}))}catch(_){}}
@@ -440,6 +459,22 @@ function saveLayout(next,r=role(),{silent=false}={}){
   return layoutRaw(r);
 }
 const resetLayout=(r=role())=>writeOverride(r,null,{reset:true});
+/* Okul varsayılanı: yalnız yönetici (AppConfig.save yöneticiye açıktır; kurallar da aynısını ister).
+ * Yayımlayınca yöneticinin kendi kopyası kalkar; aynı düzen artık okul varsayılanından gelir ve ileride onu izler. */
+const canPublishDefault=()=>user().admin===true&&typeof global.AppConfig?.save==='function';
+async function publishDefault(r=role()){
+  if(!canPublishDefault())throw new Error('yetkisiz');
+  const L=layoutRaw(r),all=global.AppConfig.get().menuVarsayilan||{};
+  await global.AppConfig.save({menuVarsayilan:{...all,[r]:{v:LAYOUT_SURUM,bar:[...L.bar],menus:clone(L.menus),fav:[...L.fav],gorulen:gorulenListesi(r),t:Date.now()}}});
+  writeOverride(r,null,{reset:true});
+  return layoutRaw(r);
+}
+async function clearDefault(r=role()){
+  if(!canPublishDefault())throw new Error('yetkisiz');
+  const {[r]:_,...rest}=global.AppConfig.get().menuVarsayilan||{};
+  await global.AppConfig.save({menuVarsayilan:rest});
+  emitLayoutChanged(r);
+}
 /* Hiçbir menüde olmayan sayfaları kendi menülerine (yoksa "Diğer sayfalar"a) ekler; eklenen sayfa sayısını döner. */
 function placeOrphans(r=role()){
   const L=layoutRaw(r),menus=clone(L.menus);
@@ -490,7 +525,7 @@ function tabs(r=role()){
   const raw=layoutRaw(r).bar,out=[],seen=new Set();
   const take=k=>{const it=barItem(k,r);if(it&&!seen.has(it.key)){seen.add(it.key);out.push(it);return true}return false};
   raw.forEach(take);
-  for(const k of [...DEFAULT_LAYOUT[r].bar,'home','tools','me'])if(out.length<BAR_SLOTS)take(k);
+  for(const k of [...defaultOf(r).bar,'home','tools','me'])if(out.length<BAR_SLOTS)take(k);
   return out.slice(0,BAR_SLOTS);
 }
 const tab=(key,r=role())=>tabs(r).find(t=>t.key===key)||null;
@@ -579,7 +614,7 @@ function webMenu(){
 global.AppNav={
   icon,ICONS,glyph,glyphOf,markGlyphs,role,derivedRole,setRole,canSwitch,otherRole,roleLabel,allowedRole,linkedTeacher,
   tabs,tab,homeTab,tabOf,parentOf,hub,menus,menu,toolCount,tool,findTool,allTools,inNoMenu,
-  layoutRaw,saveLayout,resetLayout,placeOrphans,defaultLayout:r=>clone(DEFAULT_LAYOUT[r]),MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,TAB_LABEL,
+  layoutRaw,saveLayout,resetLayout,placeOrphans,defaultLayout:r=>clone(defaultOf(r)),hasSchoolDefault,canPublishDefault,publishDefault,clearDefault,MENU_ICONS,MENU_TONES,BAR_SLOTS,MENU_MAX,MENU_NAME_MAX,TAB_LABEL,
   catalog:()=>Object.values(TOOLS).map(t=>({id:t.id,label:t.label,kat:t.kat,y:t.y,route:t.route,page:t.page})),menuTree:()=>MENU_TREE.map(m=>({...m})),menuOrder:r=>[...MENU_SIRA[r]],scopeIds,LAYOUT_SURUM,
   favorites,isFavorite,toggleFavorite,recent,noteOpened,search,webMenu,
   pageAllowed,moduleAllowed,canOpen,isTeacherUser,toolAllowed,TEACHER_HIDDEN

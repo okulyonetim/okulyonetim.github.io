@@ -37,7 +37,7 @@ const filterBox=ph=>`<label class="ka-nav-search">${h().ic('search',18)}<input t
 
 /* ── Menüyü düzenle (ana ekran) ── */
 function homeHtml(){
-  const L=read(),H=h();
+  const L=read(),H=h(),okul=nav().hasSchoolDefault(role());
   const slots=L.bar.map((key,i)=>{
     const d=describe(key,L);
     return `<div class="ka-ne-row">${H.ico(d.icon,d.tone,40,20)}<span class="ka-ne-copy"><strong>${esc(d.label)}</strong><small>${i+1}. yuva${i===2?' · ortada':''} · ${esc(d.kind)}</small></span><span class="ka-ne-acts">${ibtn('slot-move','chevu','Bir yuva öne al',i===0,`data-i="${i}" data-d="-1"`)}${ibtn('slot-move','chevd','Bir yuva geriye al',i===L.bar.length-1,`data-i="${i}" data-d="1"`)}<button type="button" class="ka-btn ka-btn--secondary ka-btn--sm" data-nav-page-go="bar-pick:${i}">Değiştir</button></span></div>`;
@@ -49,7 +49,16 @@ function homeHtml(){
     +`<div class="ka-nav-section"><h3>Alt menü<span>5 yuva</span></h3><p class="ka-nav-hint">Ekranın altındaki beş düğmeyi seçin. Her yuvaya bir menü ya da tek bir sayfa koyabilirsiniz. “Ben” alt menüde kalmalıdır; menü düzenine oradan ulaşırsınız.</p>${H.rowCard(slots)}</div>`
     +`<div class="ka-nav-section"><h3>Menülerim<span>${L.menus.length}</span></h3>${H.rowCard(menus||H.emptyState('Henüz menü yok.'))}<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="menu-new">${H.ic('plus',18)}<span>Yeni menü oluştur</span></button></div>`
     +(orphan?`<div class="ka-nav-section"><p class="ka-nav-hint">${orphan} sayfa hiçbir menüde yok. Bunlara Menü › Tüm sayfalar listesinden ya da arama ile ulaşırsınız.</p><button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="orphans">${H.ic('plus',18)}<span>Hepsini uygun menüye ekle</span></button></div>`:'')
-    +(L.custom?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="reset">${H.ic('swap',18)}<span>Varsayılan düzene dön</span></button>`:`<p class="ka-nav-hint">Şu an varsayılan düzeni kullanıyorsunuz.</p>`));
+    +(L.custom?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="reset">${H.ic('swap',18)}<span>${okul?'Okulun varsayılan düzenine dön':'Varsayılan düzene dön'}</span></button>`:`<p class="ka-nav-hint">Şu an ${okul?'okulun varsayılan düzenini':'varsayılan düzeni'} kullanıyorsunuz.</p>`)
+    +(nav().canPublishDefault()?defaultHtml(okul):''));
+}
+/* Yönetici: bu rolün düzenini okulun varsayılanı yapar ya da kaldırır. Kendi düzenini kaydetmemiş herkes varsayılanı görür; kaydedenler etkilenmez. */
+function defaultHtml(okul){
+  const H=h(),who=nav().roleLabel(role());
+  return `<div class="ka-nav-section"><h3>Okul varsayılanı<span>${esc(who)}</span></h3><p class="ka-nav-hint">${okul?`${esc(who)} arayüzü için okulun varsayılan düzeni tanımlı.`:`${esc(who)} arayüzü için okulun varsayılan düzeni yok; uygulamanın kendi düzeni kullanılıyor.`} Yukarıdaki düzeni okul varsayılanı yaparsanız, kendi düzenini kaydetmemiş herkes bunu görür. Kendi düzenini kaydedenler etkilenmez.</p>`
+    +`<button type="button" class="ka-btn ka-btn--primary ka-ne-wide" data-ne="publish">${H.ic('check',18)}<span>Bu düzeni okul varsayılanı yap</span></button>`
+    +(okul?`<button type="button" class="ka-btn ka-btn--secondary ka-ne-wide" data-ne="unpublish">${H.ic('x',18)}<span>Okul varsayılanını kaldır</span></button>`:'')
+    +`</div>`;
 }
 
 /* ── Bir menüyü düzenle ── */
@@ -117,6 +126,12 @@ function pick(slot,key){
   ui()?.back?.();
 }
 function currentMenuId(){const id=pages().current();return id.includes(':')?id.slice(id.indexOf(':')+1):''}
+let busy=false;
+function defaultAction(job,done){
+  if(busy)return;
+  busy=true;
+  job.then(()=>toast(done),()=>toast('Kaydedilemedi. Yönetici yetkisi ve bağlantı gerekir.')).finally(()=>{busy=false});
+}
 function onClick(e){
   const root=$('#v2ModuleRoot'),btn=e.target.closest?.('[data-ne]');
   if(!btn||!root||!root.contains(btn)||!$('[data-nav-page]',root))return;
@@ -144,7 +159,13 @@ function onClick(e){
     toast(n?'Menüde olmayan sayfalar kendi menülerine eklendi.':'Eklenecek sayfa yok.');
   }
   else if(act==='reset'){
-    if(global.confirm?.('Alt menü, menüler ve sık kullandıklarınız varsayılan düzene dönsün mü?'))nav().resetLayout(role());
+    if(global.confirm?.(`Alt menü, menüler ve sık kullandıklarınız ${nav().hasSchoolDefault(role())?'okulun varsayılan düzenine':'varsayılan düzene'} dönsün mü?`))nav().resetLayout(role());
+  }
+  else if(act==='publish'){
+    if(global.confirm?.(`Bu düzen ${nav().roleLabel(role())} arayüzünün okul varsayılanı olsun mu? Kendi düzenini kaydetmemiş herkes bunu görür.`))defaultAction(nav().publishDefault(role()),'Okul varsayılanı kaydedildi.');
+  }
+  else if(act==='unpublish'){
+    if(global.confirm?.(`${nav().roleLabel(role())} arayüzünün okul varsayılanı kaldırılsın mı? Kendi düzenini kaydetmemiş herkes uygulamanın kendi düzenine döner.`))defaultAction(nav().clearDefault(role()),'Okul varsayılanı kaldırıldı.');
   }
   else if(act==='pick')pick(Number(btn.dataset.slot),btn.dataset.key);
   else if(act==='back')ui()?.back?.();
