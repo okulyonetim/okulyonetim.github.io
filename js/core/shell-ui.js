@@ -416,6 +416,24 @@ async function routeModuleCore(name,{bottom='',page='',title='',remember=true,pa
     }
     return true;
   }
+  if(name==='kudus-benim'){
+    try{
+      if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js?v=10');
+      if(!global.SinifBaglam)await global.AppLoader?.loadScript?.('js/modules/sinif-baglam.js?v=2');
+      if(!global.WordBelge)await global.AppLoader?.loadScript?.('js/modules/word-belge.js?v=1');
+      if(!global.KudusBenimVeri)await global.AppLoader?.loadScript?.('js/modules/kudus-benim-veri.js?v=1');
+      if(!global.KudusBenimBelge)await global.AppLoader?.loadScript?.('js/modules/kudus-benim-belge.js?v=1');
+      if(!global.KudusBenimModule?.open)await global.AppLoader?.loadScript?.('js/modules/kudus-benim.js?v=1');
+      if(!global.KudusBenimModule?.open)throw new Error('Kudüs Ben’im Projesi modülü yüklenemedi.');
+      setBottomActive(bottom);setTitle('Kudüs Ben’im Projesi');
+      if(!global.KudusBenimModule.open(page))throw new Error('Kudüs Ben’im Projesi açılamadı.');
+      if(remember)rememberView({kind:'route',name,bottom,page,title:'Kudüs Ben’im Projesi'});
+    }catch(e){
+      console.error('[Shell/kudus-benim]',e);global.toast?.('Kudüs Ben’im Projesi açılamadı.');
+      await routeModule('management',{bottom,remember});
+    }
+    return true;
+  }
   if(name==='ogretmen-dosyasi'){
     try{
       if(!global.OgretmenDosyasi?.open)await global.AppLoader?.loadScript?.('js/modules/ogretmen-dosyasi.js?v=7');

@@ -58,12 +58,12 @@ const docxMetin=async yol=>{const z=await JSZip.loadAsync(fs.readFileSync(yol)),
 const {N}=loadNav();
 const grup=N.menuTree().find(m=>m.id==='projeler');
 assert(grup&&grup.ad==='Projeler','"Projeler" menüsü olmalı.');
-const tools=N.catalog().filter(t=>t.kat==='projeler');
+const tools=N.catalog().filter(t=>t.kat==='projeler'&&t.route==='maarif-oyun');
 assert.deepStrictEqual(J(tools.map(t=>[t.id,t.route,t.page])),[['oyun-nedir','maarif-oyun','nedir'],['oyun-aylik','maarif-oyun','oyunlar'],['oyun-ilkokul','maarif-oyun','ilkokul'],['oyun-ortaokul','maarif-oyun','ortaokul']],'Projeler menüsünde dört Maarif Oyun sayfası.');
 assert(tools.every(t=>!t.y),'Sayfalar öğretmene de açık.');
 ['ogretmen','idareci'].forEach(r=>{
   const m=N.defaultLayout(r).menus.find(x=>x.id==='projeler');
-  assert(m&&m.ids.length===4,`${r}: varsayılan düzende Projeler menüsü.`);
+  assert(m&&m.ids.length===5&&m.ids.slice(0,4).every(id=>id.startsWith('oyun-')),`${r}: varsayılan düzende Projeler menüsü (dört Maarif Oyun sayfası ve Kudüs Ben’im).`);
   assert(N.menuOrder(r).indexOf('projeler')===N.menuOrder(r).indexOf('etkinlik')+1,`${r}: Projeler, Etkinlik ve Gezi'nin hemen ardından.`);
 });
 Object.values(V.SAYFALAR).forEach((s,i)=>{const k=Object.keys(V.SAYFALAR)[i];assert(tools.some(t=>t.page===k),`${k}: katalogda sayfa var.`)});
@@ -90,7 +90,7 @@ assert(!/\d(?:\.\d+)?px/.test(pxSiz)&&!/#[0-9a-fA-F]{3,8}\b/.test(mok),'Stiller 
 
 /* ── mevcut (özelleştirilmiş) düzenler: yeni menü eklenir; bilerek silinen menü geri gelmez ── */
 {
-  const K1='ka-nav-layout:u1:idareci',def=N.defaultLayout('idareci'),projeIds=['oyun-nedir','oyun-aylik','oyun-ilkokul','oyun-ortaokul'];
+  const K1='ka-nav-layout:u1:idareci',def=N.defaultLayout('idareci'),projeIds=['oyun-nedir','oyun-aylik','oyun-ilkokul','oyun-ortaokul','kudus-benim'];
   const eski=N.scopeIds('idareci').filter(id=>!projeIds.includes(id));
   const menus=def.menus.filter(m=>m.id!=='projeler');
   const {N:M,ls}=loadNav({store:{[K1]:JSON.stringify({v:N.LAYOUT_SURUM,menus,bar:def.bar,gorulen:eski,t:1})}});

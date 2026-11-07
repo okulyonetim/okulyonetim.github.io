@@ -15967,6 +15967,111 @@ html[data-theme] #v2ModuleRoot .dkr-eylem--yazdir .ka-btn{flex:1 1 auto}
  html[data-theme] #v2ModuleRoot .dkr-satir>[data-k="durum"]{grid-column:1 / 4;grid-row:3}
 }
 
+/* ===== PROJELER › KUDÜS BEN’İM PROJESİ (kbm-*) — ekran ===== */
+html[data-theme] #v2ModuleRoot .kbm-page{display:flex;flex-direction:column;gap:var(--ka-sp-12)}
+html[data-theme] #v2ModuleRoot .kbm-head h2{margin:0 0 var(--ka-sp-4)}
+html[data-theme] #v2ModuleRoot .kbm-head p{margin:0}
+html[data-theme] #v2ModuleRoot .kbm-duzey{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-duzey__dugme{display:flex;flex-direction:column;align-items:center;gap:var(--ka-sp-2);padding:var(--ka-sp-8) var(--ka-sp-6);line-height:1.25;text-align:center}
+html[data-theme] #v2ModuleRoot .kbm-duzey__dugme small{color:var(--ka-text-muted);font-size:var(--ka-fs-12)}
+html[data-theme] #v2ModuleRoot .kbm-duzey__dugme[aria-pressed="true"]{border-color:var(--ka-primary);background:var(--ka-primary-soft);color:var(--ka-text)}
+html[data-theme] #v2ModuleRoot .kbm-sekmeler{padding:0}
+html[data-theme] #v2ModuleRoot .kbm-giris{margin:0;line-height:1.55}
+html[data-theme] #v2ModuleRoot .kbm-kutu{padding:var(--ka-sp-10) var(--ka-sp-12);border-inline-start:var(--ka-sp-3) solid var(--ka-primary);border-radius:var(--ka-r-8);background:var(--ka-primary-soft);color:var(--ka-text);font-size:var(--ka-fs-13);line-height:1.5}
+html[data-theme] #v2ModuleRoot .kbm-uyari{padding:var(--ka-sp-10) var(--ka-sp-12);border-inline-start:var(--ka-sp-3) solid var(--ka-warning);border-radius:var(--ka-r-8);background:color-mix(in srgb,var(--ka-warning) 14%,transparent);color:var(--ka-text);font-size:var(--ka-fs-13);line-height:1.5}
+html[data-theme] #v2ModuleRoot .kbm-kart__baslik{font-size:var(--ka-fs-16)}
+html[data-theme] #v2ModuleRoot .kbm-liste{margin:0;padding-inline-start:var(--ka-sp-18);display:flex;flex-direction:column;gap:var(--ka-sp-6);line-height:1.5}
+html[data-theme] #v2ModuleRoot .kbm-kaynak{margin:0;color:var(--ka-text-muted);font-size:var(--ka-fs-12);line-height:1.5}
+html[data-theme] #v2ModuleRoot .kbm-duzey-oneri{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-duzey-oneri__kutu{display:flex;flex-direction:column;gap:var(--ka-sp-2);padding:var(--ka-sp-8) var(--ka-sp-10);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);line-height:1.5}
+html[data-theme] #v2ModuleRoot .kbm-duzey-oneri__kutu--secili{border-color:var(--ka-primary);background:var(--ka-primary-soft)}
+html[data-theme] #v2ModuleRoot .kbm-satirlar,html[data-theme] #v2ModuleRoot .kbm-etkinlikler{display:flex;flex-direction:column;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-satir{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr) minmax(0,3fr) auto;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kbm-etk{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,2fr) minmax(0,3fr) auto;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kbm-sinifdan{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding-top:var(--ka-sp-10);border-top:var(--ka-border-w) solid var(--ka-border)}
+html[data-theme] #v2ModuleRoot .kbm-ogrenciler{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kbm-aylar,html[data-theme] #v2ModuleRoot .kbm-havuzlar,html[data-theme] #v2ModuleRoot .kbm-formlar{display:flex;flex-direction:column;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .kbm-ay__bas{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-tema{margin:0;font-size:var(--ka-fs-13);line-height:1.45}
+html[data-theme] #v2ModuleRoot .kbm-ekle{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kbm-ekle select{flex:1 1 12rem;width:auto;min-width:0;max-width:100%}
+html[data-theme] #v2ModuleRoot .kbm-havuz,html[data-theme] #v2ModuleRoot .kbm-form{border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-card-bg)}
+html[data-theme] #v2ModuleRoot .kbm-havuz>summary,html[data-theme] #v2ModuleRoot .kbm-form>summary{padding:var(--ka-sp-10) var(--ka-sp-12);cursor:pointer;line-height:1.4}
+html[data-theme] #v2ModuleRoot .kbm-havuz__govde,html[data-theme] #v2ModuleRoot .kbm-form__govde{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:0 var(--ka-sp-12) var(--ka-sp-12);line-height:1.55}
+html[data-theme] #v2ModuleRoot .kbm-havuz__govde p{margin:0}
+html[data-theme] #v2ModuleRoot .kbm-dikkat{color:var(--ka-text-muted);font-size:var(--ka-fs-13)}
+html[data-theme] #v2ModuleRoot .kbm-alanlar,html[data-theme] #v2ModuleRoot .kbm-bosformlar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-alan--uzun{grid-column:1 / -1}
+html[data-theme] #v2ModuleRoot .kbm-bosformlar>div{display:flex;flex-direction:column;gap:var(--ka-sp-6)}
+html[data-theme] #v2ModuleRoot .kbm-eylem{display:flex;flex-wrap:wrap;gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-eylem .ka-btn{flex:1 1 auto}
+html[data-theme] #v2ModuleRoot .kbm-onizle{overflow:auto;border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-8);background:var(--ka-muted-bg)}
+html[data-theme] #v2ModuleRoot .kbm-onizle__sahne{position:relative;overflow:hidden}
+html[data-theme] #v2ModuleRoot .kbm-kagit{display:block;border:0;background:var(--ka-report-bg);transform-origin:0 0}
+html[data-theme] #v2ModuleRoot .kbm-kagitlar{display:grid;grid-template-columns:repeat(auto-fill,minmax(18rem,1fr));gap:var(--ka-sp-8)}
+html[data-theme] #v2ModuleRoot .kbm-kagit-kart .ka-card__body{display:flex;align-items:center;gap:var(--ka-sp-10)}
+html[data-theme] #v2ModuleRoot .kbm-kagit-kart__ikon{font-size:var(--ka-fs-18)}
+html[data-theme] #v2ModuleRoot .kbm-kagit-kart__metin{display:flex;flex:1 1 auto;flex-direction:column;gap:var(--ka-sp-2);min-width:0}
+@media(max-width:767px){
+ html[data-theme] #v2ModuleRoot .kbm-satir,html[data-theme] #v2ModuleRoot .kbm-etk{grid-template-columns:minmax(0,1fr) auto;padding-bottom:var(--ka-sp-8);border-bottom:var(--ka-border-w) solid var(--ka-border)}
+ html[data-theme] #v2ModuleRoot .kbm-satir>:nth-child(1),html[data-theme] #v2ModuleRoot .kbm-etk>:nth-child(1){grid-column:1;grid-row:1}
+ html[data-theme] #v2ModuleRoot .kbm-satir>:nth-child(2),html[data-theme] #v2ModuleRoot .kbm-satir>:nth-child(3),html[data-theme] #v2ModuleRoot .kbm-etk>:nth-child(2),html[data-theme] #v2ModuleRoot .kbm-etk>:nth-child(3){grid-column:1 / 3}
+ html[data-theme] #v2ModuleRoot .kbm-satir>:nth-child(4),html[data-theme] #v2ModuleRoot .kbm-etk>:nth-child(4){grid-column:2;grid-row:1}
+ html[data-theme] #v2ModuleRoot .kbm-alanlar,html[data-theme] #v2ModuleRoot .kbm-bosformlar{grid-template-columns:minmax(0,1fr)}
+ html[data-theme] #v2ModuleRoot .kbm-duzey__dugme{padding:var(--ka-sp-6) var(--ka-sp-3)}
+}
+
+/* ===== A4 — Kudüs Ben’im Projesi belgeleri (.kbp-*) =====
+   js/modules/kudus-benim-belge.js belgelerinin kâğıt stili (sayfadaki önizleme ve ReportEngine çıktısı aynıdır). Kural .ka-report altında yazılır: Android yazdırma yalnız bu kuralları satır içine alır.
+   Yazı koyu, zemin açık; müdür ad / imza bloğu sağda, kendi bloğunda ortalı. Yalnız rapor belirteçleri ve mm. */
+.ka-report .kbp-belge{--kbp-soluk:color-mix(in srgb,var(--ka-report-text) 62%,var(--ka-report-bg));--kbp-zemin:color-mix(in srgb,var(--ka-report-text) 8%,var(--ka-report-bg));box-sizing:border-box;width:100%;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.35;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ka-report .kbp-ust{margin:0 0 4mm;padding:3mm 4mm;text-align:center;border:.25mm solid var(--ka-report-border);background:var(--kbp-zemin)}
+.ka-report .kbp-ust small{display:block;color:var(--kbp-soluk);font-size:8.5pt;font-weight:700;letter-spacing:.1mm}
+.ka-report .kbp-okul{margin:1mm 0 .5mm;font-size:11pt;font-weight:700}
+.ka-report .kbp-baslik{margin:0;padding:0;border:0;color:var(--ka-report-text);font-family:inherit;font-size:14pt;font-weight:700;letter-spacing:.2mm;line-height:1.25}
+.ka-report .kbp-alt{margin:.5mm 0 0;font-size:10.5pt;font-weight:700}
+.ka-report .kbp-bilgi{display:flex;margin:0 0 4mm;border:.25mm solid var(--ka-report-border)}
+.ka-report .kbp-kutu{flex:1 1 0;min-width:0;padding:1.6mm 3mm;text-align:center}
+.ka-report .kbp-kutu+.kbp-kutu{border-inline-start:.25mm solid var(--ka-report-border)}
+.ka-report .kbp-kutu small{display:block;color:var(--kbp-soluk);font-size:6.5pt;font-weight:700;letter-spacing:.1mm}
+.ka-report .kbp-kutu b{font-size:10pt;font-weight:400}
+.ka-report .kbp-metin{margin:0 0 4mm;text-align:justify;text-indent:10mm}
+.ka-report .kbp-not{margin:0 0 6mm;color:var(--kbp-soluk);font-size:8.5pt;font-style:italic;line-height:1.35}
+.ka-report .kbp-tablo{width:100%;margin:0 0 5mm;border-collapse:collapse;table-layout:fixed}
+.ka-report .kbp-tablo thead{display:table-header-group}
+.ka-report .kbp-tablo tr{break-inside:avoid;page-break-inside:avoid}
+/* Hücre biçimi, rapor motorunun genel tablo stilini (.ka-report th / td, zebra) her bağlamda ezecek özgüllükte yazılır. */
+.ka-report .kbp-belge .kbp-tablo th,.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td{padding:1.2mm 2mm!important;border:.25mm solid var(--ka-report-border)!important;background:var(--ka-report-bg)!important;color:var(--ka-report-text)!important;font-family:inherit!important;font-size:9.5pt!important;font-weight:400!important;line-height:1.3!important;text-align:left!important;vertical-align:top!important;overflow-wrap:anywhere}
+.ka-report .kbp-belge .kbp-tablo thead tr th{background:var(--kbp-zemin)!important;font-size:8.5pt!important;font-weight:700!important;text-align:center!important;vertical-align:middle!important}
+.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td{height:9mm}
+.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td.kbp-ay{font-weight:700!important;text-align:center!important}
+.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td.kbp-no{text-align:center!important}
+.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td.kbp-alan{background:var(--kbp-zemin)!important;font-weight:700!important}
+.ka-report .kbp-belge .kbp-tablo tbody tr:nth-child(n) td.kbp-soluk{color:var(--kbp-soluk)!important;font-style:italic}
+.ka-report .kbp-tablo--plan col:nth-child(1){width:11%}
+.ka-report .kbp-tablo--plan col:nth-child(2){width:28%}
+.ka-report .kbp-tablo--plan col:nth-child(3){width:30%}
+.ka-report .kbp-tablo--plan col:nth-child(4){width:12%}
+.ka-report .kbp-tablo--plan col:nth-child(5){width:19%}
+.ka-report .kbp-belge--yatay .kbp-tablo--plan tbody tr:nth-child(n) td{height:7.5mm}
+.ka-report .kbp-tablo--form col:nth-child(1){width:34%}
+.ka-report .kbp-tablo--form col:nth-child(2){width:66%}
+.ka-report .kbp-belge .kbp-tablo--form tbody tr:nth-child(n) td{height:5.5mm}
+.ka-report .kbp-belge .kbp-tablo--genis tbody tr:nth-child(n) td{height:12mm}
+.ka-report .kbp-belge .kbp-tablo--kagit tbody tr:nth-child(n) td{height:9mm}
+.ka-report .kbp-imzalar{display:flex;justify-content:space-between;align-items:flex-end;gap:10mm;margin-top:8mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .kbp-imza{display:flex;flex-direction:column;align-items:center;gap:1mm;min-width:55mm;text-align:center;overflow-wrap:anywhere}
+.ka-report .kbp-imza b{font-weight:700}
+.ka-report .kbp-imza--mudur{margin-inline-start:auto}
+.ka-report .kbp-imza--mudur span:last-of-type{margin-top:8mm}
+.ka-report .kbp-kimlik{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2mm 6mm;margin:0 0 4mm;font-size:10pt}
+.ka-report .kbp-yonerge{margin:0 0 3mm;color:var(--kbp-soluk);font-size:9pt;font-style:italic}
+.ka-report .kbp-ciz{margin:0 0 4mm;break-inside:avoid;page-break-inside:avoid}
+.ka-report .kbp-ciz b{display:block;margin:0 0 1mm;font-weight:700}
+.ka-report .kbp-ciz i{display:block;height:7.5mm;border-bottom:.2mm solid var(--ka-report-border)}
+.ka-report .kbp-kontrol{margin:0 0 4mm;padding:0;list-style:none}
+.ka-report .kbp-kontrol li{margin:0 0 2.2mm;break-inside:avoid;page-break-inside:avoid}
+
 /* ===== A4 — Yazılı Sınav Takvimi (.kwr-*) =====
    Tarih sırasıyla çizelge; yalnız rapor belirteçleri ve mm; müdür onayı sağ kenarda, yazılar blok içinde ortalı. */
 .ka-report .kwr-paper{box-sizing:border-box;padding:2mm 4mm;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:10.5pt;line-height:1.3}

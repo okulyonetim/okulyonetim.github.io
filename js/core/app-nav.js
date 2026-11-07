@@ -79,7 +79,7 @@ const GLYPHS={
   'committees':'🏛️','transport':'🚌','bus-seats':'💺','class-seats':'🪑','map':'🗺️','food':'🍽️','messages':'💬','news':'📰','announcements':'📣','polls':'📋','calendar':'📆','notes':'📒','settings':'⚙️','guide':'📖','about':'ℹ️'
 };
 GLYPHS['bep-hazirla']='📝';
-GLYPHS['oyun-nedir']='🏅';GLYPHS['oyun-aylik']='📅';GLYPHS['oyun-ilkokul']='📋';GLYPHS['oyun-ortaokul']='📋';
+GLYPHS['kudus-benim']='🕌';GLYPHS['oyun-nedir']='🏅';GLYPHS['oyun-aylik']='📅';GLYPHS['oyun-ilkokul']='📋';GLYPHS['oyun-ortaokul']='📋';
 GLYPHS['idareci-pano']='🖥️';
 GLYPHS['tymm-olcek']='📏';
 GLYPHS['ogretmen-dosyasi']='📁';
@@ -228,7 +228,8 @@ const KATALOG=[
   ['oyun-nedir',"Maarif'in Kalbinde Oyun",'award','Oyun yaklaşımı, okulda uygulama ve güvenlik','maarif-oyun','nedir'],
   ['oyun-aylik','Ayın Oyunları (20 Oyun)','calendar','Ayın geleneksel oyunları ve nasıl oynanır','maarif-oyun','oyunlar'],
   ['oyun-ilkokul','Oyun İlkokul Yıllık Planı','doc','1–4. sınıf haftalık oyun planı (Word)','maarif-oyun','ilkokul'],
-  ['oyun-ortaokul','Oyun Ortaokul Yıllık Planı','doc','5–8. sınıf aylık tema ve oyun planı (Word)','maarif-oyun','ortaokul']
+  ['oyun-ortaokul','Oyun Ortaokul Yıllık Planı','doc','5–8. sınıf aylık tema ve oyun planı (Word)','maarif-oyun','ortaokul'],
+  ['kudus-benim','Kudüs Ben’im Projesi','moon','Ekip, yıllık plan, etkinlik havuzu, EK-1 · EK-2 formları (Word / PDF)','kudus-benim','nedir']
  ]],
  ['hizmet','Servis ve Yemek','bus','amber',[
   ['transport','Servisler','bus','Servisler ve güzergâhlar','transport','services',{y:1}],
@@ -311,7 +312,7 @@ const KEYWORDS={
   'written':'yazılı sınav ölçme','trial':'deneme sınav sayaç','results':'sonuç sıralama deneme ve test sonuçları','grades':'not karne puan','homework':'ödev takip çizelgesi','rubric':'puan katılım rubrik ders etkinliği dağıtımı','project':'proje performans ölçek',
   'plans':'yıllık plan ünite kazanım word','form-maarif':'maarif model rapor','form-bep':'bep plan takip teslim çizelge yıllık plan yıllık ve bep plan takibi','idareci-pano':'idareci pano dijital panosu müdür nöbet izin gelmeyen şu an sınıf tv ekran terfi','bep-hazirla':'bep hazırla bireyselleştirilmiş eğitim programı özel eğitim kaynaştırma rapor öğrenci','tymm-olcek':'tymm ölçek gözlem formu ilkokul süreç değerlendirme maarif model puan karne e-okul 1 2 3 4 sınıf',
   'ogretmen-dosyasi':'öğretmen dosyası kapak evrak form kontrol listesi teslim dosya hazırlık',
-  'oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
+  'kudus-benim':'kudüs kudus benim ben’im projesi mescid-i aksa din öğretimi genel müdürlüğü proje ekibi yıllık plan etkinlik havuzu ek-1 ek-2 çalışma kâğıdı ilkokul ortaokul','oyun-nedir':'maarif kalbinde oyun nedir proje geleneksel çocuk oyunları','oyun-aylik':'ayın oyunları 20 oyun geleneksel çocuk oyunları nasıl oynanır tekerleme sayışmaca maarif kalbinde oyun','oyun-ilkokul':'maarif kalbinde oyun ilkokul yıllık çalışma planı word haftalık oyun','oyun-ortaokul':'maarif kalbinde oyun ortaokul yıllık tema ve oyun planı word',
   'tutanak':'tutanak toplantı olay','dilekce-olustur':'dilekçe örnek','form-sok':'şök şube öğretmenler kurulu','form-zumre':'zümre toplantı','form-diger':'evrak form',
   'parentmeeting':'veli görüşme','veli-toplantisi':'veli toplantı tutanak imza sirküsü dilekçe davet pusulası','yazili-teslim':'yazılı kağıdı kâğıdı teslim tutanağı sınav top','ortak-teblig':'ortak sınav görevlendirme tebliği gözetmen öğretmen ülke geneli ortak yazılı','ortak-gorevler':'gözetmen öğretmen görevleri iş ve işlemler sınavda uyulması gereken kurallar ortak yazılı','ortak-tutanak':'ortak sınav evrakı teslim tutanağı soru kitapçığı gözetmen koordinatör','ders-kesim':'ders kesim raporu müfredat tamamlandı dönem sonu yıl sonu ders kesimi','sinif-rehberlik':'sınıf rehberlik yıllık plan aylık rapor dönem sonu yıl sonu kazanım risk haritası sınıf risk','form-rehberlik':'rehberlik çalışma','gezi':'gezi izin belge','form-kulup':'kulüp sosyal etkinlik','form-belirli':'belirli gün hafta anma','dilimiz':'atasözü deyim türkçe',
   'documents':'döküman dosya arşiv','pdf-images':'resim pdf foto tara tarayıcı kamera scanner camscanner belge','pdf-merge':'pdf birleştir','checklists':'kontrol liste','school-age-calculator':'kayıt yaş ilkokul başlama','folder-spine':'klasör sırtlık dosya etiket','kat-plani':'kat planı kroki acil durum kaçış yangın tahliye planı söndürücü',
