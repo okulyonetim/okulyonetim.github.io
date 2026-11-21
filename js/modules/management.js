@@ -107,6 +107,9 @@ global.OgretmenIzinService={_yetkiKontrol(){if(!duzenleyebilir('ogretmenler')){t
 
 (function(global){
 'use strict';if(window.ManagementModule)return;
+// Bu IIFE, dosyanın üst kısmındaki yardımcı fonksiyonlarla aynı kapsamı paylaşmaz.
+// Dilekçe kayıtları da diğer yönetim modülleri gibi DeviceData üzerinden yürütülür.
+function device(){if(!global.DeviceData)throw new Error('DeviceData hazır değil');return global.DeviceData;}
 let active='staff',query='',mounted=false,unsubs=[],dutyYear=new Date().getFullYear(),dutyMonth=new Date().getMonth();
 const ptToday=new Date(),ptPad=n=>String(n).padStart(2,'0');
 let ptState={
