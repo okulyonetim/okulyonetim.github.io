@@ -538,6 +538,7 @@ const RENDER_SOURCES={
   staff:new Set(['data.personel','data.personelIzinler','data.okulBilgileri']),
   tasks:new Set(['data.periyodikIsler','data.periyodikSablon']),
   leaves:new Set(['data.ogretmenIzinleri','data.personelIzinler','data.ogretmenler','data.personel']),
+  dilekce:new Set(['data.dilekceler','data.personel','data.okulBilgileri']),
   duty:new Set(['data.nobetYerleri','data.nobetAtamalari','data.nobetciAmirleri','data.resmiTatiller','data.nobetRotasyon','data.ogretmenler'])
 };
 function scheduleRender(source){
