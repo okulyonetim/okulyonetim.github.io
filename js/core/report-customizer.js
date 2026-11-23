@@ -219,8 +219,8 @@ function ask(title,body,opts){
   return columnSection(table,ti,prefs);
  }).join('');
  backdrop.innerHTML=`<form class="ka-report-customizer"><div class="ka-report-customizer__head"><h2>Raporu Özelleştir</h2><p>${esc(title||'Rapor')} — Seçimler yazdırma, PDF, görsel ve paylaşım çıktısına birlikte uygulanır.</p></div><div class="ka-report-customizer__body">
- <div class="ka-report-customizer__section"><strong>Rapor başlıkları</strong><div class="ka-report-customizer__grid"><label class="ka-report-customizer__field"><span>Ana başlık</span><input type="text" name="title" value="${esc(title||'Rapor')}"></label><label class="ka-report-customizer__field"><span>Üst başlık</span><input type="text" name="ustBaslik" value="${esc(opts.ustBaslik||'')}"></label><label class="ka-report-customizer__field"><span>Okul adı</span><input type="text" name="okulAdi" value="${esc(opts.okulAdi||'')}"></label><label class="ka-report-customizer__field"><span>Dosya adı</span><input type="text" name="fileName" value="${esc(opts.fileName||title||'Koruk_Rapor')}"></label></div></div>
- <div class="ka-report-customizer__section"><strong>Üst bilgi</strong><div class="ka-report-customizer__grid"><label><input type="checkbox" name="baslikGoster" ${opts.baslikGoster!==false?'checked':''}><span>Ana başlığı göster</span></label><label><input type="checkbox" name="logoGoster" ${opts.logoGoster!==false?'checked':''}><span>Okul logosunu göster</span></label><label><input type="checkbox" name="tarihGoster" ${opts.tarihGoster!==false?'checked':''}><span>Tarihi göster</span></label><label><input type="checkbox" name="schoolGoster" ${opts.okulAdi!==''?'checked':''}><span>Okul adını göster</span></label></div></div>
+ <div class="ka-report-customizer__section"><strong>Rapor başlıkları</strong><div class="ka-report-customizer__grid"><label class="ka-report-customizer__field"><span>Ana başlık</span><input type="text" name="title" value="${esc(title||'Rapor')}"></label><label class="ka-report-customizer__field"><span>Üst başlık</span><input type="text" name="ustBaslik" value="${esc(opts.ustBaslik||'')}"></label><label class="ka-report-customizer__field"><span>Okul adı</span><input type="text" name="okulAdi" value="${esc(okulAdiBaslangic(opts))}"></label><label class="ka-report-customizer__field"><span>Dosya adı</span><input type="text" name="fileName" value="${esc(opts.fileName||title||'Koruk_Rapor')}"></label></div></div>
+ <div class="ka-report-customizer__section"><strong>Üst bilgi</strong><div class="ka-report-customizer__grid"><label><input type="checkbox" name="baslikGoster" ${opts.baslikGoster!==false?'checked':''}><span>Ana başlığı göster</span></label><label><input type="checkbox" name="logoGoster" ${opts.logoGoster!==false?'checked':''}><span>Okul logosunu göster</span></label><label><input type="checkbox" name="tarihGoster" ${opts.tarihGoster!==false?'checked':''}><span>Tarihi göster</span></label><label><input type="checkbox" name="schoolGoster" ${String(opts.okulAdi??'x').trim()!==''?'checked':''}><span>Okul adını göster</span></label></div></div>
  ${headingSection}${tableSections||'<div class="ka-report-customizer__section"><strong>Veri alanları</strong><span class="ka-report-customizer__hint">Bu raporda tablo başlığı bulunamadı. Üst bilgi ve rapor başlıkları yine özelleştirilebilir.</span></div>'}
  </div><div class="ka-report-customizer__footer"><button type="button" data-rc-reset>Varsayılana dön</button><button type="button" data-rc-cancel>Vazgeç</button><button type="submit" class="primary">Raporu Oluştur</button></div></form>`;
  document.body.appendChild(backdrop);
@@ -295,6 +295,8 @@ function ask(title,body,opts){
 /* ------------------------------------------------------------------ */
 const PROTECTED=/puantaj|imza\s*sirkus|ogretmen\s*devams|servis\s*aylik\s*takip|aylik\s*denetim|yemek\s*denetim|maas\s*degisikli|dilekce|devamsizlik\s*cizelge|nobet\s*(defter|cizelge|sirkus)|teblig/i;
 const ascii=s=>String(s||'').toLocaleLowerCase('tr-TR').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ı/g,'i').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u');
+/* Okul adı alanı boş gelmesin: belgenin kullanacağı ad (giriş yapan öğretmenin ya da sınıfın okulu) yazılı başlar ve değiştirilebilir. */
+const okulAdiBaslangic=opts=>String(opts?.okulAdi||'').trim()||String(global.ReportEngine?.schoolInfo?.(opts)?.okulAdi||'');
 function isBypassed(title,body,opts){
  if(opts?.ozellestirilebilir===false||opts?.ozelRapor===true)return true;
  if(PROTECTED.test(ascii(title))||PROTECTED.test(ascii(opts?.fileName)))return true;
@@ -308,7 +310,7 @@ async function wrappedPrint(original,title,body,opts={}){
  for(let guard=0;guard<4;guard++){result=await ask(title,body,opts);if(result!==RESET)break}
  if(!result||result===RESET)return null;
  const nextBody=applySelection(body,result);
- const nextOpts={...opts,title:result.title,ustBaslik:result.ustBaslik,okulAdi:result.schoolGoster?result.okulAdi:'',baslikGoster:result.baslikGoster,logoGoster:result.logoGoster,tarihGoster:result.tarihGoster,fileName:result.fileName,ozellestirilebilir:false};
+ const nextOpts={...opts,title:result.title,ustBaslik:result.ustBaslik,okulAdi:result.schoolGoster?result.okulAdi:' ',baslikGoster:result.baslikGoster,logoGoster:result.logoGoster,tarihGoster:result.tarihGoster,fileName:result.fileName,ozellestirilebilir:false};
  return original(result.title,nextBody,nextOpts);
 }
 

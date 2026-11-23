@@ -12,7 +12,7 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const canView=()=>global.PermissionService?.can?.('management.personnel','read')??true;
 const dotted=(v,fallback='...........................')=>String(v||'').trim()||fallback;
 function trDate(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}.${m[2]}.${m[1]}`:''}
-function schoolInfo(){return arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{}}
+function schoolInfo(){const r=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};return{...r,okulAdi:globalThis.SchoolIdentity?.okulAdi?.()||r.okulAdi}}
 function teacherName(id){const o=arr('ogretmenler').find(x=>x.id===id);return o?`${o.ad||''} ${o.soyad||''}`.trim():''}
 function principalName(){const okul=schoolInfo();return okul.mudurId?teacherName(okul.mudurId):''}
 async function prepareLocal(){
@@ -41,7 +41,7 @@ async function print(type,form){
   if(!canView())return global.toast?.('Bu belgeyi görüntüleme yetkiniz yok.');
   if(!global.ReportEngine?.printReport)throw new Error('ReportEngine hazır değil.');
   const v=collect(form),isResponse=type==='response',title=isResponse?'Diploma Kayıt Örneği — Okul Cevabı':'Diploma Kayıt Örneği Talep Dilekçesi',body=isResponse?responseBody(v):requestBody(v);
-  return ReportEngine.printReport(title,body,{fileName:isResponse?'Diploma_Kayit_Ornegi_Okul_Cevabi':'Diploma_Kayit_Ornegi_Talep_Dilekcesi',logoGoster:false,tarihGoster:false,baslikGoster:false,kenarBosluk:20,fontSize:12,extraHead:reportCss()});
+  return ReportEngine.printReport(title,body,{fileName:isResponse?'Diploma_Kayit_Ornegi_Okul_Cevabi':'Diploma_Kayit_Ornegi_Talep_Dilekcesi',logoGoster:false,tarihGoster:false,baslikGoster:false,kenarBosluk:20,fontSize:12,extraHead:reportCss(),ozellestirilebilir:false,duzenle:true});
 }
 
 const drafts={request:Object.create(null),response:Object.create(null)};

@@ -68,7 +68,7 @@ function gorevOf(s){if(s.gorev)return s.gorev;const n=parseInt(String(s.sinif||'
 function cell(v){return v?esc(v):'&nbsp;'}
 function reportBody(data){
  const s=data||ensure(),dots='......................................';
- const RE=global.ReportEngine,okul=String(RE?.schoolInfo?.().okulAdi||'').toLocaleUpperCase('tr'),logo=RE?.logoUrl?.()||'assets/logo.png';
+ const RE=global.ReportEngine,bag={sinif:s.sinif},okul=String(RE?.schoolInfo?.(bag).okulAdi||'').toLocaleUpperCase('tr'),logo=RE?.logoUrl?.(bag)||'assets/logo.png';
  return`<article class="vgf-paper"><div class="vgf-brand"><img src="${esc(logo)}" alt=""><div class="vgf-brand__name">${esc(okul)}</div></div><h1 class="vgf-title">VELİ GÖRÜŞME FORMU</h1>
  <table class="vgf-table"><colgroup><col class="vgf-c1"><col class="vgf-c2"><col class="vgf-c3"><col class="vgf-c4"></colgroup><tbody>
  <tr><th rowspan="3" class="vgf-grp">Görüşme Yapılan Velinin</th><th class="vgf-sub">Adı Soyadı</th><td colspan="2">${cell(s.veliAd)}</td></tr>

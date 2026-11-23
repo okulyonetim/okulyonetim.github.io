@@ -16,12 +16,12 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const arr=k=>{const v=global.AppStore?.data?.(k);return Array.isArray(v)?v:[]};
 const normalize=s=>String(s||'').trim();
 const upper=s=>normalize(s).toLocaleUpperCase('tr-TR');
-const logoUrl=()=>{try{return new URL('assets/logo.png',global.location.href).href}catch(_){return'assets/logo.png'}};
+const logoUrl=()=>{const yol=global.SchoolIdentity?.logo?.()||'assets/logo.png';try{return new URL(yol,global.location.href).href}catch(_){return yol}};
 const dayClass=i=>i%2===0?'ka-sr-day-a':'ka-sr-day-b';
 function teacherObj(id){return arr('ogretmenler').find(x=>String(x.id)===String(id))||{}}
 function teacherName(id){const o=teacherObj(id);return Object.keys(o).length?normalize(o.adSoyad||`${o.ad||''} ${o.soyad||''}`):'—'}
 function teacherBranch(id){const o=teacherObj(id);return normalize(o.brans||o.branş||o.bransi||o.bransAdi||o.alan||'')}
-function schoolInfo(){const rows=arr('okulBilgileri'),x=rows.find(r=>r.id==='ayarlar')||rows[0]||{};return{school:normalize(x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu')}}
+function schoolInfo(){const rows=arr('okulBilgileri'),x=rows.find(r=>r.id==='ayarlar')||rows[0]||{};return{school:normalize(globalThis.SchoolIdentity?.okulAdi?.()||x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu')}}
 function academicYear(){const d=new Date(),y=d.getFullYear(),s=d.getMonth()>=7?y:y-1;return`${s}-${s+1}`}
 function lessonTimes(){const settings=arr('dersSaatleri').find(x=>x.id==='ayarlar')||arr('dersSaatleri')[0]||{};const fallback=[['08:30','09:10'],['09:20','10:00'],['10:10','10:50'],['11:00','11:40'],['12:30','13:10'],['13:20','14:00'],['14:10','14:50']];const rows=Array.isArray(settings.donemler)&&settings.donemler.length?settings.donemler:PERIODS.map((s,i)=>({saat:s,baslangic:fallback[i][0],bitis:fallback[i][1]}));return rows.map(x=>({saat:Number(x.saat),baslangic:x.baslangic||'',bitis:x.bitis||''}))}
 function periodLabel(p){const t=lessonTimes().find(x=>x.saat===p),clock=t?[t.baslangic,t.bitis].filter(Boolean).join('–'):'';return`<b>${p}. DERS</b>${clock?`<small>${esc(clock)}</small>`:''}`}

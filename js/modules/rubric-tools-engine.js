@@ -22,7 +22,7 @@ function scoreSplit(target,count,min,max){
  return values;
 }
 function teacherName(){const s=school();if(!s.mudurId)return'';const o=data('ogretmenler','ogretmenler').find(x=>x.id===s.mudurId);return o?`${o.ad} ${o.soyad}`:'';}
-function schoolName(){return school().okulAdi||'KORUK İLK - ORTAOKULU';}
+function schoolName(){return globalThis.SchoolIdentity?.okulAdi?.()||school().okulAdi||'KORUK İLK - ORTAOKULU';}
 function rubricDefault(){return{puanMin:1,puanMax:5,puanEtiketleri:['ZAYIF','KABUL EDİLEBİLİR','ORTA','İYİ','ÇOK İYİ'],gruplar:[
  {ad:'1.DERSE HAZIRLIK',kriterler:['Kaynak bilgisi sorgulama.','Bilgi kaynaklarını kendisi bulur.','Bilgiyi nereden edineceğini bildiğini söyler.','Derse değişik yardımcı kaynaklarla gelir.','Derse hazırlıklı gelir.']},
  {ad:'2.ETKİNLİKLERE KATILIM',kriterler:['Kendiliğinden söz alarak görüşünü söyler.','Kendisine görüşü sorulduğunda konuşur.','Belirttiği görüş ve verdiği örnekler özgündür.','Yeni ve özgün sorular sorar.','Dersi dinlediğini gösteren özgün sorular sorar.']},

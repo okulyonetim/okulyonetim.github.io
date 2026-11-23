@@ -109,7 +109,7 @@ function hydrateRemote(){
 const aktifler=()=>S.cfg.sira.filter(id=>!S.cfg.kapali.includes(id));
 
 /* ── model ── */
-function okulAdi(){const l=rows('okulBilgileri'),x=l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{};return String(x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu')}
+function okulAdi(){const l=rows('okulBilgileri'),x=l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{};return String(globalThis.SchoolIdentity?.okulAdi?.()||x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu')}
 function ozelGunListesi(){
  const chosen=rows('belirliGunler'),key=x=>`${String(x.ad||'').trim().toLocaleLowerCase('tr')}|${String(x.tarihBaslangic||'').slice(0,10)}`,have=new Set(chosen.map(key));
  const official=(global.BelirliGunlerCatalog?.resmiGunler?.()||[]).filter(x=>!have.has(key(x))).map(x=>({...x,resmi:true}));

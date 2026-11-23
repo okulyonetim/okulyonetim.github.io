@@ -69,7 +69,7 @@ function tebligCumlesi(m={}){
 function gorevlendirmeBelgesi(m={}){
  const ek=String(m.ek??'Gözetmen Öğretmenin Görevleri').trim();
  return`<article class="osn-paper osn-teblig">
-<header class="osn-mektup"><img class="osn-logo" src="assets/logo.png" alt=""><div class="osn-mektup-yazi"><div>T.C.</div><div>${esc(nokta(m.ustBaslik1,NOKTA_U))}</div><div>${esc(nokta(m.ustBaslik2,NOKTA_U))}</div><div>${esc(nokta(m.okul,NOKTA_U))}</div></div></header>
+<header class="osn-mektup"><img class="osn-logo" src="${esc(globalThis.SchoolIdentity?.logo?.({sinif:m.sinif})||'assets/logo.png')}" alt=""><div class="osn-mektup-yazi"><div>T.C.</div><div>${esc(nokta(m.ustBaslik1,NOKTA_U))}</div><div>${esc(nokta(m.ustBaslik2,NOKTA_U))}</div><div>${esc(nokta(m.okul,NOKTA_U))}</div></div></header>
 <div class="osn-konu"><span>Konu : Görevlendirme Tebliği</span><span>${esc(tarihEgik(m.belgeTarihi))}</span></div>
 <div class="osn-muhatap"><span class="osn-sn">Sn: ${esc(nokta(m.ogretmen,NOKTA_U))}</span><span class="osn-okudum"><i>İmza</i><span>Okudum</span></span></div>
 <p class="osn-govde">${esc(tebligCumlesi(m))}</p>

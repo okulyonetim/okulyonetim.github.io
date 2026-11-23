@@ -92,7 +92,7 @@ function imzaSirkusu(c){
 
 /* Davet pusulası: her öğrenci için bir kart — okul logosu, okul / yıl başlığı, sınıf-tarih-saat şeridi, davet metni; öğretmen adı sağda alt alta ortalı. */
 function pusula(c){
- const logo=global.ReportEngine?.logoUrl?.()||'assets/logo.png';
+ const logo=global.ReportEngine?.logoUrl?.(c)||'assets/logo.png';
  const metin=`${c.yil} Eğitim Öğretim Yılı ${veri().donem} ${sinifMetni(c.sinif)} veli toplantımız ${tarihMetni(c.tarih)} tarihinde saat ${saatMetni(c.saat)} itibarıyla yapılacaktır. Çocuğumuzun eğitimi için önemli olan bu toplantıya katılımınızı önemle rica ederiz.`;
  const adlar=c.ogrenciler.length?c.ogrenciler.map(o=>o.ad):Array.from({length:6},()=>'');
  const serit=`<div class="vtp-pbilgi"><span><small>SINIF / ŞUBE</small><b>${esc(c.sinif||NOKTA)}</b></span><span><small>TARİH</small><b>${esc(tarihMetni(c.tarih))}</b></span><span><small>SAAT</small><b>${esc(saatMetni(c.saat))}</b></span></div>`;

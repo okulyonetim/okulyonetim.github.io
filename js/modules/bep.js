@@ -69,7 +69,7 @@ function schoolCtx(){
  const id=user().bagliOgretmenId||user().ogretmenId||'';
  const t=rows('ogretmenler').find(o=>String(o.id)===String(id));
  const name=p=>p?(`${p.ad||''} ${p.soyad||''}`.trim()||p.adSoyad||''):'';
- return{okul:x.okulAdi||x.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'',mudur:name(mudur),ogretmen:name(t)};
+ return{okul:globalThis.SchoolIdentity?.okulAdi?.()||x.okulAdi||x.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'',mudur:name(mudur),ogretmen:name(t)};
 }
 function newRecord(){
  const s=schoolCtx(),u=user();

@@ -40,7 +40,7 @@ function bilgi(){
  const t=ogr.find(x=>String(x.id)===String(id))||ogr.find(x=>u.uid&&(x.uid===u.uid||x.hesapUid===u.uid))||null;
  const md=ogr.find(x=>String(x.id)===String(o.mudurId||o.mudirId||''));
  return{
-  okul:String(o.okulAdi||o.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'').trim(),il:o.il,ilce:o.ilce,
+  okul:String(globalThis.SchoolIdentity?.okulAdi?.()||o.okulAdi||o.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'').trim(),il:o.il,ilce:o.ilce,
   ad:adSoyad(t)||String(u.adSoyad||u.ad||u.displayName||'').trim(),unvan:t?.unvan||u.unvan||'',brans:t?.brans||u.brans||'',
   mudur:adSoyad(md)||String(o.mudurAdSoyad||o.mudurAdi||'').trim(),yil:S.yil
  };

@@ -11,6 +11,7 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const KEY='ka-gezi-taslak-v1';
 const DOCS=[['olustur','🧰 Gezi Planı Oluştur'],['plan-ici','🏙️ İl İçi Gezi Planı'],['plan-disi','🚌 İl Dışı Gezi Planı'],['onay-ici','✍️ İl İçi Gezi Onayı'],['onay-disi','📋 İl Dışı Gezi Onayı'],['veli','📝 Veli İzin Belgesi']];
 const DOT='……………………';
+const SAYI_PH='………………';
 const ILGI='İlköğretim ve Ortaöğretim Kurumları Sosyal Etkinlikler Yönetmeliği (Değişiklik: 01/09/2018 tarih ve 30522 sayılı Resmî Gazete)';
 const AMAC=[
  y=>`${y||'Gezi'} gezisi, öğrencilerin derslerde edindikleri bilgileri yerinde görerek pekiştirmelerini ve gerçek yaşamla ilişkilendirmelerini amaçlamaktadır. Gezi; kültür, sanat ve tarih bilincinin gelişmesine, öğrencilerin birlikte hareket etme ve kurallara uyma alışkanlığı kazanmasına katkı sağlayacaktır.`,
@@ -18,14 +19,21 @@ const AMAC=[
  y=>`Gezi ile öğrencilerin ${y||'gezilecek yerin'} tarihî, kültürel ve doğal özelliklerini yerinde incelemeleri amaçlanmaktadır. Grup çalışması sayesinde sorumluluk, iş birliği ve arkadaşlık bağlarının güçlenmesi beklenmektedir.`,
  y=>`${y||'Gezi'} gezisi; öğrencilerin okul dışı öğrenme ortamlarında bilgi ve deneyim kazanmalarını, millî ve manevi değerleri benimsemelerini ve toplumsal yaşam kurallarını uygulayarak öğrenmelerini sağlayacaktır.`
 ];
+/* Sayfa üzerinde düzenleme: yer, saat gibi taslak alanları doğrudan taslağa yazılır ve formla eşleşir.
+ * Plaka listesi, toplam, makam satırı gibi hesaplanan hücreler elle değiştirilirse s.ozel[k]={text,base} tutulur;
+ * hücrenin hesaplanan hâli (base) sonradan değişirse elle yazılan metin kendiliğinden bırakılır. */
+const oz=(s,k,d)=>{const o=s.ozel&&s.ozel[k];return o&&o.base===d?o.text:d};
+const E=(edit,k,base)=>edit?` contenteditable="true" spellcheck="false" data-gz-ed="${k}"${base===undefined?'':` data-gz-b="${esc(base)}"`}`:'';
 const okulB=()=>{const l=rows('okulBilgileri');return l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
 const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
-const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
+const okulVar=()=>String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim();
+const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:okulVar(),okulOto:okulVar(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
  gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
 function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 function trDate(v){if(!v)return'';const d=new Date(v+'T00:00:00');return Number.isNaN(d.getTime())?v:`${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`}
+function trParse(t){const m=String(t||'').trim().match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);if(!m)return'';const d=new Date(+m[3],+m[2]-1,+m[1]);return d.getFullYear()===+m[3]&&d.getMonth()===+m[2]-1&&d.getDate()===+m[1]?`${m[3]}-${pad(+m[2])}-${pad(+m[1])}`:''}
 function load(){try{const r=JSON.parse(global.localStorage?.getItem(KEY)||'null');if(r&&typeof r==='object')return{...blank(),...r,secSiniflar:Array.isArray(r.secSiniflar)?r.secSiniflar:[],ogrenciler:Array.isArray(r.ogrenciler)?r.ogrenciler:[],araclar:Array.isArray(r.araclar)&&r.araclar.length?r.araclar:blank().araclar,subeler:Array.isArray(r.subeler)&&r.subeler.length?r.subeler:[{sube:'',k:'',e:''}],ogretmenler:Array.isArray(r.ogretmenler)&&r.ogretmenler.length?r.ogretmenler:['']}}catch(_){}return blank()}
 function persist(){try{global.localStorage?.setItem(KEY,JSON.stringify(ensure()))}catch(_){}}
 function ensure(){if(!state)state=load();return state}
@@ -38,7 +46,7 @@ const isOnay=s=>s.doc==='onay-ici'||s.doc==='onay-disi',isPlan=s=>s.doc==='plan-
 const dolu=a=>(a||[]).filter(x=>x&&(String(x.plaka||'').trim()||String(x.sofor||'').trim()));
 const plakalar=s=>dolu(s.araclar).map(x=>String(x.plaka||'').trim()).filter(Boolean).join(', ')||s.plaka;
 const soforler=s=>dolu(s.araclar).map(x=>String(x.sofor||'').trim()).filter(Boolean).join(', ')||s.sofor;
-const veliSayisi=s=>num(s.veli)||ayrik(s.veliler).length;
+const veliSayisi=s=>/^\d+$/.test(String(s.veli||'').trim())?parseInt(s.veli,10):ayrik(s.veliler).length;
 const dogal=(a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true});
 function recount(s){(s.subeler||[]).forEach(x=>{if(!x.sid)return;const l=(s.ogrenciler||[]).filter(o=>o.sid===x.sid);x.k=String(l.filter(o=>o.g==='Kız').length);x.e=String(l.filter(o=>o.g==='Erkek').length)})}
 function syncSecim(s){
@@ -48,6 +56,8 @@ function syncSecim(s){
  s.ogrenciler=[...(s.ogrenciler||[]).filter(x=>!x.sid),...app];
  const elle=(s.subeler||[]).filter(x=>!x.sid&&(NK(x.sube)||num(x.k)||num(x.e)));
  s.subeler=[...cl.map(c=>({sube:c.ad||'',sid:c.id,k:'',e:''})),...elle];if(!s.subeler.length)s.subeler=[{sube:'',k:'',e:''}];
+ /* Okul adı seçilen sınıfların kademesine uyar (1–4 ilkokul, 5–8 ortaokul); elle yazılmış ad korunur. */
+ if(cl.length){const oto=String(global.SchoolIdentity?.okulAdi?.({siniflar:cl.map(c=>c.ad||'')})||'').trim();if(oto&&(!NK(s.okul)||s.okul===s.okulOto))s.okul=oto;s.okulOto=oto}
  recount(s)
 }
 function amacMetni(s){return AMAC[(s.amacIdx||0)%AMAC.length](String(s.yer||'').trim())}
@@ -55,37 +65,46 @@ function tarihYer(s){return`${trDate(s.gTarih)||DOT} tarihinde ${String(s.yer||'
 function ilgiMetni(s){return s.ilgiOzel||ILGI}
 function govdeMetni(s){return s.govdeOzel||`Okulumuz öğrenci velilerinden muvafakat belgesi alınmak suretiyle ${tarihYer(s)} gezisinin aşağıda belirtilen plan dâhilinde yapılması planlanmaktadır.`}
 function kapanisMetni(s){return s.kapanisOzel||'Makamınızca da uygun görüldüğü takdirde Olurlarınıza arz ederim.'}
-function planTablo(s){
- const sb=(s.subeler||[]).filter(x=>String(x.sube||'').trim()||num(x.k)||num(x.e));
+function planTablo(s,edit){
+ const sb=(s.subeler||[]).map((x,i)=>[x,i]).filter(([x])=>String(x.sube||'').trim()||num(x.k)||num(x.e));
  const ogr=ayrik((s.ogretmenler||[]).join('\n'));
  const prog=String(s.program||'').split('\n').map(x=>x.trim()).filter(Boolean);
+ const nokta=edit?DOT:'';
  const v=(x,d)=>esc(String(x||'').trim())||d;
- const arac=s.belediye?'Belediye aracı':'';
+ const t=(k,d)=>esc(oz(s,k,d))||nokta;
+ const th=(k,d,a='')=>`<th${a}${E(edit,k,d)}>${t(k,d)}</th>`;
+ const arac=s.belediye?'Belediye aracı':'',gtr=trDate(s.gTarih),plaka=plakalar(s)||'',sofor=soforler(s)||'',top=String(toplam(s)),vs=String(veliSayisi(s));
  return`<table class="gzi-tablo"><tbody>
-<tr><th>GEZİ TARİHİ</th><td colspan="3">${v(trDate(s.gTarih),DOT)}</td></tr>
-<tr><th>GEZİ YERİ</th><td colspan="3">${v(s.yer,DOT)}</td></tr>
-<tr><th>GEZİ ÇIKIŞ / DÖNÜŞ SAATİ</th><td colspan="3">${v(s.saat,DOT)}</td></tr>
-<tr><th>GEZİDE GİDİLECEK YERLERİN PLANI</th><td colspan="3">${prog.length?prog.map(esc).join('<br>'):DOT}</td></tr>
-<tr><th>GEZİYE GİDECEK ARACIN</th><td colspan="3">${esc(arac)}</td></tr>
-<tr><th>a) Plakaları</th><td colspan="3">${v(plakalar(s),'')}</td></tr>
-<tr><th>b) Şoförlerin Adı Soyadı</th><td colspan="3">${v(soforler(s),'')}</td></tr>
-<tr><th>c) Aracın Kira Bedeli</th><td colspan="3">${v(s.kira,'')}</td></tr>
-<tr><th rowspan="${Math.max(sb.length,1)+2}">GEZİYE KATILACAK SINIFLAR VE ÖĞRENCİ SAYISI</th><td class="gzi-c"><b>ŞUBE</b></td><td class="gzi-c"><b>K</b></td><td class="gzi-c"><b>E</b></td></tr>
-${(sb.length?sb:[{sube:'',k:'',e:''}]).map(x=>`<tr><td class="gzi-c">${esc(x.sube)}</td><td class="gzi-c">${num(x.k)||''}</td><td class="gzi-c">${num(x.e)||''}</td></tr>`).join('')}
-<tr><td class="gzi-c"><b>TOPLAM</b></td><td class="gzi-c" colspan="2"><b>${toplam(s)}</b></td></tr>
-<tr><th>GEZİYE KATILACAK VELİ SAYISI</th><td colspan="3">${veliSayisi(s)}</td></tr>
-<tr><th>GEZİYE KATILACAK İDARECİ</th><td colspan="3">${v(s.idareci,'')}</td></tr>
-<tr><th>GEZİYE KATILACAK ÖĞRETMENLER</th><td colspan="3">${ogr.length?ogr.map((x,i)=>`${i+1}- ${esc(x)}`).join('<br>'):''}</td></tr>
-<tr><th>GEZİNİN AMACI</th><td colspan="3">${v(s.amac,'')}</td></tr>
+<tr>${th('th1','GEZİ TARİHİ')}<td colspan="3"${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</td></tr>
+<tr>${th('th2','GEZİ YERİ')}<td colspan="3"${E(edit,'yer')}>${v(s.yer,DOT)}</td></tr>
+<tr>${th('th3','GEZİ ÇIKIŞ / DÖNÜŞ SAATİ')}<td colspan="3"${E(edit,'saat')}>${v(s.saat,DOT)}</td></tr>
+<tr>${th('th4','GEZİDE GİDİLECEK YERLERİN PLANI')}<td colspan="3"${E(edit,'program')}>${prog.length?prog.map(esc).join('<br>'):DOT}</td></tr>
+<tr>${th('th5','GEZİYE GİDECEK ARACIN')}<td colspan="3"${E(edit,'arac',arac)}>${t('arac',arac)}</td></tr>
+<tr>${th('th6','a) Plakaları')}<td colspan="3"${E(edit,'plaka',plaka)}>${t('plaka',plaka)}</td></tr>
+<tr>${th('th7','b) Şoförlerin Adı Soyadı')}<td colspan="3"${E(edit,'sofor',sofor)}>${t('sofor',sofor)}</td></tr>
+<tr>${th('th8','c) Aracın Kira Bedeli')}<td colspan="3"${E(edit,'kira')}>${v(s.kira,nokta)}</td></tr>
+<tr>${th('th9','GEZİYE KATILACAK SINIFLAR VE ÖĞRENCİ SAYISI',` rowspan="${Math.max(sb.length,1)+2}"`)}<td class="gzi-c"${E(edit,'th10','ŞUBE')}><b>${t('th10','ŞUBE')}</b></td><td class="gzi-c"${E(edit,'th11','K')}><b>${t('th11','K')}</b></td><td class="gzi-c"${E(edit,'th12','E')}><b>${t('th12','E')}</b></td></tr>
+${(sb.length?sb:[[{sube:'',k:'',e:''},0]]).map(([x,i])=>`<tr><td class="gzi-c"${E(edit,'sube:'+i)}>${esc(x.sube)}</td><td class="gzi-c"${E(edit,'k:'+i)}>${num(x.k)||''}</td><td class="gzi-c"${E(edit,'e:'+i)}>${num(x.e)||''}</td></tr>`).join('')}
+<tr><td class="gzi-c"${E(edit,'th13','TOPLAM')}><b>${t('th13','TOPLAM')}</b></td><td class="gzi-c" colspan="2"${E(edit,'toplam',top)}><b>${esc(oz(s,'toplam',top))}</b></td></tr>
+<tr>${th('th14','GEZİYE KATILACAK VELİ SAYISI')}<td colspan="3"${E(edit,'veli',vs)}>${esc(oz(s,'veli',vs))}</td></tr>
+<tr>${th('th15','GEZİYE KATILACAK İDARECİ')}<td colspan="3"${E(edit,'idareci')}>${v(s.idareci,nokta)}</td></tr>
+<tr>${th('th16','GEZİYE KATILACAK ÖĞRETMENLER')}<td colspan="3"${E(edit,'ogretmenler')}>${ogr.length?ogr.map((x,i)=>`${i+1}- ${esc(x)}`).join('<br>'):nokta}</td></tr>
+<tr>${th('th17','GEZİNİN AMACI')}<td colspan="3"${E(edit,'amac')}>${v(s.amac,nokta)}</td></tr>
 </tbody></table>`
 }
 function ustMakam(s){const il=NK(s.il),ilce=NK(s.ilce);return(s.makamTur==='valilik'?`${il||DOT} VALİLİĞİ`:`${ilce||DOT} KAYMAKAMLIĞI`).toLocaleUpperCase('tr')}
 function baslikPlan(s){return isDisi(s)?'İL DIŞI OKUL GEZİ PLANI':'OKUL GEZİ PLANI'}
-function veliBelge(s,o){
+const baslikH=(s,edit,tag='h1')=>`<${tag} class="gzi-title"${E(edit,'baslik',baslikPlan(s))}>${esc(oz(s,'baslik',baslikPlan(s)))||(edit?DOT:'')}</${tag}>`;
+function veliBelge(s,o,edit){
  o=o||{};const okul=String(s.okul||'').trim()||'……………………………………';
- return`<section class="gzi-veli"><h2 class="gzi-vbaslik">GEZİ VELİ İZİN BELGESİ</h2><p class="gzi-vmakam">${esc(okul.toLocaleUpperCase('tr'))} MÜDÜRLÜĞÜNE</p><p class="gzi-vmetin">Okulunuzun ${esc(o.sinif)||DOT} sınıfı ${esc(o.no)||DOT} numaralı öğrencisi ${esc(o.ad)||DOT+DOT}’in velisiyim. Öğrencimin <b>${esc(trDate(s.gTarih)||DOT)}</b> tarihinde${s.saat?` <b>${esc(s.saat)}</b> saatleri arasında`:''} <b>${esc(String(s.yer||'').trim()||DOT)}</b> gezisine katılmasına izin veriyorum.</p><p class="gzi-vmetin">Gereğini bilgilerinize arz ederim.</p><div class="gzi-vimza"><span>Tarih: …/…/……</span><span>Veli adı soyadı: ${esc(o.veli)||DOT}</span><span>Telefon: ${esc(o.tel)||DOT}</span><span>İmza: ${DOT}</span></div></section>`}
-function paperVeli(s){
- const bir=veliBelge(s);
+ const nokta=edit?DOT:'';
+ /* Şablon metni (öğrenciye göre değişmeyen parçalar) tüm nüshalarda ortaktır: sayfada değiştirilince her öğrencinin belgesine geçer. */
+ const t=(k,d)=>edit?`<span${E(edit,k,d)}>${esc(oz(s,k,d))||nokta}</span>`:esc(oz(s,k,d));
+ const gtr=trDate(s.gTarih),makam=`${okul.toLocaleUpperCase('tr')} MÜDÜRLÜĞÜNE`;
+ const saat=s.saat?` <b${E(edit,'saat')}>${esc(s.saat)}</b> ${t('v6','saatleri arasında')}`:'';
+ return`<section class="gzi-veli"><h2 class="gzi-vbaslik"${E(edit,'vbaslik','GEZİ VELİ İZİN BELGESİ')}>${esc(oz(s,'vbaslik','GEZİ VELİ İZİN BELGESİ'))||nokta}</h2><p class="gzi-vmakam"${E(edit,'vmakam',makam)}>${esc(oz(s,'vmakam',makam))||nokta}</p><p class="gzi-vmetin">${t('v1','Okulunuzun')} ${esc(o.sinif)||t('vb1',DOT)} ${t('v2','sınıfı')} ${esc(o.no)||t('vb2',DOT)} ${t('v3','numaralı öğrencisi')} ${esc(o.ad)||t('vb3',DOT+DOT)}${t('v4','’in velisiyim. Öğrencimin')} <b${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</b> ${t('v5','tarihinde')}${saat} <b${E(edit,'yer')}>${esc(String(s.yer||'').trim())||DOT}</b> ${t('v7','gezisine katılmasına izin veriyorum.')}</p><p class="gzi-vmetin"${E(edit,'vgereg','Gereğini bilgilerinize arz ederim.')}>${esc(oz(s,'vgereg','Gereğini bilgilerinize arz ederim.'))||nokta}</p><div class="gzi-vimza"><span>${t('vl1','Tarih:')} ${t('vb4','…/…/……')}</span><span>${t('vl2','Veli adı soyadı:')} ${esc(o.veli)||t('vb5',DOT)}</span><span>${t('vl3','Telefon:')} ${esc(o.tel)||t('vb6',DOT)}</span><span>${t('vl4','İmza:')} ${t('vb7',DOT)}</span></div></section>`}
+function paperVeli(s,edit){
+ const bir=veliBelge(s,undefined,edit);
  return`<article class="gzi-paper gzi-paper--veli">${bir}${bir}${bir}</article>`
 }
 const sayfa=h=>`<div class="gzi-sayfa">${h}</div>`;
@@ -143,36 +162,39 @@ const BELGELER=[['plan','📋','Gezi Planı','Plan tablosu: tarih, yer, araç, k
 function printBelge(k){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const s=ensure(),keys=k==='hepsi'?BELGELER.map(x=>x[0]):[k];
- global.ReportEngine.printReport(k==='hepsi'?'Gezi Dosyası':BELGELER.find(x=>x[0]===k)?.[2]||'Gezi',`<div class="gzi-print">${keys.map(x=>BELGE[x](s)).join('')}</div>`,{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+ global.ReportEngine.printReport(k==='hepsi'?'Gezi Dosyası':BELGELER.find(x=>x[0]===k)?.[2]||'Gezi',`<div class="gzi-print">${keys.map(x=>BELGE[x](s)).join('')}</div>`,{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',ozellestirilebilir:false,duzenle:true});return true
 }
 function ogrenciCoz(txt){
  return String(txt||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const c=(l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(',')).map(x=>x.trim());return{sinif:c[0]||'',no:c[1]||'',ad:c[2]||'',tc:c[3]||'',veli:c[4]||'',tel:c[5]||''}}).filter(x=>x.ad&&!/^(sınıf|sinif)$/i.test(x.sinif))
 }
 function paper(s,edit){
- if(s.doc==='veli')return paperVeli(s);
- const ed=k=>edit?` contenteditable="true" spellcheck="false" data-gz-ed="${k}"`:'';
- if(isPlan(s))return`<article class="gzi-paper"><h1 class="gzi-title">${baslikPlan(s)}</h1>${planTablo(s)}</article>`;
+ if(s.doc==='veli')return paperVeli(s,edit);
+ const nokta=edit?DOT:'';
+ const t=(k,d)=>esc(oz(s,k,d))||nokta;
+ if(isPlan(s))return`<article class="gzi-paper">${baslikH(s,edit)}${planTablo(s,edit)}</article>`;
  const disi=isDisi(s),okul=String(s.okul||'').trim()||'……………………………',ilce=String(s.ilce||'').trim()||DOT;
- const hitap=disi?String(s.makam||'').trim()||'…………………… İlçe Milli Eğitim Müdürlüğüne':`${okul} Müdürlüğüne`;
+ const hitap=(disi?String(s.makam||'').trim()||'…………………… İlçe Milli Eğitim Müdürlüğüne':`${okul} Müdürlüğüne`).toLocaleUpperCase('tr');
  const imza=disi?{ad:s.mudur,unvan:'Okul Müdürü'}:{ad:s.teklif,unvan:'Müdür Yardımcısı'};
  const olur=disi?{ad:'',unvan:String(s.makamUnvan||'').trim()||'İlçe Milli Eğitim Müdürü'}:{ad:s.mudur,unvan:'Okul Müdürü'};
- return`<article class="gzi-paper"><div class="gzi-ust"><b>T.C.</b><b>${esc(ustMakam(s))}</b><b>${esc(okul)} Müdürlüğü</b></div>
-<div class="gzi-bilgi"><span>Sayı : ${esc(s.sayi)||'821.04/……'}</span><span>${esc(trDate(s.yaziTarih))}</span></div><div class="gzi-bilgi"><span>Konu : Gezi Onayı</span></div>
-<p class="gzi-hitap">${esc(hitap.toLocaleUpperCase('tr'))}</p>
-<p class="gzi-yazi"><b>İlgi :</b> <span${ed('ilgi')}>${esc(ilgiMetni(s))}</span></p>
-<p class="gzi-yazi gzi-ind"${ed('govde')}>${esc(govdeMetni(s))}</p>
-<p class="gzi-yazi gzi-ind"${ed('kapanis')}>${esc(kapanisMetni(s))}</p>
-<div class="gzi-imza"><span>${esc(imza.ad)||DOT}</span><b>${esc(imza.unvan)}</b></div>
+ const ust2=ustMakam(s),ust3=`${okul} Müdürlüğü`,sayi=String(s.sayi||'').trim()||SAYI_PH,yt=trDate(s.yaziTarih),ot=trDate(s.olurTarih);
+ const olurAd=oz(s,'olurAd',olur.ad);
+ return`<article class="gzi-paper"><div class="gzi-ust"><b${E(edit,'ust1','T.C.')}>${t('ust1','T.C.')}</b><b${E(edit,'ust2',ust2)}>${t('ust2',ust2)}</b><b${E(edit,'ust3',ust3)}>${t('ust3',ust3)}</b></div>
+<div class="gzi-bilgi"><span><span${E(edit,'sayiEt','Sayı :')}>${t('sayiEt','Sayı :')}</span> <span${E(edit,'sayi')}>${esc(sayi)}</span></span><span${E(edit,'yaziTarih',yt)}>${esc(oz(s,'yaziTarih',yt))||nokta}</span></div><div class="gzi-bilgi"><span><span${E(edit,'konuEt','Konu :')}>${t('konuEt','Konu :')}</span> <span${E(edit,'konu','Gezi Onayı')}>${t('konu','Gezi Onayı')}</span></span></div>
+<p class="gzi-hitap"${E(edit,'hitap',hitap)}>${t('hitap',hitap)}</p>
+<p class="gzi-yazi"><b${E(edit,'ilgiEt','İlgi :')}>${t('ilgiEt','İlgi :')}</b> <span${E(edit,'ilgi')}>${esc(ilgiMetni(s))}</span></p>
+<p class="gzi-yazi gzi-ind"${E(edit,'govde')}>${esc(govdeMetni(s))}</p>
+<p class="gzi-yazi gzi-ind"${E(edit,'kapanis')}>${esc(kapanisMetni(s))}</p>
+<div class="gzi-imza"><span${E(edit,'imzaAd')}>${esc(imza.ad)||DOT}</span><b${E(edit,'imzaUnvan',imza.unvan)}>${t('imzaUnvan',imza.unvan)}</b></div>
 <div class="gzi-bosluk" style="height:${Math.max(0,Math.min(150,parseFloat(s.bosluk)||0))}mm"></div>
-<h2 class="gzi-title">${baslikPlan(s)}</h2>${planTablo(s)}
-<p class="gzi-yazi gzi-ek"><b>Ek:</b> Gezi Dosyası.</p>
-<div class="gzi-olur"><b class="gzi-olurb">O L U R</b><span>${esc(trDate(s.olurTarih))}</span><span class="gzi-olurimza">${esc(olur.ad)||DOT}</span><b>${esc(olur.unvan)}</b></div></article>`
+${baslikH(s,edit,'h2')}${planTablo(s,edit)}
+<p class="gzi-yazi gzi-ek"><b${E(edit,'ekEt','Ek:')}>${t('ekEt','Ek:')}</b> <span${E(edit,'ek','Gezi Dosyası.')}>${t('ek','Gezi Dosyası.')}</span></p>
+<div class="gzi-olur"><b class="gzi-olurb"${E(edit,'olurb','O L U R')}>${t('olurb','O L U R')}</b><span${E(edit,'olurTarih',ot)}>${esc(oz(s,'olurTarih',ot))||nokta}</span><span class="gzi-olurimza"${E(edit,'olurAd',olur.ad)}>${esc(olurAd)||DOT}</span><b${E(edit,'olurUnvan',olur.unvan)}>${t('olurUnvan',olur.unvan)}</b></div></article>`
 }
 function reportBody(data){return`<div class="gzi-print">${paper(data||ensure())}</div>`}
 function print(data){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
  const s=data||ensure();
- global.ReportEngine.printReport(DOCS.find(x=>x[0]===s.doc)?.[1].replace(/^\S+\s/,'')||'Gezi',reportBody(s),{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+ global.ReportEngine.printReport(DOCS.find(x=>x[0]===s.doc)?.[1].replace(/^\S+\s/,'')||'Gezi',reportBody(s),{fileName:'Gezi',yon:'dikey',kenarBosluk:10,logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',ozellestirilebilir:false,duzenle:true});return true
 }
 function field(label,html,cls=''){return`<label class="ka-field ${cls}"><span class="ka-field__label">${esc(label)}</span>${html}</label>`}
 function input(key,type='text',ph=''){return`<input class="ka-input" type="${type}" value="${esc(ensure()[key])}" placeholder="${esc(ph)}" data-gz="${key}" autocomplete="off">`}
@@ -202,7 +224,7 @@ function formHtml(s){
  const arac=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚐 Araç bilgileri</strong><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek (plan tablosunda belirtilir)</span></label><div class="ka-grid">${field('Plaka / plakalar',input('plaka','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin adı soyadı',input('sofor','text','Birden fazlaysa virgülle ayırın'))}${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}</div></div></article>`;
  const kat=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Katılacaklar</strong>${subeHtml(s)}${field('Katılacak veli sayısı',input('veli','text','0'))}${field('Katılacak idareci',input('idareci','text','Adı soyadı'))}<strong class="ka-muted">Katılacak öğretmenler</strong>${ogrHtml(s)}</div></article>`;
  return`${yazi}${veliOkul}${gezi}${arac}${kat}<footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-gz-reset>Temizle</button><button class="ka-btn" type="button" data-gz-print>🖨 Yazdır / PDF</button></footer>
-<article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-gz-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür.${o?' Yazı alanlarına dokunup metni doğrudan değiştirebilirsiniz.':''}</p>${o?`<div class="ttn-gaps">${gapCtl(s)}</div>`:''}<div class="ttn-preview" data-gz-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="gzi-print">${paper(s,true)}</div></div></div></div></div></article>`
+<article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-gz-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür.Sayfadaki her alana dokunup doğrudan değiştirebilirsiniz; yazdırırken de önizlemede düzenleyebilirsiniz.</p>${o?`<div class="ttn-gaps">${gapCtl(s)}</div>`:''}<div class="ttn-preview" data-gz-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="gzi-print">${paper(s,true)}</div></div></div></div></div></article>`
 }
 function render(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;const s=ensure();
@@ -215,10 +237,41 @@ function fit(root){
  sh.style.transform='';const w=sh.offsetWidth,k=zoomFull?1:Math.min(1,(box.clientWidth-2)/w);
  sh.style.transform=k<1?`scale(${k})`:'';wrap.style.width=`${w*k}px`;wrap.style.height=`${sh.offsetHeight*k}px`
 }
+function tepki(s,k){if(k==='gTarih'||k==='yer'){s.govdeOzel='';if(k==='yer'&&!s.amacManuel)s.amac=amacMetni(s)}if(k==='amac')s.amacManuel=true}
+const sheetClean=t=>{t=String(t||'').replace(/\u00a0/g,' ');return/^[\s….]*$/.test(t)?'':t.replace(/\s*\n+\s*/g,' ').trim()};
+const satirlar=t=>String(t||'').replace(/\u00a0/g,' ').split('\n').map(x=>x.trim()).filter(Boolean).filter(x=>sheetClean(x));
+/* Sayfadaki bir alan değişti: değeri taslağa yaz, formdaki karşılığını eşle. */
+function sheetEdit(root,s,el){
+ const k=el.dataset.gzEd,raw=String(el.innerText||''),t=sheetClean(raw),sub=k.match(/^(sube|k|e):(\d+)$/),disi=isDisi(s);
+ const form=(p,v)=>{const c=root.querySelector(`[data-gz="${p}"]`);if(c&&c!==document.activeElement)c.value=v};
+ const set=(p,v)=>{s[p]=v;form(p,v);tepki(s,p)};
+ /* base: hücrenin şu anki hesaplanan hâli. Sayfa son çizildikten sonra başka alanlar değişmiş olabilir (ör. şube sayıları → toplam), bu yüzden yeniden hesaplanır. */
+ const taze=()=>{const d=document.createElement('div');d.innerHTML=paper(s,true);const n=[...d.querySelectorAll('[data-gz-ed]')].find(x=>x.dataset.gzEd===k);return n?.dataset.gzB};
+ const ozel=()=>{(s.ozel||(s.ozel={}))[k]={text:t,base:taze()??el.dataset.gzB??''}};
+ if(k==='ilgi'){const v=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');s.ilgiOzel=v.trim()===ILGI?'':v;return}
+ if(k==='govde'){s.govdeOzel=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');return}
+ if(k==='kapanis'){s.kapanisOzel=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');return}
+ if(sub){const i=Number(sub[2]),x=s.subeler[i];if(!x)return;const p=sub[1];x[p]=p==='sube'?t:String(parseInt(t,10)||'');
+  const c=root.querySelector(`[data-gz-sube="${i}"][data-k="${p}"]`);if(c&&c!==document.activeElement)c.value=x[p];
+  const st=root.querySelector(`[data-gz-st="${i}"]`);if(st)st.textContent=num(x.k)+num(x.e);const g=root.querySelector('[data-gz-gt]');if(g)g.textContent=toplam(s);return}
+ if(k==='gTarih'||k==='yaziTarih'||k==='olurTarih'){const iso=trParse(t);if(iso||!t){set(k,iso);if(s.ozel)delete s.ozel[k]}else ozel();return}
+ if(k==='program'){set('program',satirlar(raw).join('\n'));return}
+ if(k==='ogretmenler'){const l=satirlar(raw).map(x=>x.replace(/^\s*\d+\s*[-.)]\s*/,'').trim()).filter(Boolean);s.ogretmenler=l.length?l:[''];
+  const g=root.querySelectorAll('[data-gz-ogr]');if(g.length===s.ogretmenler.length)g.forEach((c,i)=>{if(c!==document.activeElement)c.value=s.ogretmenler[i]});else el.closest('[data-gz-preview]').dataset.gzDirty='ogr';return}
+ if(k==='veli'){if(!t||/^\d+$/.test(t)){set('veli',t);if(s.ozel)delete s.ozel.veli}else ozel();return}
+ if(k==='sayi'){set('sayi',t);return}
+ /* Okul adı üç yerde geçer (üst başlık, hitap, veli makamı): biri değişince okul adı güncellenir, diğerleri onu izler. */
+ if((k==='ust3'||k==='vmakam'||k==='hitap'&&!disi)&&!/^[\s….]*$/.test(t)){const m=t.match(/^(.+?)\s+m[üu]d[üu]rl[üu][ğg][üu](?:ne)?\s*$/i);if(m&&m[1].trim()){set('okul',m[1].trim());if(s.ozel){delete s.ozel.ust3;delete s.ozel.hitap;delete s.ozel.vmakam}return}}
+ if(k==='hitap'&&disi){set('makam',t);return}
+ if(k==='imzaAd'){set(disi?'mudur':'teklif',t);return}
+ if(k==='olurAd'&&!disi){set('mudur',t);return}
+ if(['yer','saat','kira','idareci','amac'].includes(k)){set(k,t);return}
+ ozel()
+}
 function updatePreview(root){const b=root?.querySelector('[data-gz-preview] .gzi-print');if(b)b.innerHTML=paper(ensure(),true);fit(root);persist()}
 function bind(root){
  const s=ensure();
- root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;if(k==='makamTur'||k==='il'||k==='ilce')updatePreview(root);if(['gTarih','yer'].includes(k)){s.govdeOzel='';if(k==='yer'&&!s.amacManuel)s.amac=amacMetni(s)}if(k==='amac')s.amacManuel=true;if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
+ root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;if(k==='makamTur'||k==='il'||k==='ilce')updatePreview(root);tepki(s,k);if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
  root.querySelectorAll('[data-gz-doc]').forEach(b=>b.addEventListener('click',()=>{s.doc=b.dataset.gzDoc;persist();render(root)}));
  root.querySelector('[data-gz-bel]')?.addEventListener('change',e=>{s.belediye=e.target.checked;updatePreview(root)});
  root.querySelector('[data-gz-amac]')?.addEventListener('click',()=>{s.amacIdx=((s.amacIdx||0)+1)%AMAC.length;s.amac=amacMetni(s);s.amacManuel=false;const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac;updatePreview(root)});
@@ -242,7 +295,9 @@ function bind(root){
  root.querySelectorAll('[data-gz-belge]').forEach(b=>b.addEventListener('click',()=>printBelge(b.dataset.gzBelge)));
  const pv=root.querySelector('[data-gz-preview]');
  if(pv){
-  pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-gz-ed]');if(!el)return;const v=String(el.innerText||'').replace(/ /g,' ').replace(/\n+$/,''),k=el.dataset.gzEd;if(k==='ilgi')s.ilgiOzel=v.trim()===ILGI?'':v;else if(k==='govde')s.govdeOzel=v;else if(k==='kapanis')s.kapanisOzel=v;fit(root);persist()});
+  pv.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-gz-ed]');if(el&&el.textContent.trim()&&!sheetClean(el.innerText))el.textContent=''});
+  pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-gz-ed]');if(!el)return;sheetEdit(root,s,el);fit(root);persist()});
+  pv.addEventListener('focusout',()=>setTimeout(()=>{if(!root.contains(pv)||pv.contains(document.activeElement))return;if(pv.dataset.gzDirty){delete pv.dataset.gzDirty;render(root);return}updatePreview(root)},0));
   pv.addEventListener('paste',e=>{const el=e.target.closest?.('[data-gz-ed]');if(!el)return;e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||global.clipboardData)?.getData('text')||'')})
  }
 }
