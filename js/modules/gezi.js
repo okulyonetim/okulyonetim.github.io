@@ -11,7 +11,7 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const KEY='ka-gezi-taslak-v1';
 const DOCS=[['olustur','🧰 Gezi Planı Oluştur'],['plan-ici','🏙️ İl İçi Gezi Planı'],['plan-disi','🚌 İl Dışı Gezi Planı'],['onay-ici','✍️ İl İçi Gezi Onayı'],['onay-disi','📋 İl Dışı Gezi Onayı'],['veli','📝 Veli İzin Belgesi']];
 const DOT='……………………';
-const SAYI_PH='821.04/……';
+const SAYI_PH='………………';
 const ILGI='İlköğretim ve Ortaöğretim Kurumları Sosyal Etkinlikler Yönetmeliği (Değişiklik: 01/09/2018 tarih ve 30522 sayılı Resmî Gazete)';
 const AMAC=[
  y=>`${y||'Gezi'} gezisi, öğrencilerin derslerde edindikleri bilgileri yerinde görerek pekiştirmelerini ve gerçek yaşamla ilişkilendirmelerini amaçlamaktadır. Gezi; kültür, sanat ve tarih bilincinin gelişmesine, öğrencilerin birlikte hareket etme ve kurallara uyma alışkanlığı kazanmasına katkı sağlayacaktır.`,
@@ -102,7 +102,7 @@ function veliBelge(s,o,edit){
  const t=(k,d)=>edit?`<span${E(edit,k,d)}>${esc(oz(s,k,d))||nokta}</span>`:esc(oz(s,k,d));
  const gtr=trDate(s.gTarih),makam=`${okul.toLocaleUpperCase('tr')} MÜDÜRLÜĞÜNE`;
  const saat=s.saat?` <b${E(edit,'saat')}>${esc(s.saat)}</b> ${t('v6','saatleri arasında')}`:'';
- return`<section class="gzi-veli"><h2 class="gzi-vbaslik"${E(edit,'vbaslik','GEZİ VELİ İZİN BELGESİ')}>${esc(oz(s,'vbaslik','GEZİ VELİ İZİN BELGESİ'))||nokta}</h2><p class="gzi-vmakam"${E(edit,'vmakam',makam)}>${esc(oz(s,'vmakam',makam))||nokta}</p><p class="gzi-vmetin">${t('v1','Okulunuzun')} ${esc(o.sinif)||DOT} ${t('v2','sınıfı')} ${esc(o.no)||DOT} ${t('v3','numaralı öğrencisi')} ${esc(o.ad)||DOT+DOT}${t('v4','’in velisiyim. Öğrencimin')} <b${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</b> ${t('v5','tarihinde')}${saat} <b${E(edit,'yer')}>${esc(String(s.yer||'').trim())||DOT}</b> ${t('v7','gezisine katılmasına izin veriyorum.')}</p><p class="gzi-vmetin"${E(edit,'vgereg','Gereğini bilgilerinize arz ederim.')}>${esc(oz(s,'vgereg','Gereğini bilgilerinize arz ederim.'))||nokta}</p><div class="gzi-vimza"><span>${t('vl1','Tarih:')} …/…/……</span><span>${t('vl2','Veli adı soyadı:')} ${esc(o.veli)||DOT}</span><span>${t('vl3','Telefon:')} ${esc(o.tel)||DOT}</span><span>${t('vl4','İmza:')} ${DOT}</span></div></section>`}
+ return`<section class="gzi-veli"><h2 class="gzi-vbaslik"${E(edit,'vbaslik','GEZİ VELİ İZİN BELGESİ')}>${esc(oz(s,'vbaslik','GEZİ VELİ İZİN BELGESİ'))||nokta}</h2><p class="gzi-vmakam"${E(edit,'vmakam',makam)}>${esc(oz(s,'vmakam',makam))||nokta}</p><p class="gzi-vmetin">${t('v1','Okulunuzun')} ${esc(o.sinif)||t('vb1',DOT)} ${t('v2','sınıfı')} ${esc(o.no)||t('vb2',DOT)} ${t('v3','numaralı öğrencisi')} ${esc(o.ad)||t('vb3',DOT+DOT)}${t('v4','’in velisiyim. Öğrencimin')} <b${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</b> ${t('v5','tarihinde')}${saat} <b${E(edit,'yer')}>${esc(String(s.yer||'').trim())||DOT}</b> ${t('v7','gezisine katılmasına izin veriyorum.')}</p><p class="gzi-vmetin"${E(edit,'vgereg','Gereğini bilgilerinize arz ederim.')}>${esc(oz(s,'vgereg','Gereğini bilgilerinize arz ederim.'))||nokta}</p><div class="gzi-vimza"><span>${t('vl1','Tarih:')} ${t('vb4','…/…/……')}</span><span>${t('vl2','Veli adı soyadı:')} ${esc(o.veli)||t('vb5',DOT)}</span><span>${t('vl3','Telefon:')} ${esc(o.tel)||t('vb6',DOT)}</span><span>${t('vl4','İmza:')} ${t('vb7',DOT)}</span></div></section>`}
 function paperVeli(s,edit){
  const bir=veliBelge(s,undefined,edit);
  return`<article class="gzi-paper gzi-paper--veli">${bir}${bir}${bir}</article>`
@@ -179,15 +179,15 @@ function paper(s,edit){
  const ust2=ustMakam(s),ust3=`${okul} Müdürlüğü`,sayi=String(s.sayi||'').trim()||SAYI_PH,yt=trDate(s.yaziTarih),ot=trDate(s.olurTarih);
  const olurAd=oz(s,'olurAd',olur.ad);
  return`<article class="gzi-paper"><div class="gzi-ust"><b${E(edit,'ust1','T.C.')}>${t('ust1','T.C.')}</b><b${E(edit,'ust2',ust2)}>${t('ust2',ust2)}</b><b${E(edit,'ust3',ust3)}>${t('ust3',ust3)}</b></div>
-<div class="gzi-bilgi"><span>Sayı : <span${E(edit,'sayi')}>${esc(sayi)}</span></span><span${E(edit,'yaziTarih',yt)}>${esc(oz(s,'yaziTarih',yt))||nokta}</span></div><div class="gzi-bilgi"><span>Konu : <span${E(edit,'konu','Gezi Onayı')}>${t('konu','Gezi Onayı')}</span></span></div>
+<div class="gzi-bilgi"><span><span${E(edit,'sayiEt','Sayı :')}>${t('sayiEt','Sayı :')}</span> <span${E(edit,'sayi')}>${esc(sayi)}</span></span><span${E(edit,'yaziTarih',yt)}>${esc(oz(s,'yaziTarih',yt))||nokta}</span></div><div class="gzi-bilgi"><span><span${E(edit,'konuEt','Konu :')}>${t('konuEt','Konu :')}</span> <span${E(edit,'konu','Gezi Onayı')}>${t('konu','Gezi Onayı')}</span></span></div>
 <p class="gzi-hitap"${E(edit,'hitap',hitap)}>${t('hitap',hitap)}</p>
-<p class="gzi-yazi"><b>İlgi :</b> <span${E(edit,'ilgi')}>${esc(ilgiMetni(s))}</span></p>
+<p class="gzi-yazi"><b${E(edit,'ilgiEt','İlgi :')}>${t('ilgiEt','İlgi :')}</b> <span${E(edit,'ilgi')}>${esc(ilgiMetni(s))}</span></p>
 <p class="gzi-yazi gzi-ind"${E(edit,'govde')}>${esc(govdeMetni(s))}</p>
 <p class="gzi-yazi gzi-ind"${E(edit,'kapanis')}>${esc(kapanisMetni(s))}</p>
 <div class="gzi-imza"><span${E(edit,'imzaAd')}>${esc(imza.ad)||DOT}</span><b${E(edit,'imzaUnvan',imza.unvan)}>${t('imzaUnvan',imza.unvan)}</b></div>
 <div class="gzi-bosluk" style="height:${Math.max(0,Math.min(150,parseFloat(s.bosluk)||0))}mm"></div>
 ${baslikH(s,edit,'h2')}${planTablo(s,edit)}
-<p class="gzi-yazi gzi-ek"><b>Ek:</b> <span${E(edit,'ek','Gezi Dosyası.')}>${t('ek','Gezi Dosyası.')}</span></p>
+<p class="gzi-yazi gzi-ek"><b${E(edit,'ekEt','Ek:')}>${t('ekEt','Ek:')}</b> <span${E(edit,'ek','Gezi Dosyası.')}>${t('ek','Gezi Dosyası.')}</span></p>
 <div class="gzi-olur"><b class="gzi-olurb"${E(edit,'olurb','O L U R')}>${t('olurb','O L U R')}</b><span${E(edit,'olurTarih',ot)}>${esc(oz(s,'olurTarih',ot))||nokta}</span><span class="gzi-olurimza"${E(edit,'olurAd',olur.ad)}>${esc(olurAd)||DOT}</span><b${E(edit,'olurUnvan',olur.unvan)}>${t('olurUnvan',olur.unvan)}</b></div></article>`
 }
 function reportBody(data){return`<div class="gzi-print">${paper(data||ensure())}</div>`}
@@ -259,7 +259,9 @@ function sheetEdit(root,s,el){
  if(k==='ogretmenler'){const l=satirlar(raw).map(x=>x.replace(/^\s*\d+\s*[-.)]\s*/,'').trim()).filter(Boolean);s.ogretmenler=l.length?l:[''];
   const g=root.querySelectorAll('[data-gz-ogr]');if(g.length===s.ogretmenler.length)g.forEach((c,i)=>{if(c!==document.activeElement)c.value=s.ogretmenler[i]});else el.closest('[data-gz-preview]').dataset.gzDirty='ogr';return}
  if(k==='veli'){if(!t||/^\d+$/.test(t)){set('veli',t);if(s.ozel)delete s.ozel.veli}else ozel();return}
- if(k==='sayi'){set('sayi',t===SAYI_PH?'':t);return}
+ if(k==='sayi'){set('sayi',t);return}
+ /* Okul adı üç yerde geçer (üst başlık, hitap, veli makamı): biri değişince okul adı güncellenir, diğerleri onu izler. */
+ if((k==='ust3'||k==='vmakam'||k==='hitap'&&!disi)&&!/^[\s….]*$/.test(t)){const m=t.match(/^(.+?)\s+m[üu]d[üu]rl[üu][ğg][üu](?:ne)?\s*$/i);if(m&&m[1].trim()){set('okul',m[1].trim());if(s.ozel){delete s.ozel.ust3;delete s.ozel.hitap;delete s.ozel.vmakam}return}}
  if(k==='hitap'&&disi){set('makam',t);return}
  if(k==='imzaAd'){set(disi?'mudur':'teklif',t);return}
  if(k==='olurAd'&&!disi){set('mudur',t);return}

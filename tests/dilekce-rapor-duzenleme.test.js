@@ -124,3 +124,27 @@ test('Başlık ve OLUR satırları tam genişlikte dokunulabilir (yazı yine ort
   assert.match(css,/\.ka-report \.gzi-ust\{display:flex;flex-direction:column;align-items:stretch;text-align:center;/);
   assert.match(css,/\.ka-report \.gzi-olur\{display:flex;flex-direction:column;align-items:stretch;/);
 });
+
+test('Gezi onay yazısı: etiketler ve veli belgesindeki boşluklar da düzenlenir; boş Sayı kod yazmaz',()=>{
+  const G=gezi(),s={...gSample(G),doc:'onay-ici',sayi:''};
+  const h=G.paper(s,true);
+  for(const k of ['sayiEt','konuEt','ilgiEt','ekEt'])assert.ok(h.includes(`data-gz-ed="${k}"`),'etiket düzenlenemiyor: '+k);
+  assert.ok(!h.includes('821.04')&&!G.paper(s).includes('821.04'),'Sayı boşken belgeye kod yazılmaz');
+  assert.match(G.paper(s),/<span>Sayı :<\/span> <span>………………<\/span>/,'boş Sayı yazdırmada noktalı bırakılır');
+  assert.match(G.paper({...s,sayi:'821.04/7'}),/<span>821\.04\/7<\/span>/);
+  assert.match(G.paper({...s,ozel:{sayiEt:{text:'Sayısı :',base:'Sayı :'}}}),/Sayısı :/);
+  const v=G.paper({...gSample(G),doc:'veli'},true);
+  for(const k of ['vb1','vb2','vb3','vb4','vb5','vb6','vb7'])assert.ok(v.includes(`data-gz-ed="${k}"`),'veli belgesi boşluğu düzenlenemiyor: '+k);
+  assert.ok(!G.paper({...gSample(G),doc:'veli'}).includes('contenteditable'));
+});
+
+test('Okul adı başlıkta, hitapta ya da veli makamında değişince her yerde değişir',()=>{
+  const src=read('js/modules/gezi.js');
+  assert.match(src,/k==='ust3'\|\|k==='vmakam'\|\|k==='hitap'&&!disi/);
+  assert.match(src,/set\('okul',m\[1\]\.trim\(\)\)/);
+  const G=gezi(),s={...gSample(G),doc:'onay-ici',okul:'ŞEHİT REMZİ YEMEZ ORTAOKULU'};
+  const h=G.paper(s,true);
+  assert.match(h,/ŞEHİT REMZİ YEMEZ ORTAOKULU Müdürlüğü/);assert.match(h,/ŞEHİT REMZİ YEMEZ ORTAOKULU MÜDÜRLÜĞÜNE/);
+  const y=G.paper({...s,okul:'YENİ ORTAOKUL'},true);
+  assert.match(y,/YENİ ORTAOKUL Müdürlüğü/);assert.match(y,/YENİ ORTAOKUL MÜDÜRLÜĞÜNE/);
+});
