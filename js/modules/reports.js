@@ -9,7 +9,7 @@ let active='home',root=null,editing=null,mountEpoch=0;
 let settingsCache={};
 let settingsLoaded=false;
 let settingsLoadPromise=null,lastHomeHtml='',refreshTimer=null,unsubStore=null;
-function school(){const x=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};return x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu'}
+function school(){const x=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};return globalThis.SchoolIdentity?.okulAdi?.()||x.okulAdi||x.ad||'Koruk İlkokulu - Ortaokulu'}
 function classLevel(s){const m=String(s?.ad||s?.sinif||'').match(/(^|\D)([1-8])(?:\D|$)/);return m?Number(m[2]):0}
 function className(s){return String(s?.ad||s?.sinif||'Sınıf').trim()}
 function genderCounts(s){const students=arr('veliler').filter(v=>String(v.sinifId||'')===String(s.id||''));if(students.length){let kiz=0,erkek=0;students.forEach(v=>{const c=String(v.cinsiyet||'').toLocaleLowerCase('tr-TR');if(c.includes('kız')||c.includes('kiz'))kiz++;else if(c.includes('erkek'))erkek++});return{kiz,erkek,toplam:students.length}}const kiz=Number(s.kizSayisi||0),erkek=Number(s.erkekSayisi||0),toplam=Number(s.ogrenciSayisi||kiz+erkek);return{kiz,erkek,toplam}}

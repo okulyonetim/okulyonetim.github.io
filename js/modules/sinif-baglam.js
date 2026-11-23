@@ -28,7 +28,8 @@ function okulMuduru(){const o=okulKaydi();return adBicimi(adSoyad(rows('ogretmen
 function okulAdi(duzey){
  const o=okulKaydi(),genel=String(o.okulAdi||o.ad||global.ReportEngine?.schoolInfo?.().okulAdi||'').trim();
  const kademe=duzey>=5?'ortaokul':duzey>=1?'ilkokul':'';
- return String(kademe&&o[`${kademe}Adi`]||'').trim()||genel;
+ /* Düzey bilinmiyorsa (0) giriş yapan öğretmenin okulu, biliniyorsa 1–4 ilkokul / 5–8 ortaokul adı. */
+ return String(global.SchoolIdentity?.okulAdi?.(kademe||undefined)||kademe&&o[`${kademe}Adi`]||'').trim()||genel;
 }
 /* { liste: görülebilen sınıflar (ad sırası), own: kendi sınıflarımın kimlikleri } — öğretmenin sınıfı yoksa ya da yöneticiyse hepsi listelenir. */
 function siniflar(){

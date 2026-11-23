@@ -201,7 +201,7 @@ const sig=work=>JSON.stringify(compact(work));
 function ctxFor(s){
   const sinifAd=arr('siniflar').find(x=>x.id===s?.sinifId)?.ad||'';
   const o=arr('okulBilgileri'),ok=o.find(r=>r.id==='ayarlar')||o[0]||global.okulBilgileriAyari||{};
-  return{s:s||{},className:sinifAd,...splitClass(sinifAd),okulAdi:ok.okulAdi||ok.ad||'Koruk İlk-Ortaokulu'};
+  return{s:s||{},className:sinifAd,...splitClass(sinifAd),okulAdi:global.SchoolIdentity?.okulAdi?.(sinifAd)||ok.okulAdi||ok.ad||'Koruk İlk-Ortaokulu',logo:global.SchoolIdentity?.logo?.(sinifAd)||'assets/logo.png'};
 }
 function effVal(f,rec,ctx){
   if(f.ro)return f.src?String(f.src(ctx.s,ctx)??''):'';
@@ -296,7 +296,7 @@ function formHtml(s,rec){
   const kar=listeSatir(r.kardesler,LISTE_KAP.kardesler,6,k=>[k.tc||'',k.ad||'',dateTR(k.dogumTarihi),k.dogumYeri||'',k.okul||'',k.sinif||'']);
   const sube=effVal(FIELD.sube,r,ctx),sayi=effVal(FIELD.kardesSayisi,r,ctx),kacinci=effVal(FIELD.kacinciCocuk,r,ctx);
   const veliAd=effVal(FIELD.veliAd,r,ctx);
-  const ust=`<header class="tif-ust"><img class="tif-logo" src="assets/logo.png" alt=""><div class="tif-ust-baslik"><small>${esc(okul)}</small><strong>ÖĞRENCİ TANIMA FORMU</strong><span>Öğrencinin kimlik, aile, sağlık, eğitim ve yaşam koşullarına ilişkin bilgiler</span></div><div class="tif-ust-meta">Eğitim öğretim yılı: <b>${yil}-${yil+1}</b><br>Form tarihi: <b>${esc(tarih)}</b></div></header>`;
+  const ust=`<header class="tif-ust"><img class="tif-logo" src="${esc(ctx.logo||'assets/logo.png')}" alt=""><div class="tif-ust-baslik"><small>${esc(okul)}</small><strong>ÖĞRENCİ TANIMA FORMU</strong><span>Öğrencinin kimlik, aile, sağlık, eğitim ve yaşam koşullarına ilişkin bilgiler</span></div><div class="tif-ust-meta">Eğitim öğretim yılı: <b>${yil}-${yil+1}</b><br>Form tarihi: <b>${esc(tarih)}</b></div></header>`;
   const ogr=`<section class="tif-b">${bolum(0)}<div class="tif-ogr">${grid(
       row('ogr',f('ad',6),f('tc',3),f('cinsiyet',3)),
       row('ogr',f('dogumTarihi',3),f('dogumYeri',4),f('uyruk',2),f('kan',3)),

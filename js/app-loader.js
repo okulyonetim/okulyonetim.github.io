@@ -158,7 +158,7 @@ const TeacherListBuilder=(()=>{
     {key:'notlar',label:'Açıklama',visible:false,width:160,align:'left'},
     {key:'imza',label:'İmza',visible:true,width:120,align:'center'}
   ];
-  function schoolDefaults(){const o=rows('okulBilgileri').find(x=>x.id==='ayarlar')||rows('okulBilgileri')[0]||window.okulBilgileriAyari||{},y=new Date().getFullYear();return{title:o.okulAdi||o.ad||'KORUK ORTAOKULU',subtitle:`${y}-${y+1} EĞİTİM ÖĞRETİM YILI`,reportTitle:'ÖĞRETMEN LİSTESİ',date:new Date().toISOString().slice(0,10),orientation:'landscape',logo:true,showDate:true,showTotal:true,leftFooter:'Hazırlayan\nMüdür Yardımcısı',rightFooter:'Onay\nOkul Müdürü'}}
+  function schoolDefaults(){const o=rows('okulBilgileri').find(x=>x.id==='ayarlar')||rows('okulBilgileri')[0]||window.okulBilgileriAyari||{},y=new Date().getFullYear();return{title:globalThis.SchoolIdentity?.okulAdi?.()||o.okulAdi||o.ad||'KORUK ORTAOKULU',subtitle:`${y}-${y+1} EĞİTİM ÖĞRETİM YILI`,reportTitle:'ÖĞRETMEN LİSTESİ',date:new Date().toISOString().slice(0,10),orientation:'landscape',logo:true,showDate:true,showTotal:true,leftFooter:'Hazırlayan\nMüdür Yardımcısı',rightFooter:'Onay\nOkul Müdürü'}}
   function blank(){return{listName:'Öğretmen Listesi',search:'',branch:'',sort:'name',selectedIds:teachers().map(x=>String(x.id)),title:schoolDefaults(),columns:defaultColumns(),customValues:{},blankRows:[],templates:[],savedLists:[]}}
   let root=null,state=blank(),preparedFor='',persistTimer=null;
   function branches(){return [...new Set(teachers().map(x=>String(x.brans||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'tr'))}

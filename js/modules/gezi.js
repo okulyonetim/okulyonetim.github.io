@@ -26,7 +26,8 @@ const oz=(s,k,d)=>{const o=s.ozel&&s.ozel[k];return o&&o.base===d?o.text:d};
 const E=(edit,k,base)=>edit?` contenteditable="true" spellcheck="false" data-gz-ed="${k}"${base===undefined?'':` data-gz-b="${esc(base)}"`}`:'';
 const okulB=()=>{const l=rows('okulBilgileri');return l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
 const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
-const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
+const okulVar=()=>String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim();
+const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:okulVar(),okulOto:okulVar(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
  gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
@@ -55,6 +56,8 @@ function syncSecim(s){
  s.ogrenciler=[...(s.ogrenciler||[]).filter(x=>!x.sid),...app];
  const elle=(s.subeler||[]).filter(x=>!x.sid&&(NK(x.sube)||num(x.k)||num(x.e)));
  s.subeler=[...cl.map(c=>({sube:c.ad||'',sid:c.id,k:'',e:''})),...elle];if(!s.subeler.length)s.subeler=[{sube:'',k:'',e:''}];
+ /* Okul adı seçilen sınıfların kademesine uyar (1–4 ilkokul, 5–8 ortaokul); elle yazılmış ad korunur. */
+ if(cl.length){const oto=String(global.SchoolIdentity?.okulAdi?.({siniflar:cl.map(c=>c.ad||'')})||'').trim();if(oto&&(!NK(s.okul)||s.okul===s.okulOto))s.okul=oto;s.okulOto=oto}
  recount(s)
 }
 function amacMetni(s){return AMAC[(s.amacIdx||0)%AMAC.length](String(s.yer||'').trim())}

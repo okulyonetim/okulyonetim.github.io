@@ -24,7 +24,7 @@ const teacherName=t=>String(t?.adSoyad||[t?.ad,t?.soyad].filter(Boolean).join(' 
 const shortAd=(s,n=30)=>s.length>n?s.slice(0,n-1).trimEnd()+'…':s;
 const tempId=()=>`o_${Date.now().toString(36)}_${Math.random().toString(36).slice(2,6)}`;
 function school(){const l=arr('okulBilgileri');return l.find(x=>x.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}}
-function schoolName(){const o=school();return String(o.okulAdi||o.ad||'').trim()}
+function schoolName(){const o=school();return String(globalThis.SchoolIdentity?.okulAdi?.()||o.okulAdi||o.ad||'').trim()}
 const imzaAd=s=>{const w=String(s||'').trim().split(/\s+/).filter(Boolean);if(!w.length)return'';const son=w.pop().toLocaleUpperCase('tr');return[...w.map(x=>x.charAt(0).toLocaleUpperCase('tr')+x.slice(1).toLocaleLowerCase('tr')),son].join(' ')};
 const bugun=()=>new Date().toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit',year:'numeric'});
 

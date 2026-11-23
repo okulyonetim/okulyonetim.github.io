@@ -12,7 +12,7 @@ const arr=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const canView=()=>global.PermissionService?.can?.('management.personnel','read')??true;
 const dotted=(v,fallback='...........................')=>String(v||'').trim()||fallback;
 function trDate(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}.${m[2]}.${m[1]}`:''}
-function schoolInfo(){return arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{}}
+function schoolInfo(){const r=arr('okulBilgileri').find(x=>x.id==='ayarlar')||arr('okulBilgileri')[0]||{};return{...r,okulAdi:globalThis.SchoolIdentity?.okulAdi?.()||r.okulAdi}}
 function teacherName(id){const o=arr('ogretmenler').find(x=>x.id===id);return o?`${o.ad||''} ${o.soyad||''}`.trim():''}
 function principalName(){const okul=schoolInfo();return okul.mudurId?teacherName(okul.mudurId):''}
 async function prepareLocal(){

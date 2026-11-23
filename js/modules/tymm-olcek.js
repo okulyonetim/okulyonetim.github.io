@@ -139,7 +139,7 @@ function printInfo(){
  const mudur=personName(rows('ogretmenler').find(t=>t.id===(o.mudurId||o.mudirId)))||String(o.mudurAdSoyad||o.mudurAdi||'').trim();
  const ogretmen=personName(rows('ogretmenler').find(t=>t.id===(cls?.sinifOgretmeniId||teacherId())));
  return{
-  okul:p.okul||String(o.okulAdi||o.ad||'').trim(),
+  okul:p.okul||String(globalThis.SchoolIdentity?.okulAdi?.()||o.okulAdi||o.ad||'').trim(),
   makamTur:tur,
   makamAd:p.makamAd||String((tur==='valilik'?o.il:o.ilce)||'').trim(),
   mudur:p.mudur||mudur,

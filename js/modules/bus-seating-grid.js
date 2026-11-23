@@ -364,7 +364,7 @@ function printModel(m,info){
   const seatRows=L.seats.filter(s=>sd(m,s.id).stu).map(s=>({no:s.no,s:m.studs[sd(m,s.id).stu]}));
   const w=whereMap(m,L),wait=realStudents(m).filter(s=>!w[s.id]).sort((a,b)=>a.grade-b.grade||trSort(a.full,b.full));
   const emptySeats=L.seats.filter(s=>{const d=sd(m,s.id);return !d.stu&&!d.res&&!d.bad}).map(s=>s.no);
-  const logo='<img class="bsgp-logo" src="assets/logo.png" alt="">';
+  const logo='<img class="bsgp-logo" src="'+esc(global.SchoolIdentity?.logo?.()||'assets/logo.png')+'" alt="">';
   const plate=info.plate?'<div class="bsgp-plate"><span>TR</span><b>'+esc(info.plate)+'</b></div>':'';
   const head=title=>'<div class="bsgp-head">'+logo+'<div class="bsgp-htx"><small>'+esc(school)+'</small><div class="bsgp-h">'+title+'</div></div>'+plate+'</div><div class="bsgp-rule"></div>';
   const strip='<div class="bsgp-strip"><div class="bsgp-sv"><b>'+esc(info.name||'Servis')+'</b>'+(driver?'<span>Şoför: '+esc(driver)+'</span>':'')+'</div><div class="bsgp-st"><div><b>'+st.total+'</b><span>koltuk</span></div><div><b>'+st.placed+'</b><span>öğrenci</span></div><div><b>'+st.free+'</b><span>boş</span></div></div></div>';
