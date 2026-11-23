@@ -12,7 +12,7 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const user=()=>global.AppStore?.get?.('session.user')||global.AKTIF_KULLANICI||{};
 const device=()=>global.DeviceData;
 const isManager=()=>user().admin===true||!!global.PermissionService?.isManager?.();
-const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','adres','tel','hitapOzel','govdeOzel','kapanisOzel','bosluk','imzaBosluk','ekBosluk'];
+const FORM_KEYS=['baslik','makam','konu','metin','ad','unvan','tarih','tarihOzel','adres','tel','hitapOzel','govdeOzel','kapanisOzel','bosluk','imzaBosluk','ekBosluk'];
 const KAYIT_KEYS=[...FORM_KEYS];
 const KAPANIS='Gereğini bilgilerinize arz ederim.';
 const KATEGORILER=['İzin','Sağlık','Atama ve görevlendirme','Özlük','Belge talebi','Nöbet ve ders programı','Eğitim ve etkinlik','Şikâyet ve öneri'];
@@ -80,7 +80,7 @@ function teacher(){const id=user().bagliOgretmenId||user().ogretmenId||'';return
 function teacherName(t){return t?(`${t.ad||''} ${t.soyad||''}`.trim()||t.adSoyad||''):''}
 function unvanOf(t){const b=String(t?.brans||'').trim();return b?(/öğretmen/i.test(b)?b:`${b} Öğretmeni`):'Öğretmen'}
 function okulAdi(){const r=global.ReportEngine?.schoolInfo?.();return String(r?.okulAdi||'').trim()}
-function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'5',imzaBosluk:'14',ekBosluk:'20'}}
+function blank(){const t=teacher();return{id:'',baslik:'',makam:okulAdi(),konu:'',metin:'',acilis:true,ad:teacherName(t),unvan:unvanOf(t),tarih:today(),adres:'',tel:'',tc:'',ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:'',tarihOzel:'',bosluk:'5',imzaBosluk:'14',ekBosluk:'20'}}
 function ensure(){if(!state)state=blank();return state}
 // "Öğretmeni" → "Öğretmeniyim", "Müdür" → "Müdürüm": 1. tekil kişi eki (ünlü uyumu).
 function ben(w){w=String(w||'').trim();if(!w)return'';const m=w.toLocaleLowerCase('tr').match(/[aeıioöuü](?=[^aeıioöuü]*$)/);if(!m)return w;const v={a:'ı','ı':'ı',e:'i',i:'i',o:'u',u:'u','ö':'ü','ü':'ü'}[m[0]],ends=/[aeıioöuüAEIİOÖUÜ]$/.test(w);return`${w}${ends?'y':''}${v}m`}
@@ -161,6 +161,7 @@ function sheetEdit(root,el){
  else if(k==='govde')s.govdeOzel=v;
  else if(k==='kapanis')s.kapanisOzel=v.trim()===KAPANIS?'':v;
  else if(k==='konu')sync('konu',val);
+ else if(k==='tarih')s.tarihOzel=v.trim()===trDate(s.tarih)?'':val;
  else if(['adres','tel','ad','unvan','tc'].includes(k))sync(k,val);
  else if(k.startsWith('ek:')){const n=Number(k.slice(3));if(s.ekler[n]!==undefined){s.ekler[n]=val;const i=root.querySelector(`[data-dlk-ek="${n}"]`);if(i)i.value=val}}
  fit(root)
@@ -170,7 +171,7 @@ function bind(root){
  if(pv){pv.addEventListener('focusin',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(el&&NOKTALI(String(el.innerText||''))){const r=document.createRange();r.selectNodeContents(el);const sel=global.getSelection();sel.removeAllRanges();sel.addRange(r)}});pv.addEventListener('input',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(el)sheetEdit(root,el)});pv.addEventListener('paste',e=>{const el=e.target.closest?.('[data-dlk-ed]');if(!el)return;e.preventDefault();const t=(e.clipboardData||global.clipboardData)?.getData('text')||'';document.execCommand('insertText',false,t)})}
  root.querySelectorAll('[data-dlk-gap]').forEach(b=>b.addEventListener('click',()=>{const st=ensure(),k=b.dataset.dlkGap;st[k]=String(Math.max(0,Math.min(150,gapOf(st,k)+Number(b.dataset.d))));const v=root.querySelector(`[data-dlk-gapv="${k}"]`);if(v)v.textContent=`${st[k]} mm`;updatePreview(root)}))
  root.querySelector('[data-dlk-zoom]')?.addEventListener('click',()=>{zoomFull=!zoomFull;const b=root.querySelector('[data-dlk-zoom]');if(b)b.textContent=zoomFull?'Sayfaya sığdır':'Yakınlaştır';fit(root)})
- root.querySelectorAll('[data-dlk]').forEach(el=>el.addEventListener('input',()=>{const st=ensure();st[el.dataset.dlk]=el.value;if(['metin','unvan'].includes(el.dataset.dlk))st.govdeOzel='';if(el.dataset.dlk==='makam')st.hitapOzel='';if(el.dataset.dlk!=='baslik')updatePreview(root)}));
+ root.querySelectorAll('[data-dlk]').forEach(el=>el.addEventListener('input',()=>{const st=ensure();st[el.dataset.dlk]=el.value;if(['metin','unvan'].includes(el.dataset.dlk))st.govdeOzel='';if(el.dataset.dlk==='makam')st.hitapOzel='';if(el.dataset.dlk==='tarih')st.tarihOzel='';if(el.dataset.dlk!=='baslik')updatePreview(root)}));
  root.querySelector('[data-dlk-acilis]')?.addEventListener('change',e=>{ensure().acilis=e.target.checked;ensure().govdeOzel='';updatePreview(root)});
  root.querySelectorAll('[data-dlk-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.dlkTab;render(root)}));
  root.querySelectorAll('[data-dlk-cat]').forEach(b=>b.addEventListener('click',()=>{tplCat=Number(b.dataset.dlkCat);render(root)}));
@@ -194,14 +195,14 @@ function paper(s,edit){
  const ed=k=>edit?` contenteditable="true" spellcheck="false" data-dlk-ed="${k}"`:'';
  const ekler=[];if(s.ekVar==='evet')(s.ekler||[]).forEach((x,i)=>{if(String(x||'').trim())ekler.push({t:x,i})});
  const nk=(v,d,k)=>esc(v)||(edit?'':d);
- return`<article class="dlk-paper"><h1 class="dlk-hitap"${ed('hitap')}>${esc(s.hitapOzel||hitap(s))}</h1>${String(s.konu||'').trim()?`<p class="dlk-konu"><b>Konu:</b> <span${ed('konu')}>${esc(s.konu)}</span></p>`:''}<div class="dlk-body${!govde&&edit?' dlk-dots':''}" style="margin-bottom:${gapOf(s,'bosluk')}mm"${ed('govde')}>${govde?esc(govde):(edit?DOT+DOT:`<span class="dlk-dots">${DOT}${DOT}</span>`)}</div><p class="dlk-kapanis"${ed('kapanis')}>${esc(s.kapanisOzel||KAPANIS)}</p>
- <div class="dlk-foot" style="margin-top:${gapOf(s,'imzaBosluk')}mm"><div class="dlk-adres"><b>Adres:</b><span${ed('adres')}>${esc(s.adres)||DOT}</span><span><b>Tel:</b> <span${ed('tel')}>${esc(s.tel)||'…………………'}</span></span><span><b>T.C.:</b> <span${ed('tc')}>${esc(s.tc)||'…………………'}</span></span></div><div class="dlk-imza"><span>${esc(trDate(s.tarih))||'…/…/……'}</span><b class="dlk-imza-l">İmza</b><span${ed('ad')}>${esc(s.ad)||DOT}</span><span${ed('unvan')}>${esc(s.unvan)}</span></div></div>
+ return`<article class="dlk-paper"><h1 class="dlk-hitap"${ed('hitap')}>${esc(s.hitapOzel||hitap(s))}</h1>${String(s.konu||'').trim()||edit?`<p class="dlk-konu"><b>Konu:</b> <span${ed('konu')}>${esc(s.konu)||'……………………'}</span></p>`:''}<div class="dlk-body${!govde&&edit?' dlk-dots':''}" style="margin-bottom:${gapOf(s,'bosluk')}mm"${ed('govde')}>${govde?esc(govde):(edit?DOT+DOT:`<span class="dlk-dots">${DOT}${DOT}</span>`)}</div><p class="dlk-kapanis"${ed('kapanis')}>${esc(s.kapanisOzel||KAPANIS)}</p>
+ <div class="dlk-foot" style="margin-top:${gapOf(s,'imzaBosluk')}mm"><div class="dlk-adres"><b>Adres:</b><span${ed('adres')}>${esc(s.adres)||DOT}</span><span><b>Tel:</b> <span${ed('tel')}>${esc(s.tel)||'…………………'}</span></span><span><b>T.C.:</b> <span${ed('tc')}>${esc(s.tc)||'…………………'}</span></span></div><div class="dlk-imza"><span${ed('tarih')}>${esc(s.tarihOzel||trDate(s.tarih))||'…/…/……'}</span><b class="dlk-imza-l">İmza</b><span${ed('ad')}>${esc(s.ad)||DOT}</span><span${ed('unvan')}>${esc(s.unvan)}</span></div></div>
  ${ekler.length?`<div class="dlk-ekler" style="margin-top:${gapOf(s,'ekBosluk')}mm"><b>EKLER:</b><ol>${ekler.map(x=>`<li${ed('ek:'+x.i)}>${esc(x.t)}</li>`).join('')}</ol></div>`:''}</article>`
 }
 function reportBody(data){return`<div class="dlk-print">${paper(data||ensure())}</div>`}
 function print(data){
  if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return false}
- global.ReportEngine.printReport('Dilekçe',reportBody(data||ensure()),{fileName:'Dilekçe',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' '});return true
+ global.ReportEngine.printReport('Dilekçe',reportBody(data||ensure()),{fileName:'Dilekçe',yon:'dikey',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',duzenle:true});return true
 }
 function open(){state=blank();tab='hazirla';histQuery='';tplCat=-1;tplQuery='';const ok=render();prepare().then(()=>{if(document.querySelector('[data-dlk-page]')&&tab==='hazirla'){const a=document.activeElement;if(!a||!a.closest?.('[data-dlk-page]')||a===document.body)render()}});return ok}
 global.DilekceModule={open,render,print,reportBody,records,paper,hitap,ben,acilisCumlesi,HAZIR,KATEGORILER,reset:()=>{state=blank();tab='hazirla';histQuery='';tplCat=-1;tplQuery='';return state}};

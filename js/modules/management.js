@@ -445,31 +445,26 @@ function bindPuantaj(){const root=document.querySelector('[data-pt-page]');if(!r
 const DILEKCE_TURLERI=['Yıllık İzin','Sağlık/Rapor İzni','Mazeret İzni','Ücretsiz İzin','Doğum İzni','Babalık İzni','Diğer'];
 function dilekceKaydet(id,v){const kol=COL?.dilekceler;if(!kol)return Promise.reject(new Error('kol-yok'));return id?device().update('dilekceler',kol,id,{...v,guncellemeTarihi:new Date().toISOString()}):device().add('dilekceler',kol,{...v,olusturmaTarihi:new Date().toISOString()})}
 function dileceSil(id){const kol=COL?.dilekceler;if(!kol||!id)return;if(!confirm('Bu dilekçe kaydı silinsin mi?'))return;device().remove('dilekceler',kol,id).then(()=>render()).catch(e=>toast?.(e?.message||'Silinemedi'))}
-function dilekceYazdir(d){
-  if(!global.ReportEngine)return;
-  const p=arr('personel').find(x=>x.id===d.personelId)||{};
-  const adSoyad=esc(p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||d.personelAdi||'—');
-  const okul=arr('okulBilgileri')[0]?.okulAdi||'KORUK İLK-ORTAOKULU';
-  const tarih=new Date().toLocaleDateString('tr-TR');
-  const body=`<div style="font-family:Arial;font-size:11pt;line-height:1.8">
-    <p style="text-align:right"><b>Tarih:</b> ${esc(d.baslangicTarihi||tarih)}</p>
-    <p><b>Konu:</b> ${esc(d.izinTuru||'İzin Talebi')}</p>
-    <br>
-    <p><b>${esc(okul)} Müdürlüğüne</b></p>
-    <br>
-    <p>${esc(d.izinTuru||'İzin')} kapsamında ${esc(String(d.sure||''))} günlük izin kullanmak istiyorum.</p>
-    ${d.baslangicTarihi?`<p><b>Başlangıç:</b> ${esc(d.baslangicTarihi)}</p>`:''}
-    ${d.bitisTarihi?`<p><b>Bitiş:</b> ${esc(d.bitisTarihi)}</p>`:''}
-    ${d.aciklama?`<p><b>Açıklama:</b> ${esc(d.aciklama)}</p>`:''}
-    <br>
-    <p>Bilgilerinize arz ederim.</p>
-    <br><br>
-    <div style="display:flex;justify-content:space-between;margin-top:30px">
-      <div><p><b>Ad Soyad:</b> ${adSoyad}</p><p><b>Görevi:</b> ${esc(p.gorev||p.unvan||'—')}</p></div>
-      <div style="text-align:center"><p>İmza</p><br><br><p>_______________</p></div>
-    </div>
-  </div>`;
-  global.ReportEngine.printReport(`Dilekçe — ${adSoyad}`,body,{fileName:`Dilekce_${(adSoyad).replace(/\s+/g,'_')}`,ustBaslik:esc(okul)});
+/* Dilekçe & İzinler kaydı, "Dilekçe Oluştur" ile aynı A4 dilekçe belgesine (DilekceModule) dönüşür; önizleme düzenlenebilir açılır. */
+function dilekceTr(v){const m=String(v||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}.${m[2]}.${m[1]}`:String(v||'')}
+function dilekceBelgeVerisi(d){
+  const p=arr('personel').find(x=>x.id===d.personelId)||{},now=new Date(),pad=n=>String(n).padStart(2,'0');
+  const ad=p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||d.personelAdi||'';
+  const tur=String(d.izinTuru||'').trim(),turKucuk=tur&&tur!=='Diğer'?tur.toLocaleLowerCase('tr'):'izin';
+  const aralik=d.baslangicTarihi&&d.bitisTarihi?`${dilekceTr(d.baslangicTarihi)} – ${dilekceTr(d.bitisTarihi)} tarihleri arasında`:d.baslangicTarihi?`${dilekceTr(d.baslangicTarihi)} tarihinden itibaren`:'';
+  const sure=d.sure?(aralik?`(${d.sure} gün)`:`${d.sure} günlük`):'';
+  const aciklama=String(d.aciklama||'').trim();
+  const cumle=`${[aralik,sure].filter(Boolean).join(' ')} ${turKucuk} kullanmak istiyorum.`.trim();
+  const unvan=String(p.gorev||p.unvan||'').trim();
+  return{makam:global.ReportEngine?.schoolInfo?.().okulAdi||'',konu:`${tur&&tur!=='Diğer'?tur:'İzin'} talebi`,metin:[cumle,aciklama&&!/[.!?…]$/.test(aciklama)?aciklama+'.':aciklama].filter(Boolean).join(' '),acilis:!!unvan,ad,unvan,tarih:`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`,tarihOzel:'',adres:String(p.adres||'').trim(),tel:String(p.telefon||'').trim(),tc:String(p.tc||'').trim(),ekVar:'hayir',ekler:[''],hitapOzel:'',govdeOzel:'',kapanisOzel:''};
+}
+async function dilekceYazdir(d){
+  try{
+    if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
+    if(!global.DilekceModule?.print)await global.AppLoader?.loadScript?.('js/modules/dilekce.js');
+    if(!global.DilekceModule?.print)throw new Error('Dilekçe modülü yüklenemedi.');
+    global.DilekceModule.print(dilekceBelgeVerisi(d));
+  }catch(e){toast?.('Dilekçe açılamadı: '+(e?.message||e))}
 }
 function dilekceForm(d={}){
   const personelList=arr('personel').sort((a,b)=>String(a.adSoyad||a.ad||'').localeCompare(String(b.adSoyad||b.ad||''),'tr'));
@@ -504,13 +499,6 @@ function dilekceForm(d={}){
     </form>
   </div>`
 }
-function dilekceOnizleme(d){
-  const p=arr('personel').find(x=>x.id===d.personelId)||{};
-  const ad=p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim()||d.personelAdi||'—';
-  const okul=arr('okulBilgileri')[0]?.okulAdi||'KORUK İLK-ORTAOKULU';
-  const alan=(etiket,deger)=>`<div class="ka-row ka-row--between" style="padding:9px 0;border-bottom:1px solid var(--ka-border)"><span class="ka-muted">${etiket}</span><strong>${esc(String(deger||'—'))}</strong></div>`;
-  return `<div class="ka-modal-backdrop" data-dilekce-preview style="z-index:1210"><section class="ka-modal" style="max-height:90dvh;overflow:auto"><header class="ka-modal__header"><h2>Dilekçe Önizleme</h2></header><div class="ka-modal__body ka-stack"><div style="text-align:center"><strong>${esc(okul)}</strong><div class="ka-muted">Personel İzin Dilekçesi</div></div>${alan('Personel',ad)}${alan('İzin türü',d.izinTuru)}${alan('Başlangıç tarihi',d.baslangicTarihi)}${alan('Bitiş tarihi',d.bitisTarihi)}${alan('Süre',`${d.sure||1} gün`)}<div class="ka-stack"><strong>Açıklama</strong><p style="white-space:pre-wrap">${esc(d.aciklama||'—')}</p></div><div class="ka-muted" style="text-align:right">İmza: __________________</div></div><footer class="ka-modal__footer"><button class="ka-btn ka-btn--secondary" type="button" data-preview-close>Kapat</button><button class="ka-btn ka-btn--secondary" type="button" data-preview-edit>Düzenle</button><button class="ka-btn" type="button" data-preview-print>Yazdır</button></footer></section></div>`;
-}
 function dilekce(){
   const liste=arr('dilekceler').sort((a,b)=>String(b.olusturmaTarihi||'').localeCompare(String(a.olusturmaTarihi||'')));
   const satirlar=liste.map(d=>{
@@ -522,8 +510,7 @@ function dilekce(){
       ${d.aciklama?`<small class="ka-muted">${esc(String(d.aciklama).slice(0,80))}</small>`:''}
     </div>
     <div class="ka-row" style="gap:6px">
-      <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-onizle="${esc(d.id)}">Önizle</button>
-      <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-yazdir='${JSON.stringify({personelId:d.personelId,personelAdi:ad,izinTuru:d.izinTuru,baslangicTarihi:d.baslangicTarihi,bitisTarihi:d.bitisTarihi,sure:d.sure,aciklama:d.aciklama})}'>🖨</button>
+      <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-onizle="${esc(d.id)}">Önizle / Yazdır</button>
       <button class="ka-btn ka-btn--sm ka-btn--secondary" data-dilekce-duzenle="${esc(d.id)}">Düzenle</button>
       <button class="ka-btn ka-btn--sm ka-btn--danger" data-dilekce-sil="${esc(d.id)}">Sil</button>
     </div></div></article>`});
@@ -534,11 +521,10 @@ function dilekce(){
   <div class="ka-stack">${liste.length?satirlar.join(''):'<div class="ka-empty">Henüz dilekçe kaydı yok.</div>'}</div>`
 }
 function bindDilekce(){
-  document.querySelectorAll('[data-dilekce-onizle]').forEach(b=>b.addEventListener('click',()=>{const d=arr('dilekceler').find(x=>x.id===b.dataset.dilekceOnizle);if(!d)return;document.querySelector('[data-dilekce-preview]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceOnizleme(d));const modal=document.querySelector('[data-dilekce-preview]');modal.querySelector('[data-preview-close]')?.addEventListener('click',()=>modal.remove());modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});modal.querySelector('[data-preview-print]')?.addEventListener('click',()=>dilekceYazdir(d));modal.querySelector('[data-preview-edit]')?.addEventListener('click',()=>{modal.remove();document.querySelector('[data-dilekce-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceForm(d));_dilekceBindModal()})}));
+  document.querySelectorAll('[data-dilekce-onizle]').forEach(b=>b.addEventListener('click',()=>{const d=arr('dilekceler').find(x=>x.id===b.dataset.dilekceOnizle);if(d)dilekceYazdir(d)}));
   document.querySelector('[data-dilekce-yeni]')?.addEventListener('click',()=>{document.querySelector('[data-dilekce-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceForm());_dilekceBindModal()});
   document.querySelectorAll('[data-dilekce-duzenle]').forEach(b=>b.addEventListener('click',()=>{const d=arr('dilekceler').find(x=>x.id===b.getAttribute('data-dilekce-duzenle'));if(!d)return;document.querySelector('[data-dilekce-modal]')?.remove();document.body.insertAdjacentHTML('beforeend',dilekceForm(d));_dilekceBindModal()}));
-  document.querySelectorAll('[data-dilekce-sil]').forEach(b=>b.addEventListener('click',()=>dileceSil(b.getAttribute('data-dilekce-sil'))));
-  document.querySelectorAll('[data-dilekce-yazdir]').forEach(b=>b.addEventListener('click',()=>{try{dilekceYazdir(JSON.parse(b.getAttribute('data-dilekce-yazdir')))}catch(_){}}))}
+  document.querySelectorAll('[data-dilekce-sil]').forEach(b=>b.addEventListener('click',()=>dileceSil(b.getAttribute('data-dilekce-sil'))));}
 function _dilekceBindModal(){const modal=document.querySelector('[data-dilekce-modal]');if(!modal)return;modal.querySelector('[data-dilekce-modal-kapat]')?.addEventListener('click',()=>modal.remove());modal.addEventListener('click',e=>{if(e.target===modal)modal.remove()});modal.querySelector('#dilekceForm')?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(e.currentTarget),id=fd.get('id')||'',pid=fd.get('personelId');if(!pid){toast?.('Personel seçiniz');return}const v={personelId:pid,izinTuru:fd.get('izinTuru')||'',baslangicTarihi:fd.get('baslangicTarihi')||'',bitisTarihi:fd.get('bitisTarihi')||'',sure:Number(fd.get('sure')||1),aciklama:String(fd.get('aciklama')||'').trim()};try{const saved=await dilekceKaydet(id||null,v);if(!saved?.id)throw new Error('Kayıt kimliği alınamadı');active='dilekce';query='';toast?.('Dilekçe kaydedildi.');modal.remove();render()}catch(err){toast?.(err?.message||'Kaydedilemedi')}})}
 
 function bind(){const s=document.getElementById('managementSearch');if(s)s.oninput=()=>{query=s.value;render()}}function bindPersonelSubmenu(){document.querySelectorAll('[data-personel-sub]').forEach(b=>b.addEventListener('click',()=>{const page=b.dataset.personelSub;if(page==='committees'){global.ShellUI?.routeModule?.('committees',{page:'home',title:'Kurul ve Komisyonlar',parentMenu:'documents'});return}openPage(page,page==='staff-leaves'?'İzin İşlemleri':'Personel İşleri')}))}
