@@ -12614,7 +12614,7 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 /* ===== A4 FORM — Gezi planı / onayı / veli izni (.gzi-*) ===== */
 .ka-report .gzi-print{box-sizing:border-box;min-height:0;padding:0;background:var(--ka-report-bg);color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt}
 .ka-report .gzi-paper{box-sizing:border-box;color:var(--ka-report-text);font-family:"Times New Roman",Times,serif;font-size:11pt;line-height:1.4}
-.ka-report .gzi-ust{display:flex;flex-direction:column;align-items:center;text-align:center;margin:0 0 6mm}
+.ka-report .gzi-ust{display:flex;flex-direction:column;align-items:stretch;text-align:center;margin:0 0 6mm}
 .ka-report .gzi-bilgi{display:flex;justify-content:space-between;gap:6mm;font-size:10.5pt}
 .ka-report .gzi-hitap{margin:8mm 0 4mm;text-align:center;font-weight:700}
 .ka-report .gzi-yazi{margin:0 0 3mm;text-align:justify;line-height:1.5;overflow-wrap:anywhere}
@@ -12627,7 +12627,7 @@ html .ka-photo-crop .ka-modal__footer{flex:0 0 auto}
 .ka-report .gzi-tablo tr{break-inside:avoid}
 .ka-report .gzi-tablo .gzi-c{text-align:center!important}
 .ka-report .gzi-ek{margin-top:4mm}
-.ka-report .gzi-olur{display:flex;flex-direction:column;align-items:center;gap:1mm;margin-top:8mm;text-align:center;break-inside:avoid}
+.ka-report .gzi-olur{display:flex;flex-direction:column;align-items:stretch;gap:1mm;margin-top:8mm;text-align:center;break-inside:avoid}
 .ka-report .gzi-olurb{letter-spacing:1.2mm}
 .ka-report .gzi-olurimza{margin-top:8mm}
 .ka-report .gzi-veli{box-sizing:border-box;min-height:88mm;padding:4mm 6mm;border-bottom:1px dashed var(--ka-report-text);break-inside:avoid}
@@ -14189,6 +14189,7 @@ html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .dlk-paper{min-height:0;flex
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-paper{min-height:0;flex:1 1 auto}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet,html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet *{color:var(--ka-report-text)!important}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]{outline:none;border:0;background:transparent;border-radius:var(--ka-r-2);cursor:text}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-imza>[contenteditable]{min-width:45mm}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet td[contenteditable],html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet th[contenteditable]{border-radius:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:hover{box-shadow:0 0 0 .3mm var(--ka-report-border)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:focus{box-shadow:0 0 0 .5mm var(--ka-primary)}

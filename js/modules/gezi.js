@@ -92,11 +92,16 @@ ${(sb.length?sb:[[{sube:'',k:'',e:''},0]]).map(([x,i])=>`<tr><td class="gzi-c"${
 function ustMakam(s){const il=NK(s.il),ilce=NK(s.ilce);return(s.makamTur==='valilik'?`${il||DOT} VALİLİĞİ`:`${ilce||DOT} KAYMAKAMLIĞI`).toLocaleUpperCase('tr')}
 function baslikPlan(s){return isDisi(s)?'İL DIŞI OKUL GEZİ PLANI':'OKUL GEZİ PLANI'}
 const baslikH=(s,edit,tag='h1')=>`<${tag} class="gzi-title"${E(edit,'baslik',baslikPlan(s))}>${esc(oz(s,'baslik',baslikPlan(s)))||(edit?DOT:'')}</${tag}>`;
-function veliBelge(s,o){
+function veliBelge(s,o,edit){
  o=o||{};const okul=String(s.okul||'').trim()||'……………………………………';
- return`<section class="gzi-veli"><h2 class="gzi-vbaslik">GEZİ VELİ İZİN BELGESİ</h2><p class="gzi-vmakam">${esc(okul.toLocaleUpperCase('tr'))} MÜDÜRLÜĞÜNE</p><p class="gzi-vmetin">Okulunuzun ${esc(o.sinif)||DOT} sınıfı ${esc(o.no)||DOT} numaralı öğrencisi ${esc(o.ad)||DOT+DOT}’in velisiyim. Öğrencimin <b>${esc(trDate(s.gTarih)||DOT)}</b> tarihinde${s.saat?` <b>${esc(s.saat)}</b> saatleri arasında`:''} <b>${esc(String(s.yer||'').trim()||DOT)}</b> gezisine katılmasına izin veriyorum.</p><p class="gzi-vmetin">Gereğini bilgilerinize arz ederim.</p><div class="gzi-vimza"><span>Tarih: …/…/……</span><span>Veli adı soyadı: ${esc(o.veli)||DOT}</span><span>Telefon: ${esc(o.tel)||DOT}</span><span>İmza: ${DOT}</span></div></section>`}
-function paperVeli(s){
- const bir=veliBelge(s);
+ const nokta=edit?DOT:'';
+ /* Şablon metni (öğrenciye göre değişmeyen parçalar) tüm nüshalarda ortaktır: sayfada değiştirilince her öğrencinin belgesine geçer. */
+ const t=(k,d)=>edit?`<span${E(edit,k,d)}>${esc(oz(s,k,d))||nokta}</span>`:esc(oz(s,k,d));
+ const gtr=trDate(s.gTarih),makam=`${okul.toLocaleUpperCase('tr')} MÜDÜRLÜĞÜNE`;
+ const saat=s.saat?` <b${E(edit,'saat')}>${esc(s.saat)}</b> ${t('v6','saatleri arasında')}`:'';
+ return`<section class="gzi-veli"><h2 class="gzi-vbaslik"${E(edit,'vbaslik','GEZİ VELİ İZİN BELGESİ')}>${esc(oz(s,'vbaslik','GEZİ VELİ İZİN BELGESİ'))||nokta}</h2><p class="gzi-vmakam"${E(edit,'vmakam',makam)}>${esc(oz(s,'vmakam',makam))||nokta}</p><p class="gzi-vmetin">${t('v1','Okulunuzun')} ${esc(o.sinif)||DOT} ${t('v2','sınıfı')} ${esc(o.no)||DOT} ${t('v3','numaralı öğrencisi')} ${esc(o.ad)||DOT+DOT}${t('v4','’in velisiyim. Öğrencimin')} <b${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</b> ${t('v5','tarihinde')}${saat} <b${E(edit,'yer')}>${esc(String(s.yer||'').trim())||DOT}</b> ${t('v7','gezisine katılmasına izin veriyorum.')}</p><p class="gzi-vmetin"${E(edit,'vgereg','Gereğini bilgilerinize arz ederim.')}>${esc(oz(s,'vgereg','Gereğini bilgilerinize arz ederim.'))||nokta}</p><div class="gzi-vimza"><span>${t('vl1','Tarih:')} …/…/……</span><span>${t('vl2','Veli adı soyadı:')} ${esc(o.veli)||DOT}</span><span>${t('vl3','Telefon:')} ${esc(o.tel)||DOT}</span><span>${t('vl4','İmza:')} ${DOT}</span></div></section>`}
+function paperVeli(s,edit){
+ const bir=veliBelge(s,undefined,edit);
  return`<article class="gzi-paper gzi-paper--veli">${bir}${bir}${bir}</article>`
 }
 const sayfa=h=>`<div class="gzi-sayfa">${h}</div>`;
@@ -160,7 +165,7 @@ function ogrenciCoz(txt){
  return String(txt||'').split(/\r?\n/).map(l=>l.trim()).filter(Boolean).map(l=>{const c=(l.includes('\t')?l.split('\t'):l.includes(';')?l.split(';'):l.split(',')).map(x=>x.trim());return{sinif:c[0]||'',no:c[1]||'',ad:c[2]||'',tc:c[3]||'',veli:c[4]||'',tel:c[5]||''}}).filter(x=>x.ad&&!/^(sınıf|sinif)$/i.test(x.sinif))
 }
 function paper(s,edit){
- if(s.doc==='veli')return paperVeli(s);
+ if(s.doc==='veli')return paperVeli(s,edit);
  const nokta=edit?DOT:'';
  const t=(k,d)=>esc(oz(s,k,d))||nokta;
  if(isPlan(s))return`<article class="gzi-paper">${baslikH(s,edit)}${planTablo(s,edit)}</article>`;
@@ -216,7 +221,7 @@ function formHtml(s){
  const arac=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚐 Araç bilgileri</strong><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek (plan tablosunda belirtilir)</span></label><div class="ka-grid">${field('Plaka / plakalar',input('plaka','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin adı soyadı',input('sofor','text','Birden fazlaysa virgülle ayırın'))}${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}</div></div></article>`;
  const kat=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Katılacaklar</strong>${subeHtml(s)}${field('Katılacak veli sayısı',input('veli','text','0'))}${field('Katılacak idareci',input('idareci','text','Adı soyadı'))}<strong class="ka-muted">Katılacak öğretmenler</strong>${ogrHtml(s)}</div></article>`;
  return`${yazi}${veliOkul}${gezi}${arac}${kat}<footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-gz-reset>Temizle</button><button class="ka-btn" type="button" data-gz-print>🖨 Yazdır / PDF</button></footer>
-<article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-gz-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür.${v?' Yazdır dediğinizde açılan önizlemede belgenin her alanı düzenlenebilir.':' Sayfadaki her alana dokunup doğrudan değiştirebilirsiniz; yazdırırken de önizlemede düzenleyebilirsiniz.'}</p>${o?`<div class="ttn-gaps">${gapCtl(s)}</div>`:''}<div class="ttn-preview" data-gz-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="gzi-print">${paper(s,true)}</div></div></div></div></div></article>`
+<article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-gz-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür.Sayfadaki her alana dokunup doğrudan değiştirebilirsiniz; yazdırırken de önizlemede düzenleyebilirsiniz.</p>${o?`<div class="ttn-gaps">${gapCtl(s)}</div>`:''}<div class="ttn-preview" data-gz-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="gzi-print">${paper(s,true)}</div></div></div></div></div></article>`
 }
 function render(root=document.getElementById('v2ModuleRoot')){
  if(!root)return false;const s=ensure();

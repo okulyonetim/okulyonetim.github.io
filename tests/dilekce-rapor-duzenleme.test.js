@@ -108,3 +108,19 @@ test('İzin ve diploma dilekçesi çıktıları başlıksız, özelleştirmesiz 
 test('Düzenlenebilir tablo hücreleri önizlemede yuvarlak kutuya dönüşmez',()=>{
   assert.match(css,/\.ttn-sheet td\[contenteditable\],html\[data-theme\] #v2ModuleRoot \.ttn-page \.ttn-sheet th\[contenteditable\]\{border-radius:0\}/);
 });
+
+test('Veli izin belgesi şablonu sayfada düzenlenir; değişiklik her öğrencinin belgesine geçer, çıktıda iz kalmaz',()=>{
+  const G=gezi(),s={...gSample(G),doc:'veli',ogrenciler:[{sinif:'6/A',no:'1',ad:'Ayşe Su',veli:'Veli S',tel:'0555'}]};
+  const h=G.paper(s,true);
+  for(const k of ['vbaslik','vmakam','v1','v2','v3','v4','gTarih','v5','saat','v6','yer','v7','vgereg','vl1','vl2','vl3','vl4'])assert.ok(h.includes(`data-gz-ed="${k}"`),'veli belgesinde eksik alan: '+k);
+  assert.ok(!G.paper(s).includes('contenteditable'));
+  s.ozel={vbaslik:{text:'GEZİ MUVAFAKAT BELGESİ',base:'GEZİ VELİ İZİN BELGESİ'},vl2:{text:'Veli:',base:'Veli adı soyadı:'}};
+  const k=G.BELGE.veli(s);
+  assert.match(k,/GEZİ MUVAFAKAT BELGESİ/);assert.match(k,/Veli: Veli S/);assert.match(k,/Ayşe Su/);assert.ok(!k.includes('<span data-gz'));
+  assert.match(G.BELGE.veli({...s,ozel:{}}),/Veli adı soyadı: Veli S/,'elle değişiklik yokken eski metin aynen çıkar');
+});
+
+test('Başlık ve OLUR satırları tam genişlikte dokunulabilir (yazı yine ortada)',()=>{
+  assert.match(css,/\.ka-report \.gzi-ust\{display:flex;flex-direction:column;align-items:stretch;text-align:center;/);
+  assert.match(css,/\.ka-report \.gzi-olur\{display:flex;flex-direction:column;align-items:stretch;/);
+});
