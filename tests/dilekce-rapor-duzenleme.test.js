@@ -57,3 +57,54 @@ test('rapor özelleştirme, servis oturma düzenleyici ve duyuru detayı pencere
   }
   assert.match(css,/#transportBusEditor \.sbe-modal,\n\.sbe-table-editor\{background:var\(--pp-solid\)/);
 });
+
+// ---- Gezi yazı/planları ve izin dilekçesi çıktıları ----
+function gezi(){
+  const win={AppStore:{data:()=>[],get:()=>({})},toast(){},localStorage:{getItem:()=>null,setItem(){}}};win.window=win;
+  vm.runInContext(read('js/modules/gezi.js'),vm.createContext({window:win,console,Date,String,Array,Number,Math,JSON,Object,RegExp,Set}));
+  return win.GeziModule;
+}
+const gSample=G=>({...G.reset(),gTarih:'2026-11-10',yer:'Anıtkabir',saat:'08:00 - 14:00',program:'08:00 Hareket',okul:'Koruk İlkokulu',subeler:[{sube:'6/A',k:'12',e:'14'}],ogretmenler:['Ali Veli'],mudur:'Mehmet DEMİR',teklif:'Ayşe YILMAZ'});
+
+test('Gezi planı ve onay yazısında her alan sayfa üzerinde düzenlenebilir; çıktıda iz bırakmaz',()=>{
+  const G=gezi();
+  for(const doc of ['plan-ici','plan-disi','onay-ici','onay-disi']){
+    const s={...gSample(G),doc},h=G.paper(s,true),n=(h.match(/data-gz-ed="/g)||[]).length;
+    assert.ok(n>=30,`${doc}: sayfadaki alanların tamamı düzenlenebilir olmalı (${n})`);
+    assert.ok(!G.paper(s).includes('contenteditable')&&!G.paper(s).includes('data-gz-b'),`${doc}: yazdırılan belgede düzenleme işareti olmamalı`);
+  }
+  const plan=G.paper({...gSample(G),doc:'plan-ici'},true);
+  for(const k of ['gTarih','yer','saat','program','plaka','sofor','kira','sube:0','k:0','e:0','toplam','veli','idareci','ogretmenler','amac','baslik','th1','th17'])
+    assert.ok(plan.includes(`data-gz-ed="${k}"`),'plan tablosunda eksik alan: '+k);
+  const onay=G.paper({...gSample(G),doc:'onay-ici'},true);
+  for(const k of ['ust1','ust2','ust3','sayi','yaziTarih','konu','hitap','ilgi','govde','kapanis','imzaAd','imzaUnvan','ek','olurb','olurTarih','olurAd','olurUnvan'])
+    assert.ok(onay.includes(`data-gz-ed="${k}"`),'onay yazısında eksik alan: '+k);
+});
+
+test('Elle değiştirilen hesaplanan hücre çıktıda görünür; hesaplanan hâl değişince kendiliğinden bırakılır',()=>{
+  const G=gezi(),s={...gSample(G),doc:'plan-ici'};
+  s.ozel={toplam:{text:'26 öğrenci',base:'26'},baslik:{text:'ÖZEL BAŞLIK',base:'OKUL GEZİ PLANI'},th2:{text:'GEZİLECEK YER',base:'GEZİ YERİ'}};
+  const h=G.paper(s);
+  assert.match(h,/<b>26 öğrenci<\/b>/);assert.match(h,/ÖZEL BAŞLIK/);assert.match(h,/GEZİLECEK YER/);
+  s.subeler[0].k='20';  // toplam 34 oldu: elle yazılan "26 öğrenci" artık geçersiz
+  assert.ok(!G.paper(s).includes('26 öğrenci'));assert.match(G.paper(s),/<b>34<\/b>/);
+  assert.match(G.paper(s),/ÖZEL BAŞLIK/,'hesaplanan hâli değişmeyen hücreler korunur');
+});
+
+test('Gezi çıktıları özelleştirme penceresini atlar ve düzenlenebilir önizleme açar',()=>{
+  const src=read('js/modules/gezi.js');
+  assert.strictEqual((src.match(/ozellestirilebilir:false,duzenle:true/g)||[]).length,2,'print ve printBelge');
+  assert.match(src,/pv\.addEventListener\('input',e=>\{[^}]*sheetEdit\(root,s,el\)/);
+  assert.match(src,/pv\.addEventListener\('focusout'/);
+});
+
+test('İzin ve diploma dilekçesi çıktıları başlıksız, özelleştirmesiz ve düzenlenebilir açılır; sabit okul adı yok',()=>{
+  const par=read('js/modules/classic-personnel-parity.js'),doc=read('js/modules/personnel-documents.js');
+  assert.match(par,/baslikGoster:false,okulAdi:' ',ozellestirilebilir:false,duzenle:true/);
+  assert.ok(!par.includes("'KORUK İLK-ORTAOKULU'"));
+  assert.match(doc,/ozellestirilebilir:false,duzenle:true/);
+});
+
+test('Düzenlenebilir tablo hücreleri önizlemede yuvarlak kutuya dönüşmez',()=>{
+  assert.match(css,/\.ttn-sheet td\[contenteditable\],html\[data-theme\] #v2ModuleRoot \.ttn-page \.ttn-sheet th\[contenteditable\]\{border-radius:0\}/);
+});

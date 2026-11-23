@@ -41,7 +41,7 @@ async function print(type,form){
   if(!canView())return global.toast?.('Bu belgeyi görüntüleme yetkiniz yok.');
   if(!global.ReportEngine?.printReport)throw new Error('ReportEngine hazır değil.');
   const v=collect(form),isResponse=type==='response',title=isResponse?'Diploma Kayıt Örneği — Okul Cevabı':'Diploma Kayıt Örneği Talep Dilekçesi',body=isResponse?responseBody(v):requestBody(v);
-  return ReportEngine.printReport(title,body,{fileName:isResponse?'Diploma_Kayit_Ornegi_Okul_Cevabi':'Diploma_Kayit_Ornegi_Talep_Dilekcesi',logoGoster:false,tarihGoster:false,baslikGoster:false,kenarBosluk:20,fontSize:12,extraHead:reportCss()});
+  return ReportEngine.printReport(title,body,{fileName:isResponse?'Diploma_Kayit_Ornegi_Okul_Cevabi':'Diploma_Kayit_Ornegi_Talep_Dilekcesi',logoGoster:false,tarihGoster:false,baslikGoster:false,kenarBosluk:20,fontSize:12,extraHead:reportCss(),ozellestirilebilir:false,duzenle:true});
 }
 
 const drafts={request:Object.create(null),response:Object.create(null)};

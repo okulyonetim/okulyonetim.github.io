@@ -89,7 +89,7 @@ const OFFICIAL_PETITION_TYPES=[
   ['diplomaKayitCevap','Diploma Kayıt Örneği (Okul Cevabı)']
 ];
 const PETITION_LEAVES=['Yıllık İzin','Mazeret İzni','Hastalık İzni','Ücretsiz İzin','Refakat İzni','Doğum İzni','Babalık İzni','Diğer'];
-function schoolInfo(){const rows=data('okulBilgileri'),o=rows.find(x=>x.id==='ayarlar')||rows[0]||global.okulBilgileriAyari||{};return{okulAdi:o.okulAdi||'KORUK İLK-ORTAOKULU',il:o.il||'',ilce:o.ilce||'',mudurluk:o.mebMudurlugu||''};}
+function schoolInfo(){const rows=data('okulBilgileri'),o=rows.find(x=>x.id==='ayarlar')||rows[0]||global.okulBilgileriAyari||{};return{okulAdi:o.okulAdi||'……………………………',il:o.il||'',ilce:o.ilce||'',mudurluk:o.mebMudurlugu||''};}
 function numberWord(n){n=parseInt(n,10);if(!Number.isFinite(n)||n<=0)return'';const one=['','bir','iki','üç','dört','beş','altı','yedi','sekiz','dokuz'],ten=['','on','yirmi','otuz','kırk','elli','altmış','yetmiş','seksen','doksan'];if(n<100)return[ten[Math.floor(n/10)],one[n%10]].filter(Boolean).join(' ');if(n<1000)return[(Math.floor(n/100)===1?'yüz':one[Math.floor(n/100)]+' yüz'),numberWord(n%100)].filter(Boolean).join(' ');return String(n);}
 function trDate(v){if(!v)return'....../....../............';const p=String(v).split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:String(v);}
 function petitionCss(){return `font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.55;color:#000;background:#fff;min-height:260mm;padding:22mm 24mm 20mm 28mm;box-sizing:border-box`;}
@@ -131,7 +131,7 @@ function openOfficialPetition(initialPersonelId=''){
   ov.querySelectorAll('[data-op-close]').forEach(b=>b.onclick=closeOfficialPetition);ov.addEventListener('click',e=>{if(e.target===ov)closeOfficialPetition()});
   ov.querySelector('[data-op-regenerate]').onclick=()=>{state.body='';ov.querySelector('[data-op="body"]').value='';refresh(true)};
   ov.querySelector('[data-op-download]').onclick=()=>{const html=`<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>${esc(petitionTitle(state.type))}</title></head><body>${preview.innerHTML}</body></html>`,blob=new Blob([html],{type:'text/html;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=petitionTitle(state.type).replace(/[^\p{L}\p{N}]+/gu,'_')+'.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-  ov.querySelector('[data-op-print]').onclick=async()=>{try{if(!global.ReportEngine&&global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/report-engine.js');if(!global.ReportEngine)throw new Error('Rapor motoru yüklenemedi.');global.ReportEngine.printReport(petitionTitle(state.type),preview.innerHTML,{fileName:petitionTitle(state.type).replace(/[^\p{L}\p{N}]+/gu,'_'),yon:'dikey',compact:false,ustBaslik:''})}catch(e){global.toast?.('Belge açılamadı: '+(e?.message||e))}};
+  ov.querySelector('[data-op-print]').onclick=async()=>{try{if(!global.ReportEngine&&global.AppLoader?.loadScript)await global.AppLoader.loadScript('js/modules/report-engine.js');if(!global.ReportEngine)throw new Error('Rapor motoru yüklenemedi.');global.ReportEngine.printReport(petitionTitle(state.type),preview.innerHTML,{fileName:petitionTitle(state.type).replace(/[^\p{L}\p{N}]+/gu,'_'),yon:'dikey',compact:false,ustBaslik:'',logoGoster:false,tarihGoster:false,baslikGoster:false,okulAdi:' ',ozellestirilebilir:false,duzenle:true})}catch(e){global.toast?.('Belge açılamadı: '+(e?.message||e))}};
   bindFields();refresh(true);
 }
 function decorateDilekce(){
