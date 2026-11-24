@@ -14190,6 +14190,7 @@ html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .ttn-paper{min-height:0;flex
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet,html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet *{color:var(--ka-report-text)!important}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]{outline:none;border:0;background:transparent;border-radius:var(--ka-r-2);cursor:text}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-imza>[contenteditable]{min-width:45mm}
+html[data-theme] #v2ModuleRoot .ttn-sheet .gzi-bilgi [data-gz-ed="sayi"]:empty{display:inline-block;min-width:32mm;min-height:1.2em;vertical-align:bottom}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet td[contenteditable],html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet th[contenteditable]{border-radius:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:hover{box-shadow:0 0 0 .3mm var(--ka-report-border)}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet [contenteditable]:focus{box-shadow:0 0 0 .5mm var(--ka-primary)}
@@ -14215,6 +14216,7 @@ html[data-theme] #v2ModuleRoot .gzi-page .gzi-sube b{text-align:center}
 html[data-theme] #v2ModuleRoot .gzi-page .gzi-genel{display:flex;align-items:center;justify-content:space-between;gap:var(--ka-sp-8);flex-wrap:wrap}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-print{min-height:270mm;padding:0}
 html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-paper{min-height:0}
+html[data-theme] #v2ModuleRoot .ttn-page .ttn-sheet .gzi-sayfa:not(:last-child){margin-bottom:8mm;padding-bottom:8mm;border-bottom:1px dashed var(--ka-report-border)}
 html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo th,html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-tablo td{background:transparent!important;border:1px solid var(--ka-report-text)!important;color:var(--ka-report-text)!important}
 html[data-theme] #v2ModuleRoot .ttn-page:not(#_x) .ttn-sheet .gzi-oturma .gzi-koridor{border-top:0!important;border-bottom:0!important}
 html[data-theme] #v2ModuleRoot .gzi-page .gzi-arac{display:flex;flex-direction:column;gap:var(--ka-sp-8);padding:var(--ka-sp-12);border:var(--ka-border-w) solid var(--ka-border);border-radius:var(--ka-r-5);background:var(--ka-surface-muted)}

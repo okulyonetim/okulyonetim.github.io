@@ -11,7 +11,6 @@ const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 const KEY='ka-gezi-taslak-v1';
 const DOCS=[['olustur','🧰 Gezi Planı Oluştur'],['plan-ici','🏙️ İl İçi Gezi Planı'],['plan-disi','🚌 İl Dışı Gezi Planı'],['onay-ici','✍️ İl İçi Gezi Onayı'],['onay-disi','📋 İl Dışı Gezi Onayı'],['veli','📝 Veli İzin Belgesi']];
 const DOT='……………………';
-const SAYI_PH='………………';
 const ILGI='İlköğretim ve Ortaöğretim Kurumları Sosyal Etkinlikler Yönetmeliği (Değişiklik: 01/09/2018 tarih ve 30522 sayılı Resmî Gazete)';
 const AMAC=[
  y=>`${y||'Gezi'} gezisi, öğrencilerin derslerde edindikleri bilgileri yerinde görerek pekiştirmelerini ve gerçek yaşamla ilişkilendirmelerini amaçlamaktadır. Gezi; kültür, sanat ve tarih bilincinin gelişmesine, öğrencilerin birlikte hareket etme ve kurallara uyma alışkanlığı kazanmasına katkı sağlayacaktır.`,
@@ -21,14 +20,22 @@ const AMAC=[
 ];
 /* Sayfa üzerinde düzenleme: yer, saat gibi taslak alanları doğrudan taslağa yazılır ve formla eşleşir.
  * Plaka listesi, toplam, makam satırı gibi hesaplanan hücreler elle değiştirilirse s.ozel[k]={text,base} tutulur;
- * hücrenin hesaplanan hâli (base) sonradan değişirse elle yazılan metin kendiliğinden bırakılır. */
-const oz=(s,k,d)=>{const o=s.ozel&&s.ozel[k];return o&&o.base===d?o.text:d};
+ * hücrenin hesaplanan hâli (base) sonradan değişirse elle yazılan metin kendiliğinden bırakılır (sabit metinler için aşağıdaki KALICI'ya bakın). */
+/* Yazının sabit metinleri (başlık, etiket, hitap, imza unvanı…) elle değiştirilince kalıcıdır: otomatik hesaplamalar (sınıf seçimi vb.) bunları geri almaz.
+ * Yalnız kaynağı olan form alanı değişince (KAYNAK) o satır yeniden hesaplanır. Hesaplanan hücreler (toplam, plaka…) kaynağı değişince bırakılır (base). */
+const KALICI=/^(ust[123]|sayiEt|konuEt|ilgiEt|ekEt|konu|ek|hitap|imzaUnvan|olurb|olurUnvan|baslik|vbaslik|vmakam|vgereg|v\d|vl\d|vb\d|th\d+)$/;
+const KAYNAK={makamTur:['ust2'],il:['ust2'],ilce:['ust2'],okul:['ust3','hitap','vmakam'],makam:['hitap'],makamUnvan:['olurUnvan']};
+/* İçi/dışı belgelerde varsayılanı farklı olan metinler ayrı saklanır; biri öbürünün düzenlemesini ezmez. */
+const DISI_AYRI=/^(hitap|imzaUnvan|olurUnvan|olurAd|baslik)$/;
+const OK=(s,k)=>DISI_AYRI.test(k)&&/disi$/.test(s.doc)?k+'@d':k;
+const ozSil=(s,keys)=>{if(s.ozel)keys.forEach(x=>{delete s.ozel[x];delete s.ozel[x+'@d']})};
+const oz=(s,k,d)=>{const o=s.ozel&&s.ozel[OK(s,k)];return o&&(o.base===d||KALICI.test(k))?o.text:d};
 const E=(edit,k,base)=>edit?` contenteditable="true" spellcheck="false" data-gz-ed="${k}"${base===undefined?'':` data-gz-b="${esc(base)}"`}`:'';
 const okulB=()=>{const l=rows('okulBilgileri');return l.find(r=>r.id==='ayarlar')||l[0]||global.okulBilgileriAyari||{}};
 const makamOto=(il,ilce)=>(!String(ilce||'').trim()||/merkez/i.test(ilce))&&String(il||'').trim()?'valilik':'kaymakamlik';
 const okulVar=()=>String(global.ReportEngine?.schoolInfo?.()?.okulAdi||'').trim();
 const blank=()=>({doc:'olustur',secSiniflar:[],makamTur:makamOto(okulB().il,okulB().ilce),gtur:'ici',ogrenciler:[],veliler:'',araclar:[{tur:'Otobüs',plaka:'',model:'',sofor:'',tc:'',src:'',koltuk:'46'}],veliAdet:'3',kafile:'',kafileTel:'',il:String(okulB().il||'').trim(),okulTel:'',acente:'',yetkili:'',acenteAdres:'',acenteTel:'',acenteMail:'',ucret:'',onOdeme:'30',gece:'0',gunduz:'1',sozTarih:'',ilce:String(okulB().ilce||'').trim(),okul:okulVar(),okulOto:okulVar(),sayi:'',yaziTarih:today(),teklif:'',mudur:'',olurTarih:today(),makam:'',makamUnvan:'İlçe Milli Eğitim Müdürü',
- gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
+ gTarih:'',yer:'',saat:'',program:'',amac:'',amacIdx:0,plaka:'',sofor:'',soforTel:'',kira:'',belediye:false,subeler:[{sube:'',k:'',e:''}],veli:'',idareci:'',ogretmenler:[''],ilgiOzel:'',govdeOzel:'',kapanisOzel:'',bosluk:'8'});
 let state=null,zoomFull=false,resizeBound=false;
 function pad(n){return String(n).padStart(2,'0')}
 function today(){const d=new Date();return`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
@@ -43,9 +50,10 @@ const ayrik=v=>String(v||'').split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
 const toplam=s=>(s.subeler||[]).reduce((a,x)=>a+num(x.k)+num(x.e),0);
 const isOlustur=s=>s.doc==='olustur';
 const isOnay=s=>s.doc==='onay-ici'||s.doc==='onay-disi',isPlan=s=>s.doc==='plan-ici'||s.doc==='plan-disi',isDisi=s=>/disi$/.test(s.doc);
-const dolu=a=>(a||[]).filter(x=>x&&(String(x.plaka||'').trim()||String(x.sofor||'').trim()));
+const dolu=a=>(a||[]).filter(x=>x&&(String(x.plaka||'').trim()||String(x.sofor||'').trim()||String(x.sofTel||'').trim()));
 const plakalar=s=>dolu(s.araclar).map(x=>String(x.plaka||'').trim()).filter(Boolean).join(', ')||s.plaka;
 const soforler=s=>dolu(s.araclar).map(x=>String(x.sofor||'').trim()).filter(Boolean).join(', ')||s.sofor;
+const soforTelleri=s=>dolu(s.araclar).map(x=>String(x.sofTel||'').trim()).filter(Boolean).join(', ')||s.soforTel;
 const veliSayisi=s=>/^\d+$/.test(String(s.veli||'').trim())?parseInt(s.veli,10):ayrik(s.veliler).length;
 const dogal=(a,b)=>String(a.ad||'').localeCompare(String(b.ad||''),'tr',{numeric:true});
 function recount(s){(s.subeler||[]).forEach(x=>{if(!x.sid)return;const l=(s.ogrenciler||[]).filter(o=>o.sid===x.sid);x.k=String(l.filter(o=>o.g==='Kız').length);x.e=String(l.filter(o=>o.g==='Erkek').length)})}
@@ -57,7 +65,7 @@ function syncSecim(s){
  const elle=(s.subeler||[]).filter(x=>!x.sid&&(NK(x.sube)||num(x.k)||num(x.e)));
  s.subeler=[...cl.map(c=>({sube:c.ad||'',sid:c.id,k:'',e:''})),...elle];if(!s.subeler.length)s.subeler=[{sube:'',k:'',e:''}];
  /* Okul adı seçilen sınıfların kademesine uyar (1–4 ilkokul, 5–8 ortaokul); elle yazılmış ad korunur. */
- if(cl.length){const oto=String(global.SchoolIdentity?.okulAdi?.({siniflar:cl.map(c=>c.ad||'')})||'').trim();if(oto&&(!NK(s.okul)||s.okul===s.okulOto))s.okul=oto;s.okulOto=oto}
+ if(cl.length){const oto=String(global.SchoolIdentity?.okulAdi?.({siniflar:cl.map(c=>c.ad||'')})||'').trim();if(oto&&(!NK(s.okul)||s.okul===s.okulOto)&&s.okul!==oto){s.okul=oto;ozSil(s,KAYNAK.okul)}s.okulOto=oto}
  recount(s)
 }
 function amacMetni(s){return AMAC[(s.amacIdx||0)%AMAC.length](String(s.yer||'').trim())}
@@ -73,7 +81,7 @@ function planTablo(s,edit){
  const v=(x,d)=>esc(String(x||'').trim())||d;
  const t=(k,d)=>esc(oz(s,k,d))||nokta;
  const th=(k,d,a='')=>`<th${a}${E(edit,k,d)}>${t(k,d)}</th>`;
- const arac=s.belediye?'Belediye aracı':'',gtr=trDate(s.gTarih),plaka=plakalar(s)||'',sofor=soforler(s)||'',top=String(toplam(s)),vs=String(veliSayisi(s));
+ const arac=s.belediye?'Belediye aracı':'',gtr=trDate(s.gTarih),plaka=plakalar(s)||'',sofor=soforler(s)||'',sTel=soforTelleri(s)||'',top=String(toplam(s)),vs=String(veliSayisi(s));
  return`<table class="gzi-tablo"><tbody>
 <tr>${th('th1','GEZİ TARİHİ')}<td colspan="3"${E(edit,'gTarih',gtr)}>${esc(oz(s,'gTarih',gtr))||DOT}</td></tr>
 <tr>${th('th2','GEZİ YERİ')}<td colspan="3"${E(edit,'yer')}>${v(s.yer,DOT)}</td></tr>
@@ -82,7 +90,8 @@ function planTablo(s,edit){
 <tr>${th('th5','GEZİYE GİDECEK ARACIN')}<td colspan="3"${E(edit,'arac',arac)}>${t('arac',arac)}</td></tr>
 <tr>${th('th6','a) Plakaları')}<td colspan="3"${E(edit,'plaka',plaka)}>${t('plaka',plaka)}</td></tr>
 <tr>${th('th7','b) Şoförlerin Adı Soyadı')}<td colspan="3"${E(edit,'sofor',sofor)}>${t('sofor',sofor)}</td></tr>
-<tr>${th('th8','c) Aracın Kira Bedeli')}<td colspan="3"${E(edit,'kira')}>${v(s.kira,nokta)}</td></tr>
+<tr>${th('th18','c) Şoförlerin Cep Telefonu')}<td colspan="3"${E(edit,'soforTel',sTel)}>${t('soforTel',sTel)}</td></tr>
+<tr>${th('th8','d) Aracın Kira Bedeli')}<td colspan="3"${E(edit,'kira')}>${v(s.kira,nokta)}</td></tr>
 <tr>${th('th9','GEZİYE KATILACAK SINIFLAR VE ÖĞRENCİ SAYISI',` rowspan="${Math.max(sb.length,1)+2}"`)}<td class="gzi-c"${E(edit,'th10','ŞUBE')}><b>${t('th10','ŞUBE')}</b></td><td class="gzi-c"${E(edit,'th11','K')}><b>${t('th11','K')}</b></td><td class="gzi-c"${E(edit,'th12','E')}><b>${t('th12','E')}</b></td></tr>
 ${(sb.length?sb:[[{sube:'',k:'',e:''},0]]).map(([x,i])=>`<tr><td class="gzi-c"${E(edit,'sube:'+i)}>${esc(x.sube)}</td><td class="gzi-c"${E(edit,'k:'+i)}>${num(x.k)||''}</td><td class="gzi-c"${E(edit,'e:'+i)}>${num(x.e)||''}</td></tr>`).join('')}
 <tr><td class="gzi-c"${E(edit,'th13','TOPLAM')}><b>${t('th13','TOPLAM')}</b></td><td class="gzi-c" colspan="2"${E(edit,'toplam',top)}><b>${esc(oz(s,'toplam',top))}</b></td></tr>
@@ -127,7 +136,7 @@ function surucuKagit(s){
  const a=dolu(s.araclar);
  return(a.length?a:[{}]).map(x=>{const r=(l,d,n)=>`<tr><th>${l}</th><td>${esc(d)||n}</td></tr>`;
   const pm=[NK(x.plaka),NK(x.model)].filter(Boolean).join(' / ');
-  return sayfa(`<article class="gzi-paper"><h1 class="gzi-title">EK-10 SÜRÜCÜ/MUAVİN/REHBER VE DİĞER PERSONEL BEYANI</h1><p class="gzi-yazi">Türk Ceza Kanununun 53 üncü maddesinde belirtilen süreler geçmiş ve affa uğramış veya hükmün açıklanmasının geri bırakılmasına karar verilmiş olsa bile;</p><p class="gzi-yazi">1) Devletin güvenliğine karşı suçlar, anayasal düzene ve bu düzenin işleyişine karşı suçlar, zimmet, irtikâp, rüşvet, hırsızlık, dolandırıcılık, sahtecilik, güveni kötüye kullanma, hileli iflas, ihaleye fesat karıştırma, edimin ifasına fesat karıştırma, suçtan kaynaklanan mal varlığı değerlerini aklama veya kaçakçılık suçlarından mahkûm olmamış olmak veya bu suçlardan hakkında devam eden ya da uzlaşmayla neticelenmiş bir kovuşturmam bulunmamaktadır.</p><p class="gzi-yazi">2) Türk Ceza Kanunu’nun 81, 102, 103, 104, 105, 109, 179/3, 188, 190, 191, 226 ve 227 nci maddelerindeki suçlardan mahkûm olmamış olmak veya bu suçlardan hakkında devam eden ya da uzlaşmayla neticelenmiş bir kovuşturmam bulunmamaktadır.</p><p class="gzi-yazi">3) Son beş yıl içerisinde; bilinçli taksirli olarak ölümlü trafik kazalarına karışmamış olmak, alkollü olarak araç kullanma ve hız kurallarını ihlal nedeniyle, sürücü belgeleri birden fazla geri alınmamış olmak ve Kabahatler Kanununun 35 inci maddesinde düzenlenen kabahati işlemeyi alışkanlık hâline getirmediğimi beyan ederim.</p><p class="gzi-yazi">Yukarıda sayılan hususlar kendi iradem ve beyanımdır. Aksi ispat edildiği takdirde hakkımda adli makamlara suç duyurusunun yapılacağını biliyor ve kabul ediyorum.</p><table class="gzi-tablo gzi-beyan"><tbody>${r('ARACIN PLAKASI / MODELİ',pm,'.......... / ......')}${r('SÜRÜCÜNÜN ADI SOYADI',x.sofor,'....................')}${r('SÜRÜCÜNÜN T.C. KİMLİK NO',x.tc,'...........')}${r('SRC BELGE NO',x.src,'............')}</tbody></table><div class="gzi-imza2"><div><span>…./…./20….</span><b>Araç/Firma Sahibi/Yetkilisi</b><span>${esc(s.yetkili)||DOT}</span></div><div><span>…./…./20….</span><b>Sürücü / Personel</b><span>${esc(x.sofor)||DOT}</span></div></div></article>`)}).join('')
+  return sayfa(`<article class="gzi-paper"><h1 class="gzi-title">EK-10 SÜRÜCÜ/MUAVİN/REHBER VE DİĞER PERSONEL BEYANI</h1><p class="gzi-yazi">Türk Ceza Kanununun 53 üncü maddesinde belirtilen süreler geçmiş ve affa uğramış veya hükmün açıklanmasının geri bırakılmasına karar verilmiş olsa bile;</p><p class="gzi-yazi">1) Devletin güvenliğine karşı suçlar, anayasal düzene ve bu düzenin işleyişine karşı suçlar, zimmet, irtikâp, rüşvet, hırsızlık, dolandırıcılık, sahtecilik, güveni kötüye kullanma, hileli iflas, ihaleye fesat karıştırma, edimin ifasına fesat karıştırma, suçtan kaynaklanan mal varlığı değerlerini aklama veya kaçakçılık suçlarından mahkûm olmamış olmak veya bu suçlardan hakkında devam eden ya da uzlaşmayla neticelenmiş bir kovuşturmam bulunmamaktadır.</p><p class="gzi-yazi">2) Türk Ceza Kanunu’nun 81, 102, 103, 104, 105, 109, 179/3, 188, 190, 191, 226 ve 227 nci maddelerindeki suçlardan mahkûm olmamış olmak veya bu suçlardan hakkında devam eden ya da uzlaşmayla neticelenmiş bir kovuşturmam bulunmamaktadır.</p><p class="gzi-yazi">3) Son beş yıl içerisinde; bilinçli taksirli olarak ölümlü trafik kazalarına karışmamış olmak, alkollü olarak araç kullanma ve hız kurallarını ihlal nedeniyle, sürücü belgeleri birden fazla geri alınmamış olmak ve Kabahatler Kanununun 35 inci maddesinde düzenlenen kabahati işlemeyi alışkanlık hâline getirmediğimi beyan ederim.</p><p class="gzi-yazi">Yukarıda sayılan hususlar kendi iradem ve beyanımdır. Aksi ispat edildiği takdirde hakkımda adli makamlara suç duyurusunun yapılacağını biliyor ve kabul ediyorum.</p><table class="gzi-tablo gzi-beyan"><tbody>${r('ARACIN PLAKASI / MODELİ',pm,'.......... / ......')}${r('SÜRÜCÜNÜN ADI SOYADI',x.sofor,'....................')}${r('SÜRÜCÜNÜN T.C. KİMLİK NO',x.tc,'...........')}${r('SÜRÜCÜNÜN CEP TELEFONU',x.sofTel,'...........')}${r('SRC BELGE NO',x.src,'............')}</tbody></table><div class="gzi-imza2"><div><span>…./…./20….</span><b>Araç/Firma Sahibi/Yetkilisi</b><span>${esc(s.yetkili)||DOT}</span></div><div><span>…./…./20….</span><b>Sürücü / Personel</b><span>${esc(x.sofor)||DOT}</span></div></div></article>`)}).join('')
 }
 function saatler(s){const m=String(s.saat||'').split(/\s*[-–]\s*/);return[NK(m[0])||'……',NK(m[1])||'……']}
 function sozlesmeKagit(s){
@@ -176,19 +185,20 @@ function paper(s,edit){
  const hitap=(disi?String(s.makam||'').trim()||'…………………… İlçe Milli Eğitim Müdürlüğüne':`${okul} Müdürlüğüne`).toLocaleUpperCase('tr');
  const imza=disi?{ad:s.mudur,unvan:'Okul Müdürü'}:{ad:s.teklif,unvan:'Müdür Yardımcısı'};
  const olur=disi?{ad:'',unvan:String(s.makamUnvan||'').trim()||'İlçe Milli Eğitim Müdürü'}:{ad:s.mudur,unvan:'Okul Müdürü'};
- const ust2=ustMakam(s),ust3=`${okul} Müdürlüğü`,sayi=String(s.sayi||'').trim()||SAYI_PH,yt=trDate(s.yaziTarih),ot=trDate(s.olurTarih);
+ const ust2=ustMakam(s),ust3=`${okul} Müdürlüğü`,sayi=String(s.sayi||'').trim(),yt=trDate(s.yaziTarih),ot=trDate(s.olurTarih);
  const olurAd=oz(s,'olurAd',olur.ad);
- return`<article class="gzi-paper"><div class="gzi-ust"><b${E(edit,'ust1','T.C.')}>${t('ust1','T.C.')}</b><b${E(edit,'ust2',ust2)}>${t('ust2',ust2)}</b><b${E(edit,'ust3',ust3)}>${t('ust3',ust3)}</b></div>
+ const yazi=`<article class="gzi-paper gzi-paper--yazi"><div class="gzi-ust"><b${E(edit,'ust1','T.C.')}>${t('ust1','T.C.')}</b><b${E(edit,'ust2',ust2)}>${t('ust2',ust2)}</b><b${E(edit,'ust3',ust3)}>${t('ust3',ust3)}</b></div>
 <div class="gzi-bilgi"><span><span${E(edit,'sayiEt','Sayı :')}>${t('sayiEt','Sayı :')}</span> <span${E(edit,'sayi')}>${esc(sayi)}</span></span><span${E(edit,'yaziTarih',yt)}>${esc(oz(s,'yaziTarih',yt))||nokta}</span></div><div class="gzi-bilgi"><span><span${E(edit,'konuEt','Konu :')}>${t('konuEt','Konu :')}</span> <span${E(edit,'konu','Gezi Onayı')}>${t('konu','Gezi Onayı')}</span></span></div>
 <p class="gzi-hitap"${E(edit,'hitap',hitap)}>${t('hitap',hitap)}</p>
 <p class="gzi-yazi"><b${E(edit,'ilgiEt','İlgi :')}>${t('ilgiEt','İlgi :')}</b> <span${E(edit,'ilgi')}>${esc(ilgiMetni(s))}</span></p>
 <p class="gzi-yazi gzi-ind"${E(edit,'govde')}>${esc(govdeMetni(s))}</p>
 <p class="gzi-yazi gzi-ind"${E(edit,'kapanis')}>${esc(kapanisMetni(s))}</p>
 <div class="gzi-imza"><span${E(edit,'imzaAd')}>${esc(imza.ad)||DOT}</span><b${E(edit,'imzaUnvan',imza.unvan)}>${t('imzaUnvan',imza.unvan)}</b></div>
+<p class="gzi-yazi gzi-ek"><b${E(edit,'ekEt','Ek:')}>${t('ekEt','Ek:')}</b> <span${E(edit,'ek','Okul Gezi Planı')}>${t('ek','Okul Gezi Planı')}</span></p>
 <div class="gzi-bosluk" style="height:${Math.max(0,Math.min(150,parseFloat(s.bosluk)||0))}mm"></div>
-${baslikH(s,edit,'h2')}${planTablo(s,edit)}
-<p class="gzi-yazi gzi-ek"><b${E(edit,'ekEt','Ek:')}>${t('ekEt','Ek:')}</b> <span${E(edit,'ek','Gezi Dosyası.')}>${t('ek','Gezi Dosyası.')}</span></p>
-<div class="gzi-olur"><b class="gzi-olurb"${E(edit,'olurb','O L U R')}>${t('olurb','O L U R')}</b><span${E(edit,'olurTarih',ot)}>${esc(oz(s,'olurTarih',ot))||nokta}</span><span class="gzi-olurimza"${E(edit,'olurAd',olur.ad)}>${esc(olurAd)||DOT}</span><b${E(edit,'olurUnvan',olur.unvan)}>${t('olurUnvan',olur.unvan)}</b></div></article>`
+<div class="gzi-olur"><b class="gzi-olurb"${E(edit,'olurb','O L U R')}>${t('olurb','O L U R')}</b><span${E(edit,'olurTarih',ot)}>${esc(oz(s,'olurTarih',ot))||nokta}</span><span class="gzi-olurimza"${E(edit,'olurAd',olur.ad)}>${esc(olurAd)||DOT}</span><b${E(edit,'olurUnvan',olur.unvan)}>${t('olurUnvan',olur.unvan)}</b></div></article>`;
+ /* Yazı tek sayfadır; okul gezi planı ayrı bir ek sayfası olarak arkasından gelir. */
+ return sayfa(yazi)+sayfa(`<article class="gzi-paper gzi-paper--ek">${baslikH(s,edit)}${planTablo(s,edit)}</article>`)
 }
 function reportBody(data){return`<div class="gzi-print">${paper(data||ensure())}</div>`}
 function print(data){
@@ -202,9 +212,9 @@ function tabsHtml(s){return`<div class="ttn-tabs" role="tablist">${DOCS.map(([k,
 function siniflarHtml(s){const c=rows('siniflar').slice().sort(dogal);if(!c.length)return'<p class="ka-muted">Uygulamada kayıtlı sınıf yok; şubeleri elle girebilirsiniz.</p>';const sec=new Set(s.secSiniflar||[]);return`<strong class="ka-muted">Uygulamadaki sınıflardan seçin</strong><div class="ttn-tabs">${c.map(x=>`<button type="button" class="ka-btn ${sec.has(x.id)?'':'ka-btn--secondary'}" aria-pressed="${sec.has(x.id)}" data-gz-sinif="${esc(x.id)}">${esc(x.ad||'Sınıf')}</button>`).join('')}</div><p class="ka-muted">Seçilen sınıfların kız/erkek sayısı ve öğrencileri otomatik gelir.</p>`}
 function subeHtml(s){return`${siniflarHtml(s)}<div class="gzi-sube"><span class="ka-muted">Şube</span><span class="ka-muted">Kız</span><span class="ka-muted">Erkek</span><span class="ka-muted">Toplam</span><span></span>${s.subeler.map((x,i)=>`<input class="ka-input" value="${esc(x.sube)}" placeholder="6/A" data-gz-sube="${i}" data-k="sube" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.k)}" data-gz-sube="${i}" data-k="k" autocomplete="off"><input class="ka-input" inputmode="numeric" value="${esc(x.e)}" data-gz-sube="${i}" data-k="e" autocomplete="off"><b data-gz-st="${i}">${num(x.k)+num(x.e)}</b><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-subesil="${i}" aria-label="Şubeyi kaldır">✕</button>`).join('')}</div><div class="gzi-genel"><b>Genel toplam: <span data-gz-gt>${toplam(s)}</span></b><button type="button" class="ka-btn ka-btn--secondary" data-gz-subeekle>+ Şube ekle</button></div>`}
 function ogrHtml(s){return`<datalist id="gzOgr">${rows('ogretmenler').map(t=>`<option value="${esc(t.adSoyad||`${t.ad||''} ${t.soyad||''}`.trim())}">`).join('')}</datalist><div class="ttn-imzalar">${s.ogretmenler.map((x,i)=>`<div class="dlk-ek"><input class="ka-input" list="gzOgr" value="${esc(x)}" placeholder="Öğretmen adı soyadı" data-gz-ogr="${i}" autocomplete="off"><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-ogrsil="${i}" aria-label="Öğretmeni kaldır">✕</button></div>`).join('')}</div><button type="button" class="ka-btn ka-btn--secondary" data-gz-ogrekle>+ Öğretmen ekle</button>`}
-function gapCtl(s){return`<div class="ttn-gap"><span>Üst yazı ile plan tablosu arası</span><div><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="-4" aria-label="Boşluğu azalt">−</button><b data-gz-gapv>${Math.max(0,parseFloat(s.bosluk)||0)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="4" aria-label="Boşluğu artır">+</button></div></div>`}
+function gapCtl(s){return`<div class="ttn-gap"><span>Ek satırı ile OLUR bloğu arası</span><div><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="-4" aria-label="Boşluğu azalt">−</button><b data-gz-gapv>${Math.max(0,parseFloat(s.bosluk)||0)} mm</b><button class="ka-btn ka-btn--secondary" type="button" data-gz-gap data-d="4" aria-label="Boşluğu artır">+</button></div></div>`}
 function olusturHtml(s){
- const a=s.araclar.map((x,i)=>`<div class="gzi-arac"><strong>${i+1}. ARAÇ</strong>${[['tur','Araç türü','Otobüs'],['plaka','Plaka','06 ABC 123'],['model','Model','2019'],['sofor','Şoför adı soyadı','Ad Soyad'],['tc','Şoför T.C. kimlik no','11 haneli'],['src','SRC belge no','SRC-2/12345'],['koltuk','Koltuk sayısı','46']].map(([k,l,ph])=>field(l,`<input class="ka-input" value="${esc(x[k])}" placeholder="${ph}" data-gz-arac="${i}" data-k="${k}" autocomplete="off">`)).join('')}${s.araclar.length>1?`<button type="button" class="ka-btn ka-btn--secondary" data-gz-aracsil="${i}">Aracı kaldır</button>`:''}</div>`).join('');
+ const a=s.araclar.map((x,i)=>`<div class="gzi-arac"><strong>${i+1}. ARAÇ</strong>${[['tur','Araç türü','Otobüs'],['plaka','Plaka','06 ABC 123'],['model','Model','2019'],['sofor','Şoför adı soyadı','Ad Soyad'],['sofTel','Şoför cep telefonu','05XX XXX XX XX'],['tc','Şoför T.C. kimlik no','11 haneli'],['src','SRC belge no','SRC-2/12345'],['koltuk','Koltuk sayısı','46']].map(([k,l,ph])=>field(l,`<input class="ka-input" value="${esc(x[k])}" placeholder="${ph}" data-gz-arac="${i}" data-k="${k}" autocomplete="off">`)).join('')}${s.araclar.length>1?`<button type="button" class="ka-btn ka-btn--secondary" data-gz-aracsil="${i}">Aracı kaldır</button>`:''}</div>`).join('');
  const og=(s.ogrenciler||[]).map((x,i)=>`<div class="dlk-ek"><span>${i+1}. ${esc(x.sinif)} ${esc(x.no)} — ${esc(x.ad)}${x.veli?` · ${esc(x.veli)}`:''}</span><button type="button" class="ka-btn ka-btn--secondary ka-btn--icon" data-gz-ogrdel="${i}" aria-label="Öğrenciyi kaldır">✕</button></div>`).join('');
  return`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏫 Okul bilgileri</strong><div class="ka-grid">${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}</div></div></article>
 <article class="ka-card"><div class="ka-card__body ka-stack"><strong>📌 Gezi bilgileri</strong><label class="ka-field"><span class="ka-field__label">Gezi türü</span><select class="ka-input" data-gz="gtur"><option value="ici" ${s.gtur==='ici'?'selected':''}>İl içi gezi</option><option value="disi" ${s.gtur==='disi'?'selected':''}>İl dışı gezi</option></select></label><div class="ka-grid">${field('Gezi tarihi',input('gTarih','date'))}${field('Gezinin yeri',input('yer','text','Örn: Anıtkabir'))}${field('Çıkış / dönüş saati',input('saat','text','08:00 - 14:00'))}</div><label class="ka-field"><span class="ka-field__label">Gezide gidilecek yerlerin planı</span><textarea class="ka-input" rows="4" data-gz="program">${esc(s.program)}</textarea><small class="ka-muted">Her satıra bir madde yazın.</small></label><label class="ka-field"><span class="ka-field__label">Gezinin amacı</span><textarea class="ka-input" rows="4" data-gz="amac">${esc(s.amac)}</textarea></label><button type="button" class="ka-btn ka-btn--secondary" data-gz-amac>🔄 Amaç metni öner</button></div></article>
@@ -221,7 +231,7 @@ function formHtml(s){
  const yazi=o?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏛️ Yazı bilgileri</strong><div class="ka-grid">${field('Üst makam',`<select class="ka-input" data-gz="makamTur"><option value="valilik" ${s.makamTur==='valilik'?'selected':''}>Valilik (merkez ilçe)</option><option value="kaymakamlik" ${s.makamTur!=='valilik'?'selected':''}>Kaymakamlık</option></select>`)}${field('İl',input('il','text','Örn: Elazığ'))}${field('İlçe',input('ilce','text','Örn: Mamak'))}${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}${field('Sayı',input('sayi','text','Örn: 821.04/1'))}${field('Yazı tarihi',input('yaziTarih','date'))}${isDisi(s)?field('Onay makamı',input('makam','text','Örn: Mamak İlçe Milli Eğitim Müdürlüğüne'))+field('Olur makamı unvanı',input('makamUnvan','text','İlçe Milli Eğitim Müdürü')):field('Teklif eden (müdür yardımcısı)',input('teklif','text','Örn: Ayşe YILMAZ'))}${field('Okul müdürü',input('mudur','text','Örn: Mehmet DEMİR'))}${field('Olur tarihi',input('olurTarih','date'))}</div>${isDisi(s)?'<p class="ka-muted">İl dışı gezilerde onay makamını ve süreci güncel mevzuattan doğrulayın.</p>':''}</div></article>`:'';
  const veliOkul=v?`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🏫 Okul</strong>${field('Okul / kurum adı',input('okul','text','Örn: Atatürk Ortaokulu'))}</div></article>`:'';
  const gezi=`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚌 Gezi bilgileri</strong><div class="ka-grid">${field('Gezi tarihi',input('gTarih','date'))}${field('Gezi yeri',input('yer','text','Örn: Anıtkabir'))}${field('Çıkış / dönüş saati',input('saat','text','08:00 - 14:00'))}</div>${v?'':`<label class="ka-field"><span class="ka-field__label">Gezide gidilecek yerlerin planı</span><textarea class="ka-input" rows="4" data-gz="program" placeholder="08:00 Okuldan hareket&#10;08:45 Anıtkabir giriş&#10;14:00 Okula varış">${esc(s.program)}</textarea><small class="ka-muted">Her satıra bir madde yazın.</small></label><label class="ka-field"><span class="ka-field__label">Gezinin amacı</span><textarea class="ka-input" rows="5" data-gz="amac">${esc(s.amac)}</textarea></label><button type="button" class="ka-btn ka-btn--secondary" data-gz-amac>🔄 Amaç metni öner</button>`}</div></article>`;
- const arac=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚐 Araç bilgileri</strong><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek (plan tablosunda belirtilir)</span></label><div class="ka-grid">${field('Plaka / plakalar',input('plaka','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin adı soyadı',input('sofor','text','Birden fazlaysa virgülle ayırın'))}${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}</div></div></article>`;
+ const arac=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>🚐 Araç bilgileri</strong><label class="dlk-check"><input type="checkbox" data-gz-bel ${s.belediye?'checked':''}> <span>Belediye aracı ile gidilecek (plan tablosunda belirtilir)</span></label><div class="ka-grid">${field('Plaka / plakalar',input('plaka','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin adı soyadı',input('sofor','text','Birden fazlaysa virgülle ayırın'))}${field('Şoförlerin cep telefonu',input('soforTel','tel','Birden fazlaysa virgülle ayırın'))}${field('Aracın kira bedeli',input('kira','text','Örn: 5.000 TL'))}</div></div></article>`;
  const kat=v?'':`<article class="ka-card"><div class="ka-card__body ka-stack"><strong>👨‍👩‍👧 Katılacaklar</strong>${subeHtml(s)}${field('Katılacak veli sayısı',input('veli','text','0'))}${field('Katılacak idareci',input('idareci','text','Adı soyadı'))}<strong class="ka-muted">Katılacak öğretmenler</strong>${ogrHtml(s)}</div></article>`;
  return`${yazi}${veliOkul}${gezi}${arac}${kat}<footer class="vgf-actions"><button class="ka-btn ka-btn--secondary" type="button" data-gz-reset>Temizle</button><button class="ka-btn" type="button" data-gz-print>🖨 Yazdır / PDF</button></footer>
 <article class="ka-card"><div class="ka-card__body ka-stack"><div class="ttn-prevhead"><strong>Önizleme</strong><button class="ka-btn ka-btn--secondary" type="button" data-gz-zoom>${zoomFull?'Sayfaya sığdır':'Yakınlaştır'}</button></div><p class="ka-muted">Yazdırma önizlemesi gibi tam sayfa görünür.Sayfadaki her alana dokunup doğrudan değiştirebilirsiniz; yazdırırken de önizlemede düzenleyebilirsiniz.</p>${o?`<div class="ttn-gaps">${gapCtl(s)}</div>`:''}<div class="ttn-preview" data-gz-preview><div class="ttn-sheetwrap"><div class="ttn-sheet ka-report"><div class="gzi-print">${paper(s,true)}</div></div></div></div></div></article>`
@@ -247,7 +257,7 @@ function sheetEdit(root,s,el){
  const set=(p,v)=>{s[p]=v;form(p,v);tepki(s,p)};
  /* base: hücrenin şu anki hesaplanan hâli. Sayfa son çizildikten sonra başka alanlar değişmiş olabilir (ör. şube sayıları → toplam), bu yüzden yeniden hesaplanır. */
  const taze=()=>{const d=document.createElement('div');d.innerHTML=paper(s,true);const n=[...d.querySelectorAll('[data-gz-ed]')].find(x=>x.dataset.gzEd===k);return n?.dataset.gzB};
- const ozel=()=>{(s.ozel||(s.ozel={}))[k]={text:t,base:taze()??el.dataset.gzB??''}};
+ const ozel=()=>{(s.ozel||(s.ozel={}))[OK(s,k)]={text:t,base:taze()??el.dataset.gzB??''}};
  if(k==='ilgi'){const v=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');s.ilgiOzel=v.trim()===ILGI?'':v;return}
  if(k==='govde'){s.govdeOzel=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');return}
  if(k==='kapanis'){s.kapanisOzel=raw.replace(/\u00a0/g,' ').replace(/\n+$/,'');return}
@@ -261,7 +271,7 @@ function sheetEdit(root,s,el){
  if(k==='veli'){if(!t||/^\d+$/.test(t)){set('veli',t);if(s.ozel)delete s.ozel.veli}else ozel();return}
  if(k==='sayi'){set('sayi',t);return}
  /* Okul adı üç yerde geçer (üst başlık, hitap, veli makamı): biri değişince okul adı güncellenir, diğerleri onu izler. */
- if((k==='ust3'||k==='vmakam'||k==='hitap'&&!disi)&&!/^[\s….]*$/.test(t)){const m=t.match(/^(.+?)\s+m[üu]d[üu]rl[üu][ğg][üu](?:ne)?\s*$/i);if(m&&m[1].trim()){set('okul',m[1].trim());if(s.ozel){delete s.ozel.ust3;delete s.ozel.hitap;delete s.ozel.vmakam}return}}
+ if((k==='ust3'||k==='vmakam'||k==='hitap'&&!disi)&&!/^[\s….]*$/.test(t)){const m=t.match(/^(.+?)\s+m[üu]d[üu]rl[üu][ğg][üu](?:ne)?\s*$/i);if(m&&m[1].trim()){set('okul',m[1].trim());ozSil(s,['ust3','hitap','vmakam'].filter(x=>x!==k));ozel();return}}
  if(k==='hitap'&&disi){set('makam',t);return}
  if(k==='imzaAd'){set(disi?'mudur':'teklif',t);return}
  if(k==='olurAd'&&!disi){set('mudur',t);return}
@@ -271,7 +281,7 @@ function sheetEdit(root,s,el){
 function updatePreview(root){const b=root?.querySelector('[data-gz-preview] .gzi-print');if(b)b.innerHTML=paper(ensure(),true);fit(root);persist()}
 function bind(root){
  const s=ensure();
- root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;if(k==='makamTur'||k==='il'||k==='ilce')updatePreview(root);tepki(s,k);if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
+ root.querySelectorAll('[data-gz]').forEach(el=>el.addEventListener('input',()=>{const k=el.dataset.gz;s[k]=el.value;ozSil(s,KAYNAK[k]||[]);if(k==='makamTur'||k==='il'||k==='ilce')updatePreview(root);tepki(s,k);if(k==='yer'&&!s.amacManuel){const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac}updatePreview(root)}));
  root.querySelectorAll('[data-gz-doc]').forEach(b=>b.addEventListener('click',()=>{s.doc=b.dataset.gzDoc;persist();render(root)}));
  root.querySelector('[data-gz-bel]')?.addEventListener('change',e=>{s.belediye=e.target.checked;updatePreview(root)});
  root.querySelector('[data-gz-amac]')?.addEventListener('click',()=>{s.amacIdx=((s.amacIdx||0)+1)%AMAC.length;s.amac=amacMetni(s);s.amacManuel=false;const a=root.querySelector('[data-gz="amac"]');if(a)a.value=s.amac;updatePreview(root)});
