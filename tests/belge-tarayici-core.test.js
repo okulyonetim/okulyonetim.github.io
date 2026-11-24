@@ -166,4 +166,42 @@ function dondurNokta(cx,cy,hw,hh,aci){const a=aci*Math.PI/180,c=Math.cos(a),s=Ma
   const a4=K.sayfaYerlesim(1000,500,{boyut:'a4',yon:'otomatik'});assert(a4.pw>a4.ph,'geniş görüntü → otomatik yatay');
   assert.throws(()=>K.pdfYaz([],{}),/en az bir sayfa/);
 }
+/* ── kâğıt tam beyaz: gölge + renk sapması + gürültü + büyük koyu nesneler ── */
+{
+  const W=700,H=980;
+  const sayfa=(golge,sicak)=>{
+    const img=K.yeni(W,H),d=img.data;
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const p=(y*W+x)*4,k=1-golge*(x/W)-.15*(y/H);
+      let r=236*k*sicak[0],g=232*k*sicak[1],b=222*k*sicak[2];
+      if(y%26<2&&x>60&&x<W-60&&y>50&&y<H*.4)r=g=b=38*k;                                   /* yazı satırları */
+      if(x>W*.55&&x<W*.92&&y>H*.55&&y<H*.8)r=g=b=22*k;                                    /* katı siyah kutu (logo/fotoğraf) */
+      if(x>W*.62&&x<W*.9&&y>H*.82&&y<H*.9){r=34*k;g=44*k;b=170*k}                         /* mavi damga */
+      const n=(rnd()-.5)*10;d[p]=r+n;d[p+1]=g+n;d[p+2]=b+n;d[p+3]=255;
+    }
+    return img;
+  };
+  const kagitOrani=(im,esik)=>{let say=0,iyi=0;for(let y=H*.5|0;y<H*.97;y+=2)for(let x=8;x<W*.45;x+=2){const p=(y*W+x)*4;say++;if(Math.min(im.data[p],im.data[p+1],im.data[p+2])>=esik)iyi++}return iyi/say};
+  const px=(im,x,y)=>{const p=(Math.round(y)*W+Math.round(x))*4;return[im.data[p],im.data[p+1],im.data[p+2]]};
+  for(const [ad,golge,sicak] of [['hafif gölge',.2,[1,1,1]],['güçlü gölge + sararma',.55,[1,.95,.82]],['mavi ışık',.4,[.85,.95,1]]]){
+    const g=sayfa(golge,sicak);
+    for(const f of['sihirli','belge','gri','canli']){
+      const o=K.isle(g,{filtre:f}),oran=kagitOrani(o,253);
+      assert(oran>.97,f+' ('+ad+'): kâğıt yüzeyi tam beyaz olmalı (≥253 oranı '+oran.toFixed(3)+')');
+      const kose=[px(o,20,H-20),px(o,W*.4,H*.52)];
+      for(const c of kose)assert(Math.max(...c)-Math.min(...c)<=3,f+' ('+ad+'): renk sapması giderilmeli '+c);
+      /* katı koyu nesne beyaza patlamamalı, damga rengini korumalı */
+      assert(px(o,W*.73,H*.67)[1]<70,f+' ('+ad+'): siyah kutu koyu kalmalı');
+      if(f==='sihirli'||f==='canli'){const m=px(o,W*.76,H*.86);assert(m[2]-m[0]>80,f+' ('+ad+'): mavi damga rengini korumalı '+m)}
+      let yazi=0,say=0;for(let y=50;y<H*.4;y++)for(let x=70;x<W-70;x++){const p=(y*W+x)*4;if(g.data[p]<(38*(1-golge*(x/W)-.15*(y/H)))+20){say++;if(o.data[p]<130)yazi++}}
+      assert(say>500&&yazi/say>.9,f+' ('+ad+'): yazı koyu kalmalı');
+    }
+  }
+  /* orijinal: beyazlatma yok (yalnız gölge giderme kaydırıcısıyla isteğe bağlı) */
+  const ham=sayfa(.4,[1,1,1]);
+  assert(kagitOrani(K.isle(ham,{filtre:'orijinal'}),253)<.01,'orijinal filtre fotoğrafı olduğu gibi bırakmalı');
+  assert(kagitOrani(K.isle(ham,{filtre:'orijinal',golge:100}),253)>.9,'gölge giderme kaydırıcısı orijinalde kâğıdı beyazlatmalı');
+  /* tamamen koyu / tamamen boş girdi çökmemeli */
+  for(const v of[0,255]){const t=K.yeni(64,64);t.data.fill(v);for(let i=3;i<t.data.length;i+=4)t.data[i]=255;for(const f of K.FILTRELER)assert.strictEqual(K.isle(t,{filtre:f.id}).width,64)}
+}
 console.log('Belge Tarayıcı çekirdeği testleri başarılı.');

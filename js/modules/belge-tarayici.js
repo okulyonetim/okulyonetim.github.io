@@ -33,7 +33,7 @@ const AYARLAR=[
   {k:'kontrast',ad:'Kontrast',min:-100,max:100,ok:f=>f!=='bw'},
   {k:'doygunluk',ad:'Doygunluk',min:-100,max:100,ok:f=>!GRI.includes(f)},
   {k:'sicaklik',ad:'Renk sıcaklığı',min:-100,max:100,ok:f=>!GRI.includes(f)},
-  {k:'golge',ad:'Gölge giderme',min:0,max:100,ok:f=>['orijinal','gri','canli'].includes(f)},
+  {k:'golge',ad:'Gölge giderme',min:0,max:100,ok:f=>f==='orijinal'},
   {k:'beyazlik',ad:'Beyazlık',min:0,max:100,ok:f=>f!=='bw'},
   {k:'metin',ad:'Metin koyuluğu',min:0,max:100,ok:f=>f!=='bw'},
   {k:'netlik',ad:'Netlik',min:0,max:100,ok:f=>f!=='bw'},

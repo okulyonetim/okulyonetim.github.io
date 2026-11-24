@@ -5,6 +5,8 @@
  *  Köşe algılama ........ kenarBul (açık/koyu zemin, eşik çeşitlemesi, en büyük içbükey olmayan dörtgen)
  *  Perspektif ........... homografi + perspektif (ters eşleme, çift doğrusal örnekleme), hedefBoyut
  *  Filtreler ............ orijinal · sihirli renk · beyaz belge · siyah-beyaz (uyarlamalı eşik) · gri · canlı
+ *  Kâğıt beyazlatma ..... duzAlan: yerel kâğıt rengi tahmini → gölge ve renk sapması giderilir, kâğıt saf beyaza çekilir;
+ *                         orijinal dışındaki tüm filtrelerde otomatik (orijinalde 'gölge giderme' kaydırıcısıyla isteğe bağlı)
  *  Ayarlar .............. parlaklık, kontrast, doygunluk, sıcaklık, gölge giderme, beyazlık, metin koyuluğu,
  *                         netlik, gürültü azaltma, hare (moiré) giderme, siyah-beyaz koyuluğu
  *  PDF .................. pdfYaz: JPEG sayfaları (DCTDecode) doğrudan gömer; A4/A3/A5/Letter/orijinal boyut,
@@ -288,29 +290,49 @@ const FILTRELER=[
   {id:'gri',ad:'Gri Tonlama'},
   {id:'canli',ad:'Canlı'}
 ];
-/** Gölge/aydınlatma düzeltmesi: blok bazlı arka plan (parlak yüzde) tahmini → böl. guc: 0..1 karışım. */
+/** Kâğıt beyazlatma + gölge/renk dengesi düzeltmesi (sayfa boyutundan bağımsız: önizleme ile PDF çıktısı aynı sonucu verir).
+ *  1) Blok bazlı yerel kâğıt rengi: her blokta kanal başına parlak yüzdelik (kâğıt). Yazı/çizgi/damga/koyu nesne ağırlıklı bloklar
+ *     "güvenilmez" sayılır ve çevredeki güvenilir bloklardan doldurulur; sonuç yumuşatılıp piksel düzeyine büyütülür.
+ *  2) Her kanal yerel kâğıt rengine bölünür → gölge ve renk sapması (sararma, mavilik) gider.
+ *  3) Beyaz nokta: yerel kâğıdın %BEYAZ_NOKTA'sından açık her şey saf 255 olur → JPEG/sensör gürültüsü ve soluk lekeler kalmaz, kâğıt tam beyaz görünür.
+ *  guc: 0..1 karışım (1 = tam düzeltme). */
+const KAGIT_YUZDELIK=.8,BEYAZ_NOKTA=.92,MAKS_KAZANC=4;
 function duzAlan(img,guc){
   const w=img.width,h=img.height,s=img.data;
-  const blok=Math.max(6,Math.round(Math.min(w,h)/48)),bw=Math.ceil(w/blok),bh=Math.ceil(h/blok);
-  const bg=new Float32Array(bw*bh*3),parlak=new Float32Array(bw*bh),hist=new Uint32Array(64);
+  const blok=Math.max(6,Math.round(Math.min(w,h)/48)),bw=Math.ceil(w/blok),bh=Math.ceil(h/blok),nb=bw*bh;
+  const bg=new Float32Array(nb*3),parlak=new Float32Array(nb),dolu=new Uint8Array(nb),H=[new Uint32Array(256),new Uint32Array(256),new Uint32Array(256)];
   for(let by=0;by<bh;by++)for(let bx=0;bx<bw;bx++){
-    const x0=bx*blok,x1=Math.min(w,x0+blok),y0=by*blok,y1=Math.min(h,y0+blok);
-    hist.fill(0);let cnt=0;
-    for(let y=y0;y<y1;y++){let p=(y*w+x0)*4;for(let x=x0;x<x1;x++,p+=4){hist[((s[p]*77+s[p+1]*150+s[p+2]*29)>>8)>>2]++;cnt++}}
-    let acc=0,t=63;for(;t>0;t--){acc+=hist[t];if(acc>=cnt*.12)break}
-    let r=0,g=0,b=0,n=0;
-    for(let y=y0;y<y1;y++){let p=(y*w+x0)*4;for(let x=x0;x<x1;x++,p+=4){if((((s[p]*77+s[p+1]*150+s[p+2]*29)>>8)>>2)>=t){r+=s[p];g+=s[p+1];b+=s[p+2];n++}}}
-    n=n||1;const i=by*bw+bx;bg[i*3]=r/n;bg[i*3+1]=g/n;bg[i*3+2]=b/n;parlak[i]=.299*bg[i*3]+.587*bg[i*3+1]+.114*bg[i*3+2];
+    const x0=bx*blok,x1=Math.min(w,x0+blok),y0=by*blok,y1=Math.min(h,y0+blok),cnt=(x1-x0)*(y1-y0),i=by*bw+bx;
+    H[0].fill(0);H[1].fill(0);H[2].fill(0);
+    for(let y=y0;y<y1;y++){let p=(y*w+x0)*4;for(let x=x0;x<x1;x++,p+=4){H[0][s[p]]++;H[1][s[p+1]]++;H[2][s[p+2]]++}}
+    for(let k=0;k<3;k++){let acc=0,v=0;for(;v<255;v++){acc+=H[k][v];if(acc>=cnt*KAGIT_YUZDELIK)break}bg[i*3+k]=v}
+    const lp=.299*bg[i*3]+.587*bg[i*3+1]+.114*bg[i*3+2],esik=lp*.78;let koyu=0;
+    for(let y=y0;y<y1;y++){let p=(y*w+x0)*4;for(let x=x0;x<x1;x++,p+=4){if(.299*s[p]+.587*s[p+1]+.114*s[p+2]<esik)koyu++}}
+    parlak[i]=lp;dolu[i]=koyu<=cnt*.5?1:0;
   }
-  /* kalın metin/koyu bloklar için: komşular arasında en parlak blok (3×3) */
-  const mx=new Float32Array(bw*bh*3);
+  /* düzgün gölge değil de katı koyu nesne (damga, logo, fotoğraf) olan bloklar: çevresindeki en parlak güvenilir bloğun %55'inden koyuysa güvenilmez */
+  const guvenli=new Uint8Array(dolu);
   for(let by=0;by<bh;by++)for(let bx=0;bx<bw;bx++){
-    let bi=by*bw+bx,bl=parlak[bi];
-    for(let dy=-1;dy<=1;dy++){const yy=by+dy;if(yy<0||yy>=bh)continue;for(let dx=-1;dx<=1;dx++){const xx=bx+dx;if(xx<0||xx>=bw)continue;const j=yy*bw+xx;if(parlak[j]>bl){bl=parlak[j];bi=j}}}
-    const i=by*bw+bx;mx[i*3]=bg[bi*3];mx[i*3+1]=bg[bi*3+1];mx[i*3+2]=bg[bi*3+2];
+    const i=by*bw+bx;if(!dolu[i])continue;let nm=0;
+    for(let dy=-2;dy<=2;dy++){const yy=by+dy;if(yy<0||yy>=bh)continue;for(let dx=-2;dx<=2;dx++){const xx=bx+dx;if(xx<0||xx>=bw)continue;const j=yy*bw+xx;if(dolu[j]&&parlak[j]>nm)nm=parlak[j]}}
+    if(parlak[i]<nm*.55)guvenli[i]=0;
+  }
+  dolu.set(guvenli);
+  let kalan=0;for(let i=0;i<nb;i++)if(!dolu[i])kalan++;
+  if(kalan===nb){for(let i=0;i<nb;i++){bg[i*3]=bg[i*3+1]=bg[i*3+2]=255;dolu[i]=1}kalan=0}
+  /* güvenilmez blokları güvenilir komşuların ortalamasıyla doldur (halka halka içe doğru) */
+  for(let tur=0;kalan>0&&tur<bw+bh;tur++){
+    const yeniDolu=[];
+    for(let by=0;by<bh;by++)for(let bx=0;bx<bw;bx++){
+      const i=by*bw+bx;if(dolu[i])continue;let r=0,g=0,b=0,n=0;
+      for(let dy=-1;dy<=1;dy++){const yy=by+dy;if(yy<0||yy>=bh)continue;for(let dx=-1;dx<=1;dx++){const xx=bx+dx;if(xx<0||xx>=bw)continue;const j=yy*bw+xx;if(dolu[j]){r+=bg[j*3];g+=bg[j*3+1];b+=bg[j*3+2];n++}}}
+      if(n){bg[i*3]=r/n;bg[i*3+1]=g/n;bg[i*3+2]=b/n;yeniDolu.push(i)}
+    }
+    for(const i of yeniDolu){dolu[i]=1;kalan--}
+    if(!yeniDolu.length)break;
   }
   /* yumuşatma: 3×3 ortalama ×2 */
-  let a=mx,b2=new Float32Array(mx.length);
+  let a=bg,b2=new Float32Array(bg.length);
   for(let pass=0;pass<2;pass++){
     for(let by=0;by<bh;by++)for(let bx=0;bx<bw;bx++){
       let r=0,g=0,b=0,n=0;
@@ -322,14 +344,14 @@ function duzAlan(img,guc){
   const out=yeni(w,h),o=out.data;
   const x0s=new Int32Array(w),x1s=new Int32Array(w),wxs=new Float32Array(w);
   for(let x=0;x<w;x++){let f=(x+.5)/blok-.5;if(f<0)f=0;if(f>bw-1)f=bw-1;const i0=f|0;x0s[x]=i0;x1s[x]=Math.min(bw-1,i0+1);wxs[x]=f-i0}
-  const HEDEF=252;
+  const HEDEF=255/BEYAZ_NOKTA;
   for(let y=0;y<h;y++){
     let f=(y+.5)/blok-.5;if(f<0)f=0;if(f>bh-1)f=bh-1;const y0=f|0,y1=Math.min(bh-1,y0+1),wy=f-y0;
     for(let x=0;x<w;x++){
       const u=wxs[x],i00=(y0*bw+x0s[x])*3,i10=(y0*bw+x1s[x])*3,i01=(y1*bw+x0s[x])*3,i11=(y1*bw+x1s[x])*3,q=(y*w+x)*4;
       for(let k=0;k<3;k++){
         const top=a[i00+k]*(1-u)+a[i10+k]*u,bot=a[i01+k]*(1-u)+a[i11+k]*u,bgv=top*(1-wy)+bot*wy;
-        const gain=Math.min(4,HEDEF/Math.max(bgv,1)),v=s[q+k],nv=v*gain;
+        const gain=Math.min(MAKS_KAZANC,HEDEF/Math.max(bgv,1)),v=s[q+k],nv=v*gain;
         o[q+k]=guc>=1?nv:v*(1-guc)+nv*guc;
       }
       o[q+3]=255;
@@ -418,8 +440,9 @@ function kenarKoruyanBulanik(img,guc){
 function isle(img,ayar){
   const a=Object.assign({},VARSAYILAN,ayar),f=a.filtre,w=img.width,h=img.height,px=Math.max(w,h);
   let o=kopya(img);
-  if(f==='sihirli'||f==='belge'||f==='bw')o=duzAlan(o,1);
-  else if(a.golge>0)o=duzAlan(o,sinirla(a.golge/100,0,1));
+  /* Belge filtreleri kâğıdı her zaman tam beyaza çeker; yalnız 'Orijinal' fotoğrafı olduğu gibi bırakır (gölge giderme kaydırıcısıyla isteğe bağlı). */
+  if(f==='orijinal'){if(a.golge>0)o=duzAlan(o,sinirla(a.golge/100,0,1))}
+  else o=duzAlan(o,1);
   if(f==='sihirli')otomatikSeviye(o,{doygun:1.22,kontrast:1.06});
   else if(f==='belge'){griYap(o);belgeEgri(o)}
   else if(f==='gri'){griYap(o);otomatikSeviye(o,{})}
