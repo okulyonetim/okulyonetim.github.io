@@ -47,7 +47,9 @@ async function ensureEngine(){
 async function printPlan(o){
   if(!global.ReportEngine?.printReport)await global.AppLoader?.loadScript?.('js/modules/report-engine.js');
   if(!global.ReportEngine?.printReport){global.toast?.('Rapor motoru hazır değil.');return}
+  const sinif=currentClass();
   return global.ReportEngine.printReport(o.title,o.body,{
+    sinif:String(sinif?.ad||sinif?.sinifAdi||sinif?.seviye||'').trim(),  /* 1–4 → ilkokul, 5–8 → ortaokul adı ve logosu */
     fileName:o.fileName,
     yon:o.yon==='yatay'?'yatay':'dikey',
     baslikGoster:false,

@@ -134,3 +134,48 @@ test('Ayarlar: kademe okul adları düzenlenir ve varsayılan örnek gösterilir
   assert.match(rc,/name="okulAdi" value="\$\{esc\(okulAdiBaslangic\(opts\)\)\}"/);
   assert.match(rc,/okulAdi:result\.schoolGoster\?result\.okulAdi:' '/,'“Okul adını göster” kapalıyken ad gizlenir');
 });
+
+/* ── sınıfa özel çıktılar seçilen sınıfın okulunu kullanır (oturma planı, çizelgeler, kademe raporları) ── */
+test('sınıf oturma planı çıktısı sınıfın kademesine göre okul adı ve logo alır',async()=>{
+  const o=ortam({siniflar:[{id:'c7',ad:'7-A'},{id:'c2',ad:'2-B'}]}),e=motor(o),win=o.win;
+  let yakalanan=null,gridAc=null;
+  win.AppStore.data=t=>({okulBilgileri:[AYAR],ogretmenler:[],siniflar:[{id:'c7',ad:'7-A'},{id:'c2',ad:'2-B'}],veliler:[]}[t]||[]);
+  win.ReportEngine={printReport:async(t,b,opts)=>{yakalanan=opts}};
+  win.SinifOturmaService={planGetir:async()=>({exists:false})};
+  win.ClassSeatingGrid={open:opts=>{gridAc=opts}};
+  vm.runInContext(read('js/modules/class-seating.js'),o.ctx);
+  for(const [id,ad,okul,logo] of [['c7','7-A','Şehit Remzi Yemez Ortaokulu','logo-ortaokul.png'],['c2','2-B','Koruk İlkokulu','logo.png']]){
+    await win.SinifOturma.ac(id);await gridAc.print({title:'Oturma',body:'<p>x</p>',fileName:'f',yon:'dikey'});
+    assert.equal(yakalanan.sinif,ad,'sınıf bağlamı ReportEngine\'e geçmeli');
+    /* Rapor özelleştirme penceresi başlığı ve logoyu açtığında (ekran görüntüsündeki durum) sınıf bağlamı korunur */
+    const html=e.documentHtml('Oturma','<p>x</p>',{...yakalanan,akis:true,logoGoster:true,baslikGoster:true});
+    assert.match(html,new RegExp('<span>'+okul+'</span>'),ad+' → '+okul);
+    assert.ok(html.includes('assets/'+logo),ad+' → '+logo);
+  }
+});
+
+test('not/ödev çizelgesi ve kademe raporları sınıfın/kademenin okul kimliğini kullanır',()=>{
+  const gb=read('js/modules/gradebooks.js');
+  assert.match(gb,/printReport\(draft\.ad\|\|label\(\),body,\{[^}]*sinif:draft\.sinifAdi\|\|classLabel\(draft\.sinifId,''\)/,'çizelge çıktısı sınıf bağlamını geçirmeli');
+  const rp=read('js/modules/reports.js');
+  assert.match(rp,/const opts=\{fileName:s\.title\|\|'Rapor',kademe:stageKademe\(id\),/,'kademe raporları kademeyi geçirmeli');
+  const m=rp.match(/const stageKademe=[^\n]*\nfunction stageSchool[^\n]*/);assert.ok(m,'stageKademe/stageSchool bulunamadı');
+  const {win}=ortam(),f=new Function('globalThis',m[0]+';return{stageKademe,stageSchool}')(win);
+  assert.equal(f.stageKademe('primary-students'),'ilkokul');assert.equal(f.stageKademe('middle-students'),'ortaokul');assert.equal(f.stageKademe('all-students'),undefined);
+  assert.equal(f.stageSchool('middle-students','Koruk İlk-Ortaokulu'),'Şehit Remzi Yemez Ortaokulu','genel ad kademeye uyarlanır');
+  assert.equal(f.stageSchool('primary-students',''),'Koruk İlkokulu');
+  assert.equal(f.stageSchool('middle-students','Elle Yazılan Okul'),'Elle Yazılan Okul','elle yazılan ad korunur');
+  assert.equal(f.stageSchool('all-students','Koruk İlk-Ortaokulu'),'Koruk İlk-Ortaokulu','kademesiz raporlara dokunulmaz');
+});
+
+test('sınıf ders programı sayfaları sınıfın kademesine göre okul adı ve logo alır',()=>{
+  const src=read('js/core/schedule-report-redesign.js');
+  assert.match(src,/function individualCard\(kind,key,meta\)\{if\(kind==='class'\)return`\$\{reportHead\(meta,`\$\{key\} SINIFI DERS PROGRAMI`,'',key\)\}/,'sınıf sayfası sınıf adını bağlam olarak geçirmeli');
+  assert.match(src,/<img src="\$\{esc\(logoUrl\(ctx\)\)\}"/,'başlık logosu bağlama göre seçilmeli');
+  const m=src.match(/function schoolFor[^\n]*/);assert.ok(m,'schoolFor bulunamadı');
+  const {win}=ortam(),schoolFor=new Function('global','normalize',m[0]+';return schoolFor')(win,s=>String(s||'').trim());
+  assert.equal(schoolFor('Koruk İlk-Ortaokulu','7-A'),'Şehit Remzi Yemez Ortaokulu');
+  assert.equal(schoolFor('Koruk İlk-Ortaokulu','2-B'),'Koruk İlkokulu');
+  assert.equal(schoolFor('Elle Yazılan Okul','7-A'),'Elle Yazılan Okul','elle yazılan ad korunur');
+  assert.equal(schoolFor('Koruk İlk-Ortaokulu',undefined),'Koruk İlk-Ortaokulu','bağlamsız (öğretmen/çarşaf) sayfalara dokunulmaz');
+});
