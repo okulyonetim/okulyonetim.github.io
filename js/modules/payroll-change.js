@@ -10,7 +10,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const rows=t=>{const v=global.AppStore?.data?.(t);return Array.isArray(v)?v:[]};
 let state=null,openSection='D';
 function roster(){
- const teachers=rows('ogretmenler').map(o=>({id:'o_'+o.id,tur:'ogretmen',tc:o.tcNo||o.tc||'',ad:`${o.ad||''} ${o.soyad||''}`.trim()||o.adSoyad||'',gorev:o.unvan||o.brans||'Öğretmen'}));
+ const teachers=rows('ogretmenler').map(o=>({id:'o_'+o.id,tur:'ogretmen',tc:String(o.tcKimlikNo||o.tcNo||o.tc||'').trim(),ad:`${o.ad||''} ${o.soyad||''}`.trim()||o.adSoyad||'',gorev:o.unvan||o.brans||'Öğretmen'}));
  const staff=rows('personel').map(p=>({id:'p_'+p.id,tur:'personel',tc:p.tc||p.tcNo||'',ad:p.adSoyad||`${p.ad||''} ${p.soyad||''}`.trim(),gorev:p.gorev||p.unvan||'Personel'}));
  return [...teachers,...staff].filter(x=>x.ad).sort((a,b)=>a.ad.localeCompare(b.ad,'tr'));
 }
