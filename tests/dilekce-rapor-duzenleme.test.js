@@ -74,7 +74,7 @@ test('Gezi planı ve onay yazısında her alan sayfa üzerinde düzenlenebilir; 
     assert.ok(!G.paper(s).includes('contenteditable')&&!G.paper(s).includes('data-gz-b'),`${doc}: yazdırılan belgede düzenleme işareti olmamalı`);
   }
   const plan=G.paper({...gSample(G),doc:'plan-ici'},true);
-  for(const k of ['gTarih','yer','saat','program','plaka','sofor','kira','sube:0','k:0','e:0','toplam','veli','idareci','ogretmenler','amac','baslik','th1','th17'])
+  for(const k of ['gTarih','yer','saat','program','plaka','sofor','kira','sube:0','k:0','e:0','toplam','veli','idareci','ogretmenler','amac','baslik','th1','th17','soforTel','th18'])
     assert.ok(plan.includes(`data-gz-ed="${k}"`),'plan tablosunda eksik alan: '+k);
   const onay=G.paper({...gSample(G),doc:'onay-ici'},true);
   for(const k of ['ust1','ust2','ust3','sayi','yaziTarih','konu','hitap','ilgi','govde','kapanis','imzaAd','imzaUnvan','ek','olurb','olurTarih','olurAd','olurUnvan'])
@@ -130,7 +130,9 @@ test('Gezi onay yazısı: etiketler ve veli belgesindeki boşluklar da düzenlen
   const h=G.paper(s,true);
   for(const k of ['sayiEt','konuEt','ilgiEt','ekEt'])assert.ok(h.includes(`data-gz-ed="${k}"`),'etiket düzenlenemiyor: '+k);
   assert.ok(!h.includes('821.04')&&!G.paper(s).includes('821.04'),'Sayı boşken belgeye kod yazılmaz');
-  assert.match(G.paper(s),/<span>Sayı :<\/span> <span>………………<\/span>/,'boş Sayı yazdırmada noktalı bırakılır');
+  assert.match(G.paper(s),/<span>Sayı :<\/span> <span><\/span>/,'boş Sayı yazdırmada tamamen boş kalır (nokta da kod da yok)');
+  assert.match(h,/data-gz-ed="sayi"[^>]*><\/span>/,'boş Sayı sayfada da boş, ama dokunulup yazılabilir kalır');
+  assert.match(css,/\[data-gz-ed="sayi"\]:empty\{display:inline-block;min-width:/,'boş Sayı alanı dokunulabilir genişlikte kalır');
   assert.match(G.paper({...s,sayi:'821.04/7'}),/<span>821\.04\/7<\/span>/);
   assert.match(G.paper({...s,ozel:{sayiEt:{text:'Sayısı :',base:'Sayı :'}}}),/Sayısı :/);
   const v=G.paper({...gSample(G),doc:'veli'},true);
@@ -147,4 +149,45 @@ test('Okul adı başlıkta, hitapta ya da veli makamında değişince her yerde 
   assert.match(h,/ŞEHİT REMZİ YEMEZ ORTAOKULU Müdürlüğü/);assert.match(h,/ŞEHİT REMZİ YEMEZ ORTAOKULU MÜDÜRLÜĞÜNE/);
   const y=G.paper({...s,okul:'YENİ ORTAOKUL'},true);
   assert.match(y,/YENİ ORTAOKUL Müdürlüğü/);assert.match(y,/YENİ ORTAOKUL MÜDÜRLÜĞÜNE/);
+});
+
+test('Gezi onayı: yazı tek sayfa, okul gezi planı ayrı ek sayfası; çıktıda sayfa sonu var',()=>{
+  const G=gezi(),s={...gSample(G),doc:'onay-ici'};
+  for(const edit of [false,true]){
+    const h=G.paper(s,edit),sayfalar=h.split('<div class="gzi-sayfa">').slice(1);
+    assert.strictEqual(sayfalar.length,2,'yazı + ek plan = iki sayfa');
+    assert.ok(!sayfalar[0].includes('gzi-tablo')&&!sayfalar[0].includes('gzi-title'),'dilekçe sayfasında plan tablosu olmaz');
+    assert.match(sayfalar[0],/Ek:/);assert.match(sayfalar[0],/O L U R/);assert.match(sayfalar[0],/Mehmet DEMİR/);
+    assert.match(sayfalar[1],/<h1 class="gzi-title"/);assert.match(sayfalar[1],/gzi-tablo/);assert.ok(!sayfalar[1].includes('O L U R'));
+  }
+  assert.match(css,/\.ka-report \.gzi-sayfa\{break-after:page\}/);
+  assert.match(G.paper({...s,doc:'onay-disi'}),/İL DIŞI OKUL GEZİ PLANI/);
+});
+
+test('Gezi onayı: elle yazılan sabit metinler (başlık, hitap, etiketler) kendiliğinden eski hâline dönmez',()=>{
+  const G=gezi(),s={...gSample(G),doc:'onay-ici'};
+  // varsayılan metin sonradan değişse (ör. sınıf seçimi okul adını değiştirdi) bile elle yazılan kalır
+  s.ozel={ust3:{text:'KORUK İLKOKULU MÜDÜRLÜĞÜ',base:'Eski Okul Müdürlüğü'},ust1:{text:'TÜRKİYE CUMHURİYETİ',base:'T.C.'},hitap:{text:'MAKAMINA',base:'ESKİ'},sayiEt:{text:'Sayısı :',base:'?'}};
+  const h=G.paper(s);
+  for(const m of ['KORUK İLKOKULU MÜDÜRLÜĞÜ','TÜRKİYE CUMHURİYETİ','MAKAMINA','Sayısı :'])assert.ok(h.includes(m),'geri döndü: '+m);
+  // kaynağı form alanı olan satırlar, o alan değişince yeniden hesaplanır
+  const src=read('js/modules/gezi.js');
+  assert.match(src,/const KAYNAK=\{[^}]*okul:\['ust3','hitap','vmakam'\]/);
+  assert.match(src,/ozSil\(s,KAYNAK\[k\]\|\|\[\]\)/);
+  // içi/dışı belgelerin hitap/unvan düzenlemeleri birbirini ezmez
+  const d={...s,doc:'onay-disi',ozel:{hitap:{text:'İÇİ HİTABI',base:'x'}}};
+  assert.ok(!G.paper(d).includes('İÇİ HİTABI'),'okul içi hitabı dışı belgesine taşınmaz');
+  assert.ok(G.paper({...d,ozel:{'hitap@d':{text:'DIŞI HİTABI',base:'x'}}}).includes('DIŞI HİTABI'));
+});
+
+test('Gezi planında şoför cep telefonu alanı vardır (araç başına, plan tablosunda, EK-10 beyanında)',()=>{
+  const G=gezi(),s={...gSample(G),doc:'plan-ici',araclar:[{tur:'Otobüs',plaka:'06 AB 123',sofor:'Ali Yılmaz',sofTel:'0532 111 22 33'},{tur:'Midibüs',plaka:'06 CD 456',sofor:'Veli Kaya',sofTel:'0533 444 55 66'}]};
+  const h=G.paper(s);
+  assert.match(h,/c\) Şoförlerin Cep Telefonu/);assert.match(h,/0532 111 22 33, 0533 444 55 66/);assert.match(h,/d\) Aracın Kira Bedeli/);
+  assert.match(G.paper(s,true),/data-gz-ed="soforTel"/);
+  const src=read('js/modules/gezi.js');
+  assert.match(src,/\['sofTel','Şoför cep telefonu'/,'araç formunda şoför telefonu alanı');
+  assert.match(src,/input\('soforTel','tel'/,'tek araç formunda şoför telefonu alanı');
+  assert.match(G.BELGE.surucu(s),/SÜRÜCÜNÜN CEP TELEFONU[\s\S]*0532 111 22 33/,'EK-10 beyanında şoförün cep telefonu');
+  assert.match(G.BELGE.surucu(s),/SÜRÜCÜNÜN CEP TELEFONU[\s\S]*0533 444 55 66/);
 });
