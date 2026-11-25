@@ -253,6 +253,17 @@ service cloud.firestore {
         && (resource.data.olusturanUid == request.auth.uid || adminMi() || yoneticiMi());
     }
 
+    // Kurul ve Komisyonlar (js/modules/committees.js): okuma herkese, yazma yönetici ve
+    // yönetim modülünü düzenleyebilen rollere. Kuralı olmayan oy_ koleksiyonu
+    // varsayılan olarak kapalı olduğundan eksikliği "Missing or insufficient permissions" verir.
+    match /oy_kurulKomisyonlar/{id} {
+      allow read: if girisYapmis();
+      allow create, update, delete: if adminMi() || yoneticiMi()
+        || moduluDuzenleyebilir('module.management')
+        || moduluDuzenleyebilir('management.committees')
+        || moduluDuzenleyebilir('kurulKomisyonlar');
+    }
+
     match /oy_toplantiCizelgesi/{id} {
       allow read: if girisYapmis();
       allow create, update, delete: if adminMi();
