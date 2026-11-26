@@ -55,6 +55,21 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['goruntule', 'duzenle', 'preview', 'read', 'edit']);
     }
 
+    // Çizelge koleksiyonları (sosyal kulüp, zümre, ŞÖK, BEP, rehberlik, Maarif, belirli günler, diğer evrak):
+    // uygulamadaki PermissionService yetkiyi önce koleksiyonun kendi anahtarından, o yoksa eski "cizelgeler"
+    // anahtarından okur (Ayarlar > Roller kaydında module.tools bu anahtara yansıtılır). Kurallar da aynı
+    // sırayı izler; yoksa arayüzün düzenlemeye izin verdiği rol için yazma sunucuda reddedilir ve
+    // işaret yalnız o cihazda görünür.
+    function cizelgeDuzenleyebilir(modul) {
+      return adminMi() || (rolBelgemVarMi() && (
+        (modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
+          && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler[modul] in ['duzenle', 'edit'])
+        || (!(modul in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler)
+          && 'cizelgeler' in get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler
+          && get(/databases/$(database)/documents/oy_roller/$(kullaniciBelgesi().data.rolId)).data.yetkiler['cizelgeler'] in ['duzenle', 'edit'])
+      ));
+    }
+
     function kendiOgretmenIdsi() {
       return kendiBelgemVarMi() ? kullaniciBelgesi().data.bagliOgretmenId : null;
     }
@@ -386,42 +401,42 @@ service cloud.firestore {
 
     match /oy_sosyalKulupler/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('sosyalKulupler');
+      allow create, update, delete: if cizelgeDuzenleyebilir('sosyalKulupler');
     }
 
     match /oy_belirliGunler/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('belirliGunler');
+      allow create, update, delete: if cizelgeDuzenleyebilir('belirliGunler');
     }
 
     match /oy_zumre/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('zumre');
+      allow create, update, delete: if cizelgeDuzenleyebilir('zumre');
     }
 
     match /oy_sok/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('sok');
+      allow create, update, delete: if cizelgeDuzenleyebilir('sok');
     }
 
     match /oy_bepPlani/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('bepPlani');
+      allow create, update, delete: if cizelgeDuzenleyebilir('bepPlani');
     }
 
     match /oy_rehberlik/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('rehberlik');
+      allow create, update, delete: if cizelgeDuzenleyebilir('rehberlik');
     }
 
     match /oy_maarifRapor/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('maarifRapor');
+      allow create, update, delete: if cizelgeDuzenleyebilir('maarifRapor');
     }
 
     match /oy_digerEvrak/{id} {
       allow read: if girisYapmis();
-      allow create, update, delete: if moduluDuzenleyebilir('digerEvrak');
+      allow create, update, delete: if cizelgeDuzenleyebilir('digerEvrak');
     }
 
     match /oy_evrakTakibi/{id} {
