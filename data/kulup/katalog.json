@@ -33,6 +33,22 @@
    }
   },
   {
+   "id": "cocuk-haklari",
+   "ad": "Çocuk Hakları Kulübü",
+   "anahtar": [
+    "cocuk haklari",
+    "demokrasi ve insan haklari"
+   ],
+   "yil": "2026-2027",
+   "tema": {
+    "kod": "DÇT",
+    "ad": "Doğa-Çevre-Toplum"
+   },
+   "sayilar": {
+    "aylik": 5
+   }
+  },
+  {
    "id": "enerji-verimliligi",
    "ad": "Enerji Verimliliği Kulübü",
    "anahtar": [
