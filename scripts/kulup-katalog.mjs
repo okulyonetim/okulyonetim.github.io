@@ -85,7 +85,7 @@ const etiketAylari=e=>{const l=String(e).split(/\s*[–—-]\s*/).map(x=>AYLAR.f
 function sonuRaporu(ogeler){
  const tab=ogeler.find(o=>o.tur==='tablo'&&o.satirlar.length>2&&/^ay(lar)?$/.test(norm(o.satirlar[0][0]?.metin)));if(!tab)throw new Error('faaliyet tablosu bulunamadı');
  /* Çok aylı satırlar (Eylül–Ekim…) ay ay açılır: ekran ve dönem raporu ay bazında çalışır; ay metni o ayın aylık raporundan gelir, yoksa birleşik satırın kendi metni kullanılır (aşağıda). */
- const ozet=m=>String(m||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,OZET_MADDE).join(' ');   // çok paragraflı hücre: ilk üç paragraf, tek satırda
+ const ozet=m=>String(m||'').split(/\n+/).map(x=>x.trim().replace(/^\d+\s*[.)]\s+/,'')).filter(Boolean).slice(0,OZET_MADDE).join(' ');   // çok paragraflı hücre: ilk üç paragraf, tek satırda; elle yazılmış "13." sıra numaraları atılır
  const aylar=tab.satirlar.slice(1).flatMap(r=>{const e=r[0].metin.trim(),l=etiketAylari(e),m=ozet(r[1]?.metin);return l.length>1?l.map(ay=>({ay,calisma:'',birlesik:m})):e?[{ay:e,calisma:m}]:[]});
  const bolum=ad=>{const i=ogeler.findIndex(o=>o.tur==='p'&&new RegExp(`^[B-D]\\.\\s*${ad}`,'i').test(o.metin));return i<0?'':(ogeler[i+1]?.tur==='p'?ogeler[i+1].metin:'')};
  return{aylar,b:bolum('(Genel Değerlendirme|Değerlendirme|Kazanımlar)'),c:bolum('(Karşılaşılan Güçlükler|Güçlükler)'),d:bolum('(Gelecek Yıl İçin Öneriler|Öneriler)')};
